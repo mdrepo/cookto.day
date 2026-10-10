@@ -1,0 +1,5 @@
+# Secret scanning (ADR 0005). Default rules, plus the exceptions below.
+# Add an exception only for a proven false positive, and say why.
+
+[extend]
+useDefault = true

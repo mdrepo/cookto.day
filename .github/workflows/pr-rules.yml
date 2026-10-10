@@ -1,0 +1,79 @@
+name: PR rules
+
+# Rules about the PR itself, not the code. Each failure says how to fix it.
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+# No permissions by default; each job grants only what it needs.
+permissions: {}
+
+jobs:
+  rules:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version-file: package.json # uses "packageManager"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # Title and body come from env, never ${{ }} inside the script, so a
+      # crafted PR title can't inject shell commands.
+
+      # Proves new unit tests fail on main and pass here (ADR 0002). E2e tests
+      # get the same check in the pre-push hook; CI has no browser (ADR 0004).
+      - name: New unit tests fail on main and pass here
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: bun run tdd:verify --unit-only
+
+      - name: Check PR rules
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: bun scripts/check-pr-rules.ts
+
+  # Health of added or changed dependencies (ADR 0006). Its own job, and not a
+  # required check: it calls npm and deps.dev, and their outages shouldn't
+  # block merging. Code owners review dependency changes anyway (CODEOWNERS).
+  dependency-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version-file: package.json # uses "packageManager"
+
+      - name: Check dependency health
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: bun run deps:health

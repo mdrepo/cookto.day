@@ -2,6 +2,9 @@
   "$comment": "Every direct dependency, with why we need it (ADR 0006). `bun run check` fails if package.json has a package that isn't listed here, or this lists one package.json doesn't have. `bun run deps:health` runs ADR 0006's health checks on added or changed packages; `exceptions` allows a named failing check (scorecard, recent-release, maintainers, install-scripts, license) and says why. Changing this file needs a code owner's approval.",
   "dependencies": {},
   "devDependencies": {
+    "@playwright/test": {
+      "reason": "E2E tests of the built site in a real browser (ADR 0003, 0004)."
+    },
     "@types/bun": {
       "reason": "Types for bun:test and Bun's APIs, pinned to the packageManager Bun version.",
       "exceptions": {

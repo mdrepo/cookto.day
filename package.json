@@ -7,8 +7,11 @@
   "type": "module",
   "packageManager": "bun@1.4.2",
   "scripts": {
+    "dev": "bun scripts/serve.ts",
+    "build": "bun scripts/build.ts",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
+    "e2e": "playwright test",
     "check": "bun run deps:check && bun run agents:check && bun run design:check && bun run format:check && bun run typecheck && bun run lint && bun run knip && bun test",
     "deps:check": "bun scripts/check-dependency-allowlist.ts",
     "deps:health": "bun scripts/check-dependency-health.ts",
@@ -22,6 +25,7 @@
     "tdd:verify": "bun scripts/tdd-verify.ts"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@types/bun": "1.4.2",
     "@types/node": "26.1.1",
     "eslint": "10.11.0",

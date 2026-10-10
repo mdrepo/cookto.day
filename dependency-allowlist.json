@@ -1,5 +1,38 @@
 {
   "$comment": "Every direct dependency, with why we need it (ADR 0006). `bun run check` fails if package.json has a package that isn't listed here, or this lists one package.json doesn't have. `bun run deps:health` runs ADR 0006's health checks on added or changed packages; `exceptions` allows a named failing check (scorecard, recent-release, maintainers, install-scripts, license) and says why. Changing this file needs a code owner's approval.",
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/bun": {
+      "reason": "Types for bun:test and Bun's APIs, pinned to the packageManager Bun version.",
+      "exceptions": {
+        "maintainers": "One npm maintainer: the DefinitelyTyped publishing account. Types only, never runs."
+      }
+    },
+    "@types/node": {
+      "reason": "Types for the node: modules the check scripts use.",
+      "exceptions": {
+        "maintainers": "One npm maintainer: the DefinitelyTyped publishing account. Types only, never runs."
+      }
+    },
+    "typescript": {
+      "reason": "Type checking; pinned to 6.x for typescript-eslint (ADR 0007)."
+    },
+    "knip": {
+      "reason": "Finds unused files, exports and dependencies, and dependencies used but not declared. Agents leave all four behind.",
+      "exceptions": {
+        "maintainers": "One npm maintainer (webpro). Dev-only, no install scripts, ISC.",
+        "scorecard": "deps.dev publishes no OpenSSF Scorecard for webpro-nl/knip. Dev-only, no install scripts, actively released."
+      }
+    },
+    "eslint": {
+      "reason": "Linting (ADR 0007)."
+    },
+    "typescript-eslint": {
+      "reason": "Type-aware lint rules, strictTypeChecked preset (ADR 0007)."
+    },
+    "prettier": {
+      "reason": "Formatting, default settings (ADR 0007)."
+    }
+  },
+  "notes": "ESLint and typescript-eslint together add about 90 packages, over ADR 0006's warning level of 20. Accepted in ADR 0007: type-aware linting is the main deterministic guard against bad agent code. The app itself has no runtime dependencies (ADR 0005)."
 }

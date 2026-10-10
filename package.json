@@ -7,10 +7,24 @@
   "type": "module",
   "packageManager": "bun@1.4.2",
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "test": "bun test",
-    "check": "bun run deps:check && bun test",
+    "check": "bun run deps:check && bun run format:check && bun run typecheck && bun run lint && bun run knip && bun test",
     "deps:check": "bun scripts/check-dependency-allowlist.ts",
-    "deps:health": "bun scripts/check-dependency-health.ts"
+    "deps:health": "bun scripts/check-dependency-health.ts",
+    "knip": "knip",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@types/bun": "1.4.2",
+    "@types/node": "26.1.1",
+    "eslint": "10.11.0",
+    "knip": "6.38.0",
+    "prettier": "3.9.9",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.70.1"
   },
   "trustedDependencies": []
 }

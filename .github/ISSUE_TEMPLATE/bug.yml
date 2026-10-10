@@ -1,0 +1,28 @@
+name: Bug
+description: Something people see that is wrong.
+type: Bug
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue becomes the spec (`specs/<issue>-<short-name>.md`). If a `test.fail()` e2e test already shows the bug, link it. Please don't attach real grocery bills: they have your name, address and phone number on them. Describe them, or redact them first.
+  - type: textarea
+    id: what
+    attributes:
+      label: What you see
+      description: Steps from `bun run dev` (http://localhost:3000), the language you were using, and your browser and phone.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: As Given / When / Then if you can.
+    validations:
+      required: true
+  - type: input
+    id: known-bug-test
+    attributes:
+      label: Known-bug test (if any)
+      placeholder: e2e/first-visit.spec.ts › switching to Arabic lays the page out right to left

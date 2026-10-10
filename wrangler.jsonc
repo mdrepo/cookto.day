@@ -1,0 +1,15 @@
+// Cloudflare Workers static assets: dist/ is the whole site, no server code
+// (ADR 0013). Deployed by .github/workflows/deploy.yml on every merge to main
+// (ADR 0014), never by hand from a laptop.
+{
+  "$schema": "https://unpkg.com/wrangler@4.147.0/config-schema.json",
+  "name": "cookto-day",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application",
+  },
+  "routes": [{ "pattern": "cookto.day", "custom_domain": true }],
+  "workers_dev": false,
+  "preview_urls": false,
+}

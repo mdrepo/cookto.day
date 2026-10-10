@@ -1,6 +1,6 @@
 # 0009. Squash-merge; merging never deploys
 
-- **Status:** Accepted
+- **Status:** Superseded by 0014
 - **Date:** 2026-10-10
 - **Deciders:** Mayur
 

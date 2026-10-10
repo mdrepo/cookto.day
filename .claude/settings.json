@@ -15,6 +15,7 @@
       "Edit(knip.json)",
       "Edit(.prettierignore)",
       "Edit(playwright.config.ts)",
+      "Edit(wrangler.jsonc)",
       "Edit(docs/adr/**)",
       "Edit(DESIGN.md)",
       "Edit(AGENTS.md)",

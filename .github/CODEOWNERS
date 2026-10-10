@@ -23,6 +23,7 @@
 /knip.json                  @mdrepo
 /.prettierignore            @mdrepo
 /playwright.config.ts       @mdrepo
+/wrangler.jsonc             @mdrepo
 
 # Decisions, design and agent guidance
 /docs/adr/                  @mdrepo

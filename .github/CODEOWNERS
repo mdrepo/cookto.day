@@ -1,0 +1,39 @@
+# A change to any of these needs a code owner's approval (ADR 0005, 0006).
+# They are the rules and the checks that enforce them: an agent must not be
+# able to make a failing check pass by editing the check.
+# Enforced by branch protection on main: code owner review, and approvals
+# are dismissed when new commits are pushed. .claude/settings.json asks
+# before editing exactly these paths (scripts/check-agent-files.ts).
+
+# Dependencies and supply chain
+/package.json               @mdrepo
+/bun.lock                   @mdrepo
+/bunfig.toml                @mdrepo
+/dependency-allowlist.json  @mdrepo
+
+# CI, hooks, the check scripts and the build
+/.github/                   @mdrepo
+/.githooks/                 @mdrepo
+/scripts/                   @mdrepo
+/.gitleaks.toml             @mdrepo
+
+# Lint, format, type and dead-code rules
+/eslint.config.js           @mdrepo
+/tsconfig.json              @mdrepo
+/knip.json                  @mdrepo
+/.prettierignore            @mdrepo
+/playwright.config.ts       @mdrepo
+
+# Decisions, design and agent guidance
+/docs/adr/                  @mdrepo
+/DESIGN.md                  @mdrepo
+/AGENTS.md                  @mdrepo
+/CLAUDE.md                  @mdrepo
+/.claude/                   @mdrepo
+/.agents/                   @mdrepo
+
+# What "correct" means: specs and tests. An owner approves every change to
+# them, so an agent can't redefine success to match its code (ADR 0002).
+/specs/                     @mdrepo
+/test/                      @mdrepo
+/e2e/                       @mdrepo

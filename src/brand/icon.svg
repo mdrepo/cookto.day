@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><rect width="1024" height="1024" rx="224" fill="#fbecd0"/><g transform="translate(512 548) scale(1.36) translate(-512 -560)">  <g stroke="#2a1d16" stroke-width="14" stroke-linejoin="round" stroke-linecap="round">
+    <!-- side handle (left) and long handle (right, shortened) -->
+    <rect x="258" y="518" width="70" height="38" rx="10" fill="#7fb4c4"/>
+    <path d="M610 522 H742 a14 14 0 0 1 14 14 v6 a14 14 0 0 1 -14 14 H610 Z" fill="#7fb4c4"/>
+    <path d="M640 482 C690 482 722 490 748 506" fill="none"/>
+    <!-- body -->
+    <path d="M322 512 H618 V676 a46 46 0 0 1 -46 46 H368 a46 46 0 0 1 -46 -46 Z" fill="#d9603d"/>
+    <!-- lid dome -->
+    <path d="M334 484 C340 448 400 432 470 432 C540 432 600 448 606 484 Z" fill="#d9603d"/>
+    <!-- whistle -->
+    <rect x="461" y="404" width="18" height="30" fill="#2a1d16" stroke="none"/>
+    <rect x="440" y="384" width="60" height="26" rx="6" fill="#7fb4c4"/>
+    <!-- lid band -->
+    <rect x="298" y="484" width="344" height="32" rx="7" fill="#7fb4c4"/>
+  </g>
+  <!-- lid shine -->
+  <path d="M362 470 C370 456 386 448 404 444" stroke="#ef8a6b" stroke-width="12" stroke-linecap="round" fill="none"/>
+  <!-- face -->
+  <circle cx="410" cy="584" r="15" fill="#2a1d16"/>
+  <circle cx="528" cy="584" r="15" fill="#2a1d16"/>
+  <path d="M446 604 q23 26 46 0" stroke="#2a1d16" stroke-width="9" stroke-linecap="round" fill="none"/>
+  <ellipse cx="394" cy="620" rx="19" ry="11" fill="#f2a28c"/>
+  <ellipse cx="544" cy="620" rx="19" ry="11" fill="#f2a28c"/></g></svg>

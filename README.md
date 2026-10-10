@@ -1,3 +1,5 @@
+<img src="src/brand/icon.svg" width="96" alt="cookto.day: a smiling pressure cooker">
+
 # cookto.day
 
 What to cook today, from the groceries you already have.

@@ -66,7 +66,7 @@ There's no behaviour change for docs, dependency bumps, pure refactors covered b
 - **No mocks of our own code.** Test behaviour end to end (Playwright), our built page in `test/dom/` (happy-dom), or a pure function in `test/unit/` ([ADR 0003](docs/adr/0003-testing-policy.md)). *(review; ESLint bans `.only`/`.skip`)*
 - **No raw HTML.** Use `textContent` and `createElement`, never `innerHTML`: bill text is untrusted input. *(ESLint)*
 - **Conventional Commits:** `type(scope): summary`, with type one of `feat fix test refactor docs chore ci build perf revert`. The PR title too ([ADR 0008](docs/adr/0008-git-hooks-without-dependencies.md), [0009](docs/adr/0009-squash-merge.md)). *(commit-msg hook, PR rules)*
-- **Merging never deploys.** Deploys are started by hand. No workflow deploys on push or merge ([ADR 0009](docs/adr/0009-squash-merge.md)).
+- **Every merge to `main` deploys** to cookto.day, after check, e2e and build pass on the merged code. Nothing else deploys: never run `wrangler deploy` yourself ([ADR 0014](docs/adr/0014-deploy-on-merge.md)).
 - **Keep changes small.** One issue per PR. Don't "improve" unrelated code on the way.
 
 ## Stop and ask a human when

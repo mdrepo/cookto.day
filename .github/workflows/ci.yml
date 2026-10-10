@@ -3,7 +3,7 @@ name: CI
 # The gate every PR must pass. `bun run check` is the same command you run
 # locally, so a green local check means a green CI check.
 # E2E tests run locally, not here (ADR 0004).
-# Nothing here deploys: merging never deploys (ADR 0009).
+# Nothing here deploys; deploy.yml does, after every merge to main (ADR 0014).
 
 on:
   pull_request:

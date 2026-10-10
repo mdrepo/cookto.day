@@ -124,7 +124,7 @@ If in doubt, it's a behaviour change.
 - approve a test change made after the code
 - approve a new dependency, or an exception in `dependency-allowlist.json`
 - change an ADR, `DESIGN.md`, a check, CI, the hooks or the agent guidance (`.github/CODEOWNERS` lists the files)
-- approve and merge the PR, and deploy
+- approve and merge the PR (merging deploys it, ADR 0014)
 
 ## Words used here
 

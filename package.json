@@ -9,10 +9,11 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "bun test",
-    "check": "bun run deps:check && bun run agents:check && bun run format:check && bun run typecheck && bun run lint && bun run knip && bun test",
+    "check": "bun run deps:check && bun run agents:check && bun run design:check && bun run format:check && bun run typecheck && bun run lint && bun run knip && bun test",
     "deps:check": "bun scripts/check-dependency-allowlist.ts",
     "deps:health": "bun scripts/check-dependency-health.ts",
     "agents:check": "bun scripts/check-agent-files.ts",
+    "design:check": "bun scripts/check-design.ts",
     "knip": "knip",
     "lint": "eslint .",
     "format": "prettier --write .",

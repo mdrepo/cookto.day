@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Only bun.lock is committed
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment files (the app has no secrets; keep it that way)
+.env
+.env.*
+
+# Build output
+dist/
+
+# Logs
+*.log
+
+# OS and editors
+.DS_Store
+.vscode/
+.idea/
+
+# Playwright output
+test-results/
+playwright-report/

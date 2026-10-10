@@ -1,0 +1,3 @@
+# LF everywhere, including Windows checkouts: Prettier and the scripts in
+# scripts/ expect "\n" line endings.
+* text=auto eol=lf

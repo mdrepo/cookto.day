@@ -1,0 +1,41 @@
+#!/bin/sh
+# ADR 0008: quick checks on what you are committing. CI repeats them, so
+# skipping this hook (--no-verify) only moves the failure to the PR.
+# Note: files are checked as they are on disk, not as staged.
+set -eu
+
+# Staged files, minus symlinks (tools refuse them; their targets are files
+# in the repo that get checked in their own right).
+staged() {
+  git diff --cached --name-only --diff-filter=ACMR -- "$@" | while IFS= read -r f; do
+    [ -L "$f" ] || printf '%s\n' "$f"
+  done
+}
+
+if [ -n "$(staged)" ]; then
+  echo "pre-commit: Prettier"
+  staged | tr '\n' '\0' | xargs -0 bunx prettier --check --ignore-unknown
+fi
+
+ts=$(staged '*.ts' '*.js')
+if [ -n "$ts" ]; then
+  if printf '%s\n' "$ts" | grep -Eqv '^(test|e2e)/'; then
+    echo "pre-commit: ESLint"
+    printf '%s\n' "$ts" | tr '\n' '\0' | xargs -0 bunx eslint --no-warn-ignored
+    echo "pre-commit: typecheck"
+    bun run --silent typecheck
+  else
+    # Only tests: the red step (ADR 0002). Red tests may import code that
+    # doesn't exist yet, so types and type-aware lint wait for the next
+    # commit; CI checks the PR's head.
+    echo "pre-commit: only tests staged (red step), skipping ESLint and typecheck"
+  fi
+fi
+
+if command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: gitleaks"
+  gitleaks git --pre-commit --staged --redact --no-banner
+else
+  echo "pre-commit: gitleaks is not installed, so secrets were NOT checked locally (CI checks them)." >&2
+  echo "            Install it: brew install gitleaks  (or see https://github.com/gitleaks/gitleaks)" >&2
+fi

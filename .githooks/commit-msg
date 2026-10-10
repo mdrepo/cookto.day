@@ -1,0 +1,5 @@
+#!/bin/sh
+# ADR 0008: commit messages follow Conventional Commits. The rule lives in
+# scripts/commit-rules.ts, shared with CI.
+set -eu
+exec bun "$(git rev-parse --show-toplevel)/scripts/check-commit-msg.ts" "$1"

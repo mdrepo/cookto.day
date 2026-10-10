@@ -35,6 +35,12 @@
     },
     "prettier": {
       "reason": "Formatting, default settings (ADR 0007)."
+    },
+    "happy-dom": {
+      "reason": "Simulated DOM for the tests in test/dom (ADR 0003). Only runs our own built page and bundle; file and network loading stay disabled.",
+      "exceptions": {
+        "maintainers": "One npm maintainer (davidortner). Dev-only, no install scripts, MIT; accepted in ADR 0003."
+      }
     }
   },
   "notes": "ESLint and typescript-eslint together add about 90 packages, over ADR 0006's warning level of 20. Accepted in ADR 0007: type-aware linting is the main deterministic guard against bad agent code. The app itself has no runtime dependencies (ADR 0005)."

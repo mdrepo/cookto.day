@@ -6,6 +6,11 @@
   "license": "MIT",
   "type": "module",
   "packageManager": "bun@1.4.2",
-  "scripts": {},
+  "scripts": {
+    "test": "bun test",
+    "check": "bun run deps:check && bun test",
+    "deps:check": "bun scripts/check-dependency-allowlist.ts",
+    "deps:health": "bun scripts/check-dependency-health.ts"
+  },
   "trustedDependencies": []
 }

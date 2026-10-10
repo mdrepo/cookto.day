@@ -1,0 +1,11 @@
+{
+  "name": "cookto.day",
+  "version": "0.1.0",
+  "private": true,
+  "description": "What to cook today, from the groceries you already have. A static, browser-only app.",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "bun@1.4.2",
+  "scripts": {},
+  "trustedDependencies": []
+}

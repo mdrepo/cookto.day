@@ -1,0 +1,11 @@
+[install]
+# Save exact versions on `bun add` (ADR 0005).
+exact = true
+# Refuse versions published in the last 7 days (in seconds), to avoid freshly
+# hijacked releases (ADR 0005).
+minimumReleaseAge = 604800
+
+[test]
+# Unit and DOM tests live in test/ (ADR 0003). Without this, `bun test` would
+# also pick up the Playwright specs in e2e/.
+root = "test"

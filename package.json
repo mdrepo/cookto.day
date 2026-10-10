@@ -16,7 +16,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
+    "prepare": "git config core.hooksPath .githooks 2>/dev/null || true",
+    "tdd:verify": "bun scripts/tdd-verify.ts"
   },
   "devDependencies": {
     "@types/bun": "1.4.2",

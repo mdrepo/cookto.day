@@ -75,3 +75,10 @@ The design system is a workspace, `packages/ui` (`@cookto/ui`), in five layers. 
 - The kit page has no script. Its build bundles the page with every `*.kit.tsx` and renders it once, so CSS Modules have the same class names in the markup and the stylesheet. The deploy copies it into the app's output at `/kit/`.
 - `tokens.css` also has `[data-theme="light"]` and `[data-theme="dark"]` blocks, so the kit can show both themes side by side.
 - `Field` gives its control the id, and the problem's `aria-describedby`, through a function child: `<Field label="…">{(control) => <Select {...control} />}</Field>`.
+
+**Generators first (#24, 2026-10-12):**
+
+- The generators moved up, before icons, `Button` and `Card`, so those start from them. `bun run new component <Name>` is in; `new layout` and `new screen` come with layouts.
+- Templates are in `tooling/templates/component/`, as `.tmpl` files so the checks don't read them as code. The generated part renders nothing and its test fails, saying so.
+- DESIGN.md is written through the token generator, which formats the whole file, so `design:check` sees it as `bun run tokens` would write it.
+

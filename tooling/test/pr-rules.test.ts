@@ -53,25 +53,38 @@ describe("claimedExemption", () => {
 
 describe("checkUiChangesHaveE2e", () => {
   test("passes when no UI code changed", () => {
-    expect(checkUiChangesHaveE2e(["src/lib/expiry.ts"], null)).toEqual([]);
+    expect(
+      checkUiChangesHaveE2e(["packages/engine/src/expiry.ts"], null),
+    ).toEqual([]);
   });
 
   test("passes when UI code and an e2e test changed", () => {
     expect(
-      checkUiChangesHaveE2e(["src/main.ts", "e2e/first-visit.spec.ts"], null),
+      checkUiChangesHaveE2e(
+        ["apps/web/src/main.ts", "apps/web/e2e/first-visit.spec.ts"],
+        null,
+      ),
     ).toEqual([]);
   });
 
   test("fails when UI code changed without an e2e test", () => {
     const [problem] = checkUiChangesHaveE2e(
-      ["src/i18n/hi.ts", "test/unit/expiry.test.ts"],
+      ["apps/web/src/i18n/hi.ts", "packages/engine/test/expiry.test.ts"],
       null,
     );
-    expect(problem).toContain("src/i18n/hi.ts");
+    expect(problem).toContain("apps/web/src/i18n/hi.ts");
   });
 
   test("passes when the PR claims an exemption", () => {
-    expect(checkUiChangesHaveE2e(["src/styles.css"], "refactor")).toEqual([]);
+    expect(
+      checkUiChangesHaveE2e(["apps/web/src/styles.css"], "refactor"),
+    ).toEqual([]);
+  });
+
+  test("treats the engine as logic, not UI: unit tests cover it", () => {
+    expect(
+      checkUiChangesHaveE2e(["packages/engine/src/expiry.ts"], null),
+    ).toEqual([]);
   });
 });
 
@@ -82,11 +95,11 @@ describe("checkTddCommits", () => {
   };
   const red = {
     subject: "test: spinach bought 4 days ago is suggested first",
-    files: ["e2e/suggestions.spec.ts"],
+    files: ["apps/web/e2e/suggestions.spec.ts"],
   };
   const green = {
     subject: "feat(suggest): rank dishes by what goes off first",
-    files: ["src/lib/rank.ts"],
+    files: ["packages/engine/src/rank.ts"],
   };
 
   test("accepts spec, then failing tests, then code", () => {
@@ -96,7 +109,7 @@ describe("checkTddCommits", () => {
     });
   });
 
-  test("does not apply when src/ is unchanged", () => {
+  test("does not apply when no app or package src/ changed", () => {
     const tooling = {
       subject: "ci: tweak workflow",
       files: [".github/workflows/ci.yml"],
@@ -116,7 +129,10 @@ describe("checkTddCommits", () => {
   test("rejects tests and code in the same commit", () => {
     const mixed = {
       subject: "feat(suggest): rank dishes",
-      files: ["src/lib/rank.ts", "e2e/suggestions.spec.ts"],
+      files: [
+        "packages/engine/src/rank.ts",
+        "apps/web/e2e/suggestions.spec.ts",
+      ],
     };
     const { problems } = checkTddCommits([spec, red, mixed], null);
     expect(problems.some((p) => p.includes('isn\'t a "test:" commit'))).toBe(
@@ -127,7 +143,7 @@ describe("checkTddCommits", () => {
   test("flags a test changed after the code for human review", () => {
     const fixTest = {
       subject: "test: spinach keeps 5 days, not 3",
-      files: ["e2e/suggestions.spec.ts"],
+      files: ["apps/web/e2e/suggestions.spec.ts"],
     };
     const { problems, reviewFlags } = checkTddCommits(
       [spec, red, green, fixTest],
@@ -140,8 +156,11 @@ describe("checkTddCommits", () => {
 });
 
 describe("checkTddCommits: pure functions", () => {
-  test("counts src/lib as app code, so it needs tests first too", () => {
-    const lib = { subject: "feat: x", files: ["src/lib/expiry.ts"] };
+  test("counts the engine's code as app code, so it needs tests first too", () => {
+    const lib = {
+      subject: "feat: x",
+      files: ["packages/engine/src/expiry.ts"],
+    };
     expect(checkTddCommits([lib], null).problems).toHaveLength(1);
   });
 });
@@ -213,7 +232,10 @@ describe("linkedIssue", () => {
 });
 
 describe("checkApprovedSpec", () => {
-  const src = ["src/lib/rank.ts", "e2e/suggestions.spec.ts"];
+  const src = [
+    "packages/engine/src/rank.ts",
+    "apps/web/e2e/suggestions.spec.ts",
+  ];
 
   test("passes when the issue's spec is already on main", () => {
     expect(
@@ -237,7 +259,7 @@ describe("checkApprovedSpec", () => {
     ).toHaveLength(1);
   });
 
-  test("does not apply without src/ changes, or with an exemption", () => {
+  test("does not apply without app or package src/ changes, or with an exemption", () => {
     expect(checkApprovedSpec(["docs/workflow.md"], null, null, [])).toEqual([]);
     expect(checkApprovedSpec(src, "refactor", null, [])).toEqual([]);
   });
@@ -245,13 +267,13 @@ describe("checkApprovedSpec", () => {
 
 describe("exemptionNotice", () => {
   test("asks the reviewer to check an exemption on a PR that changes app code", () => {
-    expect(exemptionNotice("refactor", ["src/main.ts"])).toContain(
+    expect(exemptionNotice("refactor", ["apps/web/src/main.ts"])).toContain(
       '"refactor" exemption',
     );
   });
 
   test("stays quiet without an exemption, or when app code is untouched", () => {
-    expect(exemptionNotice(null, ["src/main.ts"])).toBeNull();
+    expect(exemptionNotice(null, ["apps/web/src/main.ts"])).toBeNull();
     expect(exemptionNotice("docs", ["docs/workflow.md"])).toBeNull();
   });
 });

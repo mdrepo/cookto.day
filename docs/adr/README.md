@@ -5,7 +5,7 @@ Each file records one decision: the context, what we chose, what we rejected and
 ## Rules
 
 - **Accepted ADRs are binding.** Humans and AI agents follow them. Do not "improve" a decision away in a PR.
-- **To change a decision, write a new ADR** that supersedes the old one, and get it approved by a code owner. Set the old ADR's status to `Superseded by NNNN`. Never edit the Decision section of an accepted ADR. CI enforces this (`checkAdrChange` in `scripts/pr-rules.ts`).
+- **To change a decision, write a new ADR** that supersedes the old one, and get it approved by a code owner. Set the old ADR's status to `Superseded by NNNN`. Never edit the Decision section of an accepted ADR. CI enforces this (`checkAdrChange` in `tooling/scripts/pr-rules.ts`).
 - Notes can be added to an accepted ADR outside its Decision section, for example `## Implementation notes (date)`.
 - Numbers are never reused. Superseded ADRs stay in the folder.
 - Keep each ADR to about one page. Use [`template.md`](template.md).

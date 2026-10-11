@@ -3,7 +3,7 @@ import { Glob } from "bun";
 import { designProblems } from "./check-design-lib.js";
 
 // DESIGN.md (ADR 0011): finds colours, type, corners, spacing and physical
-// left/right in src/ that the guide doesn't allow, so an agent can't quietly
+// left/right in the apps' and packages' src/ that the guide doesn't allow, so an agent can't quietly
 // invent a look or break the Arabic layout.
 
 // The ratchet. When the guide tightens and a file is over, its count of
@@ -13,7 +13,18 @@ import { designProblems } from "./check-design-lib.js";
 const EXISTING: Record<string, number> = {};
 
 const failures: string[] = [];
-for (const file of new Glob("src/**/*.{css,html,ts}").scanSync()) {
+const files = [
+  ...new Glob("{apps,packages}/*/src/**/*.{css,html,ts}").scanSync(),
+];
+// If files move and the pattern stops matching, fail rather than pass on
+// nothing.
+if (files.length === 0) {
+  console.error(
+    "design:check found no files in apps/*/src or packages/*/src. Did they move? Update the pattern in tooling/scripts/check-design.ts.",
+  );
+  process.exit(1);
+}
+for (const file of files) {
   const found = designProblems(readFileSync(file, "utf8"));
   const cap = EXISTING[file] ?? 0;
   if (found.length > cap) {
@@ -41,5 +52,5 @@ if (failures.length > 0) {
   process.exit(1);
 }
 console.log(
-  "Design: colours, type, corners, spacing and directions match DESIGN.md.",
+  `Design: colours, type, corners, spacing and directions in ${files.length} files match DESIGN.md.`,
 );

@@ -1,6 +1,23 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "entry": ["src/main.ts", "scripts/*.ts"],
-  "project": ["src/**/*.ts", "test/**/*.ts", "e2e/**/*.ts", "scripts/**/*.ts"],
+  "workspaces": {
+    ".": {},
+    "apps/web": {
+      "entry": ["src/main.ts", "scripts/*.ts"],
+      "project": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "e2e/**/*.ts",
+        "scripts/**/*.ts"
+      ]
+    },
+    "packages/engine": {
+      "project": ["src/**/*.ts", "test/**/*.ts"]
+    },
+    "tooling": {
+      "entry": ["scripts/*.ts"],
+      "project": ["scripts/**/*.ts", "test/**/*.ts"]
+    }
+  },
   "ignoreExportsUsedInFile": true
 }

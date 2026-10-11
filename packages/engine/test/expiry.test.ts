@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { daysLeft } from "../../src/lib/expiry.js";
+import { daysLeft } from "../src/expiry.js";
 
 describe("daysLeft", () => {
   test("spinach bought 4 days ago that keeps 5 days has 1 day left", () => {

@@ -19,7 +19,7 @@ fi
 
 ts=$(staged '*.ts' '*.js')
 if [ -n "$ts" ]; then
-  if printf '%s\n' "$ts" | grep -Eqv '^(test|e2e)/'; then
+  if printf '%s\n' "$ts" | grep -Eqv '(^|/)(test|e2e)/'; then
     echo "pre-commit: ESLint"
     printf '%s\n' "$ts" | tr '\n' '\0' | xargs -0 bunx eslint --no-warn-ignored
     echo "pre-commit: typecheck"

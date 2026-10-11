@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { Glob } from "bun";
 
 // Fails when package.json and dependency-allowlist.json disagree (ADR 0006).
 
@@ -31,6 +32,38 @@ for (const section of sections) {
       problems.push(
         `${section}: ${name} is in dependency-allowlist.json but not in package.json`,
       );
+  }
+}
+
+// Workspaces (ADR 0016) may only depend on each other. Every outside package
+// is declared once, at the root, where the allowlist and the health check see
+// it, and one lockfile pins it.
+const workspaces =
+  (
+    JSON.parse(readFileSync("package.json", "utf8")) as {
+      workspaces?: string[];
+    }
+  ).workspaces ?? [];
+for (const pattern of workspaces) {
+  for (const manifest of new Glob(`${pattern}/package.json`).scanSync()) {
+    const ws = JSON.parse(readFileSync(manifest, "utf8")) as Partial<
+      Record<
+        Section | "peerDependencies" | "optionalDependencies",
+        Record<string, string>
+      >
+    >;
+    for (const section of [
+      ...sections,
+      "peerDependencies",
+      "optionalDependencies",
+    ] as const) {
+      for (const [name, version] of Object.entries(ws[section] ?? {})) {
+        if (!version.startsWith("workspace:"))
+          problems.push(
+            `${manifest}: ${section} has ${name}@${version}. Declare outside packages in the root package.json (ADR 0016); workspaces depend on each other with "workspace:*"`,
+          );
+      }
+    }
   }
 }
 

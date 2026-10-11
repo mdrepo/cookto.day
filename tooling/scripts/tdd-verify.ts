@@ -8,7 +8,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { claimedExemption } from "./pr-rules.js";
+import { claimedExemption, isSourceFile } from "./pr-rules.js";
 import {
   changedLines,
   touchedTests,
@@ -16,8 +16,8 @@ import {
 } from "./tdd-verify-lib.js";
 
 // ADR 0002: proves this branch's new or changed tests are real.
-//   - Each must FAIL against main's source (src/ as on main), so
-//     it tests something main doesn't do yet.
+//   - Each must FAIL against main's source (every app's and package's src/
+//     as on main), so it tests something main doesn't do yet.
 //   - Each must PASS against this branch.
 // Passing on the branch rules out typos and syntax errors, so a test that
 // can't even import a new function on main still counts as failing there.
@@ -61,21 +61,22 @@ if (exemption) {
   );
   process.exit(0);
 }
+// Test files live in each workspace's test/ (unit, DOM) and an app's e2e/
+// (Playwright), ADR 0016.
+const UNIT = /(^|\/)test\/.+\.test\.ts$/;
+const E2E = /^(.+)\/e2e\/.+\.spec\.ts$/;
 const changedTests = git(
   "diff",
   "--name-only",
   "--diff-filter=AM",
   base,
   "HEAD",
-  "--",
-  "test",
-  "e2e",
 )
   .split("\n")
-  .filter((f) => /^test\/.+\.test\.ts$|^e2e\/.+\.spec\.ts$/.test(f))
+  .filter((f) => UNIT.test(f) || E2E.test(f))
   // CI has no browser (ADR 0004), so it checks unit tests only; e2e runs
   // in the pre-push hook.
-  .filter((f) => !unitOnly || f.startsWith("test/"));
+  .filter((f) => !unitOnly || UNIT.test(f));
 
 if (changedTests.length === 0) {
   console.log("tdd:verify: no new or changed tests on this branch.");
@@ -138,7 +139,24 @@ interface PwSuite {
   suites?: PwSuite[];
 }
 
+/** Each app's e2e files run with that app's Playwright config. */
 function runE2e(cwd: string, files: string[], port: number): TestResult[] {
+  const byApp = new Map<string, string[]>();
+  for (const f of files) {
+    const app = E2E.exec(f)?.[1] ?? "";
+    byApp.set(app, [...(byApp.get(app) ?? []), f.slice(app.length + 1)]);
+  }
+  return [...byApp].flatMap(([app, appFiles]) =>
+    runAppE2e(join(cwd, app), app, appFiles, port),
+  );
+}
+
+function runAppE2e(
+  cwd: string,
+  app: string,
+  files: string[],
+  port: number,
+): TestResult[] {
   if (files.length === 0) return [];
   const out = join(mkdtempSync(join(tmpdir(), "tdd-e2e-")), "report.json");
   spawnSync("bunx", ["playwright", "test", ...files, "--reporter=json"], {
@@ -158,7 +176,7 @@ function runE2e(cwd: string, files: string[], port: number): TestResult[] {
   const walk = (suite: PwSuite) => {
     for (const spec of suite.specs ?? []) {
       results.push({
-        file: `e2e/${spec.file}`,
+        file: `${app}/e2e/${spec.file}`,
         line: spec.line,
         title: spec.title,
         passed: spec.ok,
@@ -174,11 +192,11 @@ function runAll(cwd: string, port: number): TestResult[] {
   return [
     ...runUnit(
       cwd,
-      changedTests.filter((f) => f.startsWith("test/")),
+      changedTests.filter((f) => UNIT.test(f)),
     ),
     ...runE2e(
       cwd,
-      changedTests.filter((f) => f.startsWith("e2e/")),
+      changedTests.filter((f) => E2E.test(f)),
       port,
     ),
   ];
@@ -195,19 +213,30 @@ function withMainSource<T>(fn: (dir: string) => T): T {
       "--diff-filter=A",
       base,
       "HEAD",
-      "--",
-      "src",
     )
       .split("\n")
-      .filter(Boolean);
+      .filter(isSourceFile);
     for (const f of addedSource) rmSync(join(dir, f));
-    if (git("ls-tree", "-r", "--name-only", base, "--", "src")) {
-      execFileSync("git", ["checkout", base, "--", "src"], {
+    const sourceOnMain = git("ls-tree", "-r", "--name-only", base)
+      .split("\n")
+      .filter(isSourceFile);
+    if (sourceOnMain.length > 0) {
+      execFileSync("git", ["checkout", base, "--", ...sourceOnMain], {
         cwd: dir,
         stdio: "ignore",
       });
     }
-    symlinkSync(resolve(repo, "node_modules"), join(dir, "node_modules"));
+    // Workspaces link to each other through node_modules, so the worktree
+    // gets its own install: a link to this repo's would point an app at the
+    // branch's packages instead of main's.
+    const install = spawnSync(
+      "bun",
+      ["install", "--frozen-lockfile", "--ignore-scripts"],
+      { cwd: dir, stdio: "ignore" },
+    );
+    if (install.status !== 0) {
+      symlinkSync(resolve(repo, "node_modules"), join(dir, "node_modules"));
+    }
     return fn(dir);
   } finally {
     git("worktree", "remove", "--force", dir);

@@ -44,3 +44,10 @@ This repo is also a boilerplate other people clone. Whatever we build, they inhe
 - `tdd:verify`, the size budget, `design:check`, knip and the allowlist check must learn about workspaces. That's the real work of the move.
 - Files move. Links to them break, including the boilerplate article on mayurdube.com, which links to files here. The move's PR lists the moved paths, and the article is updated in step.
 - Revisit if Turborepo stops passing the health check, or if CI is still slow with affected runs.
+
+## Implementation notes (2026-10-11)
+
+- Workspaces created now: `apps/web`, `packages/engine` (today only `daysLeft`) and `tooling`. `packages/design` arrives with the design kit, `packs` with the first kitchen pack.
+- A change to `tooling` reruns only tooling's own tests, not every workspace: no workspace runs tooling's code, and the repo-wide checks (allowlist, agent files, design, format, knip) run on every PR anyway. Changes to the lockfile, root configs, `turbo.json` or `.github/` do rerun everything.
+- Outside packages are declared once, in the root `package.json`; workspaces depend on each other only with `workspace:*` (`deps:check`).
+- `design:check` fails if it finds no files, so a future move can't make it pass on nothing.

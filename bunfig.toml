@@ -5,7 +5,7 @@ exact = true
 # hijacked releases (ADR 0005).
 minimumReleaseAge = 604800
 
-[test]
-# Unit and DOM tests live in test/ (ADR 0003). Without this, `bun test` would
-# also pick up the Playwright specs in e2e/.
-root = "test"
+
+# No [test] section: each workspace runs its own tests from its test/ folder
+# (`bun test ./test`), through `bun run test` at the root (ADR 0016). A bare
+# `bun test` here would also pick up the Playwright specs in apps/web/e2e/.

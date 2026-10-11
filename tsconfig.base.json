@@ -12,7 +12,5 @@
     "types": ["node", "bun"],
     "skipLibCheck": true,
     "resolveJsonModule": true
-  },
-  "include": ["src", "test", "e2e", "scripts", "playwright.config.ts"],
-  "exclude": ["node_modules", "dist"]
+  }
 }

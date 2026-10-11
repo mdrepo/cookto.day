@@ -3,27 +3,26 @@
 # able to make a failing check pass by editing the check.
 # Enforced by branch protection on main: code owner review, and approvals
 # are dismissed when new commits are pushed. .claude/settings.json asks
-# before editing exactly these paths (scripts/check-agent-files.ts).
+# before editing exactly these paths (tooling/scripts/check-agent-files.ts).
 
 # Dependencies and supply chain
 /package.json               @mdrepo
 /bun.lock                   @mdrepo
 /bunfig.toml                @mdrepo
 /dependency-allowlist.json  @mdrepo
+/turbo.json                 @mdrepo
 
 # CI, hooks, the check scripts and the build
 /.github/                   @mdrepo
 /.githooks/                 @mdrepo
-/scripts/                   @mdrepo
+/tooling/                   @mdrepo
 /.gitleaks.toml             @mdrepo
 
 # Lint, format, type and dead-code rules
 /eslint.config.js           @mdrepo
-/tsconfig.json              @mdrepo
+/tsconfig.base.json         @mdrepo
 /knip.json                  @mdrepo
 /.prettierignore            @mdrepo
-/playwright.config.ts       @mdrepo
-/wrangler.jsonc             @mdrepo
 
 # Decisions, design and agent guidance
 /docs/adr/                  @mdrepo
@@ -36,5 +35,16 @@
 # What "correct" means: specs and tests. An owner approves every change to
 # them, so an agent can't redefine success to match its code (ADR 0002).
 /specs/                     @mdrepo
-/test/                      @mdrepo
-/e2e/                       @mdrepo
+
+# Each workspace's manifest, config, build scripts and tests (ADR 0016).
+# agents:check fails if a workspace has one of these that isn't listed.
+/apps/web/package.json              @mdrepo
+/apps/web/tsconfig.json             @mdrepo
+/apps/web/playwright.config.ts      @mdrepo
+/apps/web/wrangler.jsonc            @mdrepo
+/apps/web/scripts/                  @mdrepo
+/apps/web/test/                     @mdrepo
+/apps/web/e2e/                      @mdrepo
+/packages/engine/package.json       @mdrepo
+/packages/engine/tsconfig.json      @mdrepo
+/packages/engine/test/              @mdrepo

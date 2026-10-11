@@ -6,7 +6,8 @@ import {
   readlinkSync,
 } from "node:fs";
 import { dirname, join } from "node:path";
-import { askRules, ownedPaths } from "./codeowners.js";
+import { Glob } from "bun";
+import { askRules, isOwned, ownedPaths } from "./codeowners.js";
 import { COMMIT_TYPES } from "./commit-rules.js";
 
 // ADR 0010: AGENTS.md and the skills in .agents/skills/ are the single source
@@ -84,6 +85,43 @@ if (missingAsk.length > 0 || extraAsk.length > 0) {
   );
 }
 
+// Protection follows the files (ADR 0016): in every workspace, the manifest,
+// configs, build scripts and tests are code-owned, so a new or moved
+// workspace can't leave its tests editable without an owner.
+const owned = ownedPaths(readFileSync(".github/CODEOWNERS", "utf8"));
+const GUARDED = [
+  "package.json",
+  "tsconfig.json",
+  "bunfig.toml",
+  "wrangler.jsonc",
+  "wrangler.toml",
+  "scripts/",
+  "test/",
+  "e2e/",
+];
+const workspaces =
+  (
+    JSON.parse(readFileSync("package.json", "utf8")) as {
+      workspaces?: string[];
+    }
+  ).workspaces ?? [];
+for (const pattern of workspaces) {
+  for (const manifest of new Glob(`${pattern}/package.json`).scanSync()) {
+    const dir = dirname(manifest);
+    const configs = readdirSync(dir).filter((n) =>
+      /\.config\.[cm]?[jt]s$/.test(n),
+    );
+    for (const name of [...GUARDED, ...configs]) {
+      const path = `${dir}/${name}`;
+      if (!existsSync(path.replace(/\/$/, ""))) continue;
+      if (!isOwned(path, owned))
+        problems.push(
+          `${path} isn't in .github/CODEOWNERS. Add "/${path}  @mdrepo" there (ADR 0016), then the matching ask rule in .claude/settings.json`,
+        );
+    }
+  }
+}
+
 // AGENTS.md lists the same commit types the hooks and CI accept.
 const typesLine =
   /type one of `([a-z ]+)`/.exec(readFileSync("AGENTS.md", "utf8"))?.[1] ?? "";
@@ -91,7 +129,7 @@ if (
   typesLine.split(" ").sort().join(" ") !== [...COMMIT_TYPES].sort().join(" ")
 ) {
   problems.push(
-    `AGENTS.md must list the commit types from scripts/pr-rules.ts: ${COMMIT_TYPES.join(" ")}`,
+    `AGENTS.md must list the commit types from tooling/scripts/commit-rules.ts: ${COMMIT_TYPES.join(" ")}`,
   );
 }
 

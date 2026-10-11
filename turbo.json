@@ -1,0 +1,20 @@
+{
+  "$schema": "./node_modules/turbo/schema.json",
+  "globalDependencies": [
+    "package.json",
+    "bun.lock",
+    "bunfig.toml",
+    "tsconfig.base.json",
+    "eslint.config.js",
+    "turbo.json",
+    ".github/**"
+  ],
+  "tasks": {
+    "typecheck": {},
+    "lint": {},
+    "test": {},
+    "build": {
+      "outputs": ["dist/**"]
+    }
+  }
+}

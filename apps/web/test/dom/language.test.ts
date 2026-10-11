@@ -12,7 +12,7 @@ describe("language switch", () => {
     page.chooseLanguage(code);
     expect(page.doc.documentElement.lang).toBe(code);
     expect(page.doc.documentElement.dir).toBe(dir);
-    expect(page.text(".empty-body")).toBe(body);
+    expect(page.emptyState().body).toBe(body);
   });
 
   test("the choice is remembered for the next visit", () => {
@@ -23,7 +23,7 @@ describe("language switch", () => {
 
     const next = openPage({ storage: { "cookto.day:language": "mr" } });
     expect(next.doc.documentElement.lang).toBe("mr");
-    expect(next.text(".empty-title")).toBe("तुमचं स्वयंपाकघर रिकामं आहे");
+    expect(next.emptyState().title).toBe("तुमचं स्वयंपाकघर रिकामं आहे");
   });
 
   test("an unknown saved language falls back to English", () => {

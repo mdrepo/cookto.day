@@ -1,3 +1,4 @@
+import { EmptyState, Field, Note, Select } from "@cookto/ui";
 import { useLayoutEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import { isLocale, LOCALES, type Locale } from "./i18n/index.js";
@@ -47,32 +48,27 @@ export function App() {
       <header className="site-header">
         <h1 className="site-title">cookto.day</h1>
         <p className="site-tagline">{t.tagline}</p>
-        <label className="field">
-          <span>{t.languageLabel}</span>
-          <select
-            id="language"
-            className="field-select"
-            value={locale}
-            onChange={(e) => {
-              choose(e.currentTarget.value);
-            }}
-          >
-            {Object.entries(LOCALES).map(([code, { name }]) => (
-              <option key={code} value={code} lang={code}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </label>
+        <Field label={t.languageLabel} layout="inline" id="language">
+          {(control) => (
+            <Select
+              {...control}
+              value={locale}
+              onChange={(e) => {
+                choose(e.currentTarget.value);
+              }}
+            >
+              {Object.entries(LOCALES).map(([code, { name }]) => (
+                <option key={code} value={code} lang={code}>
+                  {name}
+                </option>
+              ))}
+            </Select>
+          )}
+        </Field>
       </header>
       <main className="page">
-        <section className="empty-state" aria-labelledby="empty-title">
-          <h2 id="empty-title" className="empty-title">
-            {t.emptyTitle}
-          </h2>
-          <p className="empty-body">{t.emptyBody}</p>
-        </section>
-        <p className="note">{t.privacy}</p>
+        <EmptyState title={t.emptyTitle}>{t.emptyBody}</EmptyState>
+        <Note>{t.privacy}</Note>
       </main>
     </>
   );

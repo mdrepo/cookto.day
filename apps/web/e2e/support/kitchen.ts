@@ -14,8 +14,9 @@ export class Kitchen {
     return this.page.getByRole("heading", { level: 1 });
   }
 
+  /** The empty state: the one region in the page's main part. */
   emptyState(): Locator {
-    return this.page.locator(".empty-state");
+    return this.page.getByRole("main").getByRole("region");
   }
 
   async chooseLanguage(name: string): Promise<void> {
@@ -80,9 +81,82 @@ export class Kitchen {
 
   /** Line height of the empty state's sentence, as a multiple of its text size. */
   lineHeight(): Promise<number> {
-    return this.page.locator(".empty-body").evaluate((el) => {
-      const s = getComputedStyle(el);
-      return parseFloat(s.lineHeight) / parseFloat(s.fontSize);
+    return this.emptyState()
+      .getByRole("paragraph")
+      .evaluate((el) => {
+        const s = getComputedStyle(el);
+        return parseFloat(s.lineHeight) / parseFloat(s.fontSize);
+      });
+  }
+
+  /**
+   * How the page looks, part by part: sizes, colours (as the design's
+   * variable names) and where each part sits. For checking that a rebuild
+   * changes nothing people can see.
+   */
+  look(): Promise<Record<string, string | number>> {
+    return this.page.evaluate(() => {
+      const colours = [
+        "bg",
+        "surface",
+        "text",
+        "text-muted",
+        "border",
+        "warn",
+      ].map((name) => {
+        const probe = document.createElement("span");
+        probe.style.color = `var(--color-${name})`;
+        document.body.append(probe);
+        const value = getComputedStyle(probe).color;
+        probe.remove();
+        return [value, name] as const;
+      });
+      const colour = (value: string) => new Map(colours).get(value) ?? value;
+      const find = (selector: string) => {
+        const el = document.querySelector(selector);
+        if (!el) throw new Error(`no ${selector}`);
+        return el;
+      };
+      const title = find("h1");
+      const label = find("header label");
+      const select = find("header select");
+      const empty = find("main section");
+      const emptyTitle = find("main section h2");
+      const emptyBody = find("main section p");
+      const note = find("main > p");
+      const s = (el: Element) => getComputedStyle(el);
+      const box = (el: Element) => el.getBoundingClientRect();
+      return {
+        titleSize: s(title).fontSize,
+        titleWeight: s(title).fontWeight,
+        labelSize: s(label).fontSize,
+        labelColour: colour(s(label).color),
+        labelBesideSelect:
+          Math.abs(
+            box(label).top +
+              box(label).height / 2 -
+              (box(select).top + box(select).height / 2),
+          ) < 2
+            ? "yes"
+            : "no",
+        selectHeight: Math.round(box(select).height),
+        selectRadius: s(select).borderRadius,
+        selectBorder: `${s(select).borderStyle} ${colour(s(select).borderColor)}`,
+        selectBackground: colour(s(select).backgroundColor),
+        emptyBorder: `${s(empty).borderStyle} ${colour(s(empty).borderColor)}`,
+        emptyRadius: s(empty).borderRadius,
+        emptyPadding: s(empty).padding,
+        emptyBackground: colour(s(empty).backgroundColor),
+        emptyAlign: s(empty).textAlign,
+        emptyTitleSize: s(emptyTitle).fontSize,
+        emptyTitleWeight: s(emptyTitle).fontWeight,
+        emptyBodyColour: colour(s(emptyBody).color),
+        emptyBodyGap: Math.round(box(emptyBody).top - box(emptyTitle).bottom),
+        noteSize: s(note).fontSize,
+        noteColour: colour(s(note).color),
+        noteAlign: s(note).textAlign,
+        noteGap: Math.round(box(note).top - box(empty).bottom),
+      };
     });
   }
 }

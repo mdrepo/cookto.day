@@ -68,6 +68,15 @@ export function openPage(opts: PageOpts = {}) {
     doc,
     storage: w.localStorage,
     text: (sel: string) => doc.querySelector(sel)?.textContent.trim() ?? "",
+    /** The empty state's title and sentence, found by role, not by class. */
+    emptyState() {
+      const region = doc.querySelector("main section[aria-labelledby]");
+      const titleId = region?.getAttribute("aria-labelledby") ?? "";
+      return {
+        title: doc.getElementById(titleId)?.textContent.trim() ?? "",
+        body: region?.querySelector("p")?.textContent.trim() ?? "",
+      };
+    },
     chooseLanguage(code: string) {
       const select = doc.querySelector<HTMLSelectElement>("#language");
       if (!select) throw new Error("no language switch");

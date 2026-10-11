@@ -12,13 +12,16 @@ import { Glob } from "bun";
 
 /** The app's folder: apps/kit. */
 export const APP_DIR = join(import.meta.dir, "..");
-const COMPONENTS = join(APP_DIR, "../../packages/ui/src/components");
+const UI = join(APP_DIR, "../../packages/ui/src");
 const ROOT = '<div id="kit"></div>';
 
-/** Every component's kit file, in name order. */
+/** Every component's kit file, then every layout's, each in name order. */
 function kitFiles(): string[] {
   return [
-    ...new Glob("*/*.kit.tsx").scanSync({ cwd: COMPONENTS, absolute: true }),
+    ...new Glob("{components,layouts}/*/*.kit.tsx").scanSync({
+      cwd: UI,
+      absolute: true,
+    }),
   ].sort();
 }
 

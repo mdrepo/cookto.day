@@ -1,7 +1,8 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { relative } from "node:path";
 import { Glob } from "bun";
 import {
+  appCssProblems,
   componentProblems,
   designProblems,
   iconProblems,
@@ -53,24 +54,26 @@ if (badTokens.length > 0) {
   }
 }
 
-// Every component has the same files, made the same way (ADR 0019).
-const COMPONENTS = "packages/ui/src/components";
-const folders = readdirSync(COMPONENTS, { withFileTypes: true })
-  .filter((d) => d.isDirectory())
-  .map((d) => ({
-    name: d.name,
-    files: readdirSync(`${COMPONENTS}/${d.name}`),
-  }));
-const missing = componentProblems(
-  folders,
-  readdirSync("packages/ui/test"),
-  readFileSync("DESIGN.md", "utf8"),
-);
-if (missing.length > 0)
-  failures.push(
-    `${COMPONENTS}: ${missing.length} missing part(s):\n` +
-      missing.map((p) => `    ${p}`).join("\n"),
-  );
+// Every component and layout has the same files, made the same way
+// (ADR 0019).
+const design = readFileSync("DESIGN.md", "utf8");
+const tests = readdirSync("packages/ui/test");
+for (const base of ["packages/ui/src/components", "packages/ui/src/layouts"]) {
+  const folders = existsSync(base)
+    ? readdirSync(base, { withFileTypes: true })
+        .filter((d) => d.isDirectory())
+        .map((d) => ({ name: d.name, files: readdirSync(`${base}/${d.name}`) }))
+    : [];
+  const missing = componentProblems(folders, tests, design, base);
+  if (missing.length > 0)
+    failures.push(
+      `${base}: ${missing.length} missing part(s):\n` +
+        missing.map((p) => `    ${p}`).join("\n"),
+    );
+}
+
+// Apps compose; they don't style.
+failures.push(...appCssProblems(files));
 
 for (const file of files) {
   const icons = iconProblems(file, readFileSync(file, "utf8"));

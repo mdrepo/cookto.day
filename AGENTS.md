@@ -16,9 +16,9 @@ One repository, split into workspaces ([ADR 0016](docs/adr/0016-monorepo.md)). R
 
 | Path | What |
 |---|---|
-| `apps/web/src/index.html`, `styles.css` | The page shell and its styles (`DESIGN.md`) |
+| `apps/web/src/index.html` | The page shell. Apps have no CSS of their own: screens are layouts and parts from `@cookto/ui` (ADR 0019) |
 | `packages/ui/tokens/` | The design tokens: colours, type, corners, spacing. `bun run tokens` writes the CSS and DESIGN.md's tables (ADR 0019) |
-| `packages/ui/src/components/` | The components screens are built from, one folder each: code, CSS Module, kit examples. Tests in `packages/ui/test/` (ADR 0019) |
+| `packages/ui/src/components/`, `layouts/` | The parts and layouts screens are built from, one folder each: code, CSS Module, kit examples. Tests in `packages/ui/test/`. Make one with `bun run new component` or `new layout` (ADR 0019) |
 | `apps/kit/` | The kit page: every component in light and dark, English and Arabic, at cookto.day/kit/ (`bun run --cwd apps/kit dev`) |
 | `apps/web/src/main.tsx`, `app.tsx` | The React app: `main.tsx` starts it, components render the screens ([ADR 0018](docs/adr/0018-ui-react.md)) |
 | `apps/web/src/i18n/` | Every word the app shows, one file per language. `en.ts` defines the keys ([ADR 0012](docs/adr/0012-localisation.md)) |
@@ -42,6 +42,7 @@ bun install            # also turns on the git hooks
 bun run dev            # build the web app, then serve it on http://localhost:3000
 bun run build          # the static site, into apps/web/dist/
 bun run new component <Name>  # a new part in packages/ui, with every file it needs
+bun run new layout <Name>     # a new layout, the same way
 bun run check          # everything CI checks: allowlist, agent files, design, file sizes, Prettier, knip, and every workspace's types, ESLint and tests
 bun run check:affected # the same, but only the workspaces your branch affects (what CI runs on a PR)
 bun run test           # every workspace's unit and DOM tests (not a bare `bun test`)

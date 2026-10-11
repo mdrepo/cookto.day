@@ -211,7 +211,9 @@ if (failures.length > 0) {
 deps:health failed (ADR 0006). Prefer a different package, or the platform
 (Bun, Web APIs, the browser). If this package really is needed, a human
 owner can add an exception for the failing check in dependency-allowlist.json:
-  "exceptions": { "<check>": "<why it's acceptable>" }`);
+  "exceptions": { "<check>": "<why it's acceptable>" }
+No Scorecard, but the repo was renamed? Set "scorecardRepo": "<old owner/name>"
+instead: it counts only if GitHub says it's the repo the package was built from.`);
   process.exit(1);
 }
 console.log(`deps:health: ${Object.keys(toCheck).length} package(s) checked.`);

@@ -119,8 +119,10 @@ export function evaluateHealth(
 }
 
 /**
- * "owner/repo", lower-cased, from any way npm writes a GitHub repository:
- * a URL (git+https, .git, @ref), "github:owner/repo", or { url }.
+ * "owner/repo", from any way npm writes a GitHub repository: a URL
+ * (https, git+https, ssh, scp-style, with .git or @ref), "github:owner/repo",
+ * or { url }. The host must be github.com itself, and the case is kept: the
+ * Scorecard service's names are case-sensitive.
  */
 export function githubRepo(repository: unknown): string | null {
   const url =
@@ -130,8 +132,11 @@ export function githubRepo(repository: unknown): string | null {
   if (typeof url !== "string") return null;
   const match =
     /^github:([\w.-]+)\/([\w.-]+)$/.exec(url) ??
-    /github\.com[/:]([\w.-]+)\/([\w.-]+?)(?:\.git)?(?:[@#/].*)?$/.exec(url);
-  return match ? `${match[1] ?? ""}/${match[2] ?? ""}`.toLowerCase() : null;
+    /^(?:git\+)?(?:https?|ssh|git):\/\/(?:[^@/]+@)?github\.com\/([\w.-]+)\/([\w.-]+?)(?:\.git)?(?:[@#/].*)?$/.exec(
+      url,
+    ) ??
+    /^git@github\.com:([\w.-]+)\/([\w.-]+?)(?:\.git)?$/.exec(url);
+  return match ? `${match[1] ?? ""}/${match[2] ?? ""}` : null;
 }
 
 interface Attestations {
@@ -150,12 +155,15 @@ export function provenanceRepo(attestations: unknown): string | null {
     const statement = JSON.parse(
       Buffer.from(payload, "base64").toString("utf8"),
     ) as {
+      predicateType?: string;
       predicate?: {
         buildDefinition?: {
           externalParameters?: { workflow?: { repository?: string } };
         };
       };
     };
+    if (!statement.predicateType?.startsWith("https://slsa.dev/provenance/"))
+      continue;
     const repo = githubRepo(
       statement.predicate?.buildDefinition?.externalParameters?.workflow
         ?.repository,

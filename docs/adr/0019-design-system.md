@@ -1,6 +1,6 @@
 # 0019. Build the UI from one design system in five layers, each checked by a script
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-10-11
 - **Deciders:** Mayur
 

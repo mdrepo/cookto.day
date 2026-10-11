@@ -1,11 +1,27 @@
+.frame {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 .select {
+  appearance: none;
   min-block-size: 44px;
-  padding-inline: var(--space-3);
+  padding-inline: var(--space-3) var(--space-8);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface);
   color: var(--color-text);
   font: inherit;
+}
+
+/* Drawn over the select's end, and taps go through it to the select. */
+.arrow {
+  position: absolute;
+  inset-inline-end: var(--space-3);
+  display: inline-flex;
+  color: var(--color-text-muted);
+  pointer-events: none;
 }
 
 .select:disabled {

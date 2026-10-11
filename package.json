@@ -14,7 +14,7 @@
     "lint": "TURBO_TELEMETRY_DISABLED=1 turbo run lint",
     "test": "TURBO_TELEMETRY_DISABLED=1 turbo run test",
     "check": "bun run check:repo && TURBO_TELEMETRY_DISABLED=1 turbo run typecheck lint test",
-    "check:affected": "bun run check:repo && TURBO_TELEMETRY_DISABLED=1 turbo run typecheck lint test --affected",
+    "check:affected": "bun run check:repo && TURBO_TELEMETRY_DISABLED=1 turbo run typecheck lint test --affected && bun run --cwd tooling test",
     "check:repo": "bun run deps:check && bun run agents:check && bun run design:check && bun run size:check && bun run format:check && bun run knip",
     "deps:check": "bun tooling/scripts/check-dependency-allowlist.ts",
     "deps:health": "bun tooling/scripts/check-dependency-health.ts",

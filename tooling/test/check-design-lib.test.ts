@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  componentProblems,
   designProblems,
   tokenDefinitions,
 } from "../scripts/check-design-lib.js";
@@ -89,5 +90,36 @@ describe("tokenDefinitions", () => {
     expect(
       tokenDefinitions(".a { color: var(--color-text); gap: var(--space-2); }"),
     ).toEqual([]);
+  });
+});
+
+describe("componentProblems", () => {
+  const complete = {
+    name: "Select",
+    files: ["Select.tsx", "Select.module.css", "Select.kit.tsx"],
+  };
+  const design = "| A choice | `Select` | ... |";
+
+  test("a component with its files, test and DESIGN.md row passes", () => {
+    expect(componentProblems([complete], ["Select.test.tsx"], design)).toEqual(
+      [],
+    );
+  });
+
+  test("names each missing file", () => {
+    const found = componentProblems(
+      [{ name: "Select", files: ["Select.tsx"] }],
+      [],
+      design,
+    ).join("\n");
+    expect(found).toContain("Select.module.css");
+    expect(found).toContain("Select.kit.tsx");
+    expect(found).toContain("packages/ui/test/Select.test.tsx");
+  });
+
+  test("needs a row in DESIGN.md", () => {
+    expect(
+      componentProblems([complete], ["Select.test.tsx"], "no rows").join("\n"),
+    ).toContain("DESIGN.md");
   });
 });

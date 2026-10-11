@@ -81,6 +81,12 @@ describe("checkUiChangesHaveE2e", () => {
     ).toEqual([]);
   });
 
+  test("counts the design system as UI: people see it", () => {
+    expect(
+      checkUiChangesHaveE2e(["packages/ui/src/components/Note/Note.tsx"], null),
+    ).not.toEqual([]);
+  });
+
   test("treats the engine as logic, not UI: unit tests cover it", () => {
     expect(
       checkUiChangesHaveE2e(["packages/engine/src/expiry.ts"], null),

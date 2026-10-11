@@ -177,7 +177,11 @@ function paletteOf(s: TokenSources): Map<string, string> {
   );
 }
 
-/** packages/ui/src/tokens.css: base and light in :root, dark for a dark system. */
+/**
+ * packages/ui/src/tokens.css: base and light in :root, dark for a dark
+ * system, and `data-theme` to force either on part of a page (the kit shows
+ * both side by side).
+ */
 export function renderCss(s: TokenSources): string {
   const palette = paletteOf(s);
   const decl = (ts: Token[], indent: string) =>
@@ -195,6 +199,17 @@ export function renderCss(s: TokenSources): string {
     "  :root {",
     ...decl(flatten(s.dark), "    "),
     "  }",
+    "}",
+    "",
+    // After the system's dark, so a forced light wins over it.
+    '[data-theme="light"] {',
+    "  color-scheme: light;",
+    ...decl(flatten(s.light), "  "),
+    "}",
+    "",
+    '[data-theme="dark"] {',
+    "  color-scheme: dark;",
+    ...decl(flatten(s.dark), "  "),
     "}",
     "",
   ].join("\n");

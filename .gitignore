@@ -12,6 +12,7 @@ pnpm-lock.yaml
 
 # Build output, and Turborepo's local cache
 dist/
+.build/
 .turbo/
 
 # Logs

@@ -3,7 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "lint": "eslint .",
+    "test": "bun test ./test"
+  },
   "exports": {
+    ".": "./src/index.ts",
     "./tokens.css": "./src/tokens.css",
     "./foundation.css": "./src/foundation.css"
   }

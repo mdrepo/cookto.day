@@ -28,8 +28,9 @@ const PHYSICAL: [RegExp, string][] = [
   ],
 ];
 
-// The variables are defined in these blocks, so they may use raw values.
-const TOKEN_BLOCKS = /:root\s*\{[^}]*\}/g;
+// The variables are defined in these blocks (the system's theme, or one
+// forced with data-theme), so they may use raw values.
+const TOKEN_BLOCKS = /(?::root|\[data-theme="[a-z]+"\])\s*\{[^}]*\}/g;
 
 export interface DesignProblem {
   line: number;
@@ -143,4 +144,35 @@ export function tokenDefinitions(source: string): DesignProblem[] {
         ]
       : [],
   );
+}
+
+/** A folder in packages/ui/src/components, and the files in it. */
+export interface ComponentFolder {
+  name: string;
+  files: string[];
+}
+
+/**
+ * What each component is missing (ADR 0019): its code, styles and kit
+ * examples beside it, its test in packages/ui/test/, and its row in
+ * DESIGN.md. `tests` are the file names in packages/ui/test/.
+ */
+export function componentProblems(
+  folders: ComponentFolder[],
+  tests: string[],
+  designMd: string,
+): string[] {
+  return folders.flatMap(({ name, files }) => {
+    const dir = `packages/ui/src/components/${name}`;
+    const missing = [".tsx", ".module.css", ".kit.tsx"]
+      .map((ext) => `${name}${ext}`)
+      .filter((f) => !files.includes(f))
+      .map((f) => `${dir}/${f}`);
+    if (!tests.includes(`${name}.test.tsx`))
+      missing.push(`packages/ui/test/${name}.test.tsx`);
+    const out = missing.map((f) => `${name}: add ${f}`);
+    if (!designMd.includes(`\`${name}\``))
+      out.push(`${name}: add a row for \`${name}\` to DESIGN.md's components`);
+    return out;
+  });
 }

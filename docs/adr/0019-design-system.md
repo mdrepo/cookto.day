@@ -69,3 +69,9 @@ The design system is a workspace, `packages/ui` (`@cookto/ui`), in five layers. 
 - The TypeScript list of token names comes with the layouts, its first user.
 - CSS variables may be defined only in the generated `packages/ui/src/tokens.css`. `apps/web` imports it in CSS, which knip can't see, so knip is told the dependency is used.
 
+**Components and the kit (#17, 2026-10-12):**
+
+- A component's test lives in `packages/ui/test/<Name>.test.tsx`, not in its folder: `tdd:verify` runs new tests against main's `src/`, which would take a test inside `src/` away with it.
+- The kit page has no script. Its build bundles the page with every `*.kit.tsx` and renders it once, so CSS Modules have the same class names in the markup and the stylesheet. The deploy copies it into the app's output at `/kit/`.
+- `tokens.css` also has `[data-theme="light"]` and `[data-theme="dark"]` blocks, so the kit can show both themes side by side.
+- `Field` gives its control the id, and the problem's `aria-describedby`, through a function child: `<Field label="…">{(control) => <Select {...control} />}</Field>`.

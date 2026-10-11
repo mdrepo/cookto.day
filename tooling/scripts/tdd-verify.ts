@@ -64,7 +64,7 @@ if (exemption) {
 }
 // Test files live in each workspace's test/ (unit, DOM) and an app's e2e/
 // (Playwright), ADR 0016.
-const UNIT = /(^|\/)test\/.+\.test\.ts$/;
+const UNIT = /(^|\/)test\/.+\.test\.tsx?$/;
 const E2E = /^(.+)\/e2e\/.+\.spec\.ts$/;
 const changedTests = git(
   "diff",

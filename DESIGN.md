@@ -93,14 +93,17 @@ Always the logical form: `margin-inline-start` not `margin-left`, `padding-inlin
 
 ## 3. Components
 
-Build screens from these, reusing their classes as they are. **Reuse before you add.** A new component, or a new variant of one, needs a design from a code owner first (in the issue).
+Build screens from these React components, imported from `@cookto/ui` ([ADR 0019](docs/adr/0019-design-system.md)). **Reuse before you add.** A new component, or a new variant of one, needs a design from a code owner first (in the issue). See each one, in every theme, language and state, on the kit page: [cookto.day/kit/](https://cookto.day/kit/) (`bun run --cwd apps/kit dev`).
 
-| Need                       | Use                                                  | Notes                                                                          |
-| -------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Every page                 | `.site-header` + `.page`                             | Title, tagline, language switch; one centred column                            |
-| A choice from a short list | `.field` with `.field-select`                        | Label first, then the control. 44px high                                       |
-| Nothing to show yet        | `.empty-state` with `.empty-title` and `.empty-body` | Dashed border on the surface colour. One sentence that says what to do next    |
-| A quiet note               | `.note`                                              | Muted, small, centred. For reassurance ("Nothing is uploaded"), not for errors |
+| Need                       | Use                      | Notes                                                                                                |
+| -------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------- |
+| A label and its control    | `Field`                  | Label first, then the control, then any problem in the warning colour. `layout="inline"` in a header |
+| A choice from a short list | `Select`                 | The browser's own select, 44px high. Always inside a `Field`. Can be disabled                        |
+| Nothing to show yet        | `EmptyState`             | Dashed border on the surface colour. A title and one sentence that says what to do next              |
+| A quiet note               | `Note`                   | Muted, small, centred. For reassurance ("Nothing is uploaded"), never for errors                     |
+| Every page (until layouts) | `.site-header` + `.page` | Title, tagline, language switch; one centred column. Becomes a layout (ADR 0019, step 4)             |
+
+A component has no outer margin: the space between parts belongs to the screen (and later, to layouts). Every component has the same files, which `design:check` checks: `<Name>.tsx`, `<Name>.module.css` and `<Name>.kit.tsx` in `packages/ui/src/components/<Name>/`, its test in `packages/ui/test/`, and a row here.
 
 Not designed yet, so ask before building: the bill upload, the pantry list, a dish card, the "use it today" warning, the shopping list, buttons.
 

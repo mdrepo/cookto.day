@@ -1,0 +1,16 @@
+{
+  "name": "@cookto/kit",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun scripts/serve.ts",
+    "build": "bun scripts/build.ts",
+    "e2e": "playwright test",
+    "typecheck": "tsc --noEmit -p .",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@cookto/ui": "workspace:*"
+  }
+}

@@ -1,7 +1,9 @@
 name: CI
 
-# The gate every PR must pass. `bun run check` is the same command you run
-# locally, so a green local check means a green CI check.
+# The gate every PR must pass. On a PR, the repo-wide checks plus each
+# workspace's types, lint and tests, but only for workspaces the change
+# affects (ADR 0016). On main, everything. `bun run check` locally runs
+# everything, so a green local check means a green CI check.
 # E2E tests run locally, not here (ADR 0004).
 # Nothing here deploys; deploy.yml does, after every merge to main (ADR 0014).
 
@@ -36,7 +38,14 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Check
+      - name: Check what this PR affects
+        if: github.event_name == 'pull_request'
+        env:
+          TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
+        run: bun run check:affected
+
+      - name: Check everything
+        if: github.event_name != 'pull_request'
         run: bun run check
 
       # Known-vulnerable dependencies (ADR 0005).

@@ -10,8 +10,9 @@ pnpm-lock.yaml
 .env
 .env.*
 
-# Build output
+# Build output, and Turborepo's local cache
 dist/
+.turbo/
 
 # Logs
 *.log

@@ -22,18 +22,18 @@ Read `AGENTS.md` first if you haven't.
 
 ## Phase 1: Red (failing tests, committed alone)
 
-1. **One e2e test per acceptance criterion**, in the matching `e2e/*.spec.ts`, named with the criterion's words. Use the page helpers in `e2e/support/`; if you need a new selector, add a method there. Don't put CSS selectors in spec files.
-2. **Below e2e** (ADR 0003): unit tests for new pure functions in `test/unit/` (no DOM, no mocks), and, for page logic, tests in `test/dom/` that run our own built page in happy-dom (helpers in `test/helpers/`). Never mock our own modules.
-3. Run them and confirm **each fails for the right reason**: the behaviour is missing, not a typo. `bun run e2e` / `bun test`.
+1. **One e2e test per acceptance criterion**, in the matching `apps/web/e2e/*.spec.ts`, named with the criterion's words. Use the page helpers in `apps/web/e2e/support/`; if you need a new selector, add a method there. Don't put CSS selectors in spec files.
+2. **Below e2e** (ADR 0003): unit tests for new pure functions in `packages/engine/test/` (no DOM, no mocks), and, for page logic, tests in `apps/web/test/dom/` that run our own built page in happy-dom (helpers in `apps/web/test/helpers/`). Never mock our own modules.
+3. Run them and confirm **each fails for the right reason**: the behaviour is missing, not a typo. `bun run e2e` / `bun run test`.
 4. Commit **only** test files, as `test: <what the tests describe>`. The pre-commit hook skips the typecheck for a tests-only commit, because red tests may import code that doesn't exist yet.
 
 ## Phase 2: Green (smallest code that passes)
 
 Only start this phase once the failing tests are **committed**.
 
-1. Change `src/` until the new tests pass. The smallest change that does it: no refactors, no "while I'm here" improvements.
+1. Change the code (`apps/web/src/`, `packages/engine/src/`) until the new tests pass. The smallest change that does it: no refactors, no "while I'm here" improvements.
 2. **Do not edit any test file.** If a test seems wrong, stop, tell the human what's wrong with it and why, and wait for them to explicitly agree before you change it. Then change it in its own `test:` commit that explains why.
-3. New words go in `src/i18n/en.ts` and every other language file; layout uses logical properties (`margin-inline-start`, not `margin-left`); look comes from `DESIGN.md` tokens and components.
+3. New words go in `apps/web/src/i18n/en.ts` and every other language file; layout uses logical properties (`margin-inline-start`, not `margin-left`); look comes from `DESIGN.md` tokens and components.
 4. Commit as `fix(<scope>): ...` or `feat(<scope>): ...`.
 
 ## Phase 3: Refactor (optional)

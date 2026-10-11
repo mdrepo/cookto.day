@@ -11,13 +11,22 @@ const RAW_HTML =
 
 export default defineConfig(
   {
-    ignores: ["dist/", "test-results/", "playwright-report/"],
+    ignores: [
+      "**/dist/",
+      "**/test-results/",
+      "**/playwright-report/",
+      "**/.turbo/",
+    ],
   },
   tseslint.configs.strictTypeChecked,
   {
     languageOptions: {
       parserOptions: {
-        projectService: { allowDefaultProject: ["eslint.config.js"] },
+        projectService: {
+          // Files outside the workspaces (this one) use the base settings.
+          allowDefaultProject: ["eslint.config.js"],
+          defaultProject: "tsconfig.base.json",
+        },
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -68,7 +77,8 @@ export default defineConfig(
     },
   },
   {
-    files: ["src/**"],
+    // Code that ships: the apps and the packages they use (ADR 0016).
+    files: ["apps/*/src/**", "packages/*/src/**"],
     rules: {
       // The app runs in people's browsers: no debug output left behind.
       "no-console": ["error", { allow: ["warn", "error"] }],
@@ -90,7 +100,7 @@ export default defineConfig(
   },
   {
     // A test file's describe() callback is long by nature.
-    files: ["test/**", "e2e/**"],
+    files: ["**/test/**", "**/e2e/**"],
     rules: { "max-lines-per-function": "off" },
   },
 );

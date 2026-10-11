@@ -23,15 +23,15 @@ done
 
 [ -z "$changed" ] && exit 0
 
-echo "pre-push: unit tests"
-bun test
+echo "pre-push: unit tests, in every workspace"
+bun run --silent test
 
-if [ -f scripts/tdd-verify.ts ]; then
+if [ -f tooling/scripts/tdd-verify.ts ]; then
   echo "pre-push: tdd:verify"
   bun run --silent tdd:verify
 fi
 
-if [ -f playwright.config.ts ] && printf '%s' "$changed" | grep -Eq '^(src/|test/|e2e/|scripts/build|scripts/serve|unknown$)'; then
-  echo "pre-push: e2e (the app, its tests or its build changed)"
+if [ -f apps/web/playwright.config.ts ] && printf '%s' "$changed" | grep -Eq '^(apps/web/|packages/|package\.json$|bun\.lock$|unknown$)'; then
+  echo "pre-push: e2e (the app, a package it may use, its tests or its build changed)"
   bun run e2e
 fi

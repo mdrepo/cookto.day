@@ -1,12 +1,12 @@
 import { existsSync, statSync } from "node:fs";
 import { join, normalize } from "node:path";
-import { buildSite } from "./build.js";
+import { APP_DIR, buildSite } from "./build.js";
 
 // `bun run dev`: builds the site, then serves dist/ on localhost, the way a
 // static host would. The e2e tests run against this too (ADR 0004).
 // Rerun it after a change.
 
-const ROOT = "dist";
+const ROOT = join(APP_DIR, "dist");
 const port = Number(process.env.PORT ?? 3000);
 
 await buildSite(ROOT);

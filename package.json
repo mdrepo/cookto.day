@@ -2,27 +2,29 @@
   "name": "cookto.day",
   "version": "0.1.0",
   "private": true,
-  "description": "What to cook today, from the groceries you already have. A static, browser-only app.",
+  "description": "What to cook today, from the groceries you already have. A boilerplate for AI contributions, with an app to prove it.",
   "license": "MIT",
   "type": "module",
   "packageManager": "bun@1.4.2",
   "scripts": {
-    "dev": "bun scripts/serve.ts",
-    "build": "bun scripts/build.ts",
-    "typecheck": "tsc --noEmit",
-    "test": "bun test",
-    "e2e": "playwright test",
-    "check": "bun run deps:check && bun run agents:check && bun run design:check && bun run format:check && bun run typecheck && bun run lint && bun run knip && bun test",
-    "deps:check": "bun scripts/check-dependency-allowlist.ts",
-    "deps:health": "bun scripts/check-dependency-health.ts",
-    "agents:check": "bun scripts/check-agent-files.ts",
-    "design:check": "bun scripts/check-design.ts",
+    "dev": "bun run --cwd apps/web dev",
+    "build": "bun run --cwd apps/web build",
+    "e2e": "bun run --cwd apps/web e2e",
+    "typecheck": "TURBO_TELEMETRY_DISABLED=1 turbo run typecheck",
+    "lint": "TURBO_TELEMETRY_DISABLED=1 turbo run lint",
+    "test": "TURBO_TELEMETRY_DISABLED=1 turbo run test",
+    "check": "bun run check:repo && TURBO_TELEMETRY_DISABLED=1 turbo run typecheck lint test",
+    "check:affected": "bun run check:repo && TURBO_TELEMETRY_DISABLED=1 turbo run typecheck lint test --affected",
+    "check:repo": "bun run deps:check && bun run agents:check && bun run design:check && bun run format:check && bun run knip",
+    "deps:check": "bun tooling/scripts/check-dependency-allowlist.ts",
+    "deps:health": "bun tooling/scripts/check-dependency-health.ts",
+    "agents:check": "bun tooling/scripts/check-agent-files.ts",
+    "design:check": "bun tooling/scripts/check-design.ts",
     "knip": "knip",
-    "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "git config core.hooksPath .githooks 2>/dev/null || true",
-    "tdd:verify": "bun scripts/tdd-verify.ts"
+    "tdd:verify": "bun tooling/scripts/tdd-verify.ts"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
@@ -32,8 +34,14 @@
     "happy-dom": "20.14.5",
     "knip": "6.38.0",
     "prettier": "3.9.9",
+    "turbo": "2.11.7",
     "typescript": "6.0.3",
     "typescript-eslint": "8.70.1"
   },
-  "trustedDependencies": []
+  "trustedDependencies": [],
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "tooling"
+  ]
 }

@@ -2,21 +2,21 @@
 
 The rules for how every screen looks, for whoever builds UI here, people and agents. **You don't decide how something looks: this file does, or a code owner does.** If a screen needs something this file doesn't cover, stop and ask a code owner (@mdrepo) for the design. Don't invent one.
 
-`bun run design:check` fails on colours, type, corners, spacing and directions that aren't allowed here ([ADR 0011](docs/adr/0011-design-guide-and-check.md)). The tokens live in [`src/styles.css`](src/styles.css).
+`bun run design:check` fails on colours, type, corners, spacing and directions that aren't allowed here ([ADR 0011](docs/adr/0011-design-guide-and-check.md)). The tokens live in [`apps/web/src/styles.css`](apps/web/src/styles.css).
 
 ## 1. Principles
 
 - **A kitchen notebook.** Warm paper, dark ink, one herb-green for actions. Calm: nothing flashes, nothing shouts. The one exception is food about to go off, which gets the warm warning colour.
 - **Their kitchen, their words.** Dish and ingredient names are the household's own, in their language. We never rename "dal" to "lentil soup".
 - **Phone first, one hand.** One column, at most `40rem` wide, centred. Tap targets at least 44px high. People use it standing at the fridge.
-- **Fast and private.** System fonts only, no icon fonts, no images from other sites. Emoji and plain text are the icons. The page has a size budget (`test/budget/page-size.test.ts`).
+- **Fast and private.** System fonts only, no icon fonts, no images from other sites. Emoji and plain text are the icons. The page has a size budget (`apps/web/test/budget/page-size.test.ts`).
 - **Every language, both directions.** Every screen works in English, Hindi, Marathi and Arabic, left to right and right to left. Use logical properties, never `left`/`right`.
 - **Plain words.** Say what happened and what to do next ("We couldn't read this bill. Try the PDF from the app's order page."). Sentence case. No error codes.
 - **Both themes.** Every screen works in light and dark. Using the variables does that for you.
 
 ## 2. Tokens
 
-Use the variables, never a raw value. A token that's missing is added by a code owner, in `src/styles.css` (light and dark) and in this table.
+Use the variables, never a raw value. A token that's missing is added by a code owner, in `apps/web/src/styles.css` (light and dark) and in this table.
 
 ### Colour
 

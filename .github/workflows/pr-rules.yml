@@ -49,7 +49,7 @@ jobs:
           PR_BODY: ${{ github.event.pull_request.body }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: bun scripts/check-pr-rules.ts
+        run: bun tooling/scripts/check-pr-rules.ts
 
   # Health of added or changed dependencies (ADR 0006). Its own job, and not a
   # required check: it calls npm and deps.dev, and their outages shouldn't

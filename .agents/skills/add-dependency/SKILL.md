@@ -13,7 +13,7 @@ npm packages are a common attack path: hijacked popular packages, and worms that
 |---|---|
 | DOM, storage, dates, numbers in other scripts, text direction | Web APIs: `document`, `localStorage`, IndexedDB, `Intl.DateTimeFormat`, `Intl.NumberFormat`, `dir` |
 | Bundling, serving, gzip, file globbing, tests | Bun: `Bun.build`, `Bun.serve`, `Bun.gzipSync`, `Glob`, `bun:test` |
-| Translations | `src/i18n/` (ADR 0012) |
+| Translations | `apps/web/src/i18n/` (ADR 0012) |
 | Small helpers (debounce, deep-equal, formatting) | Write the 10 lines, with a unit test |
 
 If one of these does the job, stop here and use it.
@@ -26,7 +26,7 @@ Don't install anything. Reply with:
 
 - what the package would be for, and why the options in step 1 don't work (if one of them does, say so and offer to use it instead)
 - the package name and version, and whether it would ship to users
-- what it adds to the page size budget (`test/budget/page-size.test.ts`), if it ships
+- what it adds to the page size budget (`apps/web/test/budget/page-size.test.ts`), if it ships
 - that a code owner must approve it before anything is installed
 
 Then stop.

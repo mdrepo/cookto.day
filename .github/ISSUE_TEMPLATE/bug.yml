@@ -25,4 +25,4 @@ body:
     id: known-bug-test
     attributes:
       label: Known-bug test (if any)
-      placeholder: e2e/first-visit.spec.ts › switching to Arabic lays the page out right to left
+      placeholder: apps/web/e2e/first-visit.spec.ts › switching to Arabic lays the page out right to left

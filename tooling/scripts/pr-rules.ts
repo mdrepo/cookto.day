@@ -39,23 +39,24 @@ export function claimedExemption(body: string): Exemption | null {
   return kind as Exemption;
 }
 
-// Everything in src/ runs in the browser and can change what people see,
-// except the pure functions in src/lib/, which unit tests cover.
-const UI_CODE = /^src\/(?!lib\/)/;
+// An app's src/ runs on people's devices and can change what they see. The
+// packages' src/ (the engine) is pure logic, which unit tests cover (ADR 0016).
+const UI_CODE = /^apps\/[^/]+\/src\//;
+const E2E = /(^|\/)e2e\//;
 
-/** ADR 0004: e2e doesn't run in CI, so a UI change must at least touch e2e/. */
+/** ADR 0004: e2e doesn't run in CI, so a UI change must at least touch an e2e/ folder. */
 export function checkUiChangesHaveE2e(
   changedFiles: string[],
   exemption: Exemption | null,
 ): string[] {
   const ui = changedFiles.filter((f) => UI_CODE.test(f));
   if (ui.length === 0) return [];
-  if (changedFiles.some((f) => f.startsWith("e2e/"))) return [];
+  if (changedFiles.some((f) => E2E.test(f))) return [];
   if (exemption) return [];
   return [
     `This PR changes UI code but no e2e test (ADR 0004):\n` +
       ui.map((f) => `  ${f}`).join("\n") +
-      `\nAdd or change a test under e2e/ that shows the behaviour, run "bun run e2e", ` +
+      `\nAdd or change a test in the app's e2e/ folder that shows the behaviour, run "bun run e2e", ` +
       `and attach the video for UI changes. If the change has no behaviour change, ` +
       `add a line to the PR description such as ` +
       `"Exemption: refactor - <why existing tests cover it>" (ADR 0002).`,
@@ -67,8 +68,9 @@ export interface Commit {
   files: string[];
 }
 
-const SOURCE = /^src\//;
-const TEST_FILES = /^(test|e2e)\//;
+// Code that ships: each app's and package's src/ (ADR 0016).
+const SOURCE = /^(apps|packages)\/[^/]+\/src\//;
+const TEST_FILES = /(^|\/)(test|e2e)\//;
 /** App code that ships to users. */
 export const isSourceFile = (f: string) => SOURCE.test(f);
 const isTestCommit = (c: Commit) =>
@@ -98,12 +100,10 @@ export function checkTddCommits(
   );
   const redBefore = commits
     .slice(0, firstSource)
-    .some(
-      (c) => isTestCommit(c) && c.files.some((f) => /^(test|e2e)\//.test(f)),
-    );
+    .some((c) => isTestCommit(c) && c.files.some((f) => TEST_FILES.test(f)));
   if (!redBefore) {
     result.problems.push(
-      `No "test:" commit with failing tests comes before the first commit that changes src/ ` +
+      `No "test:" commit with failing tests comes before the first commit that changes app code (apps/*/src, packages/*/src) ` +
         `(ADR 0002, phase 1). Commit the failing tests on their own first, as "test: ...", ` +
         `then the code.`,
     );
@@ -201,7 +201,7 @@ export function checkApprovedSpec(
   if (exemption || !changedFiles.some((f) => SOURCE.test(f))) return [];
   if (issue === null) {
     return [
-      `This PR changes src/ but doesn't link its issue. Add "Closes #<issue>" to the PR ` +
+      `This PR changes app code (apps/*/src, packages/*/src) but doesn't link its issue. Add "Closes #<issue>" to the PR ` +
         `description (ADR 0002). Every behaviour change starts from a GitHub issue.`,
     ];
   }

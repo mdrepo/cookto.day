@@ -1,4 +1,4 @@
-<img src="src/brand/icon.svg" width="96" alt="cookto.day: a smiling pressure cooker">
+<img src="apps/web/src/brand/icon.svg" width="96" alt="cookto.day: a smiling pressure cooker">
 
 # cookto.day
 
@@ -15,13 +15,13 @@ It's free, there are no accounts, and it runs entirely in your browser: your bil
 ```sh
 bun install                        # Bun version: "packageManager" in package.json
 bun run dev                        # http://localhost:3000
-bun run build                      # static site in dist/
+bun run build                      # static site in apps/web/dist/
 ```
 
 ## Check it
 
 ```sh
-bun run check                      # what CI runs on every PR
+bun run check                      # everything CI checks (on a PR, CI runs only what your change affects)
 bunx playwright install chromium   # once
 bun run e2e                        # browser tests, offline
 ```
@@ -34,6 +34,8 @@ This repo is also my boilerplate for AI contributions: clone it, read [`AGENTS.m
 - [`docs/workflow.md`](docs/workflow.md): how a person drives an agent through a change, with a worked example
 - [`docs/adr/`](docs/adr/README.md): why each rule exists
 - [`DESIGN.md`](DESIGN.md): how it looks, enforced by `bun run design:check`
+
+The code is in workspaces: `apps/web` (the site), `packages/engine` (the logic), `tooling` (the checks). Turborepo runs their tasks, and on a PR only the ones a change affects ([ADR 0016](docs/adr/0016-monorepo.md)).
 
 ## Licence
 

@@ -82,4 +82,55 @@ export class Kit {
       text: getComputedStyle(el.parentElement ?? el).color,
     }));
   }
+
+  /** How a part is drawn: its colours, border, corners and size. */
+  drawn(part: Locator): Promise<Record<string, string | number>> {
+    return part.evaluate((el) => {
+      const s = getComputedStyle(el);
+      const box = el.getBoundingClientRect();
+      return {
+        background: s.backgroundColor,
+        colour: s.color,
+        borderStyle: s.borderTopStyle,
+        borderColour: s.borderTopColor,
+        radius: s.borderTopLeftRadius,
+        width: Math.round(box.width),
+        height: Math.round(box.height),
+      };
+    });
+  }
+
+  /** A colour token ("accent", "on-accent") as it is where the part sits. */
+  token(part: Locator, name: string): Promise<string> {
+    return part.evaluate((el, token) => {
+      const probe = document.createElement("span");
+      probe.style.color = `var(--color-${token})`;
+      (el.parentElement ?? el).append(probe);
+      const value = getComputedStyle(probe).color;
+      probe.remove();
+      return value;
+    }, name);
+  }
+
+  /** Whether `el` can take keyboard focus. */
+  focusable(el: Locator): Promise<boolean> {
+    return el.evaluate((node) => {
+      (node as HTMLElement).focus();
+      return document.activeElement === node;
+    });
+  }
+
+  /** Whether the first part is drawn to the left of the second. */
+  leftOf(first: Locator, second: Locator): Promise<boolean> {
+    return Promise.all([first.boundingBox(), second.boundingBox()]).then(
+      ([a, b]) => (a?.x ?? 0) < (b?.x ?? 0),
+    );
+  }
+
+  /** How many times a part's animation runs: "infinite", or a count. */
+  animationRuns(el: Locator): Promise<string> {
+    return el.evaluate(
+      (node) => getComputedStyle(node).animationIterationCount,
+    );
+  }
 }

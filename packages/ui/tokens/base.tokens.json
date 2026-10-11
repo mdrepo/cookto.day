@@ -52,6 +52,11 @@
     "$value": 1.5,
     "$description": "Line height for all text"
   },
+  "leading-tall": {
+    "$type": "number",
+    "$value": 1.7,
+    "$description": "Line height for Devanagari and Arabic (Hindi, Marathi, Arabic)"
+  },
   "radius": {
     "$type": "dimension",
     "sm": {

@@ -1,0 +1,71 @@
+/* Foundation (ADR 0019): the page itself, written once for every screen.
+   Screens never restyle these; DESIGN.md says what each one is for. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  line-height: var(--leading);
+}
+
+/* Devanagari and Arabic letters reach higher and lower than Latin ones. */
+:lang(hi),
+:lang(mr),
+:lang(ar) {
+  line-height: var(--leading-tall);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Big enough for a thumb, standing at the fridge. */
+button,
+select,
+input:not([type="checkbox"], [type="radio"]) {
+  min-block-size: 44px;
+}
+
+img {
+  display: block;
+  max-inline-size: 100%;
+}
+
+/* For keyboards: browsers show it on Tab, not on a tap. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

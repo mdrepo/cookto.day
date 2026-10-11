@@ -4,13 +4,15 @@ import { join } from "node:path";
 import { copyRepo, run } from "./repo-copy.js";
 
 // specs/24-new-component.md, run against a copy of the repo, since the
-// generator writes files.
+// generator writes files. The spec's example is Button; the test makes
+// GeneratedSample, a name no real component will take, because Button now
+// exists.
 
 let repo: { dir: string; remove: () => void };
 let made: { code: number; output: string };
 beforeAll(() => {
   repo = copyRepo();
-  made = run(repo.dir, ["bun", "run", "new", "component", "Button"]);
+  made = run(repo.dir, ["bun", "run", "new", "component", "GeneratedSample"]);
 });
 afterAll(() => {
   repo.remove();
@@ -25,15 +27,17 @@ describe("bun run new component", () => {
     () => {
       expect(made.code, made.output).toBe(0);
       for (const file of [
-        "packages/ui/src/components/Button/Button.tsx",
-        "packages/ui/src/components/Button/Button.module.css",
-        "packages/ui/src/components/Button/Button.kit.tsx",
-        "packages/ui/test/Button.test.tsx",
+        "packages/ui/src/components/GeneratedSample/GeneratedSample.tsx",
+        "packages/ui/src/components/GeneratedSample/GeneratedSample.module.css",
+        "packages/ui/src/components/GeneratedSample/GeneratedSample.kit.tsx",
+        "packages/ui/test/GeneratedSample.test.tsx",
       ])
         expect(existsSync(at(file)), file).toBe(true);
-      expect(readFileSync(at("DESIGN.md"), "utf8")).toContain("`Button`");
+      expect(readFileSync(at("DESIGN.md"), "utf8")).toContain(
+        "`GeneratedSample`",
+      );
       expect(readFileSync(at("packages/ui/src/index.ts"), "utf8")).toMatch(
-        /export \{[^}]*\bButton\b[^}]*\} from "\.\/components\/Button\/Button\.js"/,
+        /export \{[^}]*\bGeneratedSample\b[^}]*\} from "\.\/components\/GeneratedSample\/GeneratedSample\.js"/,
       );
 
       for (const check of [
@@ -43,8 +47,8 @@ describe("bun run new component", () => {
         [
           "bunx",
           "eslint",
-          "packages/ui/src/components/Button",
-          "packages/ui/test/Button.test.tsx",
+          "packages/ui/src/components/GeneratedSample",
+          "packages/ui/test/GeneratedSample.test.tsx",
           "packages/ui/src/index.ts",
         ],
         [
@@ -69,10 +73,10 @@ describe("bun run new component", () => {
       const result = run(repo.dir, [
         "bun",
         "test",
-        "./packages/ui/test/Button.test.tsx",
+        "./packages/ui/test/GeneratedSample.test.tsx",
       ]);
       expect(result.code).not.toBe(0);
-      expect(result.output).toContain("Button renders nothing yet");
+      expect(result.output).toContain("GeneratedSample renders nothing yet");
     },
     SLOW,
   );
@@ -89,7 +93,7 @@ describe("bun run new component", () => {
       const lower = run(repo.dir, ["bun", "run", "new", "component", "button"]);
       expect(lower.code).not.toBe(0);
       expect(lower.output).toContain("starts with a capital letter");
-      // By name, not existsSync: macOS would find Button for "button".
+      // By name, not existsSync: macOS ignores case in file names.
       expect(readdirSync(at("packages/ui/src/components"))).not.toContain(
         "button",
       );

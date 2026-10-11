@@ -117,3 +117,50 @@ export function evaluateHealth(
     );
   return result;
 }
+
+/**
+ * "owner/repo", lower-cased, from any way npm writes a GitHub repository:
+ * a URL (git+https, .git, @ref), "github:owner/repo", or { url }.
+ */
+export function githubRepo(repository: unknown): string | null {
+  const url =
+    typeof repository === "object" && repository !== null
+      ? (repository as { url?: unknown }).url
+      : repository;
+  if (typeof url !== "string") return null;
+  const match =
+    /^github:([\w.-]+)\/([\w.-]+)$/.exec(url) ??
+    /github\.com[/:]([\w.-]+)\/([\w.-]+?)(?:\.git)?(?:[@#/].*)?$/.exec(url);
+  return match ? `${match[1] ?? ""}/${match[2] ?? ""}`.toLowerCase() : null;
+}
+
+interface Attestations {
+  attestations?: { bundle?: { dsseEnvelope?: { payload?: string } } }[];
+}
+
+/**
+ * The GitHub repo a package version was built from, from its npm provenance
+ * (SLSA). npm checks this at publish time, so unlike the `repository` field
+ * in package.json, a publisher can't simply claim another project's repo.
+ */
+export function provenanceRepo(attestations: unknown): string | null {
+  for (const a of (attestations as Attestations | null)?.attestations ?? []) {
+    const payload = a.bundle?.dsseEnvelope?.payload;
+    if (!payload) continue;
+    const statement = JSON.parse(
+      Buffer.from(payload, "base64").toString("utf8"),
+    ) as {
+      predicate?: {
+        buildDefinition?: {
+          externalParameters?: { workflow?: { repository?: string } };
+        };
+      };
+    };
+    const repo = githubRepo(
+      statement.predicate?.buildDefinition?.externalParameters?.workflow
+        ?.repository,
+    );
+    if (repo) return repo;
+  }
+  return null;
+}

@@ -76,4 +76,7 @@ jobs:
       - name: Check dependency health
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          # Read-only, to ask GitHub whether two repo names are the same repo
+          # without the anonymous rate limit.
+          GITHUB_TOKEN: ${{ github.token }}
         run: bun run deps:health

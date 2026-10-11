@@ -22,8 +22,18 @@ export default defineConfig({
       args: ["--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost"],
     },
   },
-  // People open it on their phone in the kitchen.
-  projects: [{ name: "mobile-chromium", use: { ...devices["Pixel 7"] } }],
+  // People open it on their phone in the kitchen, and sometimes on a
+  // laptop: every test runs on both (specs/33-layouts.md).
+  projects: [
+    { name: "mobile-chromium", use: { ...devices["Pixel 7"] } },
+    {
+      name: "desktop-chromium",
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1280, height: 800 },
+      },
+    },
+  ],
   webServer: {
     command: "bun scripts/serve.ts",
     // A port, not a URL: if something else holds it, this fails at once.

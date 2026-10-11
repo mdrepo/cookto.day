@@ -32,6 +32,8 @@
       "Edit(packages/engine/package.json)",
       "Edit(packages/engine/tsconfig.json)",
       "Edit(packages/engine/test/**)",
+      "Edit(packages/ui/package.json)",
+      "Edit(packages/ui/tokens/**)",
       "Bash(gh pr merge:*)",
       "Bash(gh pr merge)"
     ],

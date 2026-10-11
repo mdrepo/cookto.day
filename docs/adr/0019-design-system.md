@@ -59,3 +59,13 @@ The design system is a workspace, `packages/ui` (`@cookto/ui`), in five layers. 
 - Every look change starts in `tokens.json`; a contrast mistake fails the build, not a user.
 - More files per component, written by the generator, not by hand.
 - `apps/*/src` with no CSS is strict; if real screens need an escape hatch often, revisit the rule rather than add exceptions.
+
+## Implementation notes
+
+**Tokens (#12, 2026-10-11):**
+
+- The source is `packages/ui/tokens/`: `palette`, `base`, `light` and `dark`. Colours are hex strings, as most token tools read them, not the DTCG 2025.10 object form. Contrast pairs are a `day.cookto.contrast` extension on each text colour.
+- Only colours have a primitive tier (the palette). Type, corner and spacing steps are used directly.
+- The TypeScript list of token names comes with the layouts, its first user.
+- CSS variables may be defined only in the generated `packages/ui/src/tokens.css`. `apps/web` imports it in CSS, which knip can't see, so knip is told the dependency is used.
+

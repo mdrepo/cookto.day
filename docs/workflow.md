@@ -134,5 +134,5 @@ If in doubt, it's a behaviour change.
 | spec | `specs/<issue>-<name>.md`: what people should see, as Given/When/Then |
 | red / green | tests failing first, then passing after the code change |
 | exemption | a change with no behaviour change, which skips the spec and red steps |
-| token | a design variable in `apps/web/src/styles.css`, listed in `DESIGN.md` |
+| token | a design variable, from `packages/ui/tokens/`, listed in `DESIGN.md` |
 | code owner | @mdrepo; GitHub requires their approval |

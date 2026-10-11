@@ -20,6 +20,7 @@
     "deps:health": "bun tooling/scripts/check-dependency-health.ts",
     "agents:check": "bun tooling/scripts/check-agent-files.ts",
     "design:check": "bun tooling/scripts/check-design.ts",
+    "tokens": "bun tooling/scripts/tokens.ts",
     "knip": "knip",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

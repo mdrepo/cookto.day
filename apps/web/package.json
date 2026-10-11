@@ -10,5 +10,8 @@
     "typecheck": "tsc --noEmit -p .",
     "lint": "eslint .",
     "test": "bun test ./test"
+  },
+  "dependencies": {
+    "@cookto/ui": "workspace:*"
   }
 }

@@ -27,9 +27,16 @@
     "apps/web": {
       "name": "@cookto/web",
       "version": "0.0.0",
+      "dependencies": {
+        "@cookto/ui": "workspace:*",
+      },
     },
     "packages/engine": {
       "name": "@cookto/engine",
+      "version": "0.0.0",
+    },
+    "packages/ui": {
+      "name": "@cookto/ui",
       "version": "0.0.0",
     },
     "tooling": {
@@ -45,6 +52,8 @@
     "@cookto/engine": ["@cookto/engine@workspace:packages/engine"],
 
     "@cookto/tooling": ["@cookto/tooling@workspace:tooling"],
+
+    "@cookto/ui": ["@cookto/ui@workspace:packages/ui"],
 
     "@cookto/web": ["@cookto/web@workspace:apps/web"],
 

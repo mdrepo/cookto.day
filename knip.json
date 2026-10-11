@@ -9,7 +9,8 @@
         "test/**/*.ts",
         "e2e/**/*.ts",
         "scripts/**/*.ts"
-      ]
+      ],
+      "ignoreDependencies": ["@cookto/ui"]
     },
     "packages/engine": {
       "project": ["src/**/*.ts", "test/**/*.ts"]

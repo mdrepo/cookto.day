@@ -1,10 +1,15 @@
 import { readFileSync } from "node:fs";
+import { relative } from "node:path";
 import { Glob } from "bun";
-import { designProblems } from "./check-design-lib.js";
+import { designProblems, tokenDefinitions } from "./check-design-lib.js";
+import { tokenProblems } from "./tokens-lib.js";
+import { generated, readSources } from "./tokens.js";
 
 // DESIGN.md (ADR 0011): finds colours, type, corners, spacing and physical
 // left/right in the apps' and packages' src/ that the guide doesn't allow, so an agent can't quietly
-// invent a look or break the Arabic layout.
+// invent a look or break the Arabic layout. And the tokens themselves
+// (ADR 0019): readable in both themes, defined in one place, and the
+// generated files up to date.
 
 // The ratchet. When the guide tightens and a file is over, its count of
 // off-guide values is recorded here: it may go down, never up. Lower a cap
@@ -24,7 +29,34 @@ if (files.length === 0) {
   );
   process.exit(1);
 }
+/** The one file that may define CSS variables: `bun run tokens` writes it. */
+const GENERATED_TOKENS = "packages/ui/src/tokens.css";
+
+const sources = readSources();
+const badTokens = tokenProblems(sources);
+if (badTokens.length > 0) {
+  failures.push(
+    `packages/ui/tokens/: ${badTokens.length} problem(s):\n` +
+      badTokens.map((p) => `    ${p}`).join("\n"),
+  );
+} else {
+  for (const { path, content } of await generated(sources)) {
+    if (readFileSync(path, "utf8") !== content)
+      failures.push(
+        `${relative(process.cwd(), path)} is out of date with packages/ui/tokens/. Run: bun run tokens`,
+      );
+  }
+}
+
 for (const file of files) {
+  if (file !== GENERATED_TOKENS) {
+    const defined = tokenDefinitions(readFileSync(file, "utf8"));
+    if (defined.length > 0)
+      failures.push(
+        `${file}:\n` +
+          defined.map((p) => `    line ${p.line}: ${p.text}`).join("\n"),
+      );
+  }
   const found = designProblems(readFileSync(file, "utf8"));
   const cap = EXISTING[file] ?? 0;
   if (found.length > cap) {
@@ -52,5 +84,5 @@ if (failures.length > 0) {
   process.exit(1);
 }
 console.log(
-  `Design: colours, type, corners, spacing and directions in ${files.length} files match DESIGN.md.`,
+  `Design: the tokens are readable and up to date, and colours, type, corners, spacing and directions in ${files.length} files match DESIGN.md.`,
 );

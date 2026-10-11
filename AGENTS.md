@@ -16,7 +16,8 @@ One repository, split into workspaces ([ADR 0016](docs/adr/0016-monorepo.md)). R
 
 | Path | What |
 |---|---|
-| `apps/web/src/index.html`, `styles.css` | The page shell, its tokens and styles (`DESIGN.md`) |
+| `apps/web/src/index.html`, `styles.css` | The page shell and its styles (`DESIGN.md`) |
+| `packages/ui/tokens/` | The design tokens: colours, type, corners, spacing. `bun run tokens` writes the CSS and DESIGN.md's tables (ADR 0019) |
 | `apps/web/src/main.tsx`, `app.tsx` | The React app: `main.tsx` starts it, components render the screens ([ADR 0018](docs/adr/0018-ui-react.md)) |
 | `apps/web/src/i18n/` | Every word the app shows, one file per language. `en.ts` defines the keys ([ADR 0012](docs/adr/0012-localisation.md)) |
 | `apps/web/test/dom/`, `test/helpers/` | Our own built page in happy-dom ([ADR 0003](docs/adr/0003-testing-policy.md)) |

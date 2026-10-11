@@ -33,3 +33,4 @@ Each file records one decision: the context, what we chose, what we rejected and
 | [0017](0017-solo-owner-merge.md) | CI can't be skipped; while there's one owner, a PR needs no approval; agents merge only when told | Accepted |
 | [0018](0018-ui-react.md) | Build the UI with React, cache it for good, and budget our own code | Accepted |
 | [0019](0019-design-system.md) | Build the UI from one design system in five layers, each checked by a script | Accepted |
+| [0020](0020-icons-lucide.md) | Draw icons from Lucide, through one Icon component | Accepted |

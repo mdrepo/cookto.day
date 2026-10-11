@@ -1,6 +1,6 @@
 # 0015. Keep the engine generic and put each kitchen's food culture in data packs
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-10-11
 - **Deciders:** Mayur
 

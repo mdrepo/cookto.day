@@ -176,3 +176,21 @@ export function componentProblems(
     return out;
   });
 }
+
+/** The one file that may import Lucide (ADR 0020). */
+const ICON_FILE = "packages/ui/src/components/Icon/Icon.tsx";
+
+/**
+ * Icons come from the Icon component (ADR 0020): only it imports Lucide, and
+ * apps draw no SVG of their own.
+ */
+export function iconProblems(path: string, source: string): string[] {
+  const out: string[] = [];
+  if (path !== ICON_FILE && /from\s+["']lucide-react["']/.test(source))
+    out.push(
+      `imports lucide-react: use <Icon name="..." /> from @cookto/ui instead`,
+    );
+  if (/^apps\/[^/]+\/src\//.test(path) && /<svg[\s>]/.test(source))
+    out.push(`draws its own <svg>: use <Icon name="..." /> from @cookto/ui`);
+  return out;
+}

@@ -4,6 +4,7 @@ import { Glob } from "bun";
 import {
   componentProblems,
   designProblems,
+  iconProblems,
   tokenDefinitions,
 } from "./check-design-lib.js";
 import { tokenProblems } from "./tokens-lib.js";
@@ -72,6 +73,9 @@ if (missing.length > 0)
   );
 
 for (const file of files) {
+  const icons = iconProblems(file, readFileSync(file, "utf8"));
+  if (icons.length > 0)
+    failures.push(`${file}:\n` + icons.map((p) => `    ${p}`).join("\n"));
   if (file !== GENERATED_TOKENS) {
     const defined = tokenDefinitions(readFileSync(file, "utf8"));
     if (defined.length > 0)

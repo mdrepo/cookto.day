@@ -8,6 +8,7 @@ export {
   type FieldControl,
   type FieldProps,
 } from "./components/Field/Field.js";
+export { Icon } from "./components/Icon/Icon.js";
 export { Note, type NoteProps } from "./components/Note/Note.js";
 export { Select, type SelectProps } from "./components/Select/Select.js";
 export type { Kit, KitExample, KitLanguage } from "./kit.js";

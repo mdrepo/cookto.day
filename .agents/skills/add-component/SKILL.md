@@ -25,7 +25,7 @@ It writes `<Name>.tsx`, `<Name>.module.css` and `<Name>.kit.tsx` in `packages/ui
 
 ## 4. Build it test first (the `tdd-change` skill)
 
-1. Replace the generated test with tests of what the part does: its role and name, keyboard use, each state, and right to left. Commit them alone, as `test:`. They fail.
+1. Replace the generated test with tests of what the part does: its role and name, keyboard use, each state, and right to left, plus an e2e test on the kit page for each spec criterion (`apps/kit/e2e/`). Commit **only the tests**, as `test:`; they fail. Leave the generated `src/` files and `DESIGN.md` for the next commit: CI rejects code committed before its tests.
 2. Build the part until they pass. Native elements first (`<button>`, `<dialog>`, `<select>`). Variants are typed unions. Tokens only, logical properties, no outer margin.
 3. Add an example per state to `<Name>.kit.tsx`, with text from `words` in `packages/ui/src/kit.ts`.
 4. A code owner fills in its `DESIGN.md` row. Keep it under 150 lines (`size:check`); split it if it grows.

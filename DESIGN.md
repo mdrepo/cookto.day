@@ -9,7 +9,7 @@ The rules for how every screen looks, for whoever builds UI here, people and age
 - **A kitchen notebook.** Warm paper, dark ink, one aubergine for actions. Calm: nothing flashes, nothing shouts. The one exception is food about to go off, which gets the warm warning colour.
 - **Their kitchen, their words.** Dish and ingredient names are the household's own, in their language. We never rename "dal" to "lentil soup".
 - **Phone first, one hand.** One column, at most `40rem` wide, centred. Tap targets at least 44px high. People use it standing at the fridge.
-- **Fast and private.** System fonts only, no icon fonts, no images from other sites. Emoji and plain text are the icons. The page has a size budget (`apps/web/test/budget/page-size.test.ts`).
+- **Fast and private.** System fonts only, no icon fonts, no images from other sites. Icons are Lucide's, through `Icon` ([ADR 0020](docs/adr/0020-icons-lucide.md)), never emoji. The page has a size budget (`apps/web/test/budget/page-size.test.ts`).
 - **Every language, both directions.** Every screen works in English, Hindi, Marathi and Arabic, left to right and right to left. Use logical properties, never `left`/`right`.
 - **Plain words.** Say what happened and what to do next ("We couldn't read this bill. Try the PDF from the app's order page."). Sentence case. No error codes.
 - **Both themes.** Every screen works in light and dark. Using the variables does that for you.
@@ -83,6 +83,20 @@ Steps of 4px. Screen side padding `--space-4`. Between blocks `--space-4` or `--
 
 <!-- /tokens:space -->
 
+### Icons
+
+`<Icon name="carrot" />` from `@cookto/ui`, never emoji, another SVG or a direct `lucide-react` import (`design:check`). Only the names in `Icon.tsx` are allowed; a new one needs a code owner. An icon takes its text's colour. With a `label` it's read out ("Remove"); without one it's decoration, and screen readers skip it. Never an icon instead of words where there's room for words. Arrows and chevrons turn round in Arabic by themselves.
+
+<!-- tokens:icon -->
+
+| Variable         | Value | Used for                                        |
+| ---------------- | ----- | ----------------------------------------------- |
+| `var(--icon-sm)` | 16px  | Icons in small text: hints, labels, chips       |
+| `var(--icon-md)` | 20px  | Icons in body text and list rows (the default)  |
+| `var(--icon-lg)` | 24px  | Icons on their own, like a close or back button |
+
+<!-- /tokens:icon -->
+
 ### Foundation
 
 [`packages/ui/src/foundation.css`](packages/ui/src/foundation.css) sets the page itself, once for every screen: the body's colours and type, taller lines for Devanagari and Arabic, an aubergine focus outline for keyboards, controls at least 44px tall, and no motion for people who turn it off. Don't restyle these on a screen; if one is wrong, change the foundation.
@@ -95,13 +109,14 @@ Always the logical form: `margin-inline-start` not `margin-left`, `padding-inlin
 
 Build screens from these React components, imported from `@cookto/ui` ([ADR 0019](docs/adr/0019-design-system.md)). **Reuse before you add.** A new component, or a new variant of one, needs a design from a code owner first (in the issue). See each one, in every theme, language and state, on the kit page: [cookto.day/kit/](https://cookto.day/kit/) (`bun run --cwd apps/kit dev`).
 
-| Need                       | Use                      | Notes                                                                                                |
-| -------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------- |
-| A label and its control    | `Field`                  | Label first, then the control, then any problem in the warning colour. `layout="inline"` in a header |
-| A choice from a short list | `Select`                 | The browser's own select, 44px high. Always inside a `Field`. Can be disabled                        |
-| Nothing to show yet        | `EmptyState`             | Dashed border on the surface colour. A title and one sentence that says what to do next              |
-| A quiet note               | `Note`                   | Muted, small, centred. For reassurance ("Nothing is uploaded"), never for errors                     |
-| Every page (until layouts) | `.site-header` + `.page` | Title, tagline, language switch; one centred column. Becomes a layout (ADR 0019, step 4)             |
+| Need                           | Use                      | Notes                                                                                                        |
+| ------------------------------ | ------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| A label and its control        | `Field`                  | Label first, then the control, then any problem in the warning colour. `layout="inline"` in a header         |
+| A choice from a short list     | `Select`                 | The browser's own select, 44px high. Always inside a `Field`. Can be disabled                                |
+| Nothing to show yet            | `EmptyState`             | Dashed border on the surface colour. A title and one sentence that says what to do next                      |
+| A quiet note                   | `Note`                   | Muted, small, centred. For reassurance ("Nothing is uploaded"), never for errors                             |
+| Every page (until layouts)     | `.site-header` + `.page` | Title, tagline, language switch; one centred column. Becomes a layout (ADR 0019, step 4)                     |
+| A sign: back, remove, a carrot | `Icon`                   | `name` from its list, `size` sm, md or lg, and a `label` when it means something on its own. See Icons above |
 
 A component has no outer margin: the space between parts belongs to the screen (and later, to layouts). Every component has the same files, which `design:check` checks: `<Name>.tsx`, `<Name>.module.css` and `<Name>.kit.tsx` in `packages/ui/src/components/<Name>/`, its test in `packages/ui/test/`, and a row here.
 

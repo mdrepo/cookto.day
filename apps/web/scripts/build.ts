@@ -1,9 +1,12 @@
-import { readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { basename, join } from "node:path";
 import { Glob } from "bun";
-import { createElement } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import { App } from "../src/app.js";
 
 // Builds the static site (ADR 0013): every page in src/*.html, with the
 // scripts and stylesheets it links bundled, minified and hashed into dist/.
@@ -57,18 +60,55 @@ export async function buildSite(
       rmSync(o.path);
     else files.push(o.path);
   }
-  for (const page of files.filter((f) => f.endsWith(".html"))) prerender(page);
+  const app = await renderApp();
+  for (const page of files.filter((f) => f.endsWith(".html")))
+    prerender(page, app);
   writeHeaders(outdir, files);
   return files;
 }
 
 const APP_ROOT = '<div id="app"></div>';
 
-/** Fills the page's app root with the app as it first renders, in English. */
-function prerender(page: string): void {
+/**
+ * The app as it first renders, in English. Rendered from a bundle of it, so
+ * the components' CSS Modules have the same class names in this markup as in
+ * the page's stylesheet.
+ */
+async function renderApp(): Promise<string> {
+  // Inside the app, so the entry finds React; a new folder each time, so
+  // builds running side by side don't meet.
+  mkdirSync(join(APP_DIR, ".build"), { recursive: true });
+  const dir = mkdtempSync(join(APP_DIR, ".build", "render-"));
+  try {
+    const entry = join(dir, "entry.tsx");
+    writeFileSync(
+      entry,
+      [
+        'import { renderToStaticMarkup } from "react-dom/server";',
+        `import { App } from ${JSON.stringify(join(APP_DIR, "src/app.tsx"))};`,
+        "export const html = () => renderToStaticMarkup(<App />);",
+      ].join("\n"),
+    );
+    const result = await Bun.build({
+      entrypoints: [entry],
+      outdir: join(dir, "out"),
+      target: "bun",
+      define: { "process.env.NODE_ENV": JSON.stringify("production") },
+    });
+    const js = result.outputs.find((o) => o.kind === "entry-point");
+    if (!result.success || !js)
+      throw new AggregateError(result.logs, "Rendering the app failed");
+    const { html } = (await import(js.path)) as { html: () => string };
+    return html();
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+/** Fills the page's app root with the app's first render. */
+function prerender(page: string, app: string): void {
   const html = readFileSync(page, "utf8");
   if (!html.includes(APP_ROOT)) return;
-  const app = renderToStaticMarkup(createElement(App));
   writeFileSync(page, html.replace(APP_ROOT, `<div id="app">${app}</div>`));
 }
 

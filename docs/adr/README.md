@@ -17,7 +17,7 @@ Each file records one decision: the context, what we chose, what we rejected and
 | [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Accepted |
 | [0002](0002-tdd-workflow.md) | TDD workflow: Spec → Red → Green → Refactor → Verify | Accepted |
 | [0003](0003-testing-policy.md) | Testing policy: e2e for behaviour, DOM tests of our own page, unit tests for pure functions | Accepted |
-| [0004](0004-e2e-runs-locally.md) | Playwright runs locally and in pre-push, offline, not in CI | Accepted |
+| [0004](0004-e2e-runs-locally.md) | Playwright runs locally and in pre-push, offline, not in CI | Superseded by 0021 |
 | [0005](0005-supply-chain-policy.md) | Supply-chain policy: no runtime dependencies | Superseded by 0018 |
 | [0006](0006-dependency-health-check.md) | Dependency allowlist and health thresholds | Accepted |
 | [0007](0007-lint-format-tooling.md) | Lint and format: ESLint + typescript-eslint + Prettier, TypeScript 6 | Accepted |
@@ -34,3 +34,4 @@ Each file records one decision: the context, what we chose, what we rejected and
 | [0018](0018-ui-react.md) | Build the UI with React, cache it for good, and budget our own code | Accepted |
 | [0019](0019-design-system.md) | Build the UI from one design system in five layers, each checked by a script | Accepted |
 | [0020](0020-icons-lucide.md) | Draw icons from Lucide, through one Icon component | Accepted |
+| [0021](0021-test-every-engine.md) | Test on an Android phone, an iPhone and a desktop, offline in every browser | Accepted |

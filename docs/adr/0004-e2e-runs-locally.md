@@ -1,6 +1,6 @@
 # 0004. Playwright runs locally and in pre-push, offline, not in CI
 
-- **Status:** Accepted
+- **Status:** Superseded by 0021
 - **Date:** 2026-10-10
 - **Deciders:** Mayur
 

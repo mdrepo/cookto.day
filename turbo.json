@@ -15,6 +15,9 @@
     "test": {},
     "build": {
       "outputs": ["dist/**"]
+    },
+    "@cookto/tooling#test": {
+      "cache": false
     }
   }
 }

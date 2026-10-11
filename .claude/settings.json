@@ -24,7 +24,9 @@
       "Edit(.agents/**)",
       "Edit(specs/**)",
       "Edit(test/**)",
-      "Edit(e2e/**)"
+      "Edit(e2e/**)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh pr merge)"
     ],
     "disableBypassPermissionsMode": "disable",
     "disableAutoMode": "disable"

@@ -8,8 +8,8 @@
   "packageManager": "bun@1.4.2",
   "scripts": {
     "dev": "bun run --cwd apps/web dev",
-    "build": "bun run --cwd apps/web build",
-    "e2e": "bun run --cwd apps/web e2e",
+    "build": "bun run --cwd apps/web build && bun run --cwd apps/kit build",
+    "e2e": "bun run --cwd apps/web e2e && bun run --cwd apps/kit e2e",
     "typecheck": "TURBO_TELEMETRY_DISABLED=1 turbo run typecheck",
     "lint": "TURBO_TELEMETRY_DISABLED=1 turbo run lint",
     "test": "TURBO_TELEMETRY_DISABLED=1 turbo run test",

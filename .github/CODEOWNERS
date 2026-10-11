@@ -49,4 +49,11 @@
 /packages/engine/tsconfig.json      @mdrepo
 /packages/engine/test/              @mdrepo
 /packages/ui/package.json           @mdrepo
+/packages/ui/tsconfig.json          @mdrepo
 /packages/ui/tokens/                @mdrepo
+/packages/ui/test/                  @mdrepo
+/apps/kit/package.json              @mdrepo
+/apps/kit/tsconfig.json             @mdrepo
+/apps/kit/playwright.config.ts      @mdrepo
+/apps/kit/scripts/                  @mdrepo
+/apps/kit/e2e/                      @mdrepo

@@ -45,3 +45,29 @@
     --color-warn: #e8955f;
   }
 }
+
+[data-theme="light"] {
+  color-scheme: light;
+  --color-bg: #fbf7f0;
+  --color-surface: #fffdf9;
+  --color-text: #2b2622;
+  --color-text-muted: #6b6259;
+  --color-border: #e6ddd0;
+  --color-accent: #6e3b5f;
+  --color-accent-soft: #f1e4ec;
+  --color-on-accent: #fffdf9;
+  --color-warn: #a64b17;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #1c1a17;
+  --color-surface: #26231f;
+  --color-text: #f1ebe2;
+  --color-text-muted: #b3a99c;
+  --color-border: #3a352f;
+  --color-accent: #d9a3c6;
+  --color-accent-soft: #3a2934;
+  --color-on-accent: #1c1a17;
+  --color-warn: #e8955f;
+}

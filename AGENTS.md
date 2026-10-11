@@ -18,6 +18,8 @@ One repository, split into workspaces ([ADR 0016](docs/adr/0016-monorepo.md)). R
 |---|---|
 | `apps/web/src/index.html`, `styles.css` | The page shell and its styles (`DESIGN.md`) |
 | `packages/ui/tokens/` | The design tokens: colours, type, corners, spacing. `bun run tokens` writes the CSS and DESIGN.md's tables (ADR 0019) |
+| `packages/ui/src/components/` | The components screens are built from, one folder each: code, CSS Module, kit examples. Tests in `packages/ui/test/` (ADR 0019) |
+| `apps/kit/` | The kit page: every component in light and dark, English and Arabic, at cookto.day/kit/ (`bun run --cwd apps/kit dev`) |
 | `apps/web/src/main.tsx`, `app.tsx` | The React app: `main.tsx` starts it, components render the screens ([ADR 0018](docs/adr/0018-ui-react.md)) |
 | `apps/web/src/i18n/` | Every word the app shows, one file per language. `en.ts` defines the keys ([ADR 0012](docs/adr/0012-localisation.md)) |
 | `apps/web/test/dom/`, `test/helpers/` | Our own built page in happy-dom ([ADR 0003](docs/adr/0003-testing-policy.md)) |

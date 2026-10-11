@@ -1,7 +1,11 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { relative } from "node:path";
 import { Glob } from "bun";
-import { designProblems, tokenDefinitions } from "./check-design-lib.js";
+import {
+  componentProblems,
+  designProblems,
+  tokenDefinitions,
+} from "./check-design-lib.js";
 import { tokenProblems } from "./tokens-lib.js";
 import { generated, readSources } from "./tokens.js";
 
@@ -47,6 +51,25 @@ if (badTokens.length > 0) {
       );
   }
 }
+
+// Every component has the same files, made the same way (ADR 0019).
+const COMPONENTS = "packages/ui/src/components";
+const folders = readdirSync(COMPONENTS, { withFileTypes: true })
+  .filter((d) => d.isDirectory())
+  .map((d) => ({
+    name: d.name,
+    files: readdirSync(`${COMPONENTS}/${d.name}`),
+  }));
+const missing = componentProblems(
+  folders,
+  readdirSync("packages/ui/test"),
+  readFileSync("DESIGN.md", "utf8"),
+);
+if (missing.length > 0)
+  failures.push(
+    `${COMPONENTS}: ${missing.length} missing part(s):\n` +
+      missing.map((p) => `    ${p}`).join("\n"),
+  );
 
 for (const file of files) {
   if (file !== GENERATED_TOKENS) {

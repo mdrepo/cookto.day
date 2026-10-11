@@ -1,0 +1,68 @@
+/* The kit page's own layout. It isn't part of the app: it frames the parts. */
+
+.kit-header,
+.kit-main {
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+
+.kit-header {
+  padding-block: var(--space-6) var(--space-4);
+  border-block-end: 1px solid var(--color-border);
+}
+
+.kit-title {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 700;
+}
+
+.kit-about {
+  margin-block: var(--space-1) 0;
+  color: var(--color-text-muted);
+}
+
+.kit-part {
+  padding-block: var(--space-6);
+  border-block-end: 1px solid var(--color-border);
+}
+
+.kit-part-name {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.kit-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: var(--space-4);
+  margin-block-start: var(--space-4);
+}
+
+.kit-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.kit-panel-name,
+.kit-caption {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.kit-example {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+}

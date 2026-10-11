@@ -18,6 +18,33 @@ export class Kit {
     await this.page.goto("/kit/");
   }
 
+  /** Whether the test runs on the phone (the narrow project). */
+  onPhone(): boolean {
+    return (this.page.viewportSize()?.width ?? 0) < 600;
+  }
+
+  /** Where each of an example's parts is, in page pixels. */
+  boxes(
+    parts: Locator,
+  ): Promise<{ x: number; y: number; right: number; bottom: number }[]> {
+    return parts.evaluateAll((els) =>
+      els.map((el) => {
+        const b = el.getBoundingClientRect();
+        return {
+          x: Math.round(b.left),
+          y: Math.round(b.top),
+          right: Math.round(b.right),
+          bottom: Math.round(b.bottom),
+        };
+      }),
+    );
+  }
+
+  /** A layout's own element in an example: the example's first child after its caption. */
+  layout(example: Locator): Locator {
+    return example.locator(":scope > :not(figcaption)").first();
+  }
+
   /** A part's section, found by its name. */
   part(name: string): Locator {
     return this.page.getByRole("region", { name, exact: true });

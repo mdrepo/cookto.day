@@ -32,14 +32,18 @@ export class Kitchen {
 
   /** Which side of the screen the header's tagline starts from. */
   taglineStartsFrom(): Promise<"left" | "right"> {
-    return this.page.locator(".site-tagline").evaluate((el) => {
-      const range = document.createRange();
-      range.selectNodeContents(el);
-      const text = range.getClientRects()[0];
-      const box = el.getBoundingClientRect();
-      if (!text) throw new Error("the tagline has no text");
-      return text.left - box.left < box.right - text.right ? "left" : "right";
-    });
+    // The tagline: the paragraph under the page's title.
+    return this.page
+      .locator("header p")
+      .first()
+      .evaluate((el) => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const text = range.getClientRects()[0];
+        const box = el.getBoundingClientRect();
+        if (!text) throw new Error("the tagline has no text");
+        return text.left - box.left < box.right - text.right ? "left" : "right";
+      });
   }
 
   /** Presses Tab until the language list has focus, as a keyboard user would. */

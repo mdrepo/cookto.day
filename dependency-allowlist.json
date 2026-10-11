@@ -1,6 +1,15 @@
 {
   "$comment": "Every direct dependency, with why we need it (ADR 0006). `bun run check` fails if package.json has a package that isn't listed here, or this lists one package.json doesn't have. `bun run deps:health` runs ADR 0006's health checks on added or changed packages; `exceptions` allows a named failing check (scorecard, recent-release, maintainers, install-scripts, license) and says why. `scorecardRepo` names where the Scorecard service files a renamed repo; it counts only if GitHub says it's the same repo the package's provenance was built from. Changing this file needs a code owner's approval.",
-  "dependencies": {},
+  "dependencies": {
+    "react": {
+      "reason": "The UI layer (ADR 0018). Ships to users, in a file of its own that browsers keep for a year.",
+      "scorecardRepo": "facebook/react"
+    },
+    "react-dom": {
+      "reason": "Renders React into the page (ADR 0018). Ships with react, in the same cached file.",
+      "scorecardRepo": "facebook/react"
+    }
+  },
   "devDependencies": {
     "@playwright/test": {
       "reason": "E2E tests of the built site in a real browser (ADR 0003, 0004)."
@@ -47,6 +56,21 @@
       "exceptions": {
         "scorecard": "deps.dev publishes no OpenSSF Scorecard for vercel/turborepo. Released by Vercel with npm provenance attestations; dev-only, no install scripts, MIT. Approved with ADR 0016."
       }
+    },
+    "@types/react": {
+      "reason": "Types for React (ADR 0018). Types only, never runs.",
+      "exceptions": {
+        "maintainers": "One npm maintainer: the DefinitelyTyped publishing account. Types only, never runs."
+      }
+    },
+    "@types/react-dom": {
+      "reason": "Types for React DOM (ADR 0018). Types only, never runs.",
+      "exceptions": {
+        "maintainers": "One npm maintainer: the DefinitelyTyped publishing account. Types only, never runs."
+      }
+    },
+    "eslint-plugin-react-hooks": {
+      "reason": "The rules of hooks, as lint errors (ADR 0018). 5.2.0: no dependencies, unlike 7.x (Babel and 40-odd packages)."
     }
   },
   "notes": "ESLint and typescript-eslint together add about 90 packages, over ADR 0006's warning level of 20. Accepted in ADR 0007: type-aware linting is the main deterministic guard against bad agent code. The app itself has no runtime dependencies (ADR 0005)."

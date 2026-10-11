@@ -12,31 +12,33 @@
     <link rel="icon" href="./brand/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./brand/icon-180.png" />
     <link rel="stylesheet" href="./styles.css" />
-    <script type="module" src="./main.ts"></script>
+    <script type="module" src="./main.tsx"></script>
   </head>
   <body>
-    <header class="site-header">
-      <h1 class="site-title">cookto.day</h1>
-      <p class="site-tagline" data-i18n="tagline">
-        What to cook today, from what's already in your kitchen
-      </p>
-      <label class="field">
-        <span data-i18n="languageLabel">Language</span>
-        <select id="language" class="field-select"></select>
-      </label>
-    </header>
-    <main class="page">
-      <section class="empty-state" aria-labelledby="empty-title">
-        <h2 id="empty-title" class="empty-title" data-i18n="emptyTitle">
-          Your kitchen is empty
-        </h2>
-        <p class="empty-body" data-i18n="emptyBody">
-          Add a grocery bill to see what you can cook today
+    <!-- The English page, readable before the script runs. React takes it over
+         (main.tsx); keep this markup the same as app.tsx. -->
+    <div id="app">
+      <header class="site-header">
+        <h1 class="site-title">cookto.day</h1>
+        <p class="site-tagline">
+          What to cook today, from what's already in your kitchen
         </p>
-      </section>
-      <p class="note" data-i18n="privacy">
-        Your bills and pantry stay in this browser. Nothing is uploaded.
-      </p>
-    </main>
+        <label class="field">
+          <span>Language</span>
+          <select id="language" class="field-select"></select>
+        </label>
+      </header>
+      <main class="page">
+        <section class="empty-state" aria-labelledby="empty-title">
+          <h2 id="empty-title" class="empty-title">Your kitchen is empty</h2>
+          <p class="empty-body">
+            Add a grocery bill to see what you can cook today
+          </p>
+        </section>
+        <p class="note">
+          Your bills and pantry stay in this browser. Nothing is uploaded.
+        </p>
+      </main>
+    </div>
   </body>
 </html>

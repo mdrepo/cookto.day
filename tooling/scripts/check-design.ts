@@ -14,7 +14,7 @@ const EXISTING: Record<string, number> = {};
 
 const failures: string[] = [];
 const files = [
-  ...new Glob("{apps,packages}/*/src/**/*.{css,html,ts}").scanSync(),
+  ...new Glob("{apps,packages}/*/src/**/*.{css,html,ts,tsx}").scanSync(),
 ];
 // If files move and the pattern stops matching, fail rather than pass on
 // nothing.

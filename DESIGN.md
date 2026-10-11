@@ -76,7 +76,7 @@ Not designed yet, so ask before building: the bill upload, the pantry list, a di
 
 **Motion:** none yet. No animations without a code owner.
 
-**HTML:** `textContent` and `createElement`, never `innerHTML` (AGENTS.md).
+**HTML:** render text with JSX, never `dangerouslySetInnerHTML` or `innerHTML` (AGENTS.md).
 
 ## 4. When the design isn't settled
 

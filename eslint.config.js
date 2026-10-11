@@ -1,4 +1,5 @@
 import { defineConfig } from "eslint/config";
+import reactHooks from "eslint-plugin-react-hooks";
 import tseslint from "typescript-eslint";
 
 // ADR 0007: typescript-eslint's strictTypeChecked preset, plus this repo's
@@ -7,7 +8,7 @@ import tseslint from "typescript-eslint";
 const TEST_FOCUS =
   "Committed .only/.skip silently drops tests (ADR 0003). Track a known bug with test.fail() and an issue instead.";
 const RAW_HTML =
-  "Raw HTML is an XSS risk, and bills are untrusted input. Use textContent or createElement.";
+  "Raw HTML is an XSS risk, and bills are untrusted input. Render text with JSX, or use textContent.";
 
 export default defineConfig(
   {
@@ -94,6 +95,27 @@ export default defineConfig(
           name: "XMLHttpRequest",
           message:
             "cookto.day sends nothing over the network (ADR 0013). Ask a code owner.",
+        },
+      ],
+    },
+  },
+  {
+    // React (ADR 0018): function components and hooks only, by the rules.
+    files: ["**/*.tsx"],
+    plugins: { "react-hooks": reactHooks },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "JSXAttribute[name.name='dangerouslySetInnerHTML']",
+          message: RAW_HTML,
+        },
+        {
+          selector:
+            "ClassDeclaration[superClass.name=/^(Pure)?Component$/], ClassDeclaration[superClass.property.name=/^(Pure)?Component$/]",
+          message:
+            "Write a function component with hooks (ADR 0018), not a class.",
         },
       ],
     },

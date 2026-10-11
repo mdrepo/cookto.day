@@ -6,15 +6,23 @@ import { buildSite } from "../../scripts/build.js";
 
 // People open cookto.day on a phone, often on mobile data, standing in the
 // kitchen. So every page stays small (ADR 0013). Budgets are for what we
-// ship, gzipped, per page and in total. They leave room to grow, but not for
-// a framework. If a change needs more, don't raise a budget: make the change
-// smaller, or stop and ask a code owner.
+// ship, gzipped. React is paid for once: it has a file of its own that
+// browsers keep for a year (ADR 0018), so our own code has the tight budget.
+// If a change needs more, don't raise a budget: make the change smaller, or
+// stop and ask a code owner.
 const BUDGET_KB = {
   /** Each HTML page plus all stylesheets. */
   pageAndStyles: 8,
-  /** All JavaScript the site ships. */
-  scripts: 20,
+  /** All our own JavaScript: everything but React's file. */
+  ourScripts: 20,
+  /** A first visit, nothing cached: pages, styles and every script. */
+  firstVisit: 100,
 };
+
+/** Only React's production build links its error codes here. */
+const REACT = "react.dev/errors";
+/** Only our code has this storage key in it. */
+const OURS = "cookto.day:language";
 
 let outdir = "";
 let files: string[] = [];
@@ -50,8 +58,30 @@ describe("page size budget", () => {
     }
   });
 
-  test("the site's scripts stay within budget", () => {
-    withinBudget("All scripts", gzippedKb(ofType(".js")), BUDGET_KB.scripts);
+  const scripts = () => ofType(".js");
+  const isReact = (f: string) => readFileSync(f, "utf8").includes(REACT);
+
+  test("our own scripts stay within budget", () => {
+    withinBudget(
+      "Our scripts (all but React's file)",
+      gzippedKb(scripts().filter((f) => !isReact(f))),
+      BUDGET_KB.ourScripts,
+    );
+  });
+
+  test("a first visit stays within budget", () => {
+    withinBudget(
+      "A first visit (pages, styles and every script)",
+      gzippedKb([...ofType(".html"), ...ofType(".css"), ...scripts()]),
+      BUDGET_KB.firstVisit,
+    );
+  });
+
+  test("React has a file of its own, so it stays cached when our code changes", () => {
+    const react = scripts().filter(isReact);
+    expect(react).toHaveLength(1);
+    const [file = ""] = react;
+    expect(readFileSync(file, "utf8")).not.toContain(OURS);
   });
 
   test("no page loads anything from another site", () => {

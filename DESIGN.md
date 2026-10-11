@@ -109,20 +109,22 @@ Always the logical form: `margin-inline-start` not `margin-left`, `padding-inlin
 
 Build screens from these React components, imported from `@cookto/ui` ([ADR 0019](docs/adr/0019-design-system.md)). **Reuse before you add.** A new component, or a new variant of one, needs a design from a code owner first (in the issue). See each one, in every theme, language and state, on the kit page: [cookto.day/kit/](https://cookto.day/kit/) (`bun run --cwd apps/kit dev`).
 
-| Need                           | Use                      | Notes                                                                                                        |
-| ------------------------------ | ------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| A label and its control        | `Field`                  | Label first, then the control, then any problem in the warning colour. `layout="inline"` in a header         |
-| A choice from a short list     | `Select`                 | The browser's own select, 44px high. Always inside a `Field`. Can be disabled                                |
-| Nothing to show yet            | `EmptyState`             | Dashed border on the surface colour. A title and one sentence that says what to do next                      |
-| A quiet note                   | `Note`                   | Muted, small, centred. For reassurance ("Nothing is uploaded"), never for errors                             |
-| Every page (until layouts)     | `.site-header` + `.page` | Title, tagline, language switch; one centred column. Becomes a layout (ADR 0019, step 4)                     |
-| A sign: back, remove, a carrot | `Icon`                   | `name` from its list, `size` sm, md or lg, and a `label` when it means something on its own. See Icons above |
+| Need                             | Use                      | Notes                                                                                                                                                                                     |
+| -------------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A label and its control          | `Field`                  | Label first, then the control, then any problem in the warning colour. `layout="inline"` in a header                                                                                      |
+| A choice from a short list       | `Select`                 | The browser's own select, 44px high. Always inside a `Field`. Can be disabled                                                                                                             |
+| Nothing to show yet              | `EmptyState`             | Dashed border on the surface colour. A title and one sentence that says what to do next                                                                                                   |
+| A quiet note                     | `Note`                   | Muted, small, centred. For reassurance ("Nothing is uploaded"), never for errors                                                                                                          |
+| Every page (until layouts)       | `.site-header` + `.page` | Title, tagline, language switch; one centred column. Becomes a layout (ADR 0019, step 4)                                                                                                  |
+| A sign: back, remove, a carrot   | `Icon`                   | `name` from its list, `size` sm, md or lg, and a `label` when it means something on its own. See Icons above                                                                              |
+| An action                        | `Button`                 | `kind`: one `main` (aubergine) per screen, `quiet` for the rest, `danger` to remove. `busy` while it works; `disabled` when it can't. An `icon` before the words, or alone with a `label` |
+| One thing: a dish, a pantry item | `Card`                   | Surface colour, border, large corners. Its `title` names it for screen readers; `level` sets its heading under the screen's                                                               |
 
 A component has no outer margin: the space between parts belongs to the screen (and later, to layouts). Every component has the same files, which `design:check` checks: `<Name>.tsx`, `<Name>.module.css` and `<Name>.kit.tsx` in `packages/ui/src/components/<Name>/`, its test in `packages/ui/test/`, and a row here.
 
-Not designed yet, so ask before building: the bill upload, the pantry list, a dish card, the "use it today" warning, the shopping list, buttons.
+Not designed yet, so ask before building: the bill upload, the pantry list, the "use it today" warning, the shopping list, a card you tap as a whole, a link that looks like a button.
 
-**Motion:** none yet. No animations without a code owner.
+**Motion:** only the busy button's turning circle (`Button`). The foundation stops it, and every animation, for people who turn motion off. No other animation without a code owner.
 
 **HTML:** render text with JSX, never `dangerouslySetInnerHTML` or `innerHTML` (AGENTS.md).
 

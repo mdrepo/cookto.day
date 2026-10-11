@@ -8,6 +8,7 @@ import {
   ChevronRight,
   CookingPot,
   FileText,
+  LoaderCircle,
   type LucideIcon,
   Minus,
   Plus,
@@ -22,7 +23,7 @@ import {
 import styles from "./Icon.module.css";
 
 // The only file that imports Lucide (ADR 0020, design:check). These are the
-// icons a code owner has approved (specs/18-icons.md); a new one needs one
+// icons a code owner has approved (specs/18-icons.md, 29-button-card.md); a new one needs one
 // too. `turns` marks icons that point, which turn round in right to left.
 const ICONS = {
   "arrow-left": { svg: ArrowLeft, turns: true },
@@ -34,6 +35,7 @@ const ICONS = {
   "chevron-right": { svg: ChevronRight, turns: true },
   "cooking-pot": { svg: CookingPot },
   "file-text": { svg: FileText },
+  "loader-circle": { svg: LoaderCircle },
   minus: { svg: Minus },
   plus: { svg: Plus },
   refrigerator: { svg: Refrigerator },

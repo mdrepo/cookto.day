@@ -33,6 +33,12 @@ export const words = {
     back: "Back",
     fridge: "Fridge",
     tomorrow: "Use by tomorrow",
+    addBill: "Add a bill",
+    cancel: "Cancel",
+    saving: "Saving",
+    save: "Save",
+    dish: "Palak paneer",
+    cook: "Cook it",
   },
   ar: {
     language: "اللغة",
@@ -45,6 +51,12 @@ export const words = {
     back: "رجوع",
     fridge: "الثلاجة",
     tomorrow: "استخدمه بحلول الغد",
+    addBill: "أضف فاتورة",
+    cancel: "إلغاء",
+    saving: "جارٍ الحفظ",
+    save: "حفظ",
+    dish: "بالاك بانير",
+    cook: "اطبخه",
   },
 } satisfies Record<KitLanguage, Record<string, string>>;
 

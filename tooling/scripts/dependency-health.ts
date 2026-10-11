@@ -117,3 +117,58 @@ export function evaluateHealth(
     );
   return result;
 }
+
+/**
+ * "owner/repo", from any way npm writes a GitHub repository: a URL
+ * (https, git+https, ssh, scp-style, with .git or @ref), "github:owner/repo",
+ * or { url }. The host must be github.com itself, and the case is kept: the
+ * Scorecard service's names are case-sensitive.
+ */
+export function githubRepo(repository: unknown): string | null {
+  const url =
+    typeof repository === "object" && repository !== null
+      ? (repository as { url?: unknown }).url
+      : repository;
+  if (typeof url !== "string") return null;
+  const match =
+    /^github:([\w.-]+)\/([\w.-]+)$/.exec(url) ??
+    /^(?:git\+)?(?:https?|ssh|git):\/\/(?:[^@/]+@)?github\.com\/([\w.-]+)\/([\w.-]+?)(?:\.git)?(?:[@#/].*)?$/.exec(
+      url,
+    ) ??
+    /^git@github\.com:([\w.-]+)\/([\w.-]+?)(?:\.git)?$/.exec(url);
+  return match ? `${match[1] ?? ""}/${match[2] ?? ""}` : null;
+}
+
+interface Attestations {
+  attestations?: { bundle?: { dsseEnvelope?: { payload?: string } } }[];
+}
+
+/**
+ * The GitHub repo a package version was built from, from its npm provenance
+ * (SLSA). npm checks this at publish time, so unlike the `repository` field
+ * in package.json, a publisher can't simply claim another project's repo.
+ */
+export function provenanceRepo(attestations: unknown): string | null {
+  for (const a of (attestations as Attestations | null)?.attestations ?? []) {
+    const payload = a.bundle?.dsseEnvelope?.payload;
+    if (!payload) continue;
+    const statement = JSON.parse(
+      Buffer.from(payload, "base64").toString("utf8"),
+    ) as {
+      predicateType?: string;
+      predicate?: {
+        buildDefinition?: {
+          externalParameters?: { workflow?: { repository?: string } };
+        };
+      };
+    };
+    if (!statement.predicateType?.startsWith("https://slsa.dev/provenance/"))
+      continue;
+    const repo = githubRepo(
+      statement.predicate?.buildDefinition?.externalParameters?.workflow
+        ?.repository,
+    );
+    if (repo) return repo;
+  }
+  return null;
+}

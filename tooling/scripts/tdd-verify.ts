@@ -16,8 +16,9 @@ import {
 } from "./tdd-verify-lib.js";
 
 // ADR 0002: proves this branch's new or changed tests are real.
-//   - Each must FAIL against main's source (every app's and package's src/
-//     as on main), so it tests something main doesn't do yet.
+//   - Each must FAIL against main's code (every app's and package's src/,
+//     and the check scripts, as on main), so it tests something main
+//     doesn't do yet.
 //   - Each must PASS against this branch.
 // Passing on the branch rules out typos and syntax errors, so a test that
 // can't even import a new function on main still counts as failing there.
@@ -202,7 +203,14 @@ function runAll(cwd: string, port: number): TestResult[] {
   ];
 }
 
-/** A worktree with this branch's tests and main's source. */
+/**
+ * Code a test can be red or green against: the apps' and packages' src/,
+ * and the check scripts, whose own tests live in tooling/test/.
+ */
+const isCode = (f: string) =>
+  isSourceFile(f) || f.startsWith("tooling/scripts/");
+
+/** A worktree with this branch's tests and main's code. */
 function withMainSource<T>(fn: (dir: string) => T): T {
   const dir = mkdtempSync(join(tmpdir(), "tdd-verify-"));
   git("worktree", "add", "--detach", dir, "HEAD");
@@ -215,13 +223,13 @@ function withMainSource<T>(fn: (dir: string) => T): T {
       "HEAD",
     )
       .split("\n")
-      .filter(isSourceFile);
+      .filter(isCode);
     for (const f of addedSource) rmSync(join(dir, f));
-    const sourceOnMain = git("ls-tree", "-r", "--name-only", base)
+    const codeOnMain = git("ls-tree", "-r", "--name-only", base)
       .split("\n")
-      .filter(isSourceFile);
-    if (sourceOnMain.length > 0) {
-      execFileSync("git", ["checkout", base, "--", ...sourceOnMain], {
+      .filter(isCode);
+    if (codeOnMain.length > 0) {
+      execFileSync("git", ["checkout", base, "--", ...codeOnMain], {
         cwd: dir,
         stdio: "ignore",
       });

@@ -1,4 +1,6 @@
 // The design system's components (ADR 0019). Apps import UI from here only.
+export { Button } from "./components/Button/Button.js";
+export { Card } from "./components/Card/Card.js";
 export {
   EmptyState,
   type EmptyStateProps,

@@ -1,0 +1,63 @@
+/* Buttons (DESIGN.md): at least 44px tall, words in 600 or 700, one main
+   action in the accent colour. No outer margin: the space between parts
+   belongs to the screen. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-block-size: 44px;
+  padding-inline: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.main {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 700;
+}
+
+.quiet {
+  background: var(--color-surface);
+  color: var(--color-accent);
+}
+
+.danger {
+  border-color: var(--color-warn);
+  background: var(--color-surface);
+  color: var(--color-warn);
+}
+
+.button:disabled {
+  border-color: var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.button[aria-busy="true"] {
+  cursor: progress;
+}
+
+.iconOnly {
+  inline-size: 44px;
+  padding-inline: 0;
+}
+
+/* The one motion in the design so far (specs/29-button-card.md). The
+   foundation stops it for people who turn motion off. */
+.busy {
+  display: inline-flex;
+  animation: turn 1s linear infinite;
+}
+
+@keyframes turn {
+  to {
+    transform: rotate(1turn);
+  }
+}

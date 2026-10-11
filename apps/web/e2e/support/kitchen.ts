@@ -163,4 +163,34 @@ export class Kitchen {
       };
     });
   }
+
+  /**
+   * The language list as it's drawn: its size, corners and border, and the
+   * down arrow drawn with it, if there is one, and which side it sits on.
+   */
+  languageList(): Promise<{
+    height: number;
+    radius: string;
+    border: string;
+    arrow: "left" | "right" | "none";
+  }> {
+    return this.page.getByRole("combobox").evaluate((el) => {
+      const s = getComputedStyle(el);
+      const box = el.getBoundingClientRect();
+      // The arrow is an icon beside the select, inside the same frame.
+      const icon = el.parentElement?.querySelector("svg");
+      const middle = box.left + box.width / 2;
+      const arrow = icon
+        ? icon.getBoundingClientRect().left < middle
+          ? "left"
+          : "right"
+        : "none";
+      return {
+        height: Math.round(box.height),
+        radius: s.borderTopLeftRadius,
+        border: `${s.borderTopStyle} ${s.borderTopWidth}`,
+        arrow,
+      };
+    });
+  }
 }

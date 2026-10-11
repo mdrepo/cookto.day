@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 // E2E tests: the built kit page (ADR 0019), served on localhost, in Chromium
-// (ADR 0003, 0004). Uses its own port, so the web app's tests can run beside these.
+// (ADR 0003, 0021). Uses its own port, so the web app's tests can run beside these.
 const port = Number(process.env.E2E_PORT ?? 3399);
 
 export default defineConfig({

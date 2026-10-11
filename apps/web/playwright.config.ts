@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 // E2E tests: the built static site, served on localhost, in Chromium
-// (ADR 0003, 0004). Uses its own port, so `bun run dev` can keep running.
+// (ADR 0003, 0021). Uses its own port, so `bun run dev` can keep running.
 const port = Number(process.env.E2E_PORT ?? 3299);
 
 export default defineConfig({

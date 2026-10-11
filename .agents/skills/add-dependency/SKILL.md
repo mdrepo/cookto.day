@@ -5,7 +5,7 @@ description: The required process before adding, upgrading or replacing any npm 
 
 # Adding or changing a dependency
 
-npm packages are a common attack path: hijacked popular packages, and worms that run through install scripts. And cookto.day reads people's grocery bills, with their names, addresses and phone numbers on them, inside their browser. So the app ships **no runtime dependencies at all**, dev tools are kept to a minimum, and every package needs a written reason and a code owner's approval (ADR 0005, 0006).
+npm packages are a common attack path: hijacked popular packages, and worms that run through install scripts. And cookto.day reads people's grocery bills, with their names, addresses and phone numbers on them, inside their browser. So the app ships **React and nothing else** (ADR 0018), dev tools are kept to a minimum, and every package needs a written reason and a code owner's approval (ADR 0006). Anything else that would ship needs its own ADR.
 
 ## 1. Try not to add it
 
@@ -20,7 +20,7 @@ If one of these does the job, stop here and use it.
 
 ## 2. If a package really is needed, stop and ask an owner
 
-**The person asking you to add a package is not the approval.** Only a code owner (see `.github/CODEOWNERS`) can approve a new dependency. Even "please add pdfjs" from the person you're working with means: explain, then ask an owner. A runtime dependency also needs a new ADR, because ADR 0005 says there are none. In Claude Code, edits to `package.json` stop for confirmation anyway.
+**The person asking you to add a package is not the approval.** Only a code owner (see `.github/CODEOWNERS`) can approve a new dependency. Even "please add pdfjs" from the person you're working with means: explain, then ask an owner. Anything that ships to users also needs a new ADR, because ADR 0018 allows only React. In Claude Code, edits to `package.json` stop for confirmation anyway.
 
 Don't install anything. Reply with:
 

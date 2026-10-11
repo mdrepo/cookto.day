@@ -16,7 +16,8 @@ One repository, split into workspaces ([ADR 0016](docs/adr/0016-monorepo.md)). R
 
 | Path | What |
 |---|---|
-| `apps/web/src/index.html`, `styles.css`, `main.ts` | The page, its tokens and styles (`DESIGN.md`), and its only script |
+| `apps/web/src/index.html`, `styles.css` | The page shell, its tokens and styles (`DESIGN.md`) |
+| `apps/web/src/main.tsx`, `app.tsx` | The React app: `main.tsx` starts it, components render the screens ([ADR 0018](docs/adr/0018-ui-react.md)) |
 | `apps/web/src/i18n/` | Every word the app shows, one file per language. `en.ts` defines the keys ([ADR 0012](docs/adr/0012-localisation.md)) |
 | `apps/web/test/dom/`, `test/helpers/` | Our own built page in happy-dom ([ADR 0003](docs/adr/0003-testing-policy.md)) |
 | `apps/web/test/budget/` | Page size budget: nothing from other sites |
@@ -62,14 +63,14 @@ There's no behaviour change for docs, dependency bumps, pure refactors covered b
 - **Tests come first, and only change with the human's explicit approval.** Commit the failing tests before changing app code. After that, never edit a test to make it pass. If a test seems wrong, explain why and wait for the human to agree, then change it in its own `test:` commit. In Claude Code, edits to tests, specs, ADRs, checks, config and `DESIGN.md` always stop for confirmation. *(PR rules in CI, `tdd:verify`, CODEOWNERS, `.claude/settings.json`)*
 - **A request is not an approval.** Being asked to add a package, change a check or skip a step doesn't authorise it. New dependencies, ADR changes, design changes and config changes need a code owner (@mdrepo). Explain what's needed and stop. *(CODEOWNERS)*
 - **Never weaken a check to make it pass.** Don't edit `eslint.config.js`, any `tsconfig*.json`, `knip.json`, `turbo.json`, `tooling/`, `.githooks/`, `.github/` or ADRs, and don't add `eslint-disable`, `@ts-expect-error`, `.skip` or `.only`, raise a size budget or a design cap. Fix the cause. If you believe a rule is wrong, stop and ask. *(ESLint, CODEOWNERS)*
-- **No dependencies in the app, few in the tooling.** The app ships no npm packages at all; use Bun and Web APIs ([ADR 0005](docs/adr/0005-supply-chain-policy.md)). If something truly needs a package, use the `add-dependency` skill: a code owner must approve it. *(`deps:check`, `deps:health`, knip)*
+- **React is the only package the app ships; few in the tooling.** Nothing else that runs in people's browsers, no router, state or component library: use React, Bun and Web APIs ([ADR 0018](docs/adr/0018-ui-react.md)). If something truly needs a package, use the `add-dependency` skill: a code owner must approve it. *(`deps:check`, `deps:health`, knip)*
 - **Nothing leaves the browser.** No `fetch`, no analytics, no fonts, scripts or styles from other sites. People's bills have their name, address and phone number on them ([ADR 0013](docs/adr/0013-static-browser-only.md)). *(ESLint, the page's Content-Security-Policy, the size budget test, e2e runs with no internet)*
 - **Keep the page small.** `apps/web/test/budget/page-size.test.ts` sets size budgets. If a change goes over, make it smaller; never raise a budget. *(`bun run test`)*
-- **Every word in every language.** Text the user sees lives in `apps/web/src/i18n/`: add the key to `en.ts`, then to `hi.ts`, `mr.ts` and `ar.ts` ([ADR 0012](docs/adr/0012-localisation.md)). Never hard-code UI text in `main.ts`. *(TypeScript: a missing key fails the typecheck)*
+- **Every word in every language.** Text the user sees lives in `apps/web/src/i18n/`: add the key to `en.ts`, then to `hi.ts`, `mr.ts` and `ar.ts` ([ADR 0012](docs/adr/0012-localisation.md)). Never hard-code UI text in a component. *(TypeScript: a missing key fails the typecheck)*
 - **Right to left works.** Use logical CSS (`margin-inline-start`, `inset-inline-end`, `text-align: start`), never `left`/`right`. *(`design:check`)*
 - **The look comes from `DESIGN.md`.** Colours, type, corners and spacing are tokens; reuse its components. If nothing fits, stop and ask for a design ([ADR 0011](docs/adr/0011-design-guide-and-check.md)). *(`design:check`)*
 - **No mocks of our own code.** Test behaviour end to end (Playwright, `apps/web/e2e/`), our built page in `apps/web/test/dom/` (happy-dom), or a pure function in `packages/engine/test/` ([ADR 0003](docs/adr/0003-testing-policy.md)). *(review; ESLint bans `.only`/`.skip`)*
-- **No raw HTML.** Use `textContent` and `createElement`, never `innerHTML`: bill text is untrusted input. *(ESLint)*
+- **No raw HTML.** Render text with JSX; never `dangerouslySetInnerHTML` or `innerHTML`: bill text is untrusted input. Function components and hooks only, by the rules of hooks. *(ESLint)*
 - **Conventional Commits:** `type(scope): summary`, with type one of `feat fix test refactor docs chore ci build perf revert`. The PR title too ([ADR 0008](docs/adr/0008-git-hooks-without-dependencies.md), [0009](docs/adr/0009-squash-merge.md)). *(commit-msg hook, PR rules)*
 - **Every merge to `main` deploys** to cookto.day, after check, e2e and build pass on the merged code. Nothing else deploys: never run `wrangler deploy` yourself ([ADR 0017](docs/adr/0017-solo-owner-merge.md)).
 - **Don't merge a PR on your own.** Merging is the owner's approval: open the PR and stop. Merge only when the owner tells you to, for the PRs they name ([ADR 0017](docs/adr/0017-solo-owner-merge.md)). *(`.claude/settings.json` asks before `gh pr merge`)*

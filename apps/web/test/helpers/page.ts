@@ -12,7 +12,8 @@ let outdir = "";
 let files: string[] = [];
 beforeAll(async () => {
   outdir = mkdtempSync(join(tmpdir(), "cookto-dom-"));
-  files = await buildSite(outdir);
+  // One script file, so it can run inline (no imports between chunks).
+  files = await buildSite(outdir, { split: false });
 });
 afterAll(() => {
   rmSync(outdir, { recursive: true, force: true });

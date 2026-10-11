@@ -126,6 +126,20 @@ describe("renderCss", () => {
     );
     expect(css).not.toContain("--color-paper");
   });
+
+  test("a part of the page can be forced light or dark, whatever the system says", () => {
+    const css = renderCss(sources());
+    expect(css).toMatch(
+      /\[data-theme="dark"\] \{\s*color-scheme: dark;[^}]*--color-bg: #1c1a17;/,
+    );
+    expect(css).toMatch(
+      /\[data-theme="light"\] \{\s*color-scheme: light;[^}]*--color-bg: #fbf7f0;/,
+    );
+    // After the system's dark, so a forced light wins over it.
+    expect(css.lastIndexOf('[data-theme="light"]')).toBeGreaterThan(
+      css.indexOf("prefers-color-scheme: dark"),
+    );
+  });
 });
 
 describe("DESIGN.md tables", () => {

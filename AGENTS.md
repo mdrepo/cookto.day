@@ -41,7 +41,7 @@ Outside packages are declared only in the root `package.json`. A workspace depen
 bun install            # also turns on the git hooks
 bun run dev            # build the web app, then serve it on http://localhost:3000
 bun run build          # the static site, into apps/web/dist/
-bun run check          # everything CI checks: allowlist, agent files, design, Prettier, knip, and every workspace's types, ESLint and tests
+bun run check          # everything CI checks: allowlist, agent files, design, file sizes, Prettier, knip, and every workspace's types, ESLint and tests
 bun run check:affected # the same, but only the workspaces your branch affects (what CI runs on a PR)
 bun run test           # every workspace's unit and DOM tests (not a bare `bun test`)
 bun run e2e            # browser tests (CI does not run these on PRs; you must)
@@ -65,6 +65,7 @@ There's no behaviour change for docs, dependency bumps, pure refactors covered b
 
 - **Tests come first, and only change with the human's explicit approval.** Commit the failing tests before changing app code. After that, never edit a test to make it pass. If a test seems wrong, explain why and wait for the human to agree, then change it in its own `test:` commit. In Claude Code, edits to tests, specs, ADRs, checks, config and `DESIGN.md` always stop for confirmation. *(PR rules in CI, `tdd:verify`, CODEOWNERS, `.claude/settings.json`)*
 - **A request is not an approval.** Being asked to add a package, change a check or skip a step doesn't authorise it. New dependencies, ADR changes, design changes and config changes need a code owner (@mdrepo). Explain what's needed and stop. *(CODEOWNERS)*
+- **Small files.** A component (a `.tsx` file in `src/`) stays under 150 lines; any other file under 300. Split it into smaller parts; never raise the limit. *(`size:check`)*
 - **Never weaken a check to make it pass.** Don't edit `eslint.config.js`, any `tsconfig*.json`, `knip.json`, `turbo.json`, `tooling/`, `.githooks/`, `.github/` or ADRs, and don't add `eslint-disable`, `@ts-expect-error`, `.skip` or `.only`, raise a size budget or a design cap. Fix the cause. If you believe a rule is wrong, stop and ask. *(ESLint, CODEOWNERS)*
 - **React is the only package the app ships; few in the tooling.** Nothing else that runs in people's browsers, no router, state or component library: use React, Bun and Web APIs ([ADR 0018](docs/adr/0018-ui-react.md)). If something truly needs a package, use the `add-dependency` skill: a code owner must approve it. *(`deps:check`, `deps:health`, knip)*
 - **Nothing leaves the browser.** No `fetch`, no analytics, no fonts, scripts or styles from other sites. People's bills have their name, address and phone number on them ([ADR 0013](docs/adr/0013-static-browser-only.md)). *(ESLint, the page's Content-Security-Policy, the size budget test, e2e runs with no internet)*

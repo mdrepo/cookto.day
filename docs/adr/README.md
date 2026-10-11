@@ -29,3 +29,4 @@ Each file records one decision: the context, what we chose, what we rejected and
 | [0013](0013-static-browser-only.md) | Static and browser-only: no server, data stays on the device | Accepted |
 | [0014](0014-deploy-on-merge.md) | Squash-merge; every merge to main deploys, after the gates | Accepted |
 | [0015](0015-kitchen-packs.md) | Keep the engine generic; each kitchen's food culture lives in data packs | Accepted |
+| [0016](0016-monorepo.md) | One repository, split into workspaces; CI runs what a change affects | Accepted |

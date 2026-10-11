@@ -18,7 +18,7 @@ Each file records one decision: the context, what we chose, what we rejected and
 | [0002](0002-tdd-workflow.md) | TDD workflow: Spec → Red → Green → Refactor → Verify | Accepted |
 | [0003](0003-testing-policy.md) | Testing policy: e2e for behaviour, DOM tests of our own page, unit tests for pure functions | Accepted |
 | [0004](0004-e2e-runs-locally.md) | Playwright runs locally and in pre-push, offline, not in CI | Accepted |
-| [0005](0005-supply-chain-policy.md) | Supply-chain policy: no runtime dependencies | Accepted |
+| [0005](0005-supply-chain-policy.md) | Supply-chain policy: no runtime dependencies | Superseded by 0018 |
 | [0006](0006-dependency-health-check.md) | Dependency allowlist and health thresholds | Accepted |
 | [0007](0007-lint-format-tooling.md) | Lint and format: ESLint + typescript-eslint + Prettier, TypeScript 6 | Accepted |
 | [0008](0008-git-hooks-without-dependencies.md) | Git hooks without dependencies, Conventional Commits | Accepted |
@@ -31,3 +31,4 @@ Each file records one decision: the context, what we chose, what we rejected and
 | [0015](0015-kitchen-packs.md) | Keep the engine generic; each kitchen's food culture lives in data packs | Accepted |
 | [0016](0016-monorepo.md) | One repository, split into workspaces; CI runs what a change affects | Accepted |
 | [0017](0017-solo-owner-merge.md) | CI can't be skipped; while there's one owner, a PR needs no approval; agents merge only when told | Accepted |
+| [0018](0018-ui-react.md) | Build the UI with React, cache it for good, and budget our own code | Accepted |

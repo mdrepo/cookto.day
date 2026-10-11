@@ -1,6 +1,6 @@
 # 0005. Supply-chain policy: no runtime dependencies
 
-- **Status:** Accepted
+- **Status:** Superseded by 0018
 - **Date:** 2026-10-10
 - **Deciders:** Mayur
 

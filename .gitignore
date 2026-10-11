@@ -24,3 +24,4 @@ dist/
 # Playwright output
 test-results/
 playwright-report/
+spikes/ui-layer/dist/

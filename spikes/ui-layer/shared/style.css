@@ -1,0 +1,199 @@
+/* Shared by both spike versions, so the comparison is only the view layer. */
+:root {
+  color-scheme: light dark;
+  --bg: #fbf7f0;
+  --surface: #fffdf9;
+  --text: #2b2622;
+  --muted: #6b6259;
+  --border: #e6ddd0;
+  --subtle: #efe8dd;
+  --accent: #3f6b45;
+  --accent-soft: #e3ece0;
+  --on-accent: #fffdf9;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1a17;
+    --surface: #26231f;
+    --text: #f1ebe2;
+    --muted: #b3a99c;
+    --border: #3a352f;
+    --subtle: #302c27;
+    --accent: #8fbf8a;
+    --accent-soft: #2a3a2b;
+    --on-accent: #1c1a17;
+  }
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font:
+    16px/1.5 system-ui,
+    "Noto Sans",
+    "Noto Sans Devanagari",
+    "Noto Sans Arabic",
+    sans-serif;
+}
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+.screen {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 20px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 100vh;
+}
+.langs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+.chip {
+  min-height: 44px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  font-weight: 600;
+  font-size: 14px;
+}
+.chip[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+h1 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.2;
+}
+.hint {
+  color: var(--muted);
+}
+.list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.member {
+  border-bottom: 1px solid var(--subtle);
+}
+.member-row {
+  width: 100%;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border: 0;
+  background: transparent;
+  text-align: start;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.who {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+.who-name {
+  font-weight: 600;
+}
+.who-group,
+.label {
+  font-size: 14px;
+  color: var(--muted);
+}
+.edit-link {
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 600;
+}
+.card {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.name-input {
+  height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  padding: 0 12px;
+}
+.groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.rule {
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: var(--subtle);
+}
+.actions {
+  display: flex;
+  gap: 8px;
+}
+.primary,
+.secondary {
+  height: 44px;
+  border-radius: 8px;
+  font-weight: 700;
+  padding: 0 14px;
+}
+.primary {
+  flex-grow: 1;
+  border: 0;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.secondary {
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.add {
+  width: 100%;
+  height: 52px;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-weight: 600;
+  text-align: start;
+  padding: 0 16px;
+}
+.footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  padding: 12px 0 16px;
+  background: linear-gradient(transparent, var(--bg) 30%);
+}
+.next {
+  width: 100%;
+  height: 52px;
+  border-radius: 8px;
+  border: 0;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+}

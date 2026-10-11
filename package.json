@@ -35,5 +35,8 @@
     "typescript": "6.0.3",
     "typescript-eslint": "8.70.1"
   },
-  "trustedDependencies": []
+  "trustedDependencies": [],
+  "dependencies": {
+    "preact": "11.0.0"
+  }
 }

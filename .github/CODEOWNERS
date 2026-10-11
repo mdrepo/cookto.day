@@ -48,3 +48,5 @@
 /packages/engine/package.json       @mdrepo
 /packages/engine/tsconfig.json      @mdrepo
 /packages/engine/test/              @mdrepo
+/packages/ui/package.json           @mdrepo
+/packages/ui/tokens/                @mdrepo

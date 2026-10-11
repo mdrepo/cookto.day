@@ -1,0 +1,131 @@
+{
+  "$description": "Type, corners and spacing: the same in light and dark (ADR 0019).",
+  "font": {
+    "body": {
+      "$type": "fontFamily",
+      "$value": [
+        "system-ui",
+        "-apple-system",
+        "Segoe UI",
+        "Roboto",
+        "Noto Sans",
+        "Noto Sans Devanagari",
+        "Noto Sans Arabic",
+        "sans-serif"
+      ],
+      "$description": "All text: system fonts, with Devanagari and Arabic"
+    }
+  },
+  "text": {
+    "$type": "dimension",
+    "sm": {
+      "$value": {
+        "value": 0.875,
+        "unit": "rem"
+      },
+      "$description": "Hints, notes, labels, quantities"
+    },
+    "md": {
+      "$value": {
+        "value": 1,
+        "unit": "rem"
+      },
+      "$description": "Body text and list items (the default)"
+    },
+    "lg": {
+      "$value": {
+        "value": 1.25,
+        "unit": "rem"
+      },
+      "$description": "Section and card titles"
+    },
+    "xl": {
+      "$value": {
+        "value": 1.75,
+        "unit": "rem"
+      },
+      "$description": "The page title"
+    }
+  },
+  "leading": {
+    "$type": "number",
+    "$value": 1.5,
+    "$description": "Line height for all text"
+  },
+  "radius": {
+    "$type": "dimension",
+    "sm": {
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      },
+      "$description": "Tags, small badges"
+    },
+    "md": {
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      },
+      "$description": "Buttons, inputs, selects"
+    },
+    "lg": {
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      },
+      "$description": "Cards and panels"
+    },
+    "full": {
+      "$value": {
+        "value": 999,
+        "unit": "px"
+      },
+      "$description": "Pills, round buttons, counts"
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "1": {
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      },
+      "$description": "Tight gaps, like a title and its tagline"
+    },
+    "2": {
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      },
+      "$description": "Between a label and its control"
+    },
+    "3": {
+      "$value": {
+        "value": 12,
+        "unit": "px"
+      },
+      "$description": "Inside a control, side to side"
+    },
+    "4": {
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      },
+      "$description": "Screen side padding; between blocks"
+    },
+    "6": {
+      "$value": {
+        "value": 24,
+        "unit": "px"
+      },
+      "$description": "Between sections"
+    },
+    "8": {
+      "$value": {
+        "value": 32,
+        "unit": "px"
+      },
+      "$description": "Around an empty state"
+    }
+  }
+}

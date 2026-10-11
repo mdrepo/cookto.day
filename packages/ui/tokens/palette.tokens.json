@@ -1,0 +1,46 @@
+{
+  "$description": "The colours, by name (ADR 0019). Only light and dark use them: the app never names a palette colour, only what a colour is for.",
+  "color": {
+    "$type": "color",
+    "paper-50": {
+      "$value": "#fffdf9",
+      "$description": "Fresh paper: cards and inputs"
+    },
+    "paper-100": {
+      "$value": "#fbf7f0",
+      "$description": "Warm paper: the page"
+    },
+    "paper-300": {
+      "$value": "#e6ddd0",
+      "$description": "Pencil lines on paper"
+    },
+    "ink-500": { "$value": "#6b6259", "$description": "Faded ink" },
+    "ink-900": { "$value": "#2b2622", "$description": "Dark ink" },
+    "night-700": {
+      "$value": "#3a352f",
+      "$description": "Lines on night paper"
+    },
+    "night-800": { "$value": "#26231f", "$description": "Night cards" },
+    "night-900": { "$value": "#1c1a17", "$description": "Night paper" },
+    "mist-100": { "$value": "#f1ebe2", "$description": "Light ink, for night" },
+    "mist-400": { "$value": "#b3a99c", "$description": "Faded light ink" },
+    "aubergine-100": { "$value": "#f1e4ec", "$description": "Aubergine wash" },
+    "aubergine-300": {
+      "$value": "#d9a3c6",
+      "$description": "Aubergine, light, for night"
+    },
+    "aubergine-700": {
+      "$value": "#6e3b5f",
+      "$description": "Aubergine: the action colour"
+    },
+    "aubergine-900": {
+      "$value": "#3a2934",
+      "$description": "Aubergine wash, for night"
+    },
+    "ember-300": {
+      "$value": "#e8955f",
+      "$description": "Ember, light, for night"
+    },
+    "ember-700": { "$value": "#a64b17", "$description": "Ember: use it soon" }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "$description": "What each colour is for, in the light theme (ADR 0019). Every name here is also in dark.tokens.json. Contrast is checked on the colours each one lists.",
+  "color": {
+    "$type": "color",
+    "bg": {
+      "$value": "{color.paper-100}",
+      "$description": "Page background (paper)"
+    },
+    "surface": {
+      "$value": "{color.paper-50}",
+      "$description": "Cards, panels, inputs"
+    },
+    "text": {
+      "$value": "{color.ink-900}",
+      "$description": "Text (ink)",
+      "$extensions": {
+        "day.cookto.contrast": {
+          "on": ["color.bg", "color.surface", "color.accent-soft"]
+        }
+      }
+    },
+    "text-muted": {
+      "$value": "{color.ink-500}",
+      "$description": "Secondary text: hints, dates, quantities",
+      "$extensions": {
+        "day.cookto.contrast": {
+          "on": ["color.bg", "color.surface"]
+        }
+      }
+    },
+    "border": {
+      "$value": "{color.paper-300}",
+      "$description": "Borders and dividers"
+    },
+    "accent": {
+      "$value": "{color.aubergine-700}",
+      "$description": "Actions: the main button, selected state, links",
+      "$extensions": {
+        "day.cookto.contrast": {
+          "on": ["color.bg", "color.surface"]
+        }
+      }
+    },
+    "accent-soft": {
+      "$value": "{color.aubergine-100}",
+      "$description": "A soft fill behind a selected chip or row"
+    },
+    "on-accent": {
+      "$value": "{color.paper-50}",
+      "$description": "Text and icons on `--color-accent`",
+      "$extensions": {
+        "day.cookto.contrast": {
+          "on": ["color.accent"]
+        }
+      }
+    },
+    "warn": {
+      "$value": "{color.ember-700}",
+      "$description": "About to go off, errors",
+      "$extensions": {
+        "day.cookto.contrast": {
+          "on": ["color.bg", "color.surface"]
+        }
+      }
+    }
+  }
+}

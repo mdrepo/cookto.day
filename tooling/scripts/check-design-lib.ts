@@ -101,7 +101,11 @@ function directionAndOriginProblems(line: string): string[] {
     if (m)
       out.push(`"${m[0].trim()}" breaks right-to-left layouts: use ${instead}`);
   }
-  if (/@font-face|@import\b|url\(\s*["']?(https?:)?\/\//.test(line))
+  if (
+    /@font-face|@import\s+(?:url\(\s*)?["']?(?:[a-z]+:)?\/\/|url\(\s*["']?(https?:)?\/\//i.test(
+      line,
+    )
+  )
     out.push(
       "loads something from another site: everything ships with the app",
     );
@@ -121,4 +125,22 @@ export function designProblems(source: string): DesignProblem[] {
         ...directionAndOriginProblems(line),
       ].map((t) => ({ line: i + 1, text: t })),
     );
+}
+
+/**
+ * CSS variables defined in a source file. They may only be defined in the
+ * generated packages/ui/src/tokens.css, so every value has one source
+ * (ADR 0019).
+ */
+export function tokenDefinitions(source: string): DesignProblem[] {
+  return source.split("\n").flatMap((line, i) =>
+    /(?:^|[\s;{])--[a-z][\w-]*\s*:/i.test(line)
+      ? [
+          {
+            line: i + 1,
+            text: "defines a CSS variable: add it to packages/ui/tokens/*.tokens.json and run bun run tokens",
+          },
+        ]
+      : [],
+  );
 }

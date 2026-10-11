@@ -1,5 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import { designProblems } from "../scripts/check-design-lib.js";
+import {
+  designProblems,
+  tokenDefinitions,
+} from "../scripts/check-design-lib.js";
 
 const problems = (css: string) => designProblems(css).map((p) => p.text);
 
@@ -59,6 +62,12 @@ describe("designProblems", () => {
       1,
     );
     expect(problems("@font-face { font-family: X; }")).not.toHaveLength(0);
+    expect(problems('@import "//cdn.example/x.css";')).toHaveLength(1);
+  });
+
+  test("allows importing the design system's own stylesheets", () => {
+    expect(problems('@import "@cookto/ui/tokens.css";')).toEqual([]);
+    expect(problems('@import "./parts.css";')).toEqual([]);
   });
 
   test("ignores ids and words that only look like colours", () => {
@@ -68,5 +77,17 @@ describe("designProblems", () => {
 
   test("reports the line", () => {
     expect(designProblems(".a {}\n.b { color: #000; }")[0]?.line).toBe(2);
+  });
+});
+
+describe("tokenDefinitions", () => {
+  test("finds CSS variables defined outside the generated tokens", () => {
+    expect(
+      tokenDefinitions(":root {\n  --color-bg: #fff;\n}").map((p) => p.line),
+    ).toEqual([2]);
+    expect(tokenDefinitions(".a { --gap: 4px; }")).toHaveLength(1);
+    expect(
+      tokenDefinitions(".a { color: var(--color-text); gap: var(--space-2); }"),
+    ).toEqual([]);
   });
 });

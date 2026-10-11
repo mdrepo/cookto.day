@@ -1,6 +1,9 @@
-import { rmSync, writeFileSync } from "node:fs";
+import { readFileSync, rmSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { Glob } from "bun";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { App } from "../src/app.js";
 
 // Builds the static site (ADR 0013): every page in src/*.html, with the
 // scripts and stylesheets it links bundled, minified and hashed into dist/.
@@ -10,6 +13,8 @@ import { Glob } from "bun";
 // React goes into a file of its own, whose name changes only with React's
 // version, and every hashed file is cached for a year (ADR 0018). So a repeat
 // visit, or a deploy that only changed our code, doesn't download React again.
+// Each page's empty <div id="app"></div> is filled with the app's English
+// markup, so the page reads before the script runs; React then takes it over.
 
 /** The app's folder: apps/web. */
 export const APP_DIR = join(import.meta.dir, "..");
@@ -52,8 +57,19 @@ export async function buildSite(
       rmSync(o.path);
     else files.push(o.path);
   }
+  for (const page of files.filter((f) => f.endsWith(".html"))) prerender(page);
   writeHeaders(outdir, files);
   return files;
+}
+
+const APP_ROOT = '<div id="app"></div>';
+
+/** Fills the page's app root with the app as it first renders, in English. */
+function prerender(page: string): void {
+  const html = readFileSync(page, "utf8");
+  if (!html.includes(APP_ROOT)) return;
+  const app = renderToStaticMarkup(createElement(App));
+  writeFileSync(page, html.replace(APP_ROOT, `<div id="app">${app}</div>`));
 }
 
 /**

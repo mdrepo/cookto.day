@@ -41,6 +41,7 @@ That is fine on mobile data in India, Dubai, Japan or Singapore, once. It should
 
 - React's file is `chunk-<hash>.js`, not `react-<hash>.js`: Bun names every shared chunk `chunk`. The budget test finds it by content and checks it holds no code of ours, and its name stays the same when only our code changes.
 - `_headers` lists each hashed file by name, so the year-long cache can't catch a page or a future service worker.
+- The page's no-script copy is the app itself: the build renders `App` in English into `<div id="app">`, so it can't drift from the React code.
 - The DOM tests build without the split, so the page's script still runs as one inline file in happy-dom.
 - `eslint-plugin-react-hooks` is 5.2.0: the same rules as 7.x without Babel and its 40-odd packages.
 - Not yet: the service worker (offline repeat visits) and the time-to-first-screen check. Working offline is new behaviour, so it comes as its own issue, spec and tests.

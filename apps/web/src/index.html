@@ -15,30 +15,8 @@
     <script type="module" src="./main.tsx"></script>
   </head>
   <body>
-    <!-- The English page, readable before the script runs. React takes it over
-         (main.tsx); keep this markup the same as app.tsx. -->
-    <div id="app">
-      <header class="site-header">
-        <h1 class="site-title">cookto.day</h1>
-        <p class="site-tagline">
-          What to cook today, from what's already in your kitchen
-        </p>
-        <label class="field">
-          <span>Language</span>
-          <select id="language" class="field-select"></select>
-        </label>
-      </header>
-      <main class="page">
-        <section class="empty-state" aria-labelledby="empty-title">
-          <h2 id="empty-title" class="empty-title">Your kitchen is empty</h2>
-          <p class="empty-body">
-            Add a grocery bill to see what you can cook today
-          </p>
-        </section>
-        <p class="note">
-          Your bills and pantry stay in this browser. Nothing is uploaded.
-        </p>
-      </main>
-    </div>
+    <!-- The build fills this with the app's English markup (scripts/build.ts),
+         so the page reads before the script runs. React then takes it over. -->
+    <div id="app"></div>
   </body>
 </html>

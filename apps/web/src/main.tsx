@@ -1,3 +1,6 @@
+// The design system's styles (ADR 0019): the page has none of its own.
+import "@cookto/ui/tokens.css";
+import "@cookto/ui/foundation.css";
 import { StrictMode } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";

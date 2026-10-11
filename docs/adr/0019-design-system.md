@@ -82,3 +82,11 @@ The design system is a workspace, `packages/ui` (`@cookto/ui`), in five layers. 
 - Templates are in `tooling/templates/component/`, as `.tmpl` files so the checks don't read them as code. The generated part renders nothing and its test fails, saying so.
 - DESIGN.md is written through the token generator, which formats the whole file, so `design:check` sees it as `bun run tokens` would write it.
 
+**Layouts (#33, 2026-10-12):**
+
+- `Stack`, `Cluster` and `Screen` in `packages/ui/src/layouts/`, with the same files and checks as components. `bun run new layout` makes one. `ActionBar` waits for onboarding, its first user.
+- `bun run tokens` also writes `packages/ui/src/tokens.ts`, the spacing steps, so a layout's `gap` is typed `1 | 2 | 3 | 4 | 6 | 8`.
+- `Screen` holds the page's header (title, tagline, the language switch) until a `Header` component arrives with onboarding.
+- `apps/web/src/styles.css` is gone: the app imports the tokens and foundation in `main.tsx`, and design:check fails on any CSS file in an app's `src/` but the kit's.
+- Every e2e test runs on a phone and a desktop (1280px); iPhone Safari is #35.
+

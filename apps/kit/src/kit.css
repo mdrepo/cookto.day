@@ -41,6 +41,11 @@
   margin-block-start: var(--space-4);
 }
 
+/* Parts as wide as a screen: one panel above the other, full width. */
+.kit-panels-wide {
+  grid-template-columns: 1fr;
+}
+
 .kit-panel {
   display: flex;
   flex-direction: column;

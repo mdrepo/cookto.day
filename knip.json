@@ -19,7 +19,7 @@
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
     "packages/ui": {
-      "entry": ["src/components/*/*.kit.tsx"],
+      "entry": ["src/{components,layouts}/*/*.kit.tsx"],
       "project": ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}"]
     },
     "tooling": {

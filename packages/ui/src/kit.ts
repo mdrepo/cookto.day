@@ -17,6 +17,8 @@ export interface Kit {
   name: string;
   /** What it's for, in one sentence. */
   about: string;
+  /** Shown full width, one panel above the other: for parts as wide as a screen. */
+  wide?: boolean;
   examples: KitExample[];
 }
 

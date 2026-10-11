@@ -161,9 +161,10 @@ export function componentProblems(
   folders: ComponentFolder[],
   tests: string[],
   designMd: string,
+  base = "packages/ui/src/components",
 ): string[] {
   return folders.flatMap(({ name, files }) => {
-    const dir = `packages/ui/src/components/${name}`;
+    const dir = `${base}/${name}`;
     const missing = [".tsx", ".module.css", ".kit.tsx"]
       .map((ext) => `${name}${ext}`)
       .filter((f) => !files.includes(f))
@@ -172,7 +173,7 @@ export function componentProblems(
       missing.push(`packages/ui/test/${name}.test.tsx`);
     const out = missing.map((f) => `${name}: add ${f}`);
     if (!designMd.includes(`\`${name}\``))
-      out.push(`${name}: add a row for \`${name}\` to DESIGN.md's components`);
+      out.push(`${name}: add a row for \`${name}\` to DESIGN.md`);
     return out;
   });
 }
@@ -193,4 +194,22 @@ export function iconProblems(path: string, source: string): string[] {
   if (/^apps\/[^/]+\/src\//.test(path) && /<svg[\s>]/.test(source))
     out.push(`draws its own <svg>: use <Icon name="..." /> from @cookto/ui`);
   return out;
+}
+
+/** The one app with CSS of its own: the kit page frames the parts. */
+const APP_CSS_ALLOWED = /^apps\/kit\/src\//;
+
+/**
+ * Apps compose parts and layouts from @cookto/ui; they don't style
+ * (ADR 0019). `paths` are files in apps' and packages' src/.
+ */
+export function appCssProblems(paths: string[]): string[] {
+  return paths
+    .filter(
+      (p) => /^apps\/[^/]+\/src\/.+\.css$/.test(p) && !APP_CSS_ALLOWED.test(p),
+    )
+    .map(
+      (p) =>
+        `${p}: apps don't style. Build the screen from parts and layouts in @cookto/ui, and add or change one there if something's missing (ask a code owner for its design).`,
+    );
 }

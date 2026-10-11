@@ -1,4 +1,4 @@
-import { EmptyState, Field, Note, Select } from "@cookto/ui";
+import { EmptyState, Field, Note, Screen, Select } from "@cookto/ui";
 import { useLayoutEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import { isLocale, LOCALES, type Locale } from "./i18n/index.js";
@@ -44,10 +44,10 @@ export function App() {
   }
 
   return (
-    <>
-      <header className="site-header">
-        <h1 className="site-title">cookto.day</h1>
-        <p className="site-tagline">{t.tagline}</p>
+    <Screen
+      title="cookto.day"
+      tagline={t.tagline}
+      header={
         <Field label={t.languageLabel} layout="inline" id="language">
           {(control) => (
             <Select
@@ -65,11 +65,10 @@ export function App() {
             </Select>
           )}
         </Field>
-      </header>
-      <main className="page">
-        <EmptyState title={t.emptyTitle}>{t.emptyBody}</EmptyState>
-        <Note>{t.privacy}</Note>
-      </main>
-    </>
+      }
+    >
+      <EmptyState title={t.emptyTitle}>{t.emptyBody}</EmptyState>
+      <Note>{t.privacy}</Note>
+    </Screen>
   );
 }

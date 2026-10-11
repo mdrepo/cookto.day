@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  appCssProblems,
   componentProblems,
   designProblems,
   iconProblems,
@@ -144,5 +145,36 @@ describe("iconProblems", () => {
     expect(
       iconProblems("apps/web/src/app.tsx", '<Icon name="carrot" />'),
     ).toEqual([]);
+  });
+});
+
+describe("appCssProblems", () => {
+  test("an app's own CSS fails: apps compose, they don't style", () => {
+    const [problem] = appCssProblems(["apps/web/src/styles.css"]);
+    expect(problem).toContain("apps/web/src/styles.css");
+    expect(problem).toContain("@cookto/ui");
+  });
+
+  test("the kit page's frame, and the design system's own CSS, pass", () => {
+    expect(
+      appCssProblems([
+        "apps/kit/src/kit.css",
+        "packages/ui/src/foundation.css",
+        "packages/ui/src/layouts/Stack/Stack.module.css",
+        "apps/web/src/app.tsx",
+      ]),
+    ).toEqual([]);
+  });
+});
+
+describe("componentProblems for layouts", () => {
+  test("names the layout's own folder", () => {
+    const found = componentProblems(
+      [{ name: "Stack", files: ["Stack.tsx"] }],
+      [],
+      "`Stack`",
+      "packages/ui/src/layouts",
+    ).join("\n");
+    expect(found).toContain("packages/ui/src/layouts/Stack/Stack.kit.tsx");
   });
 });

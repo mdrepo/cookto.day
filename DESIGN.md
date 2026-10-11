@@ -109,16 +109,27 @@ Always the logical form: `margin-inline-start` not `margin-left`, `padding-inlin
 
 Build screens from these React components, imported from `@cookto/ui` ([ADR 0019](docs/adr/0019-design-system.md)). **Reuse before you add.** A new component, or a new variant of one, needs a design from a code owner first (in the issue). See each one, in every theme, language and state, on the kit page: [cookto.day/kit/](https://cookto.day/kit/) (`bun run --cwd apps/kit dev`).
 
-| Need                             | Use                      | Notes                                                                                                                                                                                     |
-| -------------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A label and its control          | `Field`                  | Label first, then the control, then any problem in the warning colour. `layout="inline"` in a header                                                                                      |
-| A choice from a short list       | `Select`                 | The browser's own select, 44px high. Always inside a `Field`. Can be disabled                                                                                                             |
-| Nothing to show yet              | `EmptyState`             | Dashed border on the surface colour. A title and one sentence that says what to do next                                                                                                   |
-| A quiet note                     | `Note`                   | Muted, small, centred. For reassurance ("Nothing is uploaded"), never for errors                                                                                                          |
-| Every page (until layouts)       | `.site-header` + `.page` | Title, tagline, language switch; one centred column. Becomes a layout (ADR 0019, step 4)                                                                                                  |
-| A sign: back, remove, a carrot   | `Icon`                   | `name` from its list, `size` sm, md or lg, and a `label` when it means something on its own. See Icons above                                                                              |
-| An action                        | `Button`                 | `kind`: one `main` (aubergine) per screen, `quiet` for the rest, `danger` to remove. `busy` while it works; `disabled` when it can't. An `icon` before the words, or alone with a `label` |
-| One thing: a dish, a pantry item | `Card`                   | Surface colour, border, large corners. Its `title` names it for screen readers; `level` sets its heading under the screen's                                                               |
+| Need                             | Use          | Notes                                                                                                                                                                                     |
+| -------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A label and its control          | `Field`      | Label first, then the control, then any problem in the warning colour. `layout="inline"` in a header                                                                                      |
+| A choice from a short list       | `Select`     | The browser's own select, 44px high. Always inside a `Field`. Can be disabled                                                                                                             |
+| Nothing to show yet              | `EmptyState` | Dashed border on the surface colour. A title and one sentence that says what to do next                                                                                                   |
+| A quiet note                     | `Note`       | Muted, small, centred. For reassurance ("Nothing is uploaded"), never for errors                                                                                                          |
+| A sign: back, remove, a carrot   | `Icon`       | `name` from its list, `size` sm, md or lg, and a `label` when it means something on its own. See Icons above                                                                              |
+| An action                        | `Button`     | `kind`: one `main` (aubergine) per screen, `quiet` for the rest, `danger` to remove. `busy` while it works; `disabled` when it can't. An `icon` before the words, or alone with a `label` |
+| One thing: a dish, a pantry item | `Card`       | Surface colour, border, large corners. Its `title` names it for screen readers; `level` sets its heading under the screen's                                                               |
+
+### Layouts
+
+How parts sit together. Screens are layouts filled with parts; the space between parts comes only from a layout's `gap`, a spacing step (`gap={4}` is `--space-4`). A gap that isn't a step fails the typecheck.
+
+| Need                         | Use       | Notes                                                                                                                                                      |
+| ---------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A whole page                 | `Screen`  | The header (`title`, `tagline`, and `header` for the language switch), then the main part: one centred column, at most 40rem, 16px at the sides on a phone |
+| Parts one above the other    | `Stack`   | `gap`, default 4. Most of a screen is stacks                                                                                                               |
+| Parts side by side that wrap | `Cluster` | `gap`, default 2. Buttons in a row, chips. Starts from the right in Arabic                                                                                 |
+
+**Apps don't style.** An app's `src/` has no CSS of its own (`design:check`): if a screen needs something, it's a part or a layout in `@cookto/ui`. The kit page's frame is the one exception.
 
 A component has no outer margin: the space between parts belongs to the screen (and later, to layouts). Every component has the same files, which `design:check` checks: `<Name>.tsx`, `<Name>.module.css` and `<Name>.kit.tsx` in `packages/ui/src/components/<Name>/`, its test in `packages/ui/test/`, and a row here.
 

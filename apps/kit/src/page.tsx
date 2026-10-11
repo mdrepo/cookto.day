@@ -39,7 +39,9 @@ export function KitPage({ kits }: { kits: Kit[] }) {
               {kit.name}
             </h2>
             <p className="kit-about">{kit.about}</p>
-            <div className="kit-panels">
+            <div
+              className={kit.wide ? "kit-panels kit-panels-wide" : "kit-panels"}
+            >
               {PANELS.map((panel) => (
                 <div
                   key={panel.name}

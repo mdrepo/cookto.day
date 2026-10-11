@@ -11,6 +11,8 @@ Parts are designed, but the space between them isn't: each screen still sets its
 
 Criteria 1 to 3 are shown on the kit page (cookto.day/kit/), 4 on cookto.day, and 5 and 6 are tooling. Each becomes one test, named after it (ADR 0002, 0003).
 
+**Phone and desktop.** From this change on, every e2e test, these and all the earlier ones, in both apps, runs twice: on a phone (Pixel 7) and on a desktop (Chromium, 1280px wide). A layout that only works on a phone fails.
+
 ### 1. parts in a stack are spaced by the spacing steps only
 
 - **Given** the kit's `Stack` examples, with gaps of step 2 and step 6
@@ -26,8 +28,8 @@ Criteria 1 to 3 are shown on the kit page (cookto.day/kit/), 4 on cookto.day, an
 ### 3. a screen is one centred column
 
 - **Given** the kit's `Screen` example
-- **When** it's shown on a phone and on a wide screen
-- **Then** its content is one column, at most 40rem wide and centred, with 16px at each side on a phone
+- **When** it's shown on a phone and on a desktop
+- **Then** its content is one column, at most 40rem wide and centred on the desktop, with 16px at each side on the phone
 
 ### 4. today's page looks the same, with no CSS of its own
 
@@ -55,4 +57,5 @@ None for the app. The kit's examples reuse the words it has.
 
 - `ActionBar` (the main buttons where the thumb reaches): it comes with onboarding, its first user.
 - `new screen`: with onboarding too.
+- iPhone Safari (WebKit): its own issue and ADR, since it changes ADR 0004.
 - The page's header: it becomes a `Header` component with onboarding; until then, `Screen` holds it.

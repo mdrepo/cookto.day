@@ -9,8 +9,7 @@
         "test/**/*.ts",
         "e2e/**/*.ts",
         "scripts/**/*.ts"
-      ],
-      "ignoreDependencies": ["@cookto/ui"]
+      ]
     },
     "apps/kit": {
       "entry": ["scripts/*.ts", "src/page.tsx"],

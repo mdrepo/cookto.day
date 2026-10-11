@@ -65,19 +65,22 @@ if (readFileSync("CLAUDE.md", "utf8").trim() !== "@AGENTS.md") {
   );
 }
 
-// Claude Code asks before editing exactly the paths CODEOWNERS protects.
+// Claude Code asks before editing exactly the paths CODEOWNERS protects, and
+// before merging a PR: merging is the owner's approval (ADR 0017).
 const settings = JSON.parse(readFileSync(".claude/settings.json", "utf8")) as {
   permissions?: { ask?: string[] };
 };
-const expectedAsk = askRules(
-  ownedPaths(readFileSync(".github/CODEOWNERS", "utf8")),
-);
+const expectedAsk = [
+  ...askRules(ownedPaths(readFileSync(".github/CODEOWNERS", "utf8"))),
+  "Bash(gh pr merge:*)",
+  "Bash(gh pr merge)",
+];
 const actualAsk = settings.permissions?.ask ?? [];
 const missingAsk = expectedAsk.filter((r) => !actualAsk.includes(r));
 const extraAsk = actualAsk.filter((r) => !expectedAsk.includes(r));
 if (missingAsk.length > 0 || extraAsk.length > 0) {
   problems.push(
-    `.claude/settings.json permissions.ask must match .github/CODEOWNERS. Missing: ${missingAsk.join(", ") || "none"}. Extra: ${extraAsk.join(", ") || "none"}.`,
+    `.claude/settings.json permissions.ask must match .github/CODEOWNERS, plus asking before gh pr merge. Missing: ${missingAsk.join(", ") || "none"}. Extra: ${extraAsk.join(", ") || "none"}.`,
   );
 }
 

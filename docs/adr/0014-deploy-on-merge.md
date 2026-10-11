@@ -1,6 +1,6 @@
 # 0014. Squash-merge; every merge to main deploys, after the gates
 
-- **Status:** Accepted
+- **Status:** Superseded by 0017
 - **Date:** 2026-10-10
 - **Deciders:** Mayur
 - **Supersedes:** [0009](0009-squash-merge.md)

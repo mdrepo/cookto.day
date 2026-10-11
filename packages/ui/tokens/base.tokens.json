@@ -132,5 +132,29 @@
       },
       "$description": "Around an empty state"
     }
+  },
+  "icon": {
+    "$type": "dimension",
+    "sm": {
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      },
+      "$description": "Icons in small text: hints, labels, chips"
+    },
+    "md": {
+      "$value": {
+        "value": 20,
+        "unit": "px"
+      },
+      "$description": "Icons in body text and list rows (the default)"
+    },
+    "lg": {
+      "$value": {
+        "value": 24,
+        "unit": "px"
+      },
+      "$description": "Icons on their own, like a close or back button"
+    }
   }
 }

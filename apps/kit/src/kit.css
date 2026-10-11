@@ -66,3 +66,15 @@
   gap: var(--space-2);
   margin: 0;
 }
+
+/* For examples: a part beside some words, or in muted text (KIT in
+   packages/ui/src/kit.ts). */
+.kit-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.kit-muted {
+  color: var(--color-text-muted);
+}

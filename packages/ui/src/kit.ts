@@ -28,6 +28,11 @@ export const words = {
     emptyTitle: "Your kitchen is empty",
     emptyBody: "Add a grocery bill to see what you can cook today",
     privacy: "Your bills and pantry stay in this browser. Nothing is uploaded.",
+    remove: "Remove",
+    carrots: "Carrots",
+    back: "Back",
+    fridge: "Fridge",
+    tomorrow: "Use by tomorrow",
   },
   ar: {
     language: "اللغة",
@@ -35,8 +40,20 @@ export const words = {
     emptyTitle: "مطبخك فارغ",
     emptyBody: "أضف فاتورة بقالة لترى ما يمكنك طبخه اليوم",
     privacy: "تبقى فواتيرك ومخزونك في هذا المتصفح. لا يتم رفع أي شيء.",
+    remove: "إزالة",
+    carrots: "جزر",
+    back: "رجوع",
+    fridge: "الثلاجة",
+    tomorrow: "استخدمه بحلول الغد",
   },
 } satisfies Record<KitLanguage, Record<string, string>>;
+
+/**
+ * The kit page's own classes (apps/kit/src/kit.css), for framing an example:
+ * a part beside some words, or in muted text. The page allows no inline
+ * styles (its CSP).
+ */
+export const KIT = { row: "kit-row", muted: "kit-muted" } as const;
 
 /** The languages, each named in its own script, for example selects. */
 export const LANGUAGES = [

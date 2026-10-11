@@ -35,3 +35,13 @@ The brand marks (logo, app icon) are not icons and stay our own SVG files.
 - Every screen gets the same kind of icon, sized and coloured by tokens, read correctly by screen readers, and turned round in Arabic.
 - One more package ships to users. It's small per icon, but it has one npm maintainer, so the health check needs a written exception; we rely on the pinned version, the release age and review of each upgrade.
 - DESIGN.md's "emoji and plain text are the icons" changes when `Icon` lands (#18), not before.
+
+## Implementation notes
+
+**Icon (#18, 2026-10-12):**
+
+- `lucide-react` 1.52.0, the newest release at least 7 days old. Its one-maintainer exception is in `dependency-allowlist.json`.
+- The approved names and which of them turn round are one object in `Icon.tsx`; the type of `name` comes from it, so an unlisted name fails the typecheck.
+- Sizes are the `icon.sm/md/lg` tokens. Turning round is `:dir(rtl)` in CSS, so it follows the page, or a panel, with no prop.
+- Icon was the first part made by `bun run new component`.
+

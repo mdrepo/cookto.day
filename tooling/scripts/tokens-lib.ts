@@ -29,7 +29,7 @@ const CONTRAST_KEY = "day.cookto.contrast";
 /** WCAG AA for body text. */
 const AA = 4.5;
 /** The base groups DESIGN.md shows as tables, besides colour. */
-const TABLE_GROUPS = ["text", "radius", "space"];
+const TABLE_GROUPS = ["text", "radius", "space", "icon"];
 
 const isObject = (v: unknown): v is Tree =>
   typeof v === "object" && v !== null && !Array.isArray(v);
@@ -215,7 +215,7 @@ export function renderCss(s: TokenSources): string {
   ].join("\n");
 }
 
-/** DESIGN.md's token tables, by group: color, then text, radius and space. */
+/** DESIGN.md's token tables, by group: color, then text, radius, space and icon. */
 export function renderTables(s: TokenSources): Record<string, string> {
   const palette = paletteOf(s);
   const tables: Record<string, string> = {};

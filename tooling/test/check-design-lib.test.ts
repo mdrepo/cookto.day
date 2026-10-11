@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   componentProblems,
   designProblems,
+  iconProblems,
   tokenDefinitions,
 } from "../scripts/check-design-lib.js";
 
@@ -121,5 +122,27 @@ describe("componentProblems", () => {
     expect(
       componentProblems([complete], ["Select.test.tsx"], "no rows").join("\n"),
     ).toContain("DESIGN.md");
+  });
+});
+
+describe("iconProblems", () => {
+  test("only the Icon component may import Lucide", () => {
+    const source = 'import { Carrot } from "lucide-react";';
+    expect(
+      iconProblems("packages/ui/src/components/Icon/Icon.tsx", source),
+    ).toEqual([]);
+    expect(
+      iconProblems("packages/ui/src/components/Card/Card.tsx", source),
+    ).toHaveLength(1);
+    expect(iconProblems("apps/web/src/app.tsx", source)).toHaveLength(1);
+  });
+
+  test("apps draw no SVG of their own: icons come from Icon", () => {
+    expect(
+      iconProblems("apps/web/src/app.tsx", '<svg viewBox="0 0 24 24" />'),
+    ).toHaveLength(1);
+    expect(
+      iconProblems("apps/web/src/app.tsx", '<Icon name="carrot" />'),
+    ).toEqual([]);
   });
 });

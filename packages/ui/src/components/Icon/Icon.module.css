@@ -1,0 +1,29 @@
+/* An icon's size comes from the --icon-* tokens; its colour is its text's
+   (Lucide draws with currentColor). No outer margin: the space between parts
+   belongs to the screen. */
+.sm,
+.md,
+.lg {
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.sm {
+  inline-size: var(--icon-sm);
+  block-size: var(--icon-sm);
+}
+
+.md {
+  inline-size: var(--icon-md);
+  block-size: var(--icon-md);
+}
+
+.lg {
+  inline-size: var(--icon-lg);
+  block-size: var(--icon-lg);
+}
+
+/* Icons that point turn round in right to left. */
+.turns:dir(rtl) {
+  transform: scaleX(-1);
+}

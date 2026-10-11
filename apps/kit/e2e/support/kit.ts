@@ -66,4 +66,20 @@ export class Kit {
       return { colour: getComputedStyle(el).color, warn };
     });
   }
+
+  /** Whether an icon is drawn turned round, left to right. */
+  mirrored(icon: Locator): Promise<boolean> {
+    return icon.evaluate((el) => {
+      const t = getComputedStyle(el).transform;
+      return t !== "none" && new DOMMatrix(t).a < 0;
+    });
+  }
+
+  /** The colour an icon's lines are drawn in, and its text's colour. */
+  strokeAndText(icon: Locator): Promise<{ stroke: string; text: string }> {
+    return icon.evaluate((el) => ({
+      stroke: getComputedStyle(el).stroke,
+      text: getComputedStyle(el.parentElement ?? el).color,
+    }));
+  }
 }

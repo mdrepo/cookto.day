@@ -22,7 +22,7 @@ bun run build                      # static site in apps/web/dist/
 
 ```sh
 bun run check                      # everything CI checks (on a PR, CI runs only what your change affects)
-bunx playwright install chromium   # once
+bunx playwright install chromium webkit   # once: Android, desktop and iPhone
 bun run e2e                        # browser tests, offline
 ```
 

@@ -48,7 +48,7 @@ jobs:
 
       # The browser tests gate the deploy (ADR 0014), offline as always (ADR 0004).
       - name: Install the test browser
-        run: bunx playwright install --with-deps chromium
+        run: bunx playwright install --with-deps chromium webkit
 
       - name: E2E tests
         run: bun run e2e

@@ -38,7 +38,7 @@ Use the variables, never a raw value. A token that's missing is added by a code 
 
 ### Type
 
-System fonts only: `font-family: var(--font-body)` (it includes Devanagari and Arabic system fonts). Line height `var(--leading)`.
+System fonts only: `font-family: var(--font-body)` (it includes Devanagari and Arabic system fonts). Line height `var(--leading)`; Hindi, Marathi and Arabic get `var(--leading-tall)` from the foundation.
 
 <!-- tokens:text -->
 
@@ -82,6 +82,10 @@ Steps of 4px. Screen side padding `--space-4`. Between blocks `--space-4` or `--
 | `var(--space-8)` | 32px  | Around an empty state                    |
 
 <!-- /tokens:space -->
+
+### Foundation
+
+[`packages/ui/src/foundation.css`](packages/ui/src/foundation.css) sets the page itself, once for every screen: the body's colours and type, taller lines for Devanagari and Arabic, an aubergine focus outline for keyboards, controls at least 44px tall, and no motion for people who turn it off. Don't restyle these on a screen; if one is wrong, change the foundation.
 
 ### Direction
 

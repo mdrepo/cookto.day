@@ -1,18 +1,6 @@
-/* The tokens come from the design system (ADR 0019): packages/ui/tokens/. */
+/* The tokens and the foundation come from the design system (ADR 0019). */
 @import "@cookto/ui/tokens.css";
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-body);
-  font-size: var(--text-md);
-  line-height: var(--leading);
-}
+@import "@cookto/ui/foundation.css";
 
 .site-header,
 .page {

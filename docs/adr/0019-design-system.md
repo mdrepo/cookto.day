@@ -37,7 +37,7 @@ The design system is a workspace, `packages/ui` (`@cookto/ui`), in five layers. 
 
 **Order of PRs**, each with its issue, spec and tests:
 
-0. The look: a few visual directions, made with Gemini; a code owner picks one. Today's "kitchen notebook" tokens are the starting point, not a given.
+0. The look: a few visual directions of one real screen, as a clickable prototype in every language, light and dark; a code owner picks one. Today's "kitchen notebook" tokens are the starting point, not a given.
 1. Tokens and their generator, with the contrast check. The current CSS variables move here, with the values the direction gives them.
 2. Foundation.
 3. `packages/ui` and the kit page, with the first components today's page needs (`Field`, `Select`, `EmptyState`, `Note`), then `Button` and `Card`.

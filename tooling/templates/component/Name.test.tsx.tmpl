@@ -1,0 +1,15 @@
+import { describe, test } from "bun:test";
+import { __Name__ } from "../src/index.js";
+import { render } from "./render.js";
+
+// Written by `bun run new component __Name__`. Replace it with tests of what
+// __Name__ does: its role and name, its states, and right to left (ADR 0019).
+describe("__Name__", () => {
+  test("renders something", () => {
+    const doc = render(<__Name__ />);
+    if (doc.body.childNodes.length === 0)
+      throw new Error(
+        "__Name__ renders nothing yet. Build it: the design (DESIGN.md), then this test, then the code.",
+      );
+  });
+});

@@ -41,6 +41,7 @@ Outside packages are declared only in the root `package.json`. A workspace depen
 bun install            # also turns on the git hooks
 bun run dev            # build the web app, then serve it on http://localhost:3000
 bun run build          # the static site, into apps/web/dist/
+bun run new component <Name>  # a new part in packages/ui, with every file it needs
 bun run check          # everything CI checks: allowlist, agent files, design, file sizes, Prettier, knip, and every workspace's types, ESLint and tests
 bun run check:affected # the same, but only the workspaces your branch affects (what CI runs on a PR)
 bun run test           # every workspace's unit and DOM tests (not a bare `bun test`)
@@ -72,7 +73,7 @@ There's no behaviour change for docs, dependency bumps, pure refactors covered b
 - **Keep the page small.** `apps/web/test/budget/page-size.test.ts` sets size budgets. If a change goes over, make it smaller; never raise a budget. *(`bun run test`)*
 - **Every word in every language.** Text the user sees lives in `apps/web/src/i18n/`: add the key to `en.ts`, then to `hi.ts`, `mr.ts` and `ar.ts` ([ADR 0012](docs/adr/0012-localisation.md)). Never hard-code UI text in a component. *(TypeScript: a missing key fails the typecheck)*
 - **Right to left works.** Use logical CSS (`margin-inline-start`, `inset-inline-end`, `text-align: start`), never `left`/`right`. *(`design:check`)*
-- **The look comes from `DESIGN.md`.** Colours, type, corners and spacing are tokens; reuse its components. If nothing fits, stop and ask for a design ([ADR 0011](docs/adr/0011-design-guide-and-check.md)). *(`design:check`)*
+- **The look comes from `DESIGN.md`.** Colours, type, corners and spacing are tokens; reuse its components. If nothing fits, stop and ask for a design ([ADR 0011](docs/adr/0011-design-guide-and-check.md)). A new component comes from `bun run new component`, never by hand: use the `add-component` skill. *(`design:check`)*
 - **No mocks of our own code.** Test behaviour end to end (Playwright, `apps/web/e2e/`), our built page in `apps/web/test/dom/` (happy-dom), or a pure function in `packages/engine/test/` ([ADR 0003](docs/adr/0003-testing-policy.md)). *(review; ESLint bans `.only`/`.skip`)*
 - **No raw HTML.** Render text with JSX; never `dangerouslySetInnerHTML` or `innerHTML`: bill text is untrusted input. Function components and hooks only, by the rules of hooks. *(ESLint)*
 - **Conventional Commits:** `type(scope): summary`, with type one of `feat fix test refactor docs chore ci build perf revert`. The PR title too ([ADR 0008](docs/adr/0008-git-hooks-without-dependencies.md), [0009](docs/adr/0009-squash-merge.md)). *(commit-msg hook, PR rules)*

@@ -18,6 +18,12 @@
     "packages/engine": {
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
+    "packages/usecases": {
+      "project": ["src/**/*.ts"]
+    },
+    "packages/data": {
+      "project": ["src/**/*.ts"]
+    },
     "packages/ui": {
       "entry": ["src/{components,layouts}/*/*.kit.tsx"],
       "project": ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}"]

@@ -1,0 +1,15 @@
+{
+  "name": "@cookto/data",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "lint": "eslint ."
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./read": "./src/read.ts",
+    "./write": "./src/write.ts"
+  }
+}

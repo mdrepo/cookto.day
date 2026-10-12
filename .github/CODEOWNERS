@@ -52,6 +52,10 @@
 /packages/ui/tsconfig.json          @mdrepo
 /packages/ui/tokens/                @mdrepo
 /packages/ui/test/                  @mdrepo
+/packages/usecases/package.json     @mdrepo
+/packages/usecases/tsconfig.json    @mdrepo
+/packages/data/package.json         @mdrepo
+/packages/data/tsconfig.json        @mdrepo
 /apps/kit/package.json              @mdrepo
 /apps/kit/tsconfig.json             @mdrepo
 /apps/kit/playwright.config.ts      @mdrepo

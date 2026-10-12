@@ -39,12 +39,20 @@
         "@cookto/ui": "workspace:*",
       },
     },
+    "packages/data": {
+      "name": "@cookto/data",
+      "version": "0.0.0",
+    },
     "packages/engine": {
       "name": "@cookto/engine",
       "version": "0.0.0",
     },
     "packages/ui": {
       "name": "@cookto/ui",
+      "version": "0.0.0",
+    },
+    "packages/usecases": {
+      "name": "@cookto/usecases",
       "version": "0.0.0",
     },
     "tooling": {
@@ -57,6 +65,8 @@
 
     "@cacheable/utils": ["@cacheable/utils@2.5.0", "", { "dependencies": { "hashery": "^1.5.1", "keyv": "^5.6.0" } }, "sha512-buipgOVDkkPXNR5+xBpDw7Zk2n1EvU7qBJCNUcL7rhQ//kfpOXPAvQ511Os0vpLYJ1pZnvudNytkQt2hst3wqA=="],
 
+    "@cookto/data": ["@cookto/data@workspace:packages/data"],
+
     "@cookto/engine": ["@cookto/engine@workspace:packages/engine"],
 
     "@cookto/kit": ["@cookto/kit@workspace:apps/kit"],
@@ -64,6 +74,8 @@
     "@cookto/tooling": ["@cookto/tooling@workspace:tooling"],
 
     "@cookto/ui": ["@cookto/ui@workspace:packages/ui"],
+
+    "@cookto/usecases": ["@cookto/usecases@workspace:packages/usecases"],
 
     "@cookto/web": ["@cookto/web@workspace:apps/web"],
 

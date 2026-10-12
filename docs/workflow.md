@@ -8,7 +8,7 @@ The rules come from [ADR 0002](adr/0002-tdd-workflow.md) (the workflow), [0003](
 
 ```sh
 bun install                        # also turns on the git hooks
-bunx playwright install chromium   # the browser for e2e tests
+bunx playwright install chromium webkit   # the browsers for e2e tests (ADR 0021)
 brew install gitleaks              # secret scanning in the pre-commit hook
 bun run check && bun run e2e       # everything should pass on a fresh clone
 ```

@@ -37,3 +37,4 @@ Each file records one decision: the context, what we chose, what we rejected and
 | [0021](0021-test-every-engine.md) | Test on an Android phone, an iPhone and a desktop, offline in every browser | Accepted |
 | [0022](0022-app-layers.md) | Split the app into screens, screen hooks, use cases and data, with imports checked | Accepted |
 | [0023](0023-state-and-rerenders.md) | Keep each kind of state in one place, and test what re-renders | Accepted |
+| [0024](0024-data-layer.md) | Read and write all data through one data layer that cancels stale work | Proposed |

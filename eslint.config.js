@@ -1,6 +1,7 @@
 import { defineConfig } from "eslint/config";
 import reactHooks from "eslint-plugin-react-hooks";
 import tseslint from "typescript-eslint";
+import { layers } from "./tooling/scripts/eslint-layers.js";
 
 // ADR 0007: typescript-eslint's strictTypeChecked preset, plus this repo's
 // rules. Formatting is Prettier's job, so no formatting rules here.
@@ -127,4 +128,6 @@ export default defineConfig(
     files: ["**/test/**", "**/e2e/**"],
     rules: { "max-lines-per-function": "off" },
   },
+  // Each layer imports only what it may (ADR 0022).
+  ...layers,
 );

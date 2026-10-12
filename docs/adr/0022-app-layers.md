@@ -1,6 +1,6 @@
 # 0022. Split the app into screens, screen hooks, use cases and data, with imports checked
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-10-12
 - **Deciders:** Mayur
 

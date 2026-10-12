@@ -35,4 +35,4 @@ Each file records one decision: the context, what we chose, what we rejected and
 | [0019](0019-design-system.md) | Build the UI from one design system in five layers, each checked by a script | Accepted |
 | [0020](0020-icons-lucide.md) | Draw icons from Lucide, through one Icon component | Accepted |
 | [0021](0021-test-every-engine.md) | Test on an Android phone, an iPhone and a desktop, offline in every browser | Accepted |
-| [0022](0022-app-layers.md) | Split the app into screens, screen hooks, use cases and data, with imports checked | Proposed |
+| [0022](0022-app-layers.md) | Split the app into screens, screen hooks, use cases and data, with imports checked | Accepted |

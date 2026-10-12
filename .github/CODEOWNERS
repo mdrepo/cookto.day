@@ -54,8 +54,10 @@
 /packages/ui/test/                  @mdrepo
 /packages/usecases/package.json     @mdrepo
 /packages/usecases/tsconfig.json    @mdrepo
+/packages/usecases/test/            @mdrepo
 /packages/data/package.json         @mdrepo
 /packages/data/tsconfig.json        @mdrepo
+/packages/data/test/                @mdrepo
 /apps/kit/package.json              @mdrepo
 /apps/kit/tsconfig.json             @mdrepo
 /apps/kit/playwright.config.ts      @mdrepo

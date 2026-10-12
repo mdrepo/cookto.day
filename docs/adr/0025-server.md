@@ -26,6 +26,12 @@ What doesn't change: bills carry names, addresses and phone numbers, and people 
 
 **Sign in with an emailed 6-digit code.** No passwords, no Google. The session is an `HttpOnly`, `Secure`, `SameSite=Strict` cookie set by our API: **JavaScript never sees a token,** so a token refresh re-renders nothing and a script injected into the page can't steal it. Supabase sends the codes through a free-tier email provider (Brevo or Resend), chosen in its PR; Supabase's own sender allows only a few emails an hour, to the team only.
 
+**Supabase can be swapped out.** The app already knows nothing of it. Inside the API, Supabase sits behind two small interfaces: `Auth` (send a code, check a code, read a session, sign out) and `Store` (households, members, sync changes). One adapter folder implements them, and lint lets only that folder import Supabase. Both interfaces have contract tests that any replacement must pass. To keep a move cheap:
+- **Our own ids.** Data refers to our `account_id`, never Supabase's user id; one table maps the two.
+- **Plain SQL migrations,** which any Postgres host runs.
+- **The API checks access itself.** Row-level security is a second guard, not the only one, so a host without it is still safe.
+- **No passwords to move.** Sign-in is by emailed code, so a new auth service needs only each person's email.
+
 **Signing in is optional.** Signed out, the app works fully on the phone. Signing in creates a household and uploads the phone's data into it. Another member joins with a one-time invite link. Joining a household when the phone already has data asks which to keep; merging two households is out of scope.
 
 **Sync, local first** ([0024](0024-data-layer.md)):

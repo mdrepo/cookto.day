@@ -1,4 +1,4 @@
-# 0022. Split each feature into screen, screen hook, use cases and data, with imports checked
+# 0022. Split the app into screens, screen hooks, use cases and data, with imports checked
 
 - **Status:** Proposed
 - **Date:** 2026-10-12
@@ -18,21 +18,22 @@ The usual answer is a layered pattern: UI, view model, use case, repository. Don
 |---|---|---|---|
 | Screen | `apps/web/src/features/<feature>/*.tsx` | Draws what its hook gives it, and calls its actions. No logic, no data access | `@cookto/ui`, its own feature's hooks, `i18n` |
 | Screen hook | `apps/web/src/features/<feature>/use*.ts` | The view model. Picks state for its component and offers actions | Use cases, data readers, the store |
-| Use cases | `apps/web/src/features/<feature>/usecases.ts` | The app's steps: check the input, write, queue what follows. Plain functions | `@cookto/engine`, data writers' types |
+| Use cases | `apps/web/src/usecases/<domain>.ts` | The app's steps: check the input, write, queue what follows. Plain functions, shared by every screen | `@cookto/engine`, data writers' types, other use cases |
 | Engine | `packages/engine` | Domain models and rules. Pure TypeScript | Nothing else of ours |
 | Data | `packages/data` (new) | Repositories: where data lives and how it's fetched, cached, cancelled and later synced | `@cookto/engine` only |
 
 - **A screen hook is the view model.** It's a hook, not a class: React already gives it a lifecycle. Any component that needs data gets its own small hook; a list row can have `usePantryRow(id)` and read just its item.
 - **Use cases are plain functions,** with what they need passed in: `addItem({ pantry }, input)`. Tests pass fakes, so they run fast with no browser and no database. No classes, no `execute()`.
-- **Reads may skip the use case.** A hook may read a repository directly. **Writes always go through a use case,** because writes carry the rules. `packages/data` exports readers and writers separately (`@cookto/data/read`, `@cookto/data/write`); only `usecases.ts` files may import writers.
+- **Reads may skip the use case.** A hook may read a repository directly. **Writes always go through a use case,** because writes carry the rules. `packages/data` exports readers and writers separately (`@cookto/data/read`, `@cookto/data/write`); only files in `usecases/` may import writers.
 - **One model.** The engine's types are used in every layer. Data maps only at its edges (the database's shape, later the server's). No mapper between hook and screen.
 - **No React below the hook.** Use cases, the engine and data never import React, so they can be tested and reused without it.
-- **Features don't reach into each other.** A feature imports another feature's code only through the engine, data or the kit. What two features share moves down a layer.
-- **Folders by feature, not by layer.** Things that change together sit together.
+- **Use cases are grouped by domain, not by screen:** `pantry.ts`, `plan.ts`, `bills.ts`. Any screen hook may call any use case, and a use case may call another (`addBill` uses `addItem`). A rule lives once, however many screens need it.
+- **Features don't reach into each other.** A feature folder holds screens and their hooks only. It imports another feature's code only through use cases, the engine, data or the kit. What two features share moves down a layer.
+- **Screens by feature, logic by domain.** A feature's screens and hooks change together, so they sit together. Use cases outlive any one screen, so they sit apart.
 
 **Checked by lint,** with ESLint's own `no-restricted-imports` per file pattern, so no plugin. Each rule's message names this ADR and says where the code belongs instead.
 
-**Started by the generator.** `bun run new screen <name>` (named in [0019](0019-design-system.md)) writes the feature folder: the screen, its hook, `usecases.ts`, and a red test for each.
+**Started by the generator.** `bun run new screen <name>` (named in [0019](0019-design-system.md)) writes the feature folder: the screen, its hook, and a red test for each. Use cases are added to their domain's file, with their tests.
 
 **One kind of test per layer**, within [0003](0003-testing-policy.md):
 
@@ -59,7 +60,8 @@ The usual answer is a layered pattern: UI, view model, use case, repository. Don
 ## Alternatives
 
 - **Full Clean Architecture:** a class per use case, a mapper per layer boundary, interfaces for everything. Many files that only pass calls along, which agents copy without thinking. We keep the boundaries and drop the ceremony.
-- **Folders by layer** (`components/`, `hooks/`, `usecases/`): one feature's change spreads over five folders.
+- **Folders by layer for everything** (`components/`, `hooks/`, `usecases/`): one screen's change spreads over many folders. We split by layer only where sharing needs it: use cases.
+- **Use cases inside each feature folder:** a use case two features need, like marking an item used from the pantry and from the week plan, has no proper home and gets copied.
 - **Logic in components:** quickest to write, but needs a browser to test, and mixes state into drawing, which costs re-renders.
 - **`eslint-plugin-boundaries`** for the import rules: a dependency for what `no-restricted-imports` already does here.
 - **Every read through a use case:** symmetrical, but most would be one line passing a call along.

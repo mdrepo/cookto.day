@@ -1,6 +1,6 @@
 # 0023. Keep each kind of state in one place, and test what re-renders
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-10-12
 - **Deciders:** Mayur
 

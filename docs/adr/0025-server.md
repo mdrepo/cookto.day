@@ -24,7 +24,7 @@ What doesn't change: bills carry names, addresses and phone numbers, and people 
 
 **Supabase holds accounts and synced data,** in a project in Singapore. The API calls Supabase with the person's own session, so Postgres's row-level rules apply as well as ours. **Every table has row-level security on,** and a check fails on a migration that adds a table without it. Migrations live in `supabase/migrations`.
 
-**Sign in with an emailed 6-digit code.** No passwords, no Google. The session is an `HttpOnly`, `Secure`, `SameSite=Strict` cookie set by our API: **JavaScript never sees a token,** so a token refresh re-renders nothing and a script injected into the page can't steal it. Codes are sent through an email provider with a free tier (Supabase's own sender is for testing only), chosen in its PR.
+**Sign in with an emailed 6-digit code.** No passwords, no Google. The session is an `HttpOnly`, `Secure`, `SameSite=Strict` cookie set by our API: **JavaScript never sees a token,** so a token refresh re-renders nothing and a script injected into the page can't steal it. Supabase sends the codes through a free-tier email provider (Brevo or Resend), chosen in its PR; Supabase's own sender allows only a few emails an hour, to the team only.
 
 **Signing in is optional.** Signed out, the app works fully on the phone. Signing in creates a household and uploads the phone's data into it. Another member joins with a one-time invite link. Joining a household when the phone already has data asks which to keep; merging two households is out of scope.
 
@@ -57,6 +57,8 @@ Deleting an account deletes its data within 30 days, and export works at any tim
 
 **A trace header.** The API logs `x-cookto-trace` when a request carries one. The Settings switch that adds it comes with the observability ADR.
 
+**Free plans first, measured.** Cloudflare's free plan gives each request 10 ms of processing; waiting on Supabase doesn't count. A test times every shop's parser on its sample email and fails past 5 ms, so a slow parser shows up before it reaches users. If emails outgrow the free plan, parsing moves to a Supabase Edge Function, still without storing the email, before we pay. If we do take Cloudflare's $5 plan, its email sending covers the sign-in codes too.
+
 **Lint and tests.** `fetch` is allowed only in `packages/data`'s network adapter. E2e tests stay offline ([0021](0021-test-every-engine.md)), with the API faked in the browser. The API has its own unit tests, and row-level rules are tested against a local Supabase.
 
 **Order of PRs:** `apps/api` with a health endpoint and the policy change; sign-in; households and invites; sync; bill forwarding, with the first Singapore shop.
@@ -66,6 +68,7 @@ Deleting an account deletes its data within 30 days, and export works at any tim
 - **The app talks to Supabase directly:** about 50 KB of library, the token in JavaScript, and a second site in the page's policy.
 - **Firebase:** offline support built in, but documents are hard to query for a week plan, and Google holds everything.
 - **All Cloudflare (D1, our own login):** one vendor, but login is the last thing to write ourselves.
+- **Firebase Auth for the codes, to avoid an email provider:** it sends sign-in links, not codes, and its free plan allows 5 such emails a day. More needs a billing account, and it adds a second vendor beside Supabase.
 - **Sign in with Google:** one tap, but awkward redirects in an installed web app, and Google learns who uses cookto.day. Can be added later.
 - **Reading people's Gmail for them:** never. It means reading a whole inbox, and Google requires a paid yearly audit.
 - **Upload bill PDFs to the server:** easier parsing, but the bill leaves the phone when it doesn't need to.
@@ -73,7 +76,7 @@ Deleting an account deletes its data within 30 days, and export works at any tim
 ## Consequences
 
 - The schedule opens on any phone, a family shares one plan, and forwarded bills fill the pantry.
-- We now run a service: uptime, costs (free tiers first; Workers may need the $5 plan for parsing time), backups and deletion requests.
+- We now run a service: uptime, costs (free tiers, measured, as above), backups and deletion requests.
 - A privacy policy page must say exactly what the table above says.
 - Supabase pauses a free project after a week with no use. Fine for a live app; forks of the template should know.
 - Supersedes [0013](0013-static-browser-only.md). What it got right stays: the phone first, nothing from other sites, small pages.

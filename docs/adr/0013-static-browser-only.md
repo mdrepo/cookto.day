@@ -1,6 +1,6 @@
 # 0013. Static and browser-only: no server, data stays on the device
 
-- **Status:** Accepted
+- **Status:** Superseded by 0025
 - **Date:** 2026-10-10
 - **Deciders:** Mayur
 

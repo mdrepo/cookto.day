@@ -26,7 +26,7 @@ Each file records one decision: the context, what we chose, what we rejected and
 | [0010](0010-agents-md-single-source.md) | AGENTS.md as the single source of agent guidance | Accepted |
 | [0011](0011-design-guide-and-check.md) | A design guide, enforced by a check with a ratchet | Accepted |
 | [0012](0012-localisation.md) | Localisation: every string in one place, right to left by default | Accepted |
-| [0013](0013-static-browser-only.md) | Static and browser-only: no server, data stays on the device | Accepted |
+| [0013](0013-static-browser-only.md) | Static and browser-only: no server, data stays on the device | Superseded by 0025 |
 | [0014](0014-deploy-on-merge.md) | Squash-merge; every merge to main deploys, after the gates | Superseded by 0017 |
 | [0015](0015-kitchen-packs.md) | Keep the engine generic; each kitchen's food culture lives in data packs | Accepted |
 | [0016](0016-monorepo.md) | One repository, split into workspaces; CI runs what a change affects | Accepted |
@@ -38,3 +38,4 @@ Each file records one decision: the context, what we chose, what we rejected and
 | [0022](0022-app-layers.md) | Split the app into screens, screen hooks, use cases and data, with imports checked | Accepted |
 | [0023](0023-state-and-rerenders.md) | Keep each kind of state in one place, and test what re-renders | Accepted |
 | [0024](0024-data-layer.md) | Read and write all data through one data layer that cancels stale work | Accepted |
+| [0025](0025-server.md) | Add login, sync and bill forwarding through our own API, on Supabase | Accepted |

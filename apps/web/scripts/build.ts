@@ -50,6 +50,8 @@ export async function buildSite(
     minify: true,
     splitting: split,
     define: { "process.env.NODE_ENV": JSON.stringify("production") },
+    // React Compiler memoises the app, so nobody writes useMemo (ADR 0023).
+    reactCompiler: true,
   });
   if (!result.success) {
     throw new AggregateError(result.logs, "Build failed");
@@ -94,6 +96,10 @@ async function renderApp(): Promise<string> {
       outdir: join(dir, "out"),
       target: "bun",
       define: { "process.env.NODE_ENV": JSON.stringify("production") },
+      // The same compiler as the browser's, without memoising: this renders
+      // once, on the server (ADR 0023).
+      reactCompiler: true,
+      reactCompilerOutputMode: "ssr",
     });
     const js = result.outputs.find((o) => o.kind === "entry-point");
     if (!result.success || !js)

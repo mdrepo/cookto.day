@@ -1,7 +1,9 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "workspaces": {
-    ".": {},
+    ".": {
+      "ignoreDependencies": ["eslint-plugin-react-hooks"]
+    },
     "apps/web": {
       "entry": ["src/main.tsx", "src/react.ts", "scripts/*.ts"],
       "project": [

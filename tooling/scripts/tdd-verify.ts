@@ -8,7 +8,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { claimedExemption, isSourceFile } from "./pr-rules.js";
+import { claimedExemption, isVerifiableCode } from "./pr-rules.js";
 import {
   changedLines,
   touchedTests,
@@ -203,12 +203,7 @@ function runAll(cwd: string, port: number): TestResult[] {
   ];
 }
 
-/**
- * Code a test can be red or green against: the apps' and packages' src/,
- * and the check scripts, whose own tests live in tooling/test/.
- */
-const isCode = (f: string) =>
-  isSourceFile(f) || f.startsWith("tooling/scripts/");
+const isCode = isVerifiableCode;
 
 /** A worktree with this branch's tests and main's code. */
 function withMainSource<T>(fn: (dir: string) => T): T {

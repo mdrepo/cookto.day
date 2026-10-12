@@ -76,7 +76,10 @@
       }
     },
     "eslint-plugin-react-hooks": {
-      "reason": "The rules of hooks, as lint errors (ADR 0018). 5.2.0: no dependencies, unlike 7.x (Babel and 40-odd packages)."
+      "reason": "The rules of hooks and React Compiler's own rules, as lint errors (ADR 0018, 0023). Lint only: never ships to users.",
+      "exceptions": {
+        "maintainers": "One npm maintainer, but published by the React team from facebook/react. Pinned exactly, 7-day release age, and each upgrade reviewed (ADR 0023)."
+      }
     }
   },
   "notes": "ESLint and typescript-eslint together add about 90 packages, over ADR 0006's warning level of 20. Accepted in ADR 0007: type-aware linting is the main deterministic guard against bad agent code. The app itself has no runtime dependencies (ADR 0005)."

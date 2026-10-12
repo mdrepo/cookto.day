@@ -74,6 +74,15 @@ const SOURCE = /^(apps|packages)\/[^/]+\/src\//;
 const TEST_FILES = /(^|\/)(test|e2e)\//;
 /** App code that ships to users. */
 export const isSourceFile = (f: string) => SOURCE.test(f);
+// Each app's build scripts: what they build is what the app's tests check.
+const APP_SCRIPTS = /^apps\/[^/]+\/scripts\//;
+/**
+ * Code a test can be red or green against, which tdd:verify swaps for main's
+ * (ADR 0002): the apps' and packages' src/, the apps' build scripts, and the
+ * check scripts, whose own tests live in tooling/test/.
+ */
+export const isVerifiableCode = (f: string) =>
+  isSourceFile(f) || APP_SCRIPTS.test(f) || f.startsWith("tooling/scripts/");
 const isTestCommit = (c: Commit) =>
   /^test(\([a-z0-9-]+\))?!?: /.test(c.subject);
 

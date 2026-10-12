@@ -17,6 +17,8 @@ export default defineConfig(
       "**/test-results/",
       "**/playwright-report/",
       "**/.turbo/",
+      // Build scratch: a build makes and deletes it while lint may be walking.
+      "**/.build/",
     ],
   },
   tseslint.configs.strictTypeChecked,

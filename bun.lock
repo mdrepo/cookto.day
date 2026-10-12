@@ -37,7 +37,9 @@
       "name": "@cookto/web",
       "version": "0.0.0",
       "dependencies": {
+        "@cookto/data": "workspace:*",
         "@cookto/ui": "workspace:*",
+        "@cookto/usecases": "workspace:*",
       },
     },
     "packages/data": {

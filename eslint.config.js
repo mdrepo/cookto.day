@@ -1,6 +1,7 @@
 import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 import { layers } from "./tooling/scripts/eslint-layers.js";
+import { storage } from "./tooling/scripts/eslint-storage.js";
 import { RAW_HTML, syntax } from "./tooling/scripts/eslint-syntax.js";
 
 // ADR 0007: typescript-eslint's strictTypeChecked preset, plus this repo's
@@ -68,24 +69,28 @@ export default defineConfig(
     rules: {
       // The app runs in people's browsers: no debug output left behind.
       "no-console": ["error", { allow: ["warn", "error"] }],
-      // Data stays in the browser (ADR 0013). Network calls need a new ADR.
+      // Even in packages/data, no network yet: it comes with the network
+      // adapter, and only there (ADR 0025). Elsewhere `storage` below bans it.
       "no-restricted-globals": [
         "error",
         {
           name: "fetch",
           message:
-            "cookto.day sends nothing over the network (ADR 0013). Ask a code owner.",
+            "The network goes only through packages/data's network adapter, which doesn't exist yet (ADR 0025). Ask a code owner.",
         },
         {
           name: "XMLHttpRequest",
           message:
-            "cookto.day sends nothing over the network (ADR 0013). Ask a code owner.",
+            "The network goes only through packages/data's network adapter, which doesn't exist yet (ADR 0025). Ask a code owner.",
         },
       ],
     },
   },
   // Banned code shapes, and React's rules (ADR 0003, 0018, 0023).
   ...syntax,
+  // Only packages/data, and the file that hands it the browser's storage,
+  // touch storage or the network (ADR 0024).
+  ...storage,
   {
     // A test file's describe() callback is long by nature.
     files: ["**/test/**", "**/e2e/**"],

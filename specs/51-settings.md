@@ -58,4 +58,8 @@ None.
 
 - TanStack Query, the IndexedDB adapter and render-count tests: they come with the first feature that reads saved data.
 - Syncing settings to the server (ADR 0025).
-- **How this lands:** criteria 1–3 are new behaviour, red first. Moving the app onto them changes no behaviour, so that part is a refactor covered by criterion 4; if tdd:verify can't tell the two apart in one PR, the app move is its own PR with a `refactor` exemption.
+
+## How it lands: two PRs
+
+1. **The new parts, red first:** the settings repository and its store, the `chooseLanguage` use case, and the storage ban rule with its tests (criteria 1–3). The app doesn't change, so every new test fails on main. The ban rule is written and tested here but not yet switched on, since `app.tsx` still uses `localStorage`.
+2. **The app moves onto them,** with feature folders and screen hooks, and the ban is switched on. No behaviour changes: a `refactor` exemption, proven by criterion 4 on every device.

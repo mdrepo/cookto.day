@@ -38,7 +38,7 @@ What doesn't change: bills carry names, addresses and phone numbers, and people 
 - Changes queue on the phone and are sent after a short pause, when the app opens, and when it's back online.
 - The phone asks for "changes since my last cursor"; the server keeps a sequence number per household.
 - A record's newer `version` wins. Pantry amounts sync as changes ("used 1"), not totals, so two people using the same packet both count.
-- Sync runs through the runner with the `latest` policy, so a new sync cancels an old one.
+- One sync runs at a time: a new one cancels the one in flight, and a cancelled sync changes nothing on the phone.
 
 **Bill forwarding.** Each household gets an address, `<code>@bills.cookto.day`. Cloudflare Email Routing hands each email to the API, which:
 1. accepts it only if the code is a household's and the sender is a member's verified email; anything else is dropped;

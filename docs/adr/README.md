@@ -36,3 +36,4 @@ Each file records one decision: the context, what we chose, what we rejected and
 | [0020](0020-icons-lucide.md) | Draw icons from Lucide, through one Icon component | Accepted |
 | [0021](0021-test-every-engine.md) | Test on an Android phone, an iPhone and a desktop, offline in every browser | Accepted |
 | [0022](0022-app-layers.md) | Split the app into screens, screen hooks, use cases and data, with imports checked | Accepted |
+| [0023](0023-state-and-rerenders.md) | Keep each kind of state in one place, and test what re-renders | Accepted |

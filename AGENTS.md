@@ -6,9 +6,9 @@ The person asking you for a change may not be able to judge a technical decision
 
 ## What this is
 
-cookto.day is a free, static web app that runs entirely in the browser: no server, no accounts. People in India and Dubai add their grocery bills (quick-commerce invoice PDFs first), the app keeps their fridge and pantry, and suggests what to cook today from the household's own dishes: first the ones that use what's about to go off, then the ones they have everything for (or are one item short of, which goes on the shopping list), skipping what they cooked recently. It speaks English, Hindi, Marathi and Arabic (right to left), and prices in ₹ and AED.
+cookto.day is a free web app that runs on the phone first, with an optional account to share a household's plan. People in India, Dubai and Singapore add their grocery bills (quick-commerce invoice PDFs first), the app keeps their fridge and pantry, and suggests what to cook today from the household's own dishes: first the ones that use what's about to go off, then the ones they have everything for (or are one item short of, which goes on the shopping list), skipping what they cooked recently. It speaks English, Hindi, Marathi and Arabic (right to left), and prices in ₹, AED and S$.
 
-Everything stays in the browser (`localStorage` / IndexedDB). Nothing is uploaded ([ADR 0013](docs/adr/0013-static-browser-only.md)).
+The phone's copy comes first: screens read IndexedDB, and the app works fully offline and signed out ([ADR 0024](docs/adr/0024-data-layer.md)). Optional login, sync between a household's phones and bill forwarding by email go through our own API only, on Supabase; bill PDFs and emails are never stored ([ADR 0025](docs/adr/0025-server.md)). Until those PRs land, nothing leaves the browser.
 
 ## Map
 
@@ -70,7 +70,7 @@ There's no behaviour change for docs, dependency bumps, pure refactors covered b
 - **Small files.** A component (a `.tsx` file in `src/`) stays under 150 lines; any other file under 300. Split it into smaller parts; never raise the limit. *(`size:check`)*
 - **Never weaken a check to make it pass.** Don't edit `eslint.config.js`, any `tsconfig*.json`, `knip.json`, `turbo.json`, `tooling/`, `.githooks/`, `.github/` or ADRs, and don't add `eslint-disable`, `@ts-expect-error`, `.skip` or `.only`, raise a size budget or a design cap. Fix the cause. If you believe a rule is wrong, stop and ask. *(ESLint, CODEOWNERS)*
 - **React is the only package the app ships; few in the tooling.** Nothing else that runs in people's browsers, no router, state or component library: use React, Bun and Web APIs ([ADR 0018](docs/adr/0018-ui-react.md)). If something truly needs a package, use the `add-dependency` skill: a code owner must approve it. *(`deps:check`, `deps:health`, knip)*
-- **Nothing leaves the browser.** No `fetch`, no analytics, no fonts, scripts or styles from other sites. People's bills have their name, address and phone number on them ([ADR 0013](docs/adr/0013-static-browser-only.md)). *(ESLint, the page's Content-Security-Policy, the size budget test, e2e runs with no internet)*
+- **Nothing leaves the browser except through our own API.** No `fetch` outside `packages/data`'s network adapter (none yet), no analytics, no fonts, scripts or styles from other sites. People's bills have their name, address and phone number on them, so the server never holds bill PDFs, bill emails, or those details ([ADR 0025](docs/adr/0025-server.md)). *(ESLint, the page's Content-Security-Policy, the size budget test, e2e runs with no internet)*
 - **Keep the page small.** `apps/web/test/budget/page-size.test.ts` sets size budgets. If a change goes over, make it smaller; never raise a budget. *(`bun run test`)*
 - **Every word in every language.** Text the user sees lives in `apps/web/src/i18n/`: add the key to `en.ts`, then to `hi.ts`, `mr.ts` and `ar.ts` ([ADR 0012](docs/adr/0012-localisation.md)). Never hard-code UI text in a component. *(TypeScript: a missing key fails the typecheck)*
 - **Right to left works.** Use logical CSS (`margin-inline-start`, `inset-inline-end`, `text-align: start`), never `left`/`right`. *(`design:check`)*

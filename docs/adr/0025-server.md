@@ -1,6 +1,6 @@
 # 0025. Add login, sync and bill forwarding through our own API, on Supabase
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-10-12
 - **Deciders:** Mayur
 

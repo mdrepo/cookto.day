@@ -1,6 +1,6 @@
 # 0024. Read and write all data through one data layer that cancels stale work
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-10-12
 - **Deciders:** Mayur
 

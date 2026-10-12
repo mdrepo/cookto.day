@@ -9,7 +9,7 @@ The people here are whoever builds cookto.day, people and agents. Screens come n
 
 ## Acceptance criteria
 
-Criteria 1–3 are tests in `tooling/test/`, run against a copy of the repo, like `new component`'s. Criterion 4 is a unit test of the helper (ADR 0002, 0003).
+Criteria 1–3 describe the command. They are checked by hand once and shown in the PR, not by automated tests: a test that runs the generator in a copy of the repo costs every PR seconds for a tool that rarely changes. Criterion 4 is a unit test of the helper, which every re-render test will rely on (ADR 0002, 0003).
 
 ### 1. a new screen starts with every file it needs
 

@@ -12,6 +12,8 @@
     "test": "bun test ./test"
   },
   "dependencies": {
-    "@cookto/ui": "workspace:*"
+    "@cookto/data": "workspace:*",
+    "@cookto/ui": "workspace:*",
+    "@cookto/usecases": "workspace:*"
   }
 }

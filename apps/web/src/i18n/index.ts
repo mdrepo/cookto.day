@@ -20,3 +20,8 @@ export type Locale = keyof typeof LOCALES;
 export function isLocale(value: string | null): value is Locale {
   return value !== null && Object.hasOwn(LOCALES, value);
 }
+
+/** A saved language as one the app speaks: English when it isn't. */
+export function localeOf(value: string | null): Locale {
+  return isLocale(value) ? value : "en";
+}

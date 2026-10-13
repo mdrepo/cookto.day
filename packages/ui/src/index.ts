@@ -15,6 +15,7 @@ export {
 export { Icon } from "./components/Icon/Icon.js";
 export { Input } from "./components/Input/Input.js";
 export { Note, type NoteProps } from "./components/Note/Note.js";
+export { Rows } from "./components/Rows/Rows.js";
 export { Select, type SelectProps } from "./components/Select/Select.js";
 export { Steps } from "./components/Steps/Steps.js";
 export { Tag } from "./components/Tag/Tag.js";

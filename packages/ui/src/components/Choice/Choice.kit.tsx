@@ -3,10 +3,17 @@ import { words, type Kit, type KitLanguage } from "../../kit.js";
 import { Choice } from "./Choice.js";
 
 /** One group per panel: every panel shows it, and a radio group's name is page-wide. */
-function Places({ lang }: { lang: KitLanguage }) {
+function Places({
+  lang,
+  hideLegend = false,
+}: {
+  lang: KitLanguage;
+  hideLegend?: boolean;
+}) {
   return (
     <Choice
       legend={words[lang].whereTitle}
+      hideLegend={hideLegend}
       name={useId()}
       value="sg"
       options={[
@@ -35,6 +42,10 @@ export const kit: Kit = {
     {
       title: "Chosen, and coming soon",
       render: (lang) => <Places lang={lang} />,
+    },
+    {
+      title: "Question hidden",
+      render: (lang) => <Places lang={lang} hideLegend />,
     },
   ],
 };

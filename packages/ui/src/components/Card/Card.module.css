@@ -15,3 +15,11 @@
   font-size: var(--text-lg);
   font-weight: 600;
 }
+
+/* The title, with a small action at its end. */
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}

@@ -1,0 +1,40 @@
+/* Rows (DESIGN.md): one surface with a border, a row per label, the value
+   at the end. No outer margin: the space between parts belongs to the
+   screen. */
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding-block: var(--space-3);
+  padding-inline: var(--space-4);
+}
+
+.row + .row {
+  border-block-start: 1px solid var(--color-border);
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.value,
+.quiet {
+  font-size: var(--text-sm);
+  text-align: end;
+  color: var(--color-text);
+}
+
+.quiet {
+  color: var(--color-text-muted);
+}

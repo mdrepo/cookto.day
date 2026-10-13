@@ -3,3 +3,4 @@
 // hands these to @cookto/data in apps/web/src/platform.ts.
 export { indexedDbRecordStore } from "./indexeddb.js";
 export { browserKeyValue } from "./key-value.js";
+export { browserRecordStore } from "./record-store.js";

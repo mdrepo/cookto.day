@@ -22,4 +22,22 @@ describe("Screen", () => {
       "Your kitchen is empty",
     );
   });
+
+  test("can have a small line above the title, and one action at its end", () => {
+    // #84, criterion 1: the prototype's light header.
+    const doc = render(
+      <Screen
+        title="cookto.day"
+        eyebrow="Wednesday 14 October"
+        action={<button type="button">Settings</button>}
+      >
+        <p>Cook today</p>
+      </Screen>,
+    );
+    const title = doc.querySelector("header h1");
+    expect(title?.previousElementSibling?.textContent).toBe(
+      "Wednesday 14 October",
+    );
+    expect(doc.querySelector("header button")?.textContent).toBe("Settings");
+  });
 });

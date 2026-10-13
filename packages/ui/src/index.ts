@@ -1,5 +1,6 @@
 // The design system's components (ADR 0019). Apps import UI from here only.
 export { Button } from "./components/Button/Button.js";
+export { Callout } from "./components/Callout/Callout.js";
 export { Card } from "./components/Card/Card.js";
 export { Chip } from "./components/Chip/Chip.js";
 export { Choice } from "./components/Choice/Choice.js";
@@ -27,6 +28,7 @@ export { Tag } from "./components/Tag/Tag.js";
 export { ActionBar } from "./layouts/ActionBar/ActionBar.js";
 export { Cluster, type ClusterProps } from "./layouts/Cluster/Cluster.js";
 export { Screen, type ScreenProps } from "./layouts/Screen/Screen.js";
+export { Section } from "./layouts/Section/Section.js";
 export { Stack, type StackProps } from "./layouts/Stack/Stack.js";
 export type { Space } from "./tokens.js";
 export type { Kit, KitExample, KitLanguage } from "./kit.js";

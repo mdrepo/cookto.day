@@ -78,6 +78,13 @@ export const words = {
     eveningSnack: "Evening snack",
     everyone: "Everyone",
     notPlanned: "Not planned",
+    fresh: "Fresh",
+    settings: "Settings",
+    wednesday: "Wednesday 14 October",
+    sampleKitchen: "Sample kitchen",
+    sampleBody: "Pretend food, so you can look around.",
+    chooseWhatYouCook: "Choose what you cook",
+    clearSample: "Clear the sample",
   },
   ar: {
     language: "اللغة",
@@ -133,6 +140,13 @@ export const words = {
     eveningSnack: "وجبة خفيفة مسائية",
     everyone: "الجميع",
     notPlanned: "غير مخطط لها",
+    fresh: "طازج",
+    settings: "الإعدادات",
+    wednesday: "الأربعاء 14 أكتوبر",
+    sampleKitchen: "مطبخ تجريبي",
+    sampleBody: "طعام للتجربة، لتتعرّف على التطبيق.",
+    chooseWhatYouCook: "اختر ما تطبخه",
+    clearSample: "احذف المطبخ التجريبي",
   },
 } satisfies Record<KitLanguage, Record<string, string>>;
 

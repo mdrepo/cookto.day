@@ -14,6 +14,7 @@ import {
   Plus,
   Refrigerator,
   Search,
+  Settings,
   ShoppingCart,
   Trash2,
   TriangleAlert,
@@ -23,7 +24,7 @@ import {
 import styles from "./Icon.module.css";
 
 // The only file that imports Lucide (ADR 0020, design:check). These are the
-// icons a code owner has approved (specs/18-icons.md, 29-button-card.md); a new one needs one
+// icons a code owner has approved (specs/18-icons.md, 29-button-card.md, #84); a new one needs one
 // too. `turns` marks icons that point, which turn round in right to left.
 const ICONS = {
   "arrow-left": { svg: ArrowLeft, turns: true },
@@ -40,6 +41,7 @@ const ICONS = {
   plus: { svg: Plus },
   refrigerator: { svg: Refrigerator },
   search: { svg: Search },
+  settings: { svg: Settings },
   "shopping-cart": { svg: ShoppingCart },
   "trash-2": { svg: Trash2 },
   "triangle-alert": { svg: TriangleAlert },

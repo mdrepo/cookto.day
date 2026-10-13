@@ -4,7 +4,7 @@ import { Button } from "./Button.js";
 export const kit: Kit = {
   name: "Button",
   about:
-    "An action. One main button per screen; quiet for the rest; danger for removing.",
+    "An action. One main button per screen; quiet for the rest; danger for removing; plain for a way out.",
   examples: [
     { title: "Main", render: (lang) => <Button>{words[lang].addBill}</Button> },
     {
@@ -26,6 +26,10 @@ export const kit: Kit = {
     {
       title: "With an icon",
       render: (lang) => <Button icon="plus">{words[lang].addBill}</Button>,
+    },
+    {
+      title: "Plain",
+      render: (lang) => <Button kind="plain">{words[lang].skip}</Button>,
     },
     {
       title: "Icon only",

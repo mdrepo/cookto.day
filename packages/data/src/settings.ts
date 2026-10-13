@@ -8,6 +8,8 @@ export interface Settings {
   language: string;
   /** Where the household lives: its currency and shops (ADR 0026). */
   country: string;
+  /** Whether onboarding is done or skipped: it's asked once (specs/65). */
+  onboarded: boolean;
 }
 
 /** What screen hooks read. */
@@ -21,11 +23,13 @@ export interface SettingsWriter {
   /** Whether people can choose this country yet. */
   knowsCountry(country: string): boolean;
   setCountry(country: string): void;
+  setOnboarded(): void;
 }
 
 /** The key is today's, so people keep the language they chose. */
 const LANGUAGE = "cookto.day:language";
 const COUNTRY = "cookto.day:country";
+const ONBOARDED = "cookto.day:onboarded";
 
 /** Reads `key`, or null when storage is off (some private modes throw). */
 function read(kv: KeyValue, key: string): string | null {
@@ -76,6 +80,7 @@ export function createSettings(
       savedCountry !== null && knowsCountry(savedCountry)
         ? savedCountry
         : options.fallbackCountry,
+    onboarded: read(kv, ONBOARDED) === "yes",
   }));
   return {
     store,
@@ -89,6 +94,10 @@ export function createSettings(
       setCountry(country) {
         store.setState({ country });
         write(kv, COUNTRY, country);
+      },
+      setOnboarded() {
+        store.setState({ onboarded: true });
+        write(kv, ONBOARDED, "yes");
       },
     },
   };

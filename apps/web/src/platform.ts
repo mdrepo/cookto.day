@@ -1,7 +1,8 @@
-import { createSettings } from "@cookto/data";
+import { createChanges, createSettings } from "@cookto/data";
 import { browserKeyValue } from "@cookto/data-web";
 import { openCountries } from "@cookto/engine";
 import { LOCALES } from "./i18n/index.js";
+import { createQueries } from "./queries.js";
 
 // The one file that hands the browser's storage (@cookto/data-web) and
 // address to the data layer (ADR 0024). Everything else reads and writes
@@ -23,3 +24,7 @@ export const settings = createSettings(browserKeyValue(), {
   countries: openCountries(),
   fallbackCountry: "SG",
 });
+
+/** What repositories announce, and the queries it refreshes (ADR 0024). */
+const changes = createChanges();
+export const queries = createQueries(changes);

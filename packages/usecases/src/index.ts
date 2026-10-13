@@ -3,4 +3,13 @@
 // and every app. They take the repositories they need as arguments, so tests
 // pass fakes. No React, no browser: lint and this package's types keep them
 // out.
+export {
+  addPerson,
+  finishOnboarding,
+  removePerson,
+  renamePerson,
+  skipOnboarding,
+  startHousehold,
+  toggleMeal,
+} from "./household.js";
 export { chooseCountry, chooseLanguage } from "./settings.js";

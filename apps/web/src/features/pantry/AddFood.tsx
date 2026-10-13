@@ -4,7 +4,10 @@ import { useAddFood } from "./useAddFood.js";
 /** Add food by hand (specs/72, criterion 3). */
 export function AddFood({ onDone }: { onDone: () => void }) {
   const a = useAddFood(onDone);
-  const text = (form: FormData, key: string) => String(form.get(key) ?? "");
+  const text = (form: FormData, key: string) => {
+    const value = form.get(key);
+    return typeof value === "string" ? value : "";
+  };
   return (
     <Card title={a.title} level={2}>
       <form

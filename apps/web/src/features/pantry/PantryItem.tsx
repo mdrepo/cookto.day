@@ -27,10 +27,11 @@ export function PantryItem({ id }: { id: string }) {
             onSubmit={(e) => {
               e.preventDefault();
               const form = new FormData(e.currentTarget);
-              change.save(
-                String(form.get("amount") ?? ""),
-                String(form.get("unit") ?? ""),
-              );
+              const text = (key: string) => {
+                const value = form.get(key);
+                return typeof value === "string" ? value : "";
+              };
+              change.save(text("amount"), text("unit"));
             }}
           >
             <Stack gap={3}>

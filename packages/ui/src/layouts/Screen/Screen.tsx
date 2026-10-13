@@ -6,18 +6,24 @@ import styles from "./Screen.module.css";
 export interface ScreenProps {
   /** The page's title, its only h1. */
   title: string;
+  /** A small, muted line above the title: today's date, or where you are. */
+  eyebrow?: string;
   tagline?: string;
-  /** What else sits in the header, like the language switch. */
+  /** At the title's end: one small action, like settings or "Add food". */
+  action?: ReactNode;
+  /** Above the title: where someone is in a few steps, or a way back. */
   header?: ReactNode;
   /** The space between the main part's parts: a spacing step. */
   gap?: Space;
   children: ReactNode;
 }
 
-/** A whole page: its header, then its main part, in one centred column. */
+/** A whole page: its light header, then its main part, in one centred column. */
 export function Screen({
   title,
+  eyebrow,
   tagline,
+  action,
   header,
   gap = 4,
   children,
@@ -25,9 +31,15 @@ export function Screen({
   return (
     <div className={styles.screen}>
       <header className={`${styles.column} ${styles.header}`}>
-        <h1 className={styles.title}>{title}</h1>
-        {tagline && <p className={styles.tagline}>{tagline}</p>}
         {header}
+        <div className={styles.top}>
+          <div className={styles.titles}>
+            {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
+            <h1 className={styles.title}>{title}</h1>
+            {tagline && <p className={styles.tagline}>{tagline}</p>}
+          </div>
+          {action}
+        </div>
       </header>
       <main className={`${styles.column} ${styles.main} ${gapClass(gap)}`}>
         {children}

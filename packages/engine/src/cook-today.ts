@@ -1,7 +1,8 @@
 // What to cook today (ADR 0027). For one meal slot, rank the loaded packs'
 // dishes: ones the pantry can make first, using food that needs using
-// first; the rest after, fewest missing first. No cuisine logic here: only
-// ingredients, dates, conditions, slots and what the household skips.
+// first; the rest after, the same way, then fewest missing first. No
+// cuisine logic here: only ingredients, dates, conditions, slots and what
+// the household skips.
 import type { MealSlot } from "./household.js";
 import { compareUrgency, type PantryItem, urgency } from "./pantry.js";
 
@@ -75,9 +76,11 @@ export function cookToday(input: CookTodayInput): Suggestion[] {
   return ranked
     .sort(
       (a, b) =>
-        a.suggestion.needs.length - b.suggestion.needs.length ||
+        Number(a.suggestion.needs.length > 0) -
+          Number(b.suggestion.needs.length > 0) ||
         compareUrgency(a.top, b.top) ||
         b.suggestion.uses.length - a.suggestion.uses.length ||
+        a.suggestion.needs.length - b.suggestion.needs.length ||
         a.order - b.order,
     )
     .map((r) => r.suggestion);

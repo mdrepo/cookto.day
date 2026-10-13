@@ -1,4 +1,10 @@
-import { createChanges, createHousehold, createSettings } from "@cookto/data";
+import {
+  createChanges,
+  createHousehold,
+  createPacks,
+  createPantry,
+  createSettings,
+} from "@cookto/data";
 import { browserKeyValue, browserRecordStore } from "@cookto/data-web";
 import { openCountries } from "@cookto/engine";
 import { queryOptions } from "@tanstack/react-query";
@@ -30,12 +36,45 @@ export const settings = createSettings(browserKeyValue(), {
 const changes = createChanges();
 export const queries = createQueries(changes);
 
-export const household = createHousehold(browserRecordStore("cookto.day"), {
-  changes,
-});
+const records = browserRecordStore("cookto.day");
+
+export const household = createHousehold(records, { changes });
 
 /** Everyone in the household. Hooks narrow it with `select`. */
 export const membersQuery = queryOptions({
   queryKey: ["household", "members"],
   queryFn: ({ signal }) => household.reader.members(signal),
 });
+
+/** The pantry, and the cuisine packs a household loads (ADR 0027). */
+export const pantry = createPantry(records, { changes });
+export const packs = createPacks();
+
+/** What the kitchen's use cases need. */
+export const kitchen = { pantry, settings: settings.writer, packs };
+
+/** Everything in the pantry. Hooks narrow it with `select`. */
+export const pantryQuery = queryOptions({
+  queryKey: ["pantry", "items"],
+  queryFn: ({ signal }) => pantry.reader.items(signal),
+});
+
+/** A loaded cuisine's pack: read once, it never changes while the app runs. */
+export const packQuery = (id: string) =>
+  queryOptions({
+    queryKey: ["packs", id],
+    queryFn: () => packs.load(id),
+  });
+
+/** Today in the household's own calendar, "YYYY-MM-DD". */
+export function today(): string {
+  const now = new Date();
+  const two = (n: number) => String(n).padStart(2, "0");
+  return `${now.getFullYear()}-${two(now.getMonth() + 1)}-${two(now.getDate())}`;
+}
+
+/** Whether the address asks for a sample kitchen: "?sample". */
+export function sampleAsked(): boolean {
+  if (typeof location === "undefined") return false; // the prerender
+  return new URLSearchParams(location.search).has("sample");
+}

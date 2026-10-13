@@ -22,8 +22,9 @@ test.describe("Every screen works with a keyboard and reads well in every script
     await kitchen.open();
     expect(await kitchen.lineHeight()).toBeCloseTo(1.5, 1);
 
-    for (const language of ["हिन्दी", "मराठी", "العربية"]) {
-      await kitchen.chooseLanguage(language);
+    // Coming soon: previewed (specs/65-onboarding.md).
+    for (const language of ["hi", "mr", "ar"]) {
+      await kitchen.open(language);
       expect(await kitchen.lineHeight(), language).toBeCloseTo(1.7, 1);
     }
   });

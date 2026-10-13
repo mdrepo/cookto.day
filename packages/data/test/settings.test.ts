@@ -7,7 +7,12 @@ import { createSettings } from "../src/settings.js";
 const LANGUAGES = ["en", "hi", "mr", "ar"] as const;
 const KEY = "cookto.day:language";
 const make = (kv: KeyValue) =>
-  createSettings(kv, { languages: LANGUAGES, fallback: "en" });
+  createSettings(kv, {
+    languages: LANGUAGES,
+    fallback: "en",
+    countries: ["SG"],
+    fallbackCountry: "SG",
+  });
 
 /** A store that throws on every call, as browsers do in some private modes. */
 const broken: KeyValue = {

@@ -35,7 +35,8 @@ test.describe("Today's page is built from the kit", () => {
     await kitchen.open();
     expect(await kitchen.look()).toEqual(BEFORE);
 
-    await kitchen.chooseLanguage("العربية");
+    await kitchen.open("ar");
+    expect(await kitchen.direction()).toBe("rtl");
     expect(await kitchen.look()).toEqual(BEFORE);
   });
 });

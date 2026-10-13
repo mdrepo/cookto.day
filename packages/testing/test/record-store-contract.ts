@@ -1,8 +1,9 @@
-import { expect } from "bun:test";
+import assert from "node:assert/strict";
 
 // specs/61-saving-data.md, criterion 2: what every record store must do
 // (ADR 0024). Each store's tests run these checks on it: the one in memory
-// with bun test, IndexedDB in real browsers.
+// with bun test, IndexedDB in real browsers through Playwright. So they use
+// node:assert, which both runners have.
 
 /**
  * What a record store looks like, as the contract sees it. Written out here,
@@ -46,7 +47,7 @@ export const RECORD_STORE_CONTRACT: {
     async check(make) {
       const store = await make();
       await store.put("notes", [note("a", "first")]);
-      expect(await store.get<Note>("notes", "a")).toEqual(note("a", "first"));
+      assert.deepEqual(await store.get<Note>("notes", "a"), note("a", "first"));
     },
   },
   {
@@ -55,7 +56,7 @@ export const RECORD_STORE_CONTRACT: {
       const store = await make();
       await store.put("notes", [note("a", "first")]);
       await store.put("notes", [{ ...note("a", "second"), version: 2 }]);
-      expect((await store.get<Note>("notes", "a"))?.text).toBe("second");
+      assert.equal((await store.get<Note>("notes", "a"))?.text, "second");
     },
   },
   {
@@ -65,15 +66,18 @@ export const RECORD_STORE_CONTRACT: {
       await store.put("notes", [note("b", "two"), note("a", "one")]);
       await store.put("other", [note("c", "elsewhere")]);
       const all = await store.all<Note>("notes");
-      expect(all.map((n) => n.id)).toEqual(["a", "b"]);
+      assert.deepEqual(
+        all.map((n) => n.id),
+        ["a", "b"],
+      );
     },
   },
   {
     name: "an id that isn't there gives nothing, not an error",
     async check(make) {
       const store = await make();
-      expect(await store.get("notes", "missing")).toBeNull();
-      expect(await store.all("empty")).toEqual([]);
+      assert.equal(await store.get("notes", "missing"), null);
+      assert.deepEqual(await store.all("empty"), []);
     },
   },
   {
@@ -90,8 +94,8 @@ export const RECORD_STORE_CONTRACT: {
       } catch {
         failed = true;
       }
-      expect(failed).toBe(true);
-      expect(await store.get("notes", "a")).toBeNull();
+      assert.equal(failed, true);
+      assert.equal(await store.get("notes", "a"), null);
     },
   },
   {
@@ -110,7 +114,7 @@ export const RECORD_STORE_CONTRACT: {
         } catch (e) {
           error = e;
         }
-        expect((error as { name?: string } | null)?.name).toBe("AbortError");
+        assert.equal((error as { name?: string } | null)?.name, "AbortError");
       }
     },
   },

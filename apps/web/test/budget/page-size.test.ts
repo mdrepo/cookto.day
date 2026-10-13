@@ -14,16 +14,18 @@ const BUDGET_KB = {
   /** Each HTML page plus all stylesheets. */
   pageAndStyles: 8,
   /**
-   * All our own JavaScript: everything but React's file. 20 until the
-   * kitchen (specs/72), 35 until the prototype's layout and Settings (#84).
+   * Our own JavaScript that a first visit loads: everything but React's
+   * file. Until 14 Oct it counted every script, even ones loaded later; it
+   * was 36 then (20 before the kitchen, specs/72).
    */
-  ourScripts: 36,
+  ourScripts: 35,
   /**
-   * A first visit, nothing cached: pages, styles and every script. 100 until
-   * the kitchen (specs/72), 115 until the prototype's look (specs/80). It
-   * counts the cuisine pack too, which only loads when one is picked.
+   * A first visit, nothing cached: pages, styles and the scripts the page
+   * loads. Until 14 Oct it counted every script; it was 120 then.
    */
   firstVisit: 120,
+  /** Each script loaded later, like a cuisine pack when one is picked. */
+  laterFile: 8,
 };
 
 /** Only React's production build links its error codes here. */
@@ -68,20 +70,60 @@ describe("page size budget", () => {
   const scripts = () => ofType(".js");
   const isReact = (f: string) => readFileSync(f, "utf8").includes(REACT);
 
+  /**
+   * The scripts a first visit loads: the pages' scripts and preloads, and
+   * what they import, but not what they import later (`import("…")`).
+   */
+  const loadedFirst = () => {
+    const at = (name: string) => join(outdir, name.replace(/^\.\//, ""));
+    const queue = ofType(".html").flatMap((page) =>
+      [
+        ...readFileSync(page, "utf8").matchAll(
+          /<(?:script[^>]*\ssrc|link[^>]*modulepreload[^>]*\shref)="(\.\/[^"]+\.js)"/g,
+        ),
+      ].map((m) => at(m[1] ?? "")),
+    );
+    const seen = new Set<string>();
+    for (let f = queue.pop(); f; f = queue.pop()) {
+      if (seen.has(f)) continue;
+      seen.add(f);
+      for (const m of readFileSync(f, "utf8").matchAll(
+        /(?:from|import)\s*"(\.\/[^"]+\.js)"/g,
+      ))
+        queue.push(at(m[1] ?? ""));
+    }
+    return [...seen];
+  };
+
+  test("a first visit loads some scripts now and others later", () => {
+    expect(loadedFirst().length).toBeGreaterThan(0);
+    expect(loadedFirst().length).toBeLessThan(scripts().length);
+  });
+
   test("our own scripts stay within budget", () => {
     withinBudget(
-      "Our scripts (all but React's file)",
-      gzippedKb(scripts().filter((f) => !isReact(f))),
+      "Our scripts a first visit loads (all but React's file)",
+      gzippedKb(loadedFirst().filter((f) => !isReact(f))),
       BUDGET_KB.ourScripts,
     );
   });
 
   test("a first visit stays within budget", () => {
     withinBudget(
-      "A first visit (pages, styles and every script)",
-      gzippedKb([...ofType(".html"), ...ofType(".css"), ...scripts()]),
+      "A first visit (pages, styles and the scripts they load)",
+      gzippedKb([...ofType(".html"), ...ofType(".css"), ...loadedFirst()]),
       BUDGET_KB.firstVisit,
     );
+  });
+
+  test("each script loaded later stays within budget", () => {
+    const first = new Set(loadedFirst());
+    for (const f of scripts().filter((s) => !first.has(s)))
+      withinBudget(
+        f.slice(outdir.length + 1),
+        gzippedKb([f]),
+        BUDGET_KB.laterFile,
+      );
   });
 
   test("React has a file of its own, so it stays cached when our code changes", () => {

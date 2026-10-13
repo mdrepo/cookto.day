@@ -6,8 +6,14 @@ import type { Locator, Page } from "@playwright/test";
 export class Kitchen {
   constructor(private readonly page: Page) {}
 
-  /** Opens the app; with a language, as a reviewer previewing it. */
+  /**
+   * Opens the app as a household that has done onboarding; with a language,
+   * as a reviewer previewing it.
+   */
   async open(previewLanguage?: string): Promise<void> {
+    await this.page.addInitScript(() => {
+      localStorage.setItem("cookto.day:onboarded", "yes");
+    });
     await this.page.goto(
       previewLanguage ? `/?preview-language=${previewLanguage}` : "/",
     );

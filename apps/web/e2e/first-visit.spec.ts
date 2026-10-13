@@ -1,19 +1,11 @@
 import { expect, test } from "@playwright/test";
 import { Kitchen } from "./support/kitchen.js";
 
-// specs/1-first-visit.md
+// specs/1-first-visit.md. A first visit now starts with onboarding
+// (specs/65-onboarding.md, onboarding.spec.ts), which replaces "a new
+// visitor sees how to start"; home's words are checked there too.
 
 test.describe("A first visit", () => {
-  test("a new visitor sees how to start", async ({ page }) => {
-    const kitchen = new Kitchen(page);
-    await kitchen.open();
-
-    await expect(kitchen.title()).toHaveText("cookto.day");
-    await expect(kitchen.emptyState()).toContainText(
-      "Add a grocery bill to see what you can cook today",
-    );
-  });
-
   test("Arabic lays the page out right to left", async ({ page }) => {
     const kitchen = new Kitchen(page);
     await kitchen.open();

@@ -28,6 +28,7 @@ export { TabBar } from "./components/TabBar/TabBar.js";
 export { Tag } from "./components/Tag/Tag.js";
 export { ActionBar } from "./layouts/ActionBar/ActionBar.js";
 export { Cluster, type ClusterProps } from "./layouts/Cluster/Cluster.js";
+export { Panes } from "./layouts/Panes/Panes.js";
 export { Screen, type ScreenProps } from "./layouts/Screen/Screen.js";
 export { Section } from "./layouts/Section/Section.js";
 export { Stack, type StackProps } from "./layouts/Stack/Stack.js";

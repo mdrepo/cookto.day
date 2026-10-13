@@ -1,5 +1,13 @@
 import type { ReactNode } from "react";
-import { Button, Callout, Cluster, Logo, Note, Screen } from "@cookto/ui";
+import {
+  Button,
+  Callout,
+  Cluster,
+  Logo,
+  Note,
+  Panes,
+  Screen,
+} from "@cookto/ui";
 import { openSettings } from "../../routes.js";
 import { CookToday } from "./CookToday.js";
 import { useHomeScreen } from "./useHomeScreen.js";
@@ -23,6 +31,7 @@ export function HomeScreen({ bar }: { bar: ReactNode }) {
   return (
     <Screen
       bar={bar}
+      wide
       title="cookto.day"
       eyebrow={t.date}
       action={
@@ -72,8 +81,7 @@ export function HomeScreen({ bar }: { bar: ReactNode }) {
           {t.emptyBody}
         </Callout>
       )}
-      <UseSoon />
-      <CookToday />
+      <Panes primary={<CookToday />} secondary={<UseSoon />} />
       {!k.empty && !k.sample && (
         <Cluster gap={2}>
           {choose("quiet")}

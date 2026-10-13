@@ -45,9 +45,9 @@ test.describe("Today and the pantry", () => {
     const tab = (name: string) =>
       k.tabs().getByRole("button", { name, exact: true });
     await expect(tab("Today")).toHaveAttribute("aria-current", "page");
-    await tab("Pantry").click();
-    await expect(k.title()).toHaveText("Pantry");
-    await expect(tab("Pantry")).toHaveAttribute("aria-current", "page");
+    await tab("Fridge").click();
+    await expect(k.title()).toHaveText("Fridge");
+    await expect(tab("Fridge")).toHaveAttribute("aria-current", "page");
     await expect(tab("Today")).not.toHaveAttribute("aria-current", "page");
     await tab("Dishes").click();
     await expect(k.title()).toHaveText("Dishes");

@@ -48,7 +48,7 @@ export class Cooking {
     await this.press("Add the usual staples");
     for (const name of untick) await this.chip(name).click();
     await this.page.getByRole("button", { name: /^Add \d+ staples$/ }).click();
-    await expect(this.title()).toHaveText("Pantry");
+    await expect(this.title()).toHaveText("Fridge");
   }
 
   /** From the pantry: adds food, bought `daysAgo` days ago (0 is today). */

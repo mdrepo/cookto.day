@@ -13,7 +13,7 @@ test.describe("The prototype's layout", () => {
     await k.start();
     await k.press("Try a sample kitchen");
     await expect(kitchen.languageField()).toHaveCount(0);
-    for (const tab of ["Pantry", "Dishes"]) {
+    for (const tab of ["Fridge", "Dishes"]) {
       await k.tabs().getByRole("button", { name: tab, exact: true }).click();
       await expect(k.title()).toHaveText(tab);
       await expect(kitchen.languageField(), tab).toHaveCount(0);
@@ -85,7 +85,7 @@ test.describe("The prototype's layout", () => {
     const k = new Cooking(page);
     await k.start();
     await k.press("Try a sample kitchen");
-    await k.tabs().getByRole("button", { name: "Pantry", exact: true }).click();
+    await k.tabs().getByRole("button", { name: "Fridge", exact: true }).click();
     await expect(
       page.getByRole("banner").getByRole("button", { name: "Add food" }),
     ).toBeVisible();

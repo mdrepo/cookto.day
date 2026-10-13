@@ -1,0 +1,32 @@
+import { describe, expect, test } from "bun:test";
+import { createPacks } from "../src/packs.js";
+
+// specs/72-kitchen.md, criterion 1: the cuisines, and loading one's dishes.
+
+describe("the cuisine packs", () => {
+  test("North Indian is open with its dishes; the others are coming soon", () => {
+    const cuisines = createPacks().cuisines();
+    expect(cuisines.map((c) => [c.id, c.soon])).toEqual([
+      ["north-indian", false],
+      ["south-indian", true],
+      ["european", true],
+      ["sri-lankan", true],
+    ]);
+    expect(cuisines[0]?.dishes).toBeGreaterThanOrEqual(30);
+  });
+
+  test("loads an open pack's dishes, keyed by Wikidata ids", async () => {
+    const pack = await createPacks().load("north-indian");
+    const palak = pack.dishes.find((d) => d.id === "palak-paneer");
+    expect(palak?.ingredients).toContain("Q36814998");
+    expect(pack.words.en?.dishes["palak-paneer"]).toBe("Palak paneer");
+  });
+
+  test("a pack that's coming soon, or unknown, can't be loaded", () => {
+    const packs = createPacks();
+    expect(packs.load("south-indian")).rejects.toThrow(
+      'No pack "south-indian" to load yet.',
+    );
+    expect(packs.load("nope")).rejects.toThrow('No pack "nope" to load yet.');
+  });
+});

@@ -27,7 +27,8 @@ One repository, split into workspaces ([ADR 0016](docs/adr/0016-monorepo.md)). R
 | `apps/web/e2e/` | Playwright tests, named in the user's words. Selectors live only in `e2e/support/` |
 | `apps/web/scripts/` | The build and the dev server |
 | `packages/engine/` | Pure functions (dates, ranking, planning): no DOM, storage or network. Unit tests in its `test/` |
-| `tooling/` | The checks (`scripts/`) and their tests (`test/`) |
+| `packs/` | Cuisine packs: dishes, staples, ingredients and words, as data ([ADR 0015](docs/adr/0015-kitchen-packs.md), [0027](docs/adr/0027-pantry-and-cuisine-packs.md)). `packs/sources/` stores Wikidata's labels and the USDA FoodKeeper entries they cite |
+| `tooling/` | The checks (`scripts/`) and their tests (`test/`). `banned-words.json` lists the filler words the app may not use |
 | `specs/` | Acceptance criteria, one file per issue |
 | `DESIGN.md` | How every screen looks. You don't decide the look; this file or a code owner does |
 | `docs/adr/` | Decisions. **Accepted ADRs are binding** |
@@ -44,7 +45,8 @@ bun run build          # the static site, into apps/web/dist/
 bun run new component <Name>  # a new part in packages/ui, with every file it needs
 bun run new layout <Name>     # a new layout, the same way
 bun run new screen <feature>  # a new screen and its hook in apps/web/src/features/, tests red
-bun run check          # everything CI checks: allowlist, agent files, design, file sizes, Prettier, knip, and every workspace's types, ESLint and tests
+bun run check          # everything CI checks: allowlist, agent files, design, file sizes, packs, words, Prettier, knip, and every workspace's types, ESLint and tests
+bun run packs:refresh  # store Wikidata's labels and FoodKeeper's entries for the ids packs use (needs the internet)
 bun run check:affected # the same, but only the workspaces your branch affects (what CI runs on a PR)
 bun run test           # every workspace's unit and DOM tests (not a bare `bun test`)
 bun run e2e            # browser tests (CI does not run these on PRs; you must)

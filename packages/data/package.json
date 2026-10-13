@@ -12,5 +12,11 @@
     ".": "./src/index.ts",
     "./read": "./src/read.ts",
     "./write": "./src/write.ts"
+  },
+  "dependencies": {
+    "@cookto/engine": "workspace:*"
+  },
+  "devDependencies": {
+    "@cookto/testing": "workspace:*"
   }
 }

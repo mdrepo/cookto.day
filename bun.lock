@@ -48,6 +48,12 @@
     "packages/data": {
       "name": "@cookto/data",
       "version": "0.0.0",
+      "dependencies": {
+        "@cookto/engine": "workspace:*",
+      },
+      "devDependencies": {
+        "@cookto/testing": "workspace:*",
+      },
     },
     "packages/engine": {
       "name": "@cookto/engine",

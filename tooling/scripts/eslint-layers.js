@@ -49,7 +49,9 @@ const DEPTHS = [1, 2, 3];
 /** @type {import("eslint").Linter.Config[]} */
 export const layers = [
   {
-    // Everything not named below: the kit, tooling, tests, the apps' tops.
+    // Everything not named below: the kit, tooling, the apps' tops, tests.
+    // The tests of use cases, data and the engine have no layer rule: they
+    // use fakes, writers and @cookto/testing as they need.
     files: ["**/*.{ts,tsx,js}"],
     ignores: [
       "packages/usecases/**",
@@ -79,7 +81,7 @@ export const layers = [
     ];
   }),
   {
-    files: ["packages/usecases/**"],
+    files: ["packages/usecases/src/**"],
     rules: rules([
       ban(REACT, noReact("A use case")),
       ban(
@@ -89,14 +91,14 @@ export const layers = [
     ]),
   },
   {
-    files: ["packages/data/**"],
+    files: ["packages/data/src/**"],
     rules: rules([
       ban(REACT, noReact("Data")),
       ban("^@cookto/(?!engine$|ui($|/))", below("Data", "@cookto/engine")),
     ]),
   },
   {
-    files: ["packages/engine/**"],
+    files: ["packages/engine/src/**"],
     rules: rules([
       ban(REACT, noReact("The engine")),
       ban("^@cookto/(?!ui($|/))", below("The engine", "nothing else of ours")),

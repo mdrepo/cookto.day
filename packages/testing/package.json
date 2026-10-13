@@ -9,6 +9,7 @@
     "test": "bun test ./test"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./record-store-contract": "./test/record-store-contract.ts"
   }
 }

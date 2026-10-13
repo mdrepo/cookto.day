@@ -15,6 +15,8 @@ export interface ChoiceOption {
 export interface ChoiceProps {
   /** The question, which names the group. */
   legend: ReactNode;
+  /** The screen's title already asks it: screen readers still hear it. */
+  hideLegend?: boolean;
   name: string;
   /** The chosen option's value. */
   value: string | null;
@@ -25,6 +27,7 @@ export interface ChoiceProps {
 /** One answer from a few cards: radio buttons, each a whole card to tap. */
 export function Choice({
   legend,
+  hideLegend = false,
   name,
   value,
   options,
@@ -33,7 +36,9 @@ export function Choice({
   const id = useId();
   return (
     <fieldset className={styles.group}>
-      <legend className={styles.legend}>{legend}</legend>
+      <legend className={hideLegend ? styles.hidden : styles.legend}>
+        {legend}
+      </legend>
       {options.map((option) => {
         const soonId = `${id}-${option.value}-soon`;
         return (

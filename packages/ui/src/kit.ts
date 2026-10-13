@@ -56,6 +56,11 @@ export const words = {
     inDetail: "₹ · Blinkit · Zepto",
     step1of2: "Step 1 of 2",
     step2of2: "Step 2 of 2",
+    meals: "Meals",
+    breakfast: "Breakfast",
+    eveningSnack: "Evening snack",
+    everyone: "Everyone",
+    notPlanned: "Not planned",
   },
   ar: {
     language: "اللغة",
@@ -89,6 +94,11 @@ export const words = {
     inDetail: "₹ · Blinkit · Zepto",
     step1of2: "الخطوة 1 من 2",
     step2of2: "الخطوة 2 من 2",
+    meals: "الوجبات",
+    breakfast: "فطور",
+    eveningSnack: "وجبة خفيفة مسائية",
+    everyone: "الجميع",
+    notPlanned: "غير مخطط لها",
   },
 } satisfies Record<KitLanguage, Record<string, string>>;
 

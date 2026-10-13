@@ -1,17 +1,19 @@
-import { QueryClientProvider } from "@tanstack/react-query";
 import { HomeScreen } from "./features/home/HomeScreen.js";
+import { OnboardingScreen } from "./features/onboarding/OnboardingScreen.js";
 import { LanguagePicker } from "./features/settings/LanguagePicker.js";
 import { useDocumentLanguage } from "./features/settings/useDocumentLanguage.js";
-import { queries } from "./platform.js";
+import { useRoute } from "./routes.js";
 
 // The app: features put together (ADR 0022). Features don't import each
-// other, so this is where one sits inside another.
+// other, so this is where one sits inside another, and which one shows.
 
 export function App() {
   useDocumentLanguage();
-  return (
-    <QueryClientProvider client={queries}>
-      <HomeScreen header={<LanguagePicker />} />
-    </QueryClientProvider>
+  const route = useRoute();
+  const picker = <LanguagePicker />;
+  return route === "home" ? (
+    <HomeScreen header={picker} />
+  ) : (
+    <OnboardingScreen step={route} header={picker} />
   );
 }

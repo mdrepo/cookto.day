@@ -30,5 +30,18 @@ export const kit: Kit = {
         </Card>
       ),
     },
+    {
+      title: "With an action",
+      render: (lang) => (
+        <Card
+          title={words[lang].dish}
+          action={<Button kind="plain" icon="x" label={words[lang].remove} />}
+        >
+          <span className={`${KIT.row} ${KIT.muted}`}>
+            {words[lang].tomorrow}
+          </span>
+        </Card>
+      ),
+    },
   ],
 };

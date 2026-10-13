@@ -6,18 +6,29 @@ export interface CardProps {
   title: string;
   /** The title's heading level, under the screen's own headings. */
   level?: 2 | 3 | 4;
+  /** A small action beside the title, at its end: remove, edit. */
+  action?: ReactNode;
   children: ReactNode;
 }
 
 /** One thing, on the surface colour. */
-export function Card({ title, level = 3, children }: CardProps) {
+export function Card({ title, level = 3, action, children }: CardProps) {
   const titleId = useId();
   const Heading = `h${level}` as const;
   return (
     <article className={styles.card} aria-labelledby={titleId}>
-      <Heading id={titleId} className={styles.title}>
-        {title}
-      </Heading>
+      {action ? (
+        <div className={styles.head}>
+          <Heading id={titleId} className={styles.title}>
+            {title}
+          </Heading>
+          {action}
+        </div>
+      ) : (
+        <Heading id={titleId} className={styles.title}>
+          {title}
+        </Heading>
+      )}
       {children}
     </article>
   );

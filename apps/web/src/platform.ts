@@ -1,6 +1,7 @@
-import { createChanges, createSettings } from "@cookto/data";
-import { browserKeyValue } from "@cookto/data-web";
+import { createChanges, createHousehold, createSettings } from "@cookto/data";
+import { browserKeyValue, browserRecordStore } from "@cookto/data-web";
 import { openCountries } from "@cookto/engine";
+import { queryOptions } from "@tanstack/react-query";
 import { LOCALES } from "./i18n/index.js";
 import { createQueries } from "./queries.js";
 
@@ -28,3 +29,13 @@ export const settings = createSettings(browserKeyValue(), {
 /** What repositories announce, and the queries it refreshes (ADR 0024). */
 const changes = createChanges();
 export const queries = createQueries(changes);
+
+export const household = createHousehold(browserRecordStore("cookto.day"), {
+  changes,
+});
+
+/** Everyone in the household. Hooks narrow it with `select`. */
+export const membersQuery = queryOptions({
+  queryKey: ["household", "members"],
+  queryFn: ({ signal }) => household.reader.members(signal),
+});

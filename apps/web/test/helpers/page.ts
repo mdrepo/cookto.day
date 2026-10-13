@@ -25,7 +25,10 @@ afterEach(async () => {
 });
 
 export interface PageOpts {
-  /** localStorage contents before the page loads. */
+  /**
+   * localStorage contents before the page loads: a household that has done
+   * onboarding, unless it says otherwise.
+   */
   storage?: Record<string, string>;
   /** The address's query, such as "?preview-language=ar". */
   search?: string;
@@ -48,8 +51,8 @@ export function openPage(opts: PageOpts = {}) {
   });
   openWindows.push(win);
   const w = win as unknown as Window & typeof globalThis;
-  for (const [k, v] of Object.entries(opts.storage ?? {}))
-    w.localStorage.setItem(k, v);
+  const storage = { "cookto.day:onboarded": "yes", ...opts.storage };
+  for (const [k, v] of Object.entries(storage)) w.localStorage.setItem(k, v);
   const parsed = new w.DOMParser().parseFromString(
     readFileSync(html, "utf8"),
     "text/html",

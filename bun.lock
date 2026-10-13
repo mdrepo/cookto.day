@@ -39,6 +39,7 @@
       "dependencies": {
         "@cookto/data": "workspace:*",
         "@cookto/data-web": "workspace:*",
+        "@cookto/engine": "workspace:*",
         "@cookto/ui": "workspace:*",
         "@cookto/usecases": "workspace:*",
       },

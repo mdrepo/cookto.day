@@ -12,3 +12,13 @@ export function chooseLanguage(
   settings.setLanguage(language);
   return true;
 }
+
+/** Sets where the household lives, if people can choose it yet. */
+export function chooseCountry(
+  { settings }: { settings: SettingsWriter },
+  country: string,
+): boolean {
+  if (!settings.knowsCountry(country)) return false;
+  settings.setCountry(country);
+  return true;
+}

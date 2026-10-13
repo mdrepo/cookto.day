@@ -4,6 +4,7 @@
 export const en = {
   tagline: "What to cook today, from what's already in your kitchen",
   languageLabel: "Language",
+  languageSoon: "coming soon",
   emptyTitle: "Your kitchen is empty",
   emptyBody: "Add a grocery bill to see what you can cook today",
   privacy: "Your bills and pantry stay in this browser. Nothing is uploaded.",

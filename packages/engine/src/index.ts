@@ -12,3 +12,4 @@ export {
   memberProblems,
   plannedSlots,
 } from "./household.js";
+export { COUNTRIES, type Country, openCountries } from "./places.js";

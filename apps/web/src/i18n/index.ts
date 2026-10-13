@@ -3,16 +3,18 @@ import { en, type Messages } from "./en.js";
 import { hi } from "./hi.js";
 import { mr } from "./mr.js";
 
-// The languages the app speaks (ADR 0012). Each is named in its own script,
-// so people can find theirs whatever the page is showing.
+// The languages the app has words for (ADR 0012). Each is named in its own
+// script, so people can find theirs whatever the page is showing. A language
+// that's coming soon can't be chosen until a native speaker has read it; a
+// reviewer sees it with ?preview-language= (specs/65-onboarding.md).
 export const LOCALES = {
-  en: { name: "English", dir: "ltr", messages: en },
-  hi: { name: "हिन्दी", dir: "ltr", messages: hi },
-  mr: { name: "मराठी", dir: "ltr", messages: mr },
-  ar: { name: "العربية", dir: "rtl", messages: ar },
+  en: { name: "English", dir: "ltr", messages: en, soon: false },
+  hi: { name: "हिन्दी", dir: "ltr", messages: hi, soon: true },
+  mr: { name: "मराठी", dir: "ltr", messages: mr, soon: true },
+  ar: { name: "العربية", dir: "rtl", messages: ar, soon: true },
 } as const satisfies Record<
   string,
-  { name: string; dir: "ltr" | "rtl"; messages: Messages }
+  { name: string; dir: "ltr" | "rtl"; messages: Messages; soon: boolean }
 >;
 
 export type Locale = keyof typeof LOCALES;

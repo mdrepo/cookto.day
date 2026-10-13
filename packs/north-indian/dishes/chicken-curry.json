@@ -1,0 +1,68 @@
+{
+  "slots": ["lunch", "dinner"],
+  "ingredients": {
+    "chicken": {
+      "amount": 165,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 15,
+      "unit": "ml"
+    },
+    "onion": {
+      "amount": 40,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "ginger": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 3,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 65,
+      "unit": "g"
+    },
+    "yogurt": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 0.7,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.2,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.7,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.7,
+      "unit": "g"
+    },
+    "coriander-powder": {
+      "amount": 0.7,
+      "unit": "g"
+    },
+    "bay-leaf": {
+      "amount": 0.5,
+      "unit": "pieces"
+    }
+  },
+  "servedWith": ["roti", "rice"],
+  "source": "https://www.indianhealthyrecipes.com/chicken-curry/",
+  "note": "Read through a page summary, not the page itself. Onion: the recipe says '1 cup (3 medium)'; 1 cup was used, and 3 medium would be about 110 g a serving."
+}

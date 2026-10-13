@@ -1,0 +1,39 @@
+{
+  "slots": ["breakfast"],
+  "ingredients": {
+    "atta": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "potato": {
+      "amount": 55,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "chilli-powder": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 1.5,
+      "unit": "ml"
+    }
+  },
+  "source": "https://www.vegrecipesofindia.com/aloo-paratha-indian-bread-stuffed-with-potato-filling/",
+  "note": "A serving is one paratha. Oil or ghee for roasting has no amount in the recipe, so it isn't counted."
+}

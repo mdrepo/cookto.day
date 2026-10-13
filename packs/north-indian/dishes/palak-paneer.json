@@ -1,0 +1,76 @@
+{
+  "slots": ["lunch", "dinner"],
+  "ingredients": {
+    "spinach": {
+      "amount": 65,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "garlic": {
+      "amount": 1.5,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 3.5,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 7.5,
+      "unit": "ml"
+    },
+    "cumin": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "bay-leaf": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "onion": {
+      "amount": 10,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 10,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "asafoetida": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.2,
+      "unit": "g"
+    },
+    "paneer": {
+      "amount": 55,
+      "unit": "g"
+    },
+    "cream": {
+      "amount": 9.5,
+      "unit": "ml"
+    },
+    "kasuri-methi": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    }
+  },
+  "servedWith": ["roti", "rice"],
+  "source": "https://www.vegrecipesofindia.com/palak-paneer/",
+  "note": "Salt 'as required': 1.5 g a serving."
+}

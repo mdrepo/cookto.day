@@ -1,0 +1,67 @@
+{
+  "slots": ["evening-snack", "dinner"],
+  "ingredients": {
+    "paneer": {
+      "amount": 75,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "capsicum": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "yogurt": {
+      "amount": 65,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 2.5,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 2.5,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 1.5,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.7,
+      "unit": "g"
+    },
+    "coriander-powder": {
+      "amount": 0.7,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "chaat-masala": {
+      "amount": 0.7,
+      "unit": "g"
+    },
+    "lemon": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "oil": {
+      "amount": 5,
+      "unit": "ml"
+    },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    }
+  },
+  "source": "https://www.vegrecipesofindia.com/paneer-tikka-recipe/",
+  "note": "Hung curd counted as curd."
+}

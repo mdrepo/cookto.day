@@ -1,0 +1,63 @@
+{
+  "slots": ["lunch", "dinner"],
+  "ingredients": {
+    "tomato": {
+      "amount": 75,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 6,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 2.5,
+      "unit": "g"
+    },
+    "butter": {
+      "amount": 9.5,
+      "unit": "g"
+    },
+    "bay-leaf": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "chilli-powder": {
+      "amount": 0.4,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "paneer": {
+      "amount": 55,
+      "unit": "g"
+    },
+    "kasuri-methi": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.4,
+      "unit": "g"
+    },
+    "cream": {
+      "amount": 15,
+      "unit": "ml"
+    },
+    "sugar": {
+      "amount": 0.6,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 0.4,
+      "unit": "g"
+    }
+  },
+  "servedWith": ["roti", "rice"],
+  "source": "https://www.vegrecipesofindia.com/paneer-butter-masala/"
+}

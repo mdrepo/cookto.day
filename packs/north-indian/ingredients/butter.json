@@ -1,0 +1,9 @@
+{
+  "wikidata": "Q34172",
+  "label": "butter",
+  "keeps": {
+    "days": 30,
+    "in": "fridge",
+    "foodkeeper": 1
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "slots": ["lunch", "dinner"],
+  "ingredients": {
+    "potato": {
+      "amount": 65,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 4,
+      "unit": "g"
+    },
+    "yogurt": {
+      "amount": 15,
+      "unit": "g"
+    },
+    "ghee": {
+      "amount": 7.5,
+      "unit": "ml"
+    },
+    "bay-leaf": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "turmeric": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "coriander-powder": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 0.4,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    }
+  },
+  "servedWith": ["roti"],
+  "source": "https://www.vegrecipesofindia.com/dum-aloo-recipe/",
+  "note": "Baby potatoes."
+}

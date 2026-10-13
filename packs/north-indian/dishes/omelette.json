@@ -1,0 +1,42 @@
+{
+  "slots": ["breakfast"],
+  "ingredients": {
+    "egg": {
+      "amount": 2,
+      "unit": "pieces"
+    },
+    "onion": {
+      "amount": 7.5,
+      "unit": "g"
+    },
+    "capsicum": {
+      "amount": 7.5,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 7.5,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 0.8,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 1,
+      "unit": "pieces"
+    },
+    "turmeric": {
+      "amount": 0.2,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 15,
+      "unit": "ml"
+    },
+    "coriander-leaves": {
+      "amount": 1,
+      "unit": "g"
+    }
+  },
+  "source": "https://www.indianhealthyrecipes.com/omelette/"
+}

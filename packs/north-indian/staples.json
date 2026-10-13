@@ -1,0 +1,28 @@
+{
+  "grains-and-dals": [
+    "basmati-rice",
+    "atta",
+    "besan",
+    "toor-dal",
+    "urad-dal",
+    "rajma",
+    "chickpeas",
+    "moong-dal",
+    "poha",
+    "dalia",
+    "puffed-rice"
+  ],
+  "spices": [
+    "cumin",
+    "turmeric",
+    "chilli-powder",
+    "coriander-powder",
+    "garam-masala",
+    "asafoetida",
+    "kasuri-methi",
+    "chaat-masala",
+    "bay-leaf",
+    "mustard-seeds"
+  ],
+  "basics": ["salt", "sugar", "oil", "ghee"]
+}

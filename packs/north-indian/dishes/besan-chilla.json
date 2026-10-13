@@ -1,0 +1,43 @@
+{
+  "slots": ["breakfast"],
+  "ingredients": {
+    "besan": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 5,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 5,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 0.7,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "ginger": {
+      "amount": 0.7,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    }
+  },
+  "source": "https://www.vegrecipesofindia.com/besan-cheela-recipe-besan-chilla/",
+  "note": "A serving is one chilla. Cooking oil has no amount in the recipe."
+}

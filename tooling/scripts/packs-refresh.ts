@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { gunzipSync } from "node:zlib";
@@ -7,12 +8,12 @@ import type { FoodKeeperEntry } from "./packs-lib.js";
 // packs:refresh (ADR 0027): stores Wikidata's English label for every id
 // the packs use, and the USDA FoodKeeper entries they cite, in packs/sources/,
 // so packs:check runs offline. FoodKeeper is public domain (CC0). Its site
-// refuses scripts, so the Internet Archive's copy is the fallback.
+// refuses scripts, so the Internet Archive's copy (2 July 2025) is the fallback.
 
 const AGENT = "cookto.day packs:refresh (https://github.com/mdrepo/cookto.day)";
 const FOODKEEPER = [
   "https://www.fsis.usda.gov/shared/data/EN/foodkeeper.json",
-  "https://web.archive.org/web/2025id_/https://www.fsis.usda.gov/shared/data/EN/foodkeeper.json",
+  "https://web.archive.org/web/20250702182320id_/https://www.fsis.usda.gov/shared/data/EN/foodkeeper.json",
 ];
 
 const packs = readPacks();
@@ -101,6 +102,7 @@ const write = (name: string, value: object) => {
 };
 write("wikidata.json", await labels());
 write("foodkeeper.json", await entries());
+execFileSync("bunx", ["prettier", "--write", SOURCES], { stdio: "ignore" });
 console.log(
   `packs:refresh: ${ids.size} Wikidata labels and ${cited.size} FoodKeeper entries stored in ${SOURCES}/.`,
 );

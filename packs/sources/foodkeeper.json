@@ -1,0 +1,107 @@
+{
+  "1": {
+    "name": "Butter",
+    "fridge": [30, 60],
+    "pantry": null
+  },
+  "14": {
+    "name": "Cream, heavy",
+    "fridge": [10, 10],
+    "pantry": null
+  },
+  "21": {
+    "name": "Eggs, in shell",
+    "fridge": [21, 35],
+    "pantry": null
+  },
+  "33": {
+    "name": "Yogurt",
+    "fridge": [7, 14],
+    "pantry": null
+  },
+  "118": {
+    "name": "Chicken parts, legs or thighs",
+    "fridge": [1, 2],
+    "pantry": null
+  },
+  "256": {
+    "name": "Citrus fruit, lemon, lime, orange, grapefruit, tangerines, clementines",
+    "fridge": [10, 21],
+    "pantry": [10, 10]
+  },
+  "273": {
+    "name": "Beans and peas, green, fava, lima, soybean, wax, snow, sugar snap",
+    "fridge": [3, 5],
+    "pantry": null
+  },
+  "279": {
+    "name": "Carrots, parsnips",
+    "fridge": [14, 21],
+    "pantry": null
+  },
+  "280": {
+    "name": "Cauliflower",
+    "fridge": [3, 5],
+    "pantry": null
+  },
+  "284": {
+    "name": "Eggplant",
+    "fridge": [4, 7],
+    "pantry": [1, 1]
+  },
+  "285": {
+    "name": "Garlic",
+    "fridge": [3, 14],
+    "pantry": [30, 30]
+  },
+  "286": {
+    "name": "Ginger root",
+    "fridge": [14, 21],
+    "pantry": [2, 5]
+  },
+  "291": {
+    "name": "Lettuce, leaf, spinach",
+    "fridge": [3, 7],
+    "pantry": null
+  },
+  "293": {
+    "name": "Okra",
+    "fridge": [2, 3],
+    "pantry": [1, 1]
+  },
+  "294": {
+    "name": "Onions, yellow, white, red, etc.",
+    "fridge": [60, 60],
+    "pantry": [30, 30]
+  },
+  "296": {
+    "name": "Peppers",
+    "fridge": [4, 14],
+    "pantry": null
+  },
+  "297": {
+    "name": "Potatoes",
+    "fridge": [7, 14],
+    "pantry": [30, 60]
+  },
+  "506": {
+    "name": "Cilantro",
+    "fridge": [14, 21],
+    "pantry": [7, 14]
+  },
+  "546": {
+    "name": "Quark, fresh cheese",
+    "fridge": [7, 10],
+    "pantry": null
+  },
+  "548": {
+    "name": "Hot peppers",
+    "fridge": [7, 7],
+    "pantry": null
+  },
+  "600": {
+    "name": "Cherry tomatoes",
+    "fridge": [5, 5],
+    "pantry": [10, 10]
+  }
+}

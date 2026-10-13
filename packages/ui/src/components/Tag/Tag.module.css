@@ -21,3 +21,10 @@
   border-color: var(--color-border);
   color: var(--color-text-muted);
 }
+
+/* Food that needs using: the warm warning colour, words and border, on the
+   surface it sits on (DESIGN.md: the one thing allowed to stand out). */
+.warn {
+  border-color: var(--color-warn);
+  color: var(--color-warn);
+}

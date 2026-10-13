@@ -40,3 +40,4 @@ Each file records one decision: the context, what we chose, what we rejected and
 | [0024](0024-data-layer.md) | Read and write all data through one data layer that cancels stale work | Accepted |
 | [0025](0025-server.md) | Add login, sync and bill forwarding through our own API, on Supabase | Accepted |
 | [0026](0026-meals-belong-to-people.md) | Meal slots belong to people, and shops to where the household lives | Accepted |
+| [0027](0027-pantry-and-cuisine-packs.md) | Keep amounts and condition in the pantry, and let a household load cuisine packs | Proposed |

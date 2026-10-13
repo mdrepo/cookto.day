@@ -61,6 +61,10 @@
 /packages/testing/package.json      @mdrepo
 /packages/testing/tsconfig.json     @mdrepo
 /packages/testing/test/             @mdrepo
+/packages/data-web/package.json     @mdrepo
+/packages/data-web/tsconfig.json    @mdrepo
+/packages/data-web/playwright.config.ts @mdrepo
+/packages/data-web/e2e/             @mdrepo
 /apps/kit/package.json              @mdrepo
 /apps/kit/tsconfig.json             @mdrepo
 /apps/kit/playwright.config.ts      @mdrepo

@@ -1,0 +1,20 @@
+{
+  "name": "@cookto/data-web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "e2e": "playwright test",
+    "typecheck": "tsc --noEmit -p .",
+    "lint": "eslint ."
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@cookto/data": "workspace:*"
+  },
+  "devDependencies": {
+    "@cookto/testing": "workspace:*"
+  }
+}

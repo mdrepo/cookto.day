@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@cookto/data": "workspace:*",
+    "@cookto/data-web": "workspace:*",
     "@cookto/ui": "workspace:*",
     "@cookto/usecases": "workspace:*"
   },

@@ -67,3 +67,12 @@ describe("only data touches storage or the network", () => {
     },
   );
 });
+
+describe("the browser's storage for data", () => {
+  test("packages/data-web may touch storage", async () => {
+    for (const code of CALLS)
+      expect(
+        await problems("packages/data-web/src/indexeddb.ts", code),
+      ).toEqual([]);
+  });
+});

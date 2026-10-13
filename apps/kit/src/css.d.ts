@@ -5,3 +5,9 @@ declare module "*.module.css" {
   export default classes;
 }
 declare module "*.css";
+
+// An image file: Bun copies it next to the page and gives its address.
+declare module "*.svg" {
+  const url: string;
+  export default url;
+}

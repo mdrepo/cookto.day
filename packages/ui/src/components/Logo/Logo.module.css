@@ -1,0 +1,21 @@
+/* The logo (DESIGN.md): the pot, 72 by 52. Its outlines are dark ink, so in
+   dark it sits on a light backing, the ink colour of the dark theme, as the
+   prototype draws it. No outer margin. */
+.logo {
+  inline-size: 72px;
+  block-size: 52px;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+}
+
+@media (prefers-color-scheme: dark) {
+  .logo:not([data-theme="light"] *) {
+    padding: var(--space-1);
+    background: var(--color-text);
+  }
+}
+
+[data-theme="dark"] .logo {
+  padding: var(--space-1);
+  background: var(--color-text);
+}

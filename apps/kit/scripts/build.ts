@@ -73,7 +73,18 @@ export async function buildKit(
       )
       .replace(ROOT, `<div id="kit">${html()}</div>`);
     writeFileSync(join(outdir, "index.html"), page);
-    return [join(outdir, "index.html"), join(outdir, styles)];
+    // Images the parts import, like the logo, beside the page.
+    const assets = result.outputs.filter((o) => o.kind === "asset");
+    for (const a of assets)
+      writeFileSync(
+        join(outdir, basename(a.path)),
+        new Uint8Array(await a.arrayBuffer()),
+      );
+    return [
+      join(outdir, "index.html"),
+      join(outdir, styles),
+      ...assets.map((a) => join(outdir, basename(a.path))),
+    ];
   } finally {
     rmSync(work, { recursive: true, force: true });
   }

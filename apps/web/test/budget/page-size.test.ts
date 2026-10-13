@@ -13,8 +13,11 @@ import { buildSite } from "../../scripts/build.js";
 const BUDGET_KB = {
   /** Each HTML page plus all stylesheets. */
   pageAndStyles: 8,
-  /** All our own JavaScript: everything but React's file. 20 until the kitchen (specs/72). */
-  ourScripts: 35,
+  /**
+   * All our own JavaScript: everything but React's file. 20 until the
+   * kitchen (specs/72), 35 until the prototype's layout and Settings (#84).
+   */
+  ourScripts: 36,
   /**
    * A first visit, nothing cached: pages, styles and every script. 100 until
    * the kitchen (specs/72), 115 until the prototype's look (specs/80). It

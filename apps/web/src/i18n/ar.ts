@@ -1,7 +1,6 @@
 import type { Messages } from "./en.js";
 
 export const ar: Messages = {
-  tagline: "ماذا تطبخ اليوم، مما هو موجود في مطبخك",
   languageLabel: "اللغة",
   languageSoon: "قريبًا",
   emptyTitle: "مطبخك فارغ",
@@ -120,6 +119,8 @@ export const ar: Messages = {
   trySample: "جرّب مطبخًا تجريبيًا",
   sampleKitchen: "مطبخ تجريبي",
   clearSample: "احذف المطبخ التجريبي",
+  sampleBody: "طعام للتجربة، لتتعرّف على التطبيق.",
+  settings: "الإعدادات",
   dishes: "الأطباق",
   hasEverything: "كل شيء موجود",
   needsCount: {

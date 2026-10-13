@@ -6,7 +6,8 @@ import { Kitchen } from "./support/kitchen.js";
 test.describe("Every screen works with a keyboard and reads well in every script", () => {
   test("keyboard focus is easy to see", async ({ page }) => {
     const kitchen = new Kitchen(page);
-    await kitchen.open();
+    // The language list is in Settings since #84.
+    await kitchen.openSettings();
 
     await kitchen.tabToLanguageList();
 

@@ -1,7 +1,6 @@
 import type { Messages } from "./en.js";
 
 export const mr: Messages = {
-  tagline: "आज काय शिजवायचं, तुमच्या स्वयंपाकघरात आधीच जे आहे त्यातून",
   languageLabel: "भाषा",
   languageSoon: "लवकरच येत आहे",
   emptyTitle: "तुमचं स्वयंपाकघर रिकामं आहे",
@@ -88,6 +87,8 @@ export const mr: Messages = {
   trySample: "नमुना स्वयंपाकघर वापरून पाहा",
   sampleKitchen: "नमुना स्वयंपाकघर",
   clearSample: "नमुना काढा",
+  sampleBody: "ॲप पाहण्यासाठी नमुन्याचे अन्न.",
+  settings: "सेटिंग्ज",
   dishes: "पदार्थ",
   hasEverything: "सर्व काही आहे",
   needsCount: { one: "{n} वस्तू हवी", other: "{n} वस्तू हव्यात" },

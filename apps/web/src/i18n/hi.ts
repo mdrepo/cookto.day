@@ -1,7 +1,6 @@
 import type { Messages } from "./en.js";
 
 export const hi: Messages = {
-  tagline: "आज क्या पकाएँ, उससे जो आपकी रसोई में पहले से है",
   languageLabel: "भाषा",
   languageSoon: "जल्द आ रही है",
   emptyTitle: "आपकी रसोई खाली है",
@@ -91,6 +90,8 @@ export const hi: Messages = {
   trySample: "नमूने की रसोई आज़माएँ",
   sampleKitchen: "नमूने की रसोई",
   clearSample: "नमूना हटाएँ",
+  sampleBody: "आज़माने के लिए नमूने का खाना, ताकि आप ऐप देख सकें।",
+  settings: "सेटिंग्स",
   dishes: "व्यंजन",
   hasEverything: "सब कुछ है",
   needsCount: { one: "{n} चीज़ चाहिए", other: "{n} चीज़ें चाहिए" },

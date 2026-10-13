@@ -8,7 +8,8 @@ test.describe("English to start, other languages coming soon", () => {
     page,
   }) => {
     const kitchen = new Kitchen(page);
-    await kitchen.open();
+    // In Settings, not on every page (#84).
+    await kitchen.openSettings();
     await expect(page.getByRole("combobox")).toHaveValue("en");
     expect(await kitchen.languages()).toEqual([
       { name: "English", off: false },

@@ -7,14 +7,13 @@ import {
   Screen,
   Stack,
 } from "@cookto/ui";
-import type { ReactNode } from "react";
 import { useStaplesScreen } from "./useStaplesScreen.js";
 
 /** The usual staples, ticked for you (specs/72, criterion 2). */
-export function StaplesScreen({ header }: { header: ReactNode }) {
+export function StaplesScreen() {
   const s = useStaplesScreen();
   return (
-    <Screen title={s.title} header={header}>
+    <Screen title={s.title}>
       <Cluster>
         <Button kind="plain" icon="arrow-left" onClick={s.onBack}>
           {s.back}

@@ -20,6 +20,12 @@ export function useHomeScreen() {
   );
   return {
     ...t,
+    /** Today, above the title: "Wednesday 14 October" (#84). */
+    date: new Intl.DateTimeFormat(locale, {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    }).format(new Date()),
     /** "2 people · 5 meals a day", and Edit (specs/65, criterion 5). */
     household:
       data && data.people > 0

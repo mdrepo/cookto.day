@@ -50,6 +50,7 @@ export function useKitchenStart() {
     sample: sample
       ? {
           tag: t.sampleKitchen,
+          body: t.sampleBody,
           clear: t.clearSample,
           onClear: () => void clearSample(kitchen),
         }

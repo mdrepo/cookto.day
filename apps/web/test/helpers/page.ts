@@ -32,6 +32,8 @@ export interface PageOpts {
   storage?: Record<string, string>;
   /** The address's query, such as "?preview-language=ar". */
   search?: string;
+  /** The address's hash, such as "#/settings". */
+  hash?: string;
 }
 
 /** Opens the built index page and runs its bundle. */
@@ -40,7 +42,7 @@ export function openPage(opts: PageOpts = {}) {
   const script = files.find((f) => f.endsWith(".js"));
   if (!html || !script) throw new Error("The build produced no index page.");
   const win = new HappyWindow({
-    url: `http://localhost/${opts.search ?? ""}`,
+    url: `http://localhost/${opts.search ?? ""}${opts.hash ?? ""}`,
     settings: {
       enableJavaScriptEvaluation: true,
       suppressInsecureJavaScriptEnvironmentWarning: true,

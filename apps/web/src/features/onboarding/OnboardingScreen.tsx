@@ -9,10 +9,11 @@ import { WhoStep } from "./WhoStep.js";
 /** Where you live, then who eats which meals, then all set (specs/65). */
 export function OnboardingScreen({
   step,
-  header,
+  language,
 }: {
   step: Step;
-  header: ReactNode;
+  /** The language list, on the first step only (#84). */
+  language: ReactNode;
 }) {
   const s = useOnboardingScreen(step);
   return (
@@ -21,8 +22,8 @@ export function OnboardingScreen({
       tagline={s.body}
       header={
         <>
-          {header}
           {s.steps && <Steps {...s.steps} />}
+          {language}
         </>
       }
     >

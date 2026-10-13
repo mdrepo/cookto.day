@@ -1,16 +1,37 @@
-import { Button, Cluster, EmptyState, Note, Screen, Tag } from "@cookto/ui";
-import type { ReactNode } from "react";
+import { Button, Callout, Cluster, Note, Screen } from "@cookto/ui";
+import { openSettings } from "../../routes.js";
 import { CookToday } from "./CookToday.js";
 import { useHomeScreen } from "./useHomeScreen.js";
 import { useKitchenStart } from "./useKitchenStart.js";
 import { UseSoon } from "./UseSoon.js";
 
-/** The first page: the household, the kitchen, and what to cook today. */
-export function HomeScreen({ header }: { header: ReactNode }) {
+/** Today: the household, the kitchen, and what to cook (specs/72, 80; #84). */
+export function HomeScreen() {
   const t = useHomeScreen();
   const k = useKitchenStart();
+  const choose = (kind: "main" | "quiet") => (
+    <Button kind={kind} onClick={k.choose.onClick}>
+      {k.choose.label}
+    </Button>
+  );
+  const trySample = k.trySample && (
+    <Button kind="quiet" onClick={k.trySample.onClick}>
+      {k.trySample.label}
+    </Button>
+  );
   return (
-    <Screen title="cookto.day" tagline={t.tagline} header={header}>
+    <Screen
+      title="cookto.day"
+      eyebrow={t.date}
+      action={
+        <Button
+          kind="plain"
+          icon="settings"
+          label={t.settings}
+          onClick={openSettings}
+        />
+      }
+    >
       {t.household && (
         <Cluster gap={2}>
           <span>{t.household.line}</span>
@@ -20,32 +41,42 @@ export function HomeScreen({ header }: { header: ReactNode }) {
         </Cluster>
       )}
       {k.sample && (
-        <Cluster gap={2}>
-          <Tag>{k.sample.tag}</Tag>
-          <Button kind="plain" onClick={k.sample.onClear}>
-            {k.sample.clear}
-          </Button>
-        </Cluster>
+        <Callout
+          title={k.sample.tag}
+          actions={
+            <>
+              {choose("main")}
+              <Button kind="quiet" onClick={k.sample.onClear}>
+                {k.sample.clear}
+              </Button>
+            </>
+          }
+        >
+          {k.sample.body}
+        </Callout>
       )}
       {k.empty && (
-        <>
-          <EmptyState title={t.emptyTitle}>{t.emptyBody}</EmptyState>
-          <Note>{t.privacy}</Note>
-        </>
+        <Callout
+          title={t.emptyTitle}
+          actions={
+            <>
+              {choose("main")}
+              {trySample}
+            </>
+          }
+        >
+          {t.emptyBody}
+        </Callout>
       )}
-      <Cluster gap={2}>
-        <Button kind={k.empty ? "main" : "quiet"} onClick={k.choose.onClick}>
-          {k.choose.label}
-        </Button>
-        {k.trySample && (
-          <Button kind="quiet" onClick={k.trySample.onClick}>
-            {k.trySample.label}
-          </Button>
-        )}
-      </Cluster>
       <UseSoon />
       <CookToday />
-      {!k.empty && <Note>{t.privacy}</Note>}
+      {!k.empty && !k.sample && (
+        <Cluster gap={2}>
+          {choose("quiet")}
+          {trySample}
+        </Cluster>
+      )}
+      <Note>{t.privacy}</Note>
     </Screen>
   );
 }

@@ -7,14 +7,15 @@ import { Kitchen } from "./support/kitchen.js";
 test.describe("Everything works on an iPhone too", () => {
   test("the language list is easy to tap on an iPhone", async ({ page }) => {
     const kitchen = new Kitchen(page);
-    await kitchen.open();
+    // The language list is in Settings since #84.
+    await kitchen.openSettings();
     const list = await kitchen.languageList();
     expect(list.height).toBeGreaterThanOrEqual(44);
     expect(list.radius).toBe("8px");
     expect(list.border).toBe("solid 1px");
     expect(list.arrow).toBe("right");
 
-    await kitchen.open("ar");
+    await kitchen.openSettings("ar");
     expect((await kitchen.languageList()).arrow).toBe("left");
   });
 });

@@ -1,4 +1,4 @@
-import { ItemList, Stack, Tag } from "@cookto/ui";
+import { ItemList, Section, Tag } from "@cookto/ui";
 import { useUseSoon } from "./useUseSoon.js";
 
 /** Food that needs using, at the top of Today (the prototype's "Use soon"). */
@@ -6,8 +6,7 @@ export function UseSoon() {
   const u = useUseSoon();
   if (u.rows.length === 0) return null;
   return (
-    <Stack gap={2}>
-      <h2>{u.title}</h2>
+    <Section title={u.title} tone="warn">
       <ItemList
         label={u.title}
         items={u.rows.map((r) => ({
@@ -18,6 +17,6 @@ export function UseSoon() {
           onOpen: r.onOpen,
         }))}
       />
-    </Stack>
+    </Section>
   );
 }

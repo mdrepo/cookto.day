@@ -9,7 +9,7 @@ import { settings } from "./platform.js";
 export type Step = "where" | "who" | "done";
 /** The kitchen's pages (specs/72-kitchen.md). */
 export type Page = "cuisines" | "staples" | "pantry" | "dishes";
-export type Route = "home" | Step | Page;
+export type Route = "home" | "settings" | Step | Page;
 
 const STEPS: Partial<Record<string, Step>> = {
   "#/start/where": "where",
@@ -41,6 +41,7 @@ export function useRoute(): Route {
   const step = STEPS[at];
   if (step) return step;
   if (!onboarded) return "where";
+  if (at === "#/settings") return "settings";
   return PAGES[at] ?? "home";
 }
 
@@ -52,6 +53,11 @@ export function go(step: Step): void {
 /** To one of the kitchen's pages, as a new entry in the browser's history. */
 export function open(page: Page): void {
   location.hash = `#/kitchen/${page}`;
+}
+
+/** To Settings, where the language is chosen after setup (#84). */
+export function openSettings(): void {
+  location.hash = "#/settings";
 }
 
 /** Home, in place of the step that led there. */

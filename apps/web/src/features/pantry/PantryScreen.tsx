@@ -1,26 +1,29 @@
-import { Button, Cluster, ItemList, Screen, Stack, Tag } from "@cookto/ui";
-import type { ReactNode } from "react";
+import { Button, ItemList, Screen, Section, Tag } from "@cookto/ui";
 import { AddFood } from "./AddFood.js";
 import { ItemSheet } from "./ItemSheet.js";
 import { usePantryScreen } from "./usePantryScreen.js";
 
-/** What's in the kitchen, as a short list you tap (specs/72, 80). */
-export function PantryScreen({ header }: { header: ReactNode }) {
+/** What's in the kitchen, as a short list you tap (specs/72, 80; #84). */
+export function PantryScreen() {
   const s = usePantryScreen();
   return (
-    <Screen title={s.title} header={header}>
-      {s.add.adding ? (
-        <AddFood onDone={s.add.done} />
-      ) : (
-        <Cluster>
+    <Screen
+      title={s.title}
+      action={
+        !s.add.adding && (
           <Button icon="plus" onClick={s.add.start}>
             {s.add.label}
           </Button>
-        </Cluster>
-      )}
+        )
+      }
+    >
+      {s.add.adding && <AddFood onDone={s.add.done} />}
       {s.groups.map((g) => (
-        <Stack key={g.key} gap={2}>
-          <h2>{g.label}</h2>
+        <Section
+          key={g.key}
+          title={g.label}
+          {...(g.key === "soon" ? { tone: "warn" as const } : {})}
+        >
           <ItemList
             label={g.label}
             items={g.rows.map((r) => ({
@@ -31,7 +34,7 @@ export function PantryScreen({ header }: { header: ReactNode }) {
               onOpen: r.onOpen,
             }))}
           />
-        </Stack>
+        </Section>
       ))}
       {s.open && <ItemSheet id={s.open} onClose={s.close} />}
     </Screen>

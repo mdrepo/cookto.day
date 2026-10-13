@@ -6,8 +6,31 @@ import type { Locator, Page } from "@playwright/test";
 export class Kitchen {
   constructor(private readonly page: Page) {}
 
-  async open(): Promise<void> {
-    await this.page.goto("/");
+  /** Opens the app; with a language, as a reviewer previewing it. */
+  async open(previewLanguage?: string): Promise<void> {
+    await this.page.goto(
+      previewLanguage ? `/?preview-language=${previewLanguage}` : "/",
+    );
+  }
+
+  /** The language list's options, as people see them. */
+  languages(): Promise<{ name: string; off: boolean }[]> {
+    return this.page
+      .getByRole("combobox")
+      .locator("option")
+      .evaluateAll((options) =>
+        options.map((o) => ({
+          name: o.textContent.trim(),
+          off: (o as HTMLOptionElement).disabled,
+        })),
+      );
+  }
+
+  /** As if they'd chosen this language on an earlier visit. */
+  async savedLanguage(code: string): Promise<void> {
+    await this.page.addInitScript((c) => {
+      localStorage.setItem("cookto.day:language", c);
+    }, code);
   }
 
   title(): Locator {
@@ -17,10 +40,6 @@ export class Kitchen {
   /** The empty state: the one region in the page's main part. */
   emptyState(): Locator {
     return this.page.getByRole("main").getByRole("region");
-  }
-
-  async chooseLanguage(name: string): Promise<void> {
-    await this.page.getByRole("combobox").selectOption({ label: name });
   }
 
   /** "ltr" or "rtl": the direction the whole page is laid out in. */

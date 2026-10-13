@@ -27,6 +27,8 @@ afterEach(async () => {
 export interface PageOpts {
   /** localStorage contents before the page loads. */
   storage?: Record<string, string>;
+  /** The address's query, such as "?preview-language=ar". */
+  search?: string;
 }
 
 /** Opens the built index page and runs its bundle. */
@@ -35,7 +37,7 @@ export function openPage(opts: PageOpts = {}) {
   const script = files.find((f) => f.endsWith(".js"));
   if (!html || !script) throw new Error("The build produced no index page.");
   const win = new HappyWindow({
-    url: "http://localhost/",
+    url: `http://localhost/${opts.search ?? ""}`,
     settings: {
       enableJavaScriptEvaluation: true,
       suppressInsecureJavaScriptEnvironmentWarning: true,
@@ -76,6 +78,16 @@ export function openPage(opts: PageOpts = {}) {
         title: doc.getElementById(titleId)?.textContent.trim() ?? "",
         body: region?.querySelector("p")?.textContent.trim() ?? "",
       };
+    },
+    /** The language list's options: code, words, and whether it's off. */
+    languages() {
+      return [
+        ...doc.querySelectorAll<HTMLOptionElement>("#language option"),
+      ].map((o) => ({
+        code: o.value,
+        text: o.textContent.trim(),
+        off: o.disabled,
+      }));
     },
     chooseLanguage(code: string) {
       const select = doc.querySelector<HTMLSelectElement>("#language");

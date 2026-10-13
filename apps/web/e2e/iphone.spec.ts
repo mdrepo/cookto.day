@@ -14,7 +14,7 @@ test.describe("Everything works on an iPhone too", () => {
     expect(list.border).toBe("solid 1px");
     expect(list.arrow).toBe("right");
 
-    await kitchen.chooseLanguage("العربية");
+    await kitchen.open("ar");
     expect((await kitchen.languageList()).arrow).toBe("left");
   });
 });

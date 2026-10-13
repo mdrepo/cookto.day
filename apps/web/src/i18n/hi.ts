@@ -3,6 +3,7 @@ import type { Messages } from "./en.js";
 export const hi: Messages = {
   tagline: "आज क्या पकाएँ, उससे जो आपकी रसोई में पहले से है",
   languageLabel: "भाषा",
+  languageSoon: "जल्द आ रही है",
   emptyTitle: "आपकी रसोई खाली है",
   emptyBody: "आज क्या पका सकते हैं, यह देखने के लिए किराने का बिल जोड़ें",
   privacy:

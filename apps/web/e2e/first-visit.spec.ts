@@ -14,14 +14,13 @@ test.describe("A first visit", () => {
     );
   });
 
-  test("switching to Arabic lays the page out right to left", async ({
-    page,
-  }) => {
+  test("Arabic lays the page out right to left", async ({ page }) => {
     const kitchen = new Kitchen(page);
     await kitchen.open();
     expect(await kitchen.taglineStartsFrom()).toBe("left");
 
-    await kitchen.chooseLanguage("العربية");
+    // Arabic is coming soon: reviewers preview it (specs/65-onboarding.md).
+    await kitchen.open("ar");
 
     await expect(kitchen.emptyState()).toContainText(
       "أضف فاتورة بقالة لترى ما يمكنك طبخه اليوم",

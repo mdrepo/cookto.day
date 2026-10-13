@@ -1,0 +1,52 @@
+/* A list you tap (DESIGN.md): one surface with a border, a line between
+   rows, each row a whole button: the name, its line under it, a tag at the
+   end. No outer margin. */
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.list > li + li {
+  border-block-start: 1px solid var(--color-border);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  inline-size: 100%;
+  min-block-size: 44px;
+  padding-block: var(--space-3);
+  padding-inline: var(--space-4);
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.row:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.line {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}

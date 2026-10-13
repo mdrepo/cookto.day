@@ -7,34 +7,23 @@
 
 The people here are whoever builds cookto.day, people and agents. Screens come next: onboarding, then bills, the pantry and the week plan. Each needs a feature folder laid out the way the layers say ([ADR 0022](../docs/adr/0022-app-layers.md)), and a hook whose re-renders are tested ([ADR 0023](../docs/adr/0023-state-and-rerenders.md)). One command makes them right the first time, as `new component` does for the kit.
 
-## Acceptance criteria
+## What the command does
 
-Criteria 1–3 describe the command. They are checked by hand once and shown in the PR, not by automated tests: a test that runs the generator in a copy of the repo costs every PR seconds for a tool that rarely changes. Criterion 4 is a unit test of the helper, which every re-render test will rely on (ADR 0002, 0003).
+Not tested: it's checked by hand once, in this PR. Its output is checked anyway, the first time anyone commits a screen it made (typecheck, lint with the layer rules, Prettier, tdd:verify).
 
-### 1. a new screen starts with every file it needs
-
-- **Given** there is no `onboarding` feature
-- **When** someone runs `bun run new screen onboarding`
-- **Then** these exist:
+- `bun run new screen onboarding` writes:
   - `apps/web/src/features/onboarding/OnboardingScreen.tsx`, the screen;
   - `apps/web/src/features/onboarding/useOnboardingScreen.ts`, its hook;
   - `apps/web/test/features/onboarding/useOnboardingScreen.test.ts`, the hook's test, which counts re-renders;
-  - `apps/web/e2e/onboarding.spec.ts`, the screen's e2e test
-- **And** the typecheck, lint (with the layer rules) and Prettier pass with them
+  - `apps/web/e2e/onboarding.spec.ts`, the screen's e2e test.
+- Both tests fail until the screen is built, saying what to write first, from the screen's spec (ADR 0002).
+- A taken name (`settings`) or one that isn't lower-case words joined by `-` (`Onboarding`, `"week plan"`) is refused, saying why. `week-plan` makes `WeekPlanScreen`.
 
-### 2. a new screen's tests fail until it's built
+## Acceptance criteria
 
-- **Given** a screen the generator just made
-- **When** its hook's test and its e2e test run
-- **Then** both fail, saying what to write first: the hook's test from the spec, and the screen's e2e test from the spec (ADR 0002)
+One unit test (ADR 0002, 0003).
 
-### 3. a name that's taken, or not a feature name, is refused
-
-- **Given** a `settings` feature already exists
-- **When** someone runs `bun run new screen settings`, or `bun run new screen Onboarding`, or `bun run new screen "week plan"`
-- **Then** nothing is written, and they're told why: the name is taken, or a feature's name is lower-case words joined by `-`, like `week-plan` (which makes `WeekPlanScreen`)
-
-### 4. a hook's re-renders can be counted
+### 1. a hook's re-renders can be counted
 
 - **Given** a hook that reads one value from a store, through a selector
 - **When** a test mounts it with `renderCount`, and the store changes a value the hook doesn't read, then one it does

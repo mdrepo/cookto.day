@@ -1,6 +1,12 @@
 import type { AppPack, KitchenItem } from "@cookto/data";
 import type { KitchenSettings } from "@cookto/data/read";
-import { type MealSlot, shownAmount } from "@cookto/engine";
+import {
+  conditionOf,
+  daysLeft,
+  type MealSlot,
+  type PantryItem,
+  shownAmount,
+} from "@cookto/engine";
 import { useQueries } from "@tanstack/react-query";
 import { useStore } from "zustand";
 import { count } from "./i18n/format.js";
@@ -86,4 +92,41 @@ export function listOf(
   type: "conjunction" | "disjunction" = "conjunction",
 ): string {
   return new Intl.ListFormat(locale, { type }).format(items);
+}
+
+const CONDITION_WORDS = {
+  good: "good",
+  "use-soon": "useSoon",
+  "past-its-best": "pastItsBest",
+} as const;
+
+/**
+ * An item in words: its name, "250 g · use within 3 days", and the warning
+ * when it needs using (DESIGN.md, the pantry list).
+ */
+export function useItemWords() {
+  const { locale, t } = useWords();
+  const name = namer(useLoadedPacks(), locale);
+  const amountOf = useAmountWords();
+  return (item: PantryItem, day: string) => {
+    const condition = conditionOf(item, day);
+    const left =
+      item.shelfLifeDays === undefined
+        ? null
+        : daysLeft(item.boughtOn, item.shelfLifeDays, day);
+    const useBy =
+      left === null || left < 0
+        ? null
+        : left === 0
+          ? t.useToday
+          : count(locale, t.useWithin, left);
+    const amount = amountOf(item);
+    return {
+      name: name("ingredients", item.ingredient),
+      amount,
+      line: [amount, useBy].filter(Boolean).join(" · "),
+      condition,
+      warning: condition === "good" ? null : t[CONDITION_WORDS[condition]],
+    };
+  };
 }

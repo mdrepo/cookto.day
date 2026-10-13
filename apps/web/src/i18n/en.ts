@@ -91,6 +91,9 @@ export const en = {
   needsCount: { one: "Needs {n} thing", other: "Needs {n} things" },
   pieces: { one: "{n} piece", other: "{n} pieces" },
   piecesUnit: "pieces",
+  otherIdeas: "Other ideas",
+  pages: "Pages",
+  close: "Close",
 };
 
 /** Words that change with a number: CLDR's plural forms, "other" always. */

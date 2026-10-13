@@ -24,7 +24,16 @@ export function ItemList({
     <ul className={styles.list} aria-label={label}>
       {items.map((item) => (
         <li key={item.key}>
-          <button type="button" className={styles.row} onClick={item.onOpen}>
+          <button
+            type="button"
+            className={styles.row}
+            onClick={(e) => {
+              // Safari doesn't focus a button you click: focus it, so what
+              // it opens can give focus back.
+              e.currentTarget.focus();
+              item.onOpen();
+            }}
+          >
             <span className={styles.text}>
               <strong className={styles.name}>{item.name}</strong>
               {item.line && <span className={styles.line}>{item.line}</span>}

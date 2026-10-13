@@ -15,15 +15,22 @@ import {
   KINDS,
   planComponent,
 } from "./new-lib.js";
+import { makeScreen } from "./new-screen.js";
 
 // `bun run new component <Name>` or `bun run new layout <Name>`: a new part
 // of the design system, with every file the checks ask for (ADR 0019).
-// Never make the folder by hand. Screens come with onboarding.
+// `bun run new screen <feature>`: a new screen (new-screen.ts, ADR 0022).
+// Never make the folder by hand.
 
 const USAGE =
-  "Usage: bun run new component <Name>   (for example: Button)\n" +
-  "       bun run new layout <Name>      (for example: Grid)";
+  "Usage: bun run new component <Name>    (for example: Button)\n" +
+  "       bun run new layout <Name>       (for example: Grid)\n" +
+  "       bun run new screen <feature>    (for example: week-plan)";
 const [kind, name] = process.argv.slice(2);
+if (kind === "screen" && name) {
+  makeScreen(name);
+  process.exit(0);
+}
 if ((kind !== "component" && kind !== "layout") || !name) {
   console.error(USAGE);
   process.exit(1);

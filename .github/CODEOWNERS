@@ -58,6 +58,9 @@
 /packages/data/package.json         @mdrepo
 /packages/data/tsconfig.json        @mdrepo
 /packages/data/test/                @mdrepo
+/packages/testing/package.json      @mdrepo
+/packages/testing/tsconfig.json     @mdrepo
+/packages/testing/test/             @mdrepo
 /apps/kit/package.json              @mdrepo
 /apps/kit/tsconfig.json             @mdrepo
 /apps/kit/playwright.config.ts      @mdrepo

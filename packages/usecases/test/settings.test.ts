@@ -16,6 +16,7 @@ function fakeSettings(languages: string[], countries: string[] = []) {
     setCountry: (country) => {
       written.push(country);
     },
+    setOnboarded: () => undefined,
   };
   return { settings, written };
 }

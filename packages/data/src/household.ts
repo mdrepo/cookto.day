@@ -25,6 +25,8 @@ export interface HouseholdReader {
 export interface HouseholdWriter {
   addMember(kind: MemberKind, nickname?: string): Promise<Member>;
   setMeals(id: string, meals: readonly MealSlot[]): Promise<void>;
+  /** A name, or none: then the app calls them "Adult", "Child 2" and so on. */
+  setNickname(id: string, nickname: string | undefined): Promise<void>;
   removeMember(id: string): Promise<void>;
 }
 
@@ -73,6 +75,12 @@ export function createHousehold(
       },
       async setMeals(id, meals) {
         await save(updated(await stored(id), { meals }, now()));
+      },
+      async setNickname(id, nickname) {
+        const person = { ...(await stored(id)) };
+        delete person.nickname;
+        if (nickname !== undefined) person.nickname = nickname;
+        await save(updated(person, {}, now()));
       },
       async removeMember(id) {
         await save(deleted(await stored(id), now()));

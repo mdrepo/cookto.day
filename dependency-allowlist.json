@@ -1,6 +1,12 @@
 {
   "$comment": "Every direct dependency, with why we need it (ADR 0006). `bun run check` fails if package.json has a package that isn't listed here, or this lists one package.json doesn't have. `bun run deps:health` runs ADR 0006's health checks on added or changed packages; `exceptions` allows a named failing check (scorecard, recent-release, maintainers, install-scripts, license) and says why. `scorecardRepo` names where the Scorecard service files a renamed repo; it counts only if GitHub says it's the same repo the package's provenance was built from. Changing this file needs a code owner's approval.",
   "dependencies": {
+    "@tanstack/react-query": {
+      "reason": "Reading saved data (ADR 0024): shares a read two parts ask for, cancels reads nobody watches, keeps unchanged data as it was, and refreshes what a saved change touches. Ships in React's long-cached file, not our own scripts.",
+      "exceptions": {
+        "scorecard": "The Scorecard service has no score for TanStack/query (checked 13 Oct 2026). Chosen in ADR 0024; widely used; pinned exactly, 7-day release age, and each upgrade reviewed."
+      }
+    },
     "lucide-react": {
       "reason": "Icons (ADR 0020): line icons on one grid, drawn by the Icon component in packages/ui, the only file that imports it. Only the icons we use ship.",
       "exceptions": {

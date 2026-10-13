@@ -12,8 +12,8 @@ test.describe("Buttons say what they do and when they're busy; cards hold one th
         .example(kit.panel("Button", panel), "Main")
         .getByRole("button", { name: "Add a bill" });
       const drawn = await kit.drawn(button);
-      expect(drawn.background, panel).toBe(await kit.token(button, "accent"));
-      expect(drawn.colour, panel).toBe(await kit.token(button, "on-accent"));
+      expect(drawn.background, panel).toBe(await kit.token(button, "action"));
+      expect(drawn.colour, panel).toBe(await kit.token(button, "on-action"));
       expect(drawn.height, panel).toBeGreaterThanOrEqual(44);
     }
   });

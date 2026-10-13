@@ -51,3 +51,7 @@ A prototype ran a North Indian kitchen and a South Indian one through the same s
 - Each pack adds weight to the app. Packs are loaded only when a household picks them, and the page-size budget still applies to every page.
 - `packs:check` is a new check to maintain, and the schema becomes a contract: changing it needs an ADR.
 - Revisit if packs need runtime behaviour, such as code to parse a meal structure, that data can't express.
+
+## Implementation notes
+
+**Meal slots and shops (2026-10-13):** [0026](0026-meals-belong-to-people.md) changes two lines of the decision above. Packs no longer list meal slots: there are five fixed slots, each person ticks theirs, and packs tag which slots a dish suits. Packs no longer list shops: the household's country picks them, and parsers are grouped by country.

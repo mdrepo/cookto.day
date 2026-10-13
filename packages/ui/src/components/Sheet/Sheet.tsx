@@ -17,7 +17,7 @@ export interface SheetProps {
 /**
  * One thing's controls, in a sheet from the bottom over the page: the
  * browser's own modal dialog, so focus stays inside, Escape closes it, and
- * focus goes back where it was.
+ * focus goes back where it was. A tap outside it closes it too.
  */
 export function Sheet({
   open,
@@ -47,22 +47,29 @@ export function Sheet({
       open={inPlace || undefined}
       aria-labelledby={titleId}
       onClose={onClose}
+      onClick={(e) => {
+        // A tap on the dimmed page, outside the sheet, closes it.
+        if (e.target === e.currentTarget && ref.current?.open)
+          ref.current.close();
+      }}
     >
-      <div className={styles.head}>
-        <h2 id={titleId} className={styles.title}>
-          {title}
-        </h2>
-        <Button
-          kind="plain"
-          icon="x"
-          label={closeLabel}
-          onClick={() => {
-            if (ref.current?.open) ref.current.close();
-            else onClose();
-          }}
-        />
+      <div className={styles.body}>
+        <div className={styles.head}>
+          <h2 id={titleId} className={styles.title}>
+            {title}
+          </h2>
+          <Button
+            kind="plain"
+            icon="x"
+            label={closeLabel}
+            onClick={() => {
+              if (ref.current?.open) ref.current.close();
+              else onClose();
+            }}
+          />
+        </div>
+        {children}
       </div>
-      {children}
     </dialog>
   );
 }

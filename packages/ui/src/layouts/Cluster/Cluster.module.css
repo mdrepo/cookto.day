@@ -3,3 +3,7 @@
   flex-wrap: wrap;
   align-items: center;
 }
+
+.fill > * {
+  flex: 1 1 0;
+}

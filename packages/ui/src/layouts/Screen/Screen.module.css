@@ -1,5 +1,13 @@
+/* As tall as the screen at least, so the bar at the end sits at its bottom. */
+.screen {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100dvh;
+}
+
 /* One centred column, at most 40rem, with the screen's side padding. */
 .column {
+  inline-size: 100%;
   max-width: 40rem;
   margin-inline: auto;
   padding-inline: var(--space-4);
@@ -44,6 +52,7 @@
 }
 
 .main {
+  flex: 1;
   display: flex;
   flex-direction: column;
   padding-block: var(--space-4) var(--space-6);

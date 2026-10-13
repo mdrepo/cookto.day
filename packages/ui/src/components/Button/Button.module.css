@@ -33,6 +33,12 @@
   color: var(--color-warn);
 }
 
+.plain {
+  border-style: none;
+  background: transparent;
+  color: var(--color-accent);
+}
+
 .button:disabled {
   border-color: var(--color-border);
   background: var(--color-bg);

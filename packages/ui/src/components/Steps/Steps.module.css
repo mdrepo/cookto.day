@@ -1,0 +1,30 @@
+/* Steps (DESIGN.md): "Step 1 of 2" in muted words, then a thin bar per step,
+   the accent up to this one. No outer margin: the space between parts
+   belongs to the screen. */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.label {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.bars {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.bar {
+  flex: 1;
+  block-size: var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+}
+
+.bar[data-done="true"] {
+  background: var(--color-accent);
+}

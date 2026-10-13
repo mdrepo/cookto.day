@@ -8,8 +8,12 @@ type Native = Omit<
 >;
 
 interface Common extends Native {
-  /** main: the one action that matters most. quiet: the rest. danger: removes or undoes. */
-  kind?: "main" | "quiet" | "danger";
+  /**
+   * main: the one action that matters most. quiet: the rest. danger: removes
+   * or undoes. plain: words or an icon without a frame, for a way out ("Skip
+   * for now") or a small action inside a card.
+   */
+  kind?: "main" | "quiet" | "danger" | "plain";
   /** Working on it: says so, shows a turning circle, and can't be used again yet. */
   busy?: boolean;
   /** "submit" only inside a form that needs it. */

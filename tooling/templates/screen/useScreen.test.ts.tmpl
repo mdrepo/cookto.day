@@ -1,0 +1,21 @@
+import { describe, expect, test } from "bun:test";
+import { renderCount } from "@cookto/testing";
+import { use__Name__Screen } from "../../../src/features/__feature__/use__Name__Screen.js";
+
+// Written by `bun run new screen __feature__`. Replace it with tests of what
+// the hook gives __Name__Screen, and of what re-renders when something
+// changes, from the screen's spec (ADR 0023).
+describe("use__Name__Screen", () => {
+  test("gives the screen what it shows", () => {
+    const hook = renderCount(() => use__Name__Screen());
+    try {
+      expect(hook.renders()).toBe(1);
+      if (Object.keys(hook.value()).length === 0)
+        throw new Error(
+          "use__Name__Screen gives the screen nothing yet. Write its tests from the screen's spec, then build it.",
+        );
+    } finally {
+      hook.unmount();
+    }
+  });
+});

@@ -117,3 +117,59 @@ export function planComponent(
     ],
   };
 }
+
+// Screens (ADR 0022): a feature folder in the web app, with the screen, its
+// hook, and their first tests, red until it's built.
+
+/** Where each screen template goes, for a feature called `feature`. */
+function screenTargets(feature: string, name: string): Record<string, string> {
+  const dir = `apps/web/src/features/${feature}`;
+  return {
+    "Screen.tsx.tmpl": `${dir}/${name}Screen.tsx`,
+    "useScreen.ts.tmpl": `${dir}/use${name}Screen.ts`,
+    "useScreen.test.ts.tmpl": `apps/web/test/features/${feature}/use${name}Screen.test.ts`,
+    "screen.spec.ts.tmpl": `apps/web/e2e/${feature}.spec.ts`,
+  };
+}
+
+export const SCREEN_TEMPLATES = Object.keys(screenTargets("x", "X"));
+export const FEATURES = "apps/web/src/features";
+
+/** `week-plan` as `WeekPlan`. */
+export const screenName = (feature: string) =>
+  feature
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join("");
+
+/** Why `feature` can't be a new screen's feature, or null when it can. */
+export function featureNameProblem(
+  feature: string,
+  features: string[],
+): string | null {
+  if (!/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(feature))
+    return `"${feature}" isn't a feature name: it's lower-case words joined by -, like week-plan (which makes WeekPlanScreen).`;
+  if (features.includes(feature))
+    return `${feature} already exists in ${FEATURES}. Add to it, or pick another name.`;
+  return null;
+}
+
+/** Every file a new screen writes, or why it can't be made. */
+export function planScreen(
+  feature: string,
+  repo: { features: string[]; templates: Record<string, string> },
+): { problem: string } | { files: FileToWrite[] } {
+  const problem = featureNameProblem(feature, repo.features);
+  if (problem) return { problem };
+  const name = screenName(feature);
+  return {
+    files: Object.entries(screenTargets(feature, name)).map(
+      ([template, path]) => ({
+        path,
+        content: (repo.templates[template] ?? "")
+          .replaceAll("__Name__", name)
+          .replaceAll("__feature__", feature),
+      }),
+    ),
+  };
+}

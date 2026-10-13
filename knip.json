@@ -5,6 +5,7 @@
       "ignoreDependencies": ["eslint-plugin-react-hooks"]
     },
     "apps/web": {
+      "ignoreDependencies": ["@cookto/testing"],
       "entry": ["src/main.tsx", "src/react.ts", "scripts/*.ts"],
       "project": [
         "src/**/*.{ts,tsx}",
@@ -24,6 +25,9 @@
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
     "packages/data": {
+      "project": ["src/**/*.ts", "test/**/*.ts"]
+    },
+    "packages/testing": {
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
     "packages/ui": {

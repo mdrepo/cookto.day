@@ -15,5 +15,8 @@
     "@cookto/data": "workspace:*",
     "@cookto/ui": "workspace:*",
     "@cookto/usecases": "workspace:*"
+  },
+  "devDependencies": {
+    "@cookto/testing": "workspace:*"
   }
 }

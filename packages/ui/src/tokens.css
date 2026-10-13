@@ -32,6 +32,8 @@
   --color-accent: #6e3b5f;
   --color-accent-soft: #f1e4ec;
   --color-on-accent: #fffdf9;
+  --color-action: #6e3b5f;
+  --color-on-action: #fffdf9;
   --color-warn: #a64b17;
 }
 
@@ -45,6 +47,8 @@
     --color-accent: #d9a3c6;
     --color-accent-soft: #3a2934;
     --color-on-accent: #1c1a17;
+    --color-action: #8a4f78;
+    --color-on-action: #fffdf9;
     --color-warn: #e8955f;
   }
 }
@@ -59,6 +63,8 @@
   --color-accent: #6e3b5f;
   --color-accent-soft: #f1e4ec;
   --color-on-accent: #fffdf9;
+  --color-action: #6e3b5f;
+  --color-on-action: #fffdf9;
   --color-warn: #a64b17;
 }
 
@@ -72,5 +78,7 @@
   --color-accent: #d9a3c6;
   --color-accent-soft: #3a2934;
   --color-on-accent: #1c1a17;
+  --color-action: #8a4f78;
+  --color-on-action: #fffdf9;
   --color-warn: #e8955f;
 }

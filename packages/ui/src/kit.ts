@@ -41,6 +41,12 @@ export const words = {
     save: "Save",
     dish: "Palak paneer",
     cook: "Cook it",
+    lunch: "Lunch",
+    dinner: "Dinner",
+    toddlerFood: "toddler food",
+    comingSoon: "Coming soon",
+    nameOptional: "Name (optional)",
+    child: "Child",
   },
   ar: {
     language: "اللغة",
@@ -59,6 +65,12 @@ export const words = {
     save: "حفظ",
     dish: "بالاك بانير",
     cook: "اطبخه",
+    lunch: "غداء",
+    dinner: "عشاء",
+    toddlerFood: "طعام الأطفال الصغار",
+    comingSoon: "قريبًا",
+    nameOptional: "الاسم (اختياري)",
+    child: "طفل",
   },
 } satisfies Record<KitLanguage, Record<string, string>>;
 

@@ -22,17 +22,19 @@ Use the variables, never a raw value. A token that's missing is added by a code 
 
 <!-- tokens:color -->
 
-| Use                                             | Variable                   | Light   | Dark    |
-| ----------------------------------------------- | -------------------------- | ------- | ------- |
-| Page background (paper)                         | `var(--color-bg)`          | #fbf7f0 | #1c1a17 |
-| Cards, panels, inputs                           | `var(--color-surface)`     | #fffdf9 | #26231f |
-| Text (ink)                                      | `var(--color-text)`        | #2b2622 | #f1ebe2 |
-| Secondary text: hints, dates, quantities        | `var(--color-text-muted)`  | #6b6259 | #b3a99c |
-| Borders and dividers                            | `var(--color-border)`      | #e6ddd0 | #3a352f |
-| Actions: the main button, selected state, links | `var(--color-accent)`      | #6e3b5f | #d9a3c6 |
-| A soft fill behind a selected chip or row       | `var(--color-accent-soft)` | #f1e4ec | #3a2934 |
-| Text and icons on `--color-accent`              | `var(--color-on-accent)`   | #fffdf9 | #1c1a17 |
-| About to go off, errors                         | `var(--color-warn)`        | #a64b17 | #e8955f |
+| Use                                                                                       | Variable                   | Light   | Dark    |
+| ----------------------------------------------------------------------------------------- | -------------------------- | ------- | ------- |
+| Page background (paper)                                                                   | `var(--color-bg)`          | #fbf7f0 | #1c1a17 |
+| Cards, panels, inputs                                                                     | `var(--color-surface)`     | #fffdf9 | #26231f |
+| Text (ink)                                                                                | `var(--color-text)`        | #2b2622 | #f1ebe2 |
+| Secondary text: hints, dates, quantities                                                  | `var(--color-text-muted)`  | #6b6259 | #b3a99c |
+| Borders and dividers                                                                      | `var(--color-border)`      | #e6ddd0 | #3a352f |
+| Actions: the main button, selected state, links                                           | `var(--color-accent)`      | #6e3b5f | #d9a3c6 |
+| A soft fill behind a selected chip or row                                                 | `var(--color-accent-soft)` | #f1e4ec | #3a2934 |
+| Text and icons on `--color-accent`                                                        | `var(--color-on-accent)`   | #fffdf9 | #1c1a17 |
+| The main button's fill, never text: aubergine, deep enough for white words in both themes | `var(--color-action)`      | #6e3b5f | #8a4f78 |
+| Words and icons on `--color-action`: white                                                | `var(--color-on-action)`   | #fffdf9 | #fffdf9 |
+| About to go off, errors                                                                   | `var(--color-warn)`        | #a64b17 | #e8955f |
 
 <!-- /tokens:color -->
 
@@ -109,15 +111,18 @@ Always the logical form: `margin-inline-start` not `margin-left`, `padding-inlin
 
 Build screens from these React components, imported from `@cookto/ui` ([ADR 0019](docs/adr/0019-design-system.md)). **Reuse before you add.** A new component, or a new variant of one, needs a design from a code owner first (in the issue). See each one, in every theme, language and state, on the kit page: [cookto.day/kit/](https://cookto.day/kit/) (`bun run --cwd apps/kit dev`).
 
-| Need                             | Use          | Notes                                                                                                                                                                                     |
-| -------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A label and its control          | `Field`      | Label first, then the control, then any problem in the warning colour. `layout="inline"` in a header                                                                                      |
-| A choice from a short list       | `Select`     | The browser's own select, drawn by us with a `chevron-down` at its end, so it's 44px high on iPhones too. Always inside a `Field`. Can be disabled                                        |
-| Nothing to show yet              | `EmptyState` | Dashed border on the surface colour. A title and one sentence that says what to do next                                                                                                   |
-| A quiet note                     | `Note`       | Muted, small, centred. For reassurance ("Nothing is uploaded"), never for errors                                                                                                          |
-| A sign: back, remove, a carrot   | `Icon`       | `name` from its list, `size` sm, md or lg, and a `label` when it means something on its own. See Icons above                                                                              |
-| An action                        | `Button`     | `kind`: one `main` (aubergine) per screen, `quiet` for the rest, `danger` to remove. `busy` while it works; `disabled` when it can't. An `icon` before the words, or alone with a `label` |
-| One thing: a dish, a pantry item | `Card`       | Surface colour, border, large corners. Its `title` names it for screen readers; `level` sets its heading under the screen's                                                               |
+| Need                             | Use          | Notes                                                                                                                                                                                                                  |
+| -------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A label and its control          | `Field`      | Label first, then the control, then any problem in the warning colour. `layout="inline"` in a header                                                                                                                   |
+| A choice from a short list       | `Select`     | The browser's own select, drawn by us with a `chevron-down` at its end, so it's 44px high on iPhones too. Always inside a `Field`. Can be disabled                                                                     |
+| Nothing to show yet              | `EmptyState` | Dashed border on the surface colour. A title and one sentence that says what to do next                                                                                                                                |
+| A quiet note                     | `Note`       | Muted, small, centred. For reassurance ("Nothing is uploaded"), never for errors                                                                                                                                       |
+| A sign: back, remove, a carrot   | `Icon`       | `name` from its list, `size` sm, md or lg, and a `label` when it means something on its own. See Icons above                                                                                                           |
+| An action                        | `Button`     | `kind`: one `main` (aubergine, white words, in both themes) per screen, `quiet` for the rest, `danger` to remove. `busy` while it works; `disabled` when it can't. An `icon` before the words, or alone with a `label` |
+| One thing: a dish, a pantry item | `Card`       | Surface colour, border, large corners. Its `title` names it for screen readers; `level` sets its heading under the screen's                                                                                            |
+| One choice, on or off            | `Chip`       | A toggle button (`aria-pressed`), pill-shaped, 44px. Ticked: accent fill with a `check`; not ticked: surface with a border. For meals someone eats                                                                     |
+| A small label beside something   | `Tag`        | Small bold words in a pill. `tone` soft (accent-soft fill: "toddler food") or outline (border, muted: "Coming soon")                                                                                                   |
+| Somewhere to type a few words    | `Input`      | The browser's own text box, 44px, the page colour inside a border. Always inside a `Field`, which names it                                                                                                             |
 
 ### Layouts
 

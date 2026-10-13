@@ -54,6 +54,19 @@
         }
       }
     },
+    "action": {
+      "$value": "{color.aubergine-700}",
+      "$description": "The main button's fill, never text: aubergine, deep enough for white words in both themes"
+    },
+    "on-action": {
+      "$value": "{color.paper-50}",
+      "$description": "Words and icons on `--color-action`: white",
+      "$extensions": {
+        "day.cookto.contrast": {
+          "on": ["color.action"]
+        }
+      }
+    },
     "warn": {
       "$value": "{color.ember-700}",
       "$description": "About to go off, errors",

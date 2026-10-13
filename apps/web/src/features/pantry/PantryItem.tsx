@@ -22,23 +22,6 @@ export function PantryItem({ id }: { id: string }) {
           {p.line && <span>{p.line}</span>}
           {p.warning && <Tag tone="warn">{p.warning}</Tag>}
         </Cluster>
-        <Field label={howItIs.label} id={`how-${id}`}>
-          {(control) => (
-            <Select
-              {...control}
-              value={howItIs.value}
-              onChange={(e) => {
-                howItIs.set(e.currentTarget.value);
-              }}
-            >
-              {howItIs.options.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </Select>
-          )}
-        </Field>
         {change.editing ? (
           <form
             onSubmit={(e) => {
@@ -75,7 +58,24 @@ export function PantryItem({ id }: { id: string }) {
             </Stack>
           </form>
         ) : (
-          <Cluster>
+          <Cluster gap={2}>
+            <Field label={howItIs.label} id={`how-${id}`} layout="inline">
+              {(control) => (
+                <Select
+                  {...control}
+                  value={howItIs.value}
+                  onChange={(e) => {
+                    howItIs.set(e.currentTarget.value);
+                  }}
+                >
+                  {howItIs.options.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            </Field>
             <Button kind="quiet" onClick={change.start}>
               {change.label}
             </Button>

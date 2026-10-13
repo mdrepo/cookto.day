@@ -1,17 +1,15 @@
-import { Button, Pick, Reasons, Rows, Stack } from "@cookto/ui";
-import { useId, useState } from "react";
+import { Button, Pick, Reasons, Rows, Section, Stack } from "@cookto/ui";
+import { useState } from "react";
 import { useCookToday } from "./useCookToday.js";
 
 /** Cook today: a pick per meal, and why (specs/72, 80). */
 export function CookToday() {
   const c = useCookToday();
-  const titleId = useId();
   const [more, setMore] = useState<ReadonlySet<string>>(new Set());
   if (!c) return null;
   return (
-    <section aria-labelledby={titleId}>
-      <Stack gap={3}>
-        <h2 id={titleId}>{c.title}</h2>
+    <Section title={c.title}>
+      <Stack gap={4}>
         {c.meals.map((meal) => (
           <Pick
             key={meal.slot}
@@ -40,6 +38,6 @@ export function CookToday() {
           </Pick>
         ))}
       </Stack>
-    </section>
+    </Section>
   );
 }

@@ -2,7 +2,6 @@
 // key here (TypeScript checks it), so a new string starts in this file
 // (ADR 0012).
 export const en = {
-  tagline: "What to cook today, from what's already in your kitchen",
   languageLabel: "Language",
   languageSoon: "coming soon",
   emptyTitle: "Your kitchen is empty",
@@ -86,6 +85,8 @@ export const en = {
   trySample: "Try a sample kitchen",
   sampleKitchen: "Sample kitchen",
   clearSample: "Clear the sample",
+  sampleBody: "Pretend food, so you can look around.",
+  settings: "Settings",
   dishes: "Dishes",
   hasEverything: "Has everything",
   needsCount: { one: "Needs {n} thing", other: "Needs {n} things" },

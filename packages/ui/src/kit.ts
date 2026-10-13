@@ -29,7 +29,7 @@ export const words = {
     chooseLanguage: "Choose a language",
     emptyTitle: "Your kitchen is empty",
     emptyBody: "Add a grocery bill to see what you can cook today",
-    privacy: "Your bills and pantry stay in this browser. Nothing is uploaded.",
+    privacy: "Your bills and fridge stay in this browser. Nothing is uploaded.",
     remove: "Remove",
     carrots: "Carrots",
     back: "Back",

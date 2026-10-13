@@ -58,7 +58,7 @@ export const mr: Messages = {
   basics: "मूलभूत",
   addStapleCount: { one: "{n} वस्तू जोडा", other: "{n} वस्तू जोडा" },
   haveIt: "आहे",
-  pantry: "स्वयंपाकघरातील सामान",
+  pantry: "फ्रिज",
   fresh: "ताजे",
   staples: "वाणसामान",
   addFood: "सामान जोडा",

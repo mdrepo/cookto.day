@@ -13,10 +13,10 @@ import { buildSite } from "../../scripts/build.js";
 const BUDGET_KB = {
   /** Each HTML page plus all stylesheets. */
   pageAndStyles: 8,
-  /** All our own JavaScript: everything but React's file. */
-  ourScripts: 20,
-  /** A first visit, nothing cached: pages, styles and every script. */
-  firstVisit: 100,
+  /** All our own JavaScript: everything but React's file. 20 until the kitchen (specs/72). */
+  ourScripts: 35,
+  /** A first visit, nothing cached: pages, styles and every script. 100 until the kitchen. */
+  firstVisit: 115,
 };
 
 /** Only React's production build links its error codes here. */

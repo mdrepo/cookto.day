@@ -13,14 +13,23 @@ export interface ScreenProps {
   action?: ReactNode;
   /** Above the title: where someone is in a few steps, or a way back. */
   header?: ReactNode;
-  /** At the bottom of the screen, however short the page: the TabBar. */
+  /**
+   * The TabBar: at the bottom of the screen, however short the page; on a
+   * wide screen, a rail down the side.
+   */
   bar?: ReactNode;
+  /** On a wide screen, wider than one column: for pages in Panes. */
+  wide?: boolean;
   /** The space between the main part's parts: a spacing step. */
   gap?: Space;
   children: ReactNode;
 }
 
-/** A whole page: its light header, then its main part, in one centred column. */
+/**
+ * A whole page: its light header, then its main part, in one centred
+ * column. On a wide screen (840px, as Android's), its bar is a rail at the
+ * side and a `wide` page has room for Panes.
+ */
 export function Screen({
   title,
   eyebrow,
@@ -28,26 +37,31 @@ export function Screen({
   action,
   header,
   bar,
+  wide = false,
   gap = 4,
   children,
 }: ScreenProps) {
   return (
     <div className={styles.screen}>
-      <header className={`${styles.column} ${styles.header}`}>
-        {header}
-        <div className={styles.top}>
-          <div className={styles.titles}>
-            {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
-            <h1 className={styles.title}>{title}</h1>
-            {tagline && <p className={styles.tagline}>{tagline}</p>}
-          </div>
-          {action}
+      <div className={styles.frame} data-wide={wide || undefined}>
+        <div className={styles.content}>
+          <header className={`${styles.column} ${styles.header}`}>
+            {header}
+            <div className={styles.top}>
+              <div className={styles.titles}>
+                {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
+                <h1 className={styles.title}>{title}</h1>
+                {tagline && <p className={styles.tagline}>{tagline}</p>}
+              </div>
+              {action}
+            </div>
+          </header>
+          <main className={`${styles.column} ${styles.main} ${gapClass(gap)}`}>
+            {children}
+          </main>
         </div>
-      </header>
-      <main className={`${styles.column} ${styles.main} ${gapClass(gap)}`}>
-        {children}
-      </main>
-      {bar}
+        {bar && <div className={styles.bar}>{bar}</div>}
+      </div>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Button, Callout, Cluster, Note, Screen } from "@cookto/ui";
+import { Button, Callout, Cluster, Logo, Note, Screen } from "@cookto/ui";
 import { openSettings } from "../../routes.js";
 import { CookToday } from "./CookToday.js";
 import { useHomeScreen } from "./useHomeScreen.js";
@@ -43,6 +43,7 @@ export function HomeScreen() {
       {k.sample && (
         <Callout
           title={k.sample.tag}
+          art={<Logo />}
           actions={
             <>
               {choose("main")}
@@ -58,6 +59,7 @@ export function HomeScreen() {
       {k.empty && (
         <Callout
           title={t.emptyTitle}
+          art={<Logo />}
           actions={
             <>
               {choose("main")}

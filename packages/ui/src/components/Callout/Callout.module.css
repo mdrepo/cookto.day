@@ -10,6 +10,19 @@
   background: var(--color-accent-soft);
 }
 
+.top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
 .title {
   margin: 0;
   font-size: var(--text-lg);

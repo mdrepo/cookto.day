@@ -1,5 +1,6 @@
 import { words, type Kit } from "../../kit.js";
 import { Button } from "../Button/Button.js";
+import { Logo } from "../Logo/Logo.js";
 import { Callout } from "./Callout.js";
 
 export const kit: Kit = {
@@ -20,6 +21,18 @@ export const kit: Kit = {
           }
         >
           {words[lang].sampleBody}
+        </Callout>
+      ),
+    },
+    {
+      title: "With the logo",
+      render: (lang) => (
+        <Callout
+          title={words[lang].emptyTitle}
+          art={<Logo />}
+          actions={<Button kind="main">{words[lang].chooseWhatYouCook}</Button>}
+        >
+          {words[lang].emptyBody}
         </Callout>
       ),
     },

@@ -1,7 +1,11 @@
+import { CuisinesScreen } from "./features/cuisines/CuisinesScreen.js";
+import { DishesScreen } from "./features/dishes/DishesScreen.js";
 import { HomeScreen } from "./features/home/HomeScreen.js";
 import { OnboardingScreen } from "./features/onboarding/OnboardingScreen.js";
+import { PantryScreen } from "./features/pantry/PantryScreen.js";
 import { LanguagePicker } from "./features/settings/LanguagePicker.js";
 import { useDocumentLanguage } from "./features/settings/useDocumentLanguage.js";
+import { StaplesScreen } from "./features/staples/StaplesScreen.js";
 import { useRoute } from "./routes.js";
 
 // The app: features put together (ADR 0022). Features don't import each
@@ -11,9 +15,18 @@ export function App() {
   useDocumentLanguage();
   const route = useRoute();
   const picker = <LanguagePicker />;
-  return route === "home" ? (
-    <HomeScreen header={picker} />
-  ) : (
-    <OnboardingScreen step={route} header={picker} />
-  );
+  switch (route) {
+    case "home":
+      return <HomeScreen header={picker} />;
+    case "cuisines":
+      return <CuisinesScreen header={picker} />;
+    case "staples":
+      return <StaplesScreen header={picker} />;
+    case "pantry":
+      return <PantryScreen header={picker} />;
+    case "dishes":
+      return <DishesScreen header={picker} />;
+    default:
+      return <OnboardingScreen step={route} header={picker} />;
+  }
 }

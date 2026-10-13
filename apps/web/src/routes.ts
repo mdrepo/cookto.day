@@ -7,12 +7,21 @@ import { settings } from "./platform.js";
 // home is its first step.
 
 export type Step = "where" | "who" | "done";
-export type Route = "home" | Step;
+/** The kitchen's pages (specs/72-kitchen.md). */
+export type Page = "cuisines" | "staples" | "pantry" | "dishes";
+export type Route = "home" | Step | Page;
 
 const STEPS: Partial<Record<string, Step>> = {
   "#/start/where": "where",
   "#/start/who": "who",
   "#/start/done": "done",
+};
+
+const PAGES: Partial<Record<string, Page>> = {
+  "#/kitchen/cuisines": "cuisines",
+  "#/kitchen/staples": "staples",
+  "#/kitchen/pantry": "pantry",
+  "#/kitchen/dishes": "dishes",
 };
 
 function subscribe(onChange: () => void): () => void {
@@ -29,12 +38,20 @@ export function useRoute(): Route {
   // The prerender has no address: it draws home, which most visits show.
   const at = useSyncExternalStore(subscribe, hash, () => null);
   if (at === null) return "home";
-  return STEPS[at] ?? (onboarded ? "home" : "where");
+  const step = STEPS[at];
+  if (step) return step;
+  if (!onboarded) return "where";
+  return PAGES[at] ?? "home";
 }
 
 /** To a step, as a new entry in the browser's history. */
 export function go(step: Step): void {
   location.hash = `#/start/${step}`;
+}
+
+/** To one of the kitchen's pages, as a new entry in the browser's history. */
+export function open(page: Page): void {
+  location.hash = `#/kitchen/${page}`;
 }
 
 /** Home, in place of the step that led there. */

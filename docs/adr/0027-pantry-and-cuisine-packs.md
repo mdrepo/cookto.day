@@ -32,6 +32,14 @@
 
 No cuisine logic in the engine: only ingredients, amounts, dates, conditions, slots and filters (0015).
 
+**No made-up food data.** Agents draft packs; people check them, and checks make guessing fail:
+- every dish has a `source`: a published recipe (a link), or "cooked at home by" its reviewer. `packs:check` fails on a dish without one;
+- every ingredient's Wikidata id is checked against Wikidata's own label (a script refreshes a stored copy, so the check runs offline);
+- every shelf life cites its USDA FoodKeeper entry, and `packs:check` fails on one without, or one that doesn't match the stored FoodKeeper data;
+- a new pack, or a new dish, is reviewed by someone who cooks that food (0015).
+
+**No filler in the app's words.** A words check (part of `bun run check`) fails on the app's English words when they hold AI-tell words ("delve", "seamless", "elevate", "unlock", "journey", "effortless", "Oops") or emoji. The list lives in one file, so a project built on this one can add its own.
+
 **A sample kitchen, for trying it.** `?sample`, or "Try a sample kitchen" on an empty home, loads a sample pantry into the real repositories, marked as sample. "Clear the sample" removes it in one tap. Screens never contain made-up data.
 
 ## Alternatives
@@ -39,6 +47,7 @@ No cuisine logic in the engine: only ingredients, amounts, dates, conditions, sl
 - **One pack per household (0015's `in-home`):** quickest for one family, but nobody else can reuse it, and a family that also cooks South Indian needs a new pack.
 - **Have / low / out instead of amounts:** simpler to type, but scanned bills give amounts for free, and planning a week needs them ("enough paneer for two dishes?").
 - **Only dates, no condition:** wrong whenever food goes off early or lasts longer. The person's eyes beat the table.
+- **Trusting a model's food knowledge:** quick, and confidently wrong (invented dishes, made-up ids, guessed shelf lives). Sources and checks cost a little more once and stop it every time.
 - **Mock data inside the screens:** quicker to show, but the fake paths stay in the code and the tests test them. Sample data through the real repositories is gone with one tap and leaves nothing behind.
 
 ## Consequences

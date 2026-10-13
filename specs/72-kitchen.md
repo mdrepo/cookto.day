@@ -84,6 +84,13 @@ Each criterion becomes one e2e test, on an Android phone, an iPhone and a deskto
 - **When** the spinach's amount changes
 - **Then** the spinach's row re-renders, and the onions' row doesn't
 
+### 12. no made-up food data, and no filler words (checks, not e2e)
+
+- **Given** a pack dish without a source, an ingredient whose Wikidata id names something else, or a shelf life without its FoodKeeper entry
+- **Then** `packs:check` fails, saying which and how to fix it
+- **Given** an app word with an AI-tell word or an emoji ("Unlock your kitchen ✨")
+- **Then** the words check fails, naming the word and the file
+
 ## Words
 
 English; Hindi, Marathi and Arabic stay preview-only until a native speaker reviews them (ADR 0012).
@@ -112,6 +119,6 @@ The North Indian pack's dish and ingredient names are its own words (ADR 0015), 
 Each with its own tests, red first. After this spec, every PR below merges once CI passes, except the pack's data (step 2), which needs its cook's review (ADR 0015).
 
 1. **Engine:** pantry items (amount, unit, use-by, condition), and ranking dishes for a slot.
-2. **The North Indian pack** (`packs/north-indian`, about 30 dishes incl. snacks, staples, words, shelf lives) and `packs:check`. Reviewed by you, as its cook.
+2. **The North Indian pack** (`packs/north-indian`, about 30 dishes incl. snacks, staples, words, shelf lives, each dish with its source), `packs:check` with the Wikidata and FoodKeeper copies, and the words check. Reviewed by you, as its cook.
 3. **Data and use cases:** the pantry and pack repositories, loading a pack, the staples checklist, household settings (what we don't make), the sample kitchen.
 4. **Screens:** choose what you cook, staples, pantry, add food, cook today on home, dishes. Kit parts as needed.

@@ -1,0 +1,20 @@
+{
+  "$comment": "Words the app's English text may not use (ADR 0027): they read as filler written by a model. `bun run words:check` fails on any of them, matched as whole words in any case, and on emoji. Add your own; say why in the PR.",
+  "words": [
+    "delve",
+    "seamless",
+    "seamlessly",
+    "elevate",
+    "unlock",
+    "journey",
+    "effortless",
+    "effortlessly",
+    "oops",
+    "supercharge",
+    "game-changer",
+    "empower",
+    "embark",
+    "tapestry",
+    "streamline"
+  ]
+}

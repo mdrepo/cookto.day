@@ -13,6 +13,8 @@ export interface ScreenProps {
   action?: ReactNode;
   /** Above the title: where someone is in a few steps, or a way back. */
   header?: ReactNode;
+  /** At the bottom of the screen, however short the page: the TabBar. */
+  bar?: ReactNode;
   /** The space between the main part's parts: a spacing step. */
   gap?: Space;
   children: ReactNode;
@@ -25,6 +27,7 @@ export function Screen({
   tagline,
   action,
   header,
+  bar,
   gap = 4,
   children,
 }: ScreenProps) {
@@ -44,6 +47,7 @@ export function Screen({
       <main className={`${styles.column} ${styles.main} ${gapClass(gap)}`}>
         {children}
       </main>
+      {bar}
     </div>
   );
 }

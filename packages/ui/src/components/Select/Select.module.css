@@ -4,6 +4,15 @@
   align-items: center;
 }
 
+.wide {
+  display: flex;
+  align-self: stretch;
+}
+
+.wide .select {
+  flex: 1;
+}
+
 .select {
   appearance: none;
   min-block-size: 44px;

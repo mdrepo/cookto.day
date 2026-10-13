@@ -20,12 +20,7 @@ export function App() {
   const route = useRoute();
   switch (route) {
     case "home":
-      return (
-        <>
-          <HomeScreen />
-          <Tabs current={route} />
-        </>
-      );
+      return <HomeScreen bar={<Tabs current={route} />} />;
     case "settings":
       return <SettingsScreen />;
     case "cuisines":
@@ -33,19 +28,9 @@ export function App() {
     case "staples":
       return <StaplesScreen />;
     case "pantry":
-      return (
-        <>
-          <PantryScreen />
-          <Tabs current={route} />
-        </>
-      );
+      return <PantryScreen bar={<Tabs current={route} />} />;
     case "dishes":
-      return (
-        <>
-          <DishesScreen />
-          <Tabs current={route} />
-        </>
-      );
+      return <DishesScreen bar={<Tabs current={route} />} />;
     default:
       return (
         <OnboardingScreen

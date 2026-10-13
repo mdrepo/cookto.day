@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Button, Callout, Cluster, Logo, Note, Screen } from "@cookto/ui";
 import { openSettings } from "../../routes.js";
 import { CookToday } from "./CookToday.js";
@@ -6,7 +7,7 @@ import { useKitchenStart } from "./useKitchenStart.js";
 import { UseSoon } from "./UseSoon.js";
 
 /** Today: the household, the kitchen, and what to cook (specs/72, 80; #84). */
-export function HomeScreen() {
+export function HomeScreen({ bar }: { bar: ReactNode }) {
   const t = useHomeScreen();
   const k = useKitchenStart();
   const choose = (kind: "main" | "quiet") => (
@@ -21,6 +22,7 @@ export function HomeScreen() {
   );
   return (
     <Screen
+      bar={bar}
       title="cookto.day"
       eyebrow={t.date}
       action={

@@ -1,13 +1,15 @@
+import type { ReactNode } from "react";
 import { Button, ItemList, Screen, Section, Tag } from "@cookto/ui";
 import { AddFood } from "./AddFood.js";
 import { ItemSheet } from "./ItemSheet.js";
 import { usePantryScreen } from "./usePantryScreen.js";
 
 /** What's in the kitchen, as a short list you tap (specs/72, 80; #84). */
-export function PantryScreen() {
+export function PantryScreen({ bar }: { bar: ReactNode }) {
   const s = usePantryScreen();
   return (
     <Screen
+      bar={bar}
       title={s.title}
       action={
         !s.add.adding && (

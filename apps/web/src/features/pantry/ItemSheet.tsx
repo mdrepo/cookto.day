@@ -16,14 +16,17 @@ export function ItemSheet({
   return (
     <Sheet open title={p.name} closeLabel={p.closeLabel} onClose={onClose}>
       <Stack gap={4}>
-        <Cluster gap={2}>
-          {p.line && <span>{p.line}</span>}
-          {p.warning && <Tag tone="warn">{p.warning}</Tag>}
-        </Cluster>
+        {(p.line || p.warning) && (
+          <Cluster gap={2}>
+            {p.line && <span>{p.line}</span>}
+            {p.warning && <Tag tone="warn">{p.warning}</Tag>}
+          </Cluster>
+        )}
         <Field label={howItIs.label} id={`how-${id}`}>
           {(control) => (
             <Select
               {...control}
+              wide
               value={howItIs.value}
               onChange={(e) => {
                 howItIs.set(e.currentTarget.value);
@@ -40,7 +43,7 @@ export function ItemSheet({
         {change.editing ? (
           <AmountForm id={id} change={change} />
         ) : (
-          <Cluster gap={2}>
+          <Cluster gap={2} fill>
             <Button kind="quiet" onClick={change.start}>
               {change.label}
             </Button>

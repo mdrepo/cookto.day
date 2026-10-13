@@ -1,0 +1,67 @@
+{
+  "slots": ["lunch", "dinner"],
+  "ingredients": {
+    "onion": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 50,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 2.5,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 3.5,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 10,
+      "unit": "ml"
+    },
+    "cumin": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "cream": {
+      "amount": 7.5,
+      "unit": "ml"
+    },
+    "potato": {
+      "amount": 85,
+      "unit": "g"
+    },
+    "peas": {
+      "amount": 50,
+      "unit": "g"
+    },
+    "asafoetida": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.2,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 0.7,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    }
+  },
+  "servedWith": ["roti", "rice"],
+  "source": "https://www.vegrecipesofindia.com/aloo-matar-curry-aloo-matar-gravy/"
+}

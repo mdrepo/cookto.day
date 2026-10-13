@@ -1,0 +1,51 @@
+{
+  "slots": ["breakfast"],
+  "ingredients": {
+    "dalia": {
+      "amount": 85,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "tomato": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "carrot": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "potato": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "peas": {
+      "amount": 35,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 7.5,
+      "unit": "ml"
+    },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    }
+  },
+  "source": "https://www.vegrecipesofindia.com/dalia-recipe/",
+  "note": "Savoury vegetable dalia."
+}

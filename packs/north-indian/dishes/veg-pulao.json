@@ -1,0 +1,75 @@
+{
+  "slots": ["lunch", "dinner"],
+  "ingredients": {
+    "basmati-rice": {
+      "amount": 75,
+      "unit": "g"
+    },
+    "cauliflower": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "potato": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "carrot": {
+      "amount": 7.5,
+      "unit": "g"
+    },
+    "peas": {
+      "amount": 10,
+      "unit": "g"
+    },
+    "green-beans": {
+      "amount": 7.5,
+      "unit": "g"
+    },
+    "capsicum": {
+      "amount": 7.5,
+      "unit": "g"
+    },
+    "ghee": {
+      "amount": 10,
+      "unit": "ml"
+    },
+    "onion": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 15,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 2.5,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 3.5,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "coriander-leaves": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "bay-leaf": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    }
+  },
+  "source": "https://www.vegrecipesofindia.com/vegetable-pulao-recipe-veg-pulao/",
+  "note": "Mint and whole spices left out."
+}

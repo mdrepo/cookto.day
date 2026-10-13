@@ -1,0 +1,64 @@
+{
+  "slots": ["lunch", "dinner"],
+  "ingredients": {
+    "chickpeas": {
+      "amount": 50,
+      "unit": "g"
+    },
+    "bay-leaf": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "onion": {
+      "amount": 45,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 55,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 1,
+      "unit": "pieces"
+    },
+    "ginger": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 5,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 8.5,
+      "unit": "ml"
+    },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 0.6,
+      "unit": "g"
+    },
+    "lemon": {
+      "amount": 0.5,
+      "unit": "pieces"
+    }
+  },
+  "servedWith": ["roti", "rice"],
+  "source": "https://www.vegrecipesofindia.com/chana-masala-recipe/",
+  "note": "Amchur and ajwain left out (not in the pack)."
+}

@@ -1,0 +1,72 @@
+{
+  "slots": ["lunch", "dinner"],
+  "ingredients": {
+    "egg": {
+      "amount": 1,
+      "unit": "pieces"
+    },
+    "oil": {
+      "amount": 10,
+      "unit": "ml"
+    },
+    "onion": {
+      "amount": 50,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 4,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 4,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "chilli-powder": {
+      "amount": 0.4,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.6,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "kasuri-methi": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 0.7,
+      "unit": "g"
+    },
+    "yogurt": {
+      "amount": 15,
+      "unit": "g"
+    },
+    "bay-leaf": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "cumin": {
+      "amount": 0.3,
+      "unit": "g"
+    }
+  },
+  "servedWith": ["roti", "rice"],
+  "source": "https://www.indianhealthyrecipes.com/egg-masala-curry-for-biryanichapathipulao/",
+  "note": "Read through a page summary, not the page itself. One egg a serving looks low: check."
+}

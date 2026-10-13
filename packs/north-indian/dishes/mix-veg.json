@@ -1,0 +1,88 @@
+{
+  "slots": ["lunch", "dinner"],
+  "ingredients": {
+    "oil": {
+      "amount": 10,
+      "unit": "ml"
+    },
+    "cumin": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "coriander-powder": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "potato": {
+      "amount": 15,
+      "unit": "g"
+    },
+    "capsicum": {
+      "amount": 10,
+      "unit": "g"
+    },
+    "carrot": {
+      "amount": 10,
+      "unit": "g"
+    },
+    "green-beans": {
+      "amount": 9,
+      "unit": "g"
+    },
+    "cauliflower": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "peas": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "cream": {
+      "amount": 7.5,
+      "unit": "ml"
+    },
+    "coriander-leaves": {
+      "amount": 0.8,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    }
+  },
+  "servedWith": ["roti"],
+  "source": "https://www.vegrecipesofindia.com/mix-veg-recipe/",
+  "note": "Optional paneer left out: the recipe gives no weight."
+}

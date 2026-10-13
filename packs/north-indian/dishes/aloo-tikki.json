@@ -1,0 +1,55 @@
+{
+  "slots": ["evening-snack"],
+  "ingredients": {
+    "potato": {
+      "amount": 95,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "chaat-masala": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 15,
+      "unit": "ml"
+    },
+    "coriander-leaves": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "salt": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "peas": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "kasuri-methi": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "paneer": {
+      "amount": 15,
+      "unit": "g"
+    }
+  },
+  "source": "https://www.indianhealthyrecipes.com/aloo-tikki-recipe/",
+  "note": "A serving is one tikki, with the optional peas-and-paneer stuffing."
+}

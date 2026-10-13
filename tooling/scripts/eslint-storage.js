@@ -1,13 +1,14 @@
 import { RAW_HTML } from "./eslint-syntax.js";
 
-// ADR 0024: only packages/data touches storage or the network. The web app
-// hands it the browser's storage in one file, apps/web/src/platform.ts.
+// ADR 0024: only packages/data, and packages/data-web (the browser's storage
+// for it), touch storage or the network. The web app hands data-web's stores
+// to data in one file, apps/web/src/platform.ts.
 //
 // A file gets one setting per rule (a later block replaces an earlier one),
 // so this block repeats the general raw-HTML property bans.
 
 const MESSAGE =
-  "Only packages/data touches storage or the network (ADR 0024). Read or write through a repository; the app hands it the browser's storage in apps/web/src/platform.ts.";
+  "Only packages/data and packages/data-web touch storage or the network (ADR 0024). Read or write through a repository; the app hands the browser's storage to it in apps/web/src/platform.ts.";
 
 const GLOBALS = [
   "localStorage",
@@ -33,7 +34,11 @@ const properties = [
 export const storage = [
   {
     files: ["apps/*/src/**", "packages/*/src/**"],
-    ignores: ["packages/data/**", "apps/*/src/platform.ts"],
+    ignores: [
+      "packages/data/**",
+      "packages/data-web/**",
+      "apps/*/src/platform.ts",
+    ],
     rules: {
       "no-restricted-globals": [
         "error",

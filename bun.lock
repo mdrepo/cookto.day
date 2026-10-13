@@ -38,6 +38,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@cookto/data": "workspace:*",
+        "@cookto/data-web": "workspace:*",
         "@cookto/ui": "workspace:*",
         "@cookto/usecases": "workspace:*",
       },
@@ -50,6 +51,16 @@
       "version": "0.0.0",
       "dependencies": {
         "@cookto/engine": "workspace:*",
+      },
+      "devDependencies": {
+        "@cookto/testing": "workspace:*",
+      },
+    },
+    "packages/data-web": {
+      "name": "@cookto/data-web",
+      "version": "0.0.0",
+      "dependencies": {
+        "@cookto/data": "workspace:*",
       },
       "devDependencies": {
         "@cookto/testing": "workspace:*",
@@ -117,6 +128,8 @@
     "@cacheable/utils": ["@cacheable/utils@2.5.0", "", { "dependencies": { "hashery": "^1.5.1", "keyv": "^5.6.0" } }, "sha512-buipgOVDkkPXNR5+xBpDw7Zk2n1EvU7qBJCNUcL7rhQ//kfpOXPAvQ511Os0vpLYJ1pZnvudNytkQt2hst3wqA=="],
 
     "@cookto/data": ["@cookto/data@workspace:packages/data"],
+
+    "@cookto/data-web": ["@cookto/data-web@workspace:packages/data-web"],
 
     "@cookto/engine": ["@cookto/engine@workspace:packages/engine"],
 

@@ -1,6 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import type { Pack, Sources } from "./packs-lib.js";
+import type { Pack, SampleItem, Sources } from "./packs-lib.js";
 
 // Reads packs and their stored sources from disk: packs/<id>/ holds
 // pack.json, staples.json, ingredients/<slug>.json, dishes/<slug>.json and
@@ -16,6 +16,7 @@ function folder(dir: string): Record<string, never> {
   return Object.fromEntries(
     readdirSync(dir)
       .filter((f) => f.endsWith(".json"))
+      .sort()
       .map((f) => [f.slice(0, -5), json(join(dir, f))]),
   ) as Record<string, never>;
 }
@@ -37,6 +38,9 @@ export function readPacks(): Pack[] {
         ingredients: folder(join(dir, "ingredients")),
         dishes: folder(join(dir, "dishes")),
         words: folder(join(dir, "words")),
+        ...(existsSync(join(dir, "sample.json"))
+          ? { sample: json(join(dir, "sample.json")) as SampleItem[] }
+          : {}),
       };
     });
 }

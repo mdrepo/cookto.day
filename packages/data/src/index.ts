@@ -4,6 +4,16 @@
 export { createChanges, type Changes } from "./changes.js";
 export { createHousehold } from "./household.js";
 export { memoryKeyValue, type KeyValue } from "./kv.js";
+export {
+  type AppPack,
+  createPacks,
+  type Cuisine,
+  type PackLoader,
+  type PackWords,
+  STAPLE_GROUPS,
+  type StapleGroup,
+} from "./packs.js";
+export { createPantry, type KitchenItem, type NewItem } from "./pantry.js";
 export { memoryRecordStore, type RecordStore } from "./record-store.js";
 export { type SyncRecord } from "./records.js";
 export { createSettings } from "./settings.js";

@@ -21,7 +21,9 @@ describe("language switch", () => {
   );
 
   test("English is chosen; the other languages are coming soon", () => {
-    const page = openPage();
+    // The language list is in Settings since #84.
+    const page = openPage({ hash: "#/settings" });
+    expect(page.text("h1")).toBe("Settings");
     expect(page.languages()).toEqual([
       { code: "en", text: "English", off: false },
       { code: "hi", text: "हिन्दी (coming soon)", off: true },
@@ -32,7 +34,8 @@ describe("language switch", () => {
   });
 
   test("a coming-soon language can't be chosen", () => {
-    const page = openPage();
+    const page = openPage({ hash: "#/settings" });
+    expect(page.text("h1")).toBe("Settings");
     page.chooseLanguage("mr");
     expect(page.doc.documentElement.lang).toBe("en");
     expect(page.storage.getItem("cookto.day:language")).toBeNull();

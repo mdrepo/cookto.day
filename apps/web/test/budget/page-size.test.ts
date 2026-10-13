@@ -15,8 +15,12 @@ const BUDGET_KB = {
   pageAndStyles: 8,
   /** All our own JavaScript: everything but React's file. 20 until the kitchen (specs/72). */
   ourScripts: 35,
-  /** A first visit, nothing cached: pages, styles and every script. 100 until the kitchen. */
-  firstVisit: 115,
+  /**
+   * A first visit, nothing cached: pages, styles and every script. 100 until
+   * the kitchen (specs/72), 115 until the prototype's look (specs/80). It
+   * counts the cuisine pack too, which only loads when one is picked.
+   */
+  firstVisit: 120,
 };
 
 /** Only React's production build links its error codes here. */

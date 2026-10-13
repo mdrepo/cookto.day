@@ -61,12 +61,12 @@ test.describe("The kitchen", () => {
     await k.add("Onion", { value: "1", unit: "kg" });
     await k.add("Spinach", { value: "250", unit: "g" });
     await k.add("Paneer", { value: "200", unit: "g" }, 6);
-    await expect(k.fresh().first()).toHaveAccessibleName("Paneer");
+    await expect(k.fresh().first()).toHaveAccessibleName(/^Paneer/);
     await k.mark("Spinach", "Past its best");
-    await expect(k.fresh().first()).toHaveAccessibleName("Spinach");
+    await expect(k.fresh().first()).toHaveAccessibleName(/^Spinach/);
     await expect(k.item("Spinach")).toContainText("Past its best");
     await page.reload();
-    await expect(k.fresh().first()).toHaveAccessibleName("Spinach");
+    await expect(k.fresh().first()).toHaveAccessibleName(/^Spinach/);
     await expect(k.item("Spinach")).toContainText("Past its best");
   });
 
@@ -94,13 +94,13 @@ test.describe("The kitchen", () => {
     await expect(k.chip("Roti")).toHaveAttribute("aria-pressed", "true");
     await k.home();
     for (const meal of ["Lunch", "Dinner"]) {
-      await expect(k.suggestions(meal).first()).toBeVisible();
-      for (const row of await k.suggestions(meal).all())
-        await expect(row).not.toContainText("Roti");
+      const ideas = await k.ideas(meal);
+      expect(ideas.length).toBeGreaterThan(1);
+      for (const idea of ideas) expect(idea).not.toContain("Roti");
     }
-    await expect(
-      k.suggestions("Lunch").filter({ hasText: "Palak paneer" }),
-    ).toContainText("with Rice");
+    expect(
+      (await k.ideas("Lunch")).find((i) => i.includes("Palak paneer")),
+    ).toContain("with Rice");
   });
 
   test("a sample kitchen to try, and clearing it", async ({ page }) => {
@@ -110,7 +110,7 @@ test.describe("The kitchen", () => {
     await expect(
       page.getByText("Sample kitchen", { exact: true }),
     ).toBeVisible();
-    await expect(k.suggestions("Dinner").first()).toBeVisible();
+    await expect(k.pick("Dinner")).toBeVisible();
     await k.press("Pantry");
     await expect(k.fresh().first()).toBeVisible();
     await k.home();
@@ -135,7 +135,10 @@ test.describe("The kitchen", () => {
     await expect(
       page.getByText("Sample kitchen", { exact: true }),
     ).toBeVisible();
-    await expect(k.suggestions("Lunch").first()).toBeVisible();
+    await expect(k.pick("Lunch")).toBeVisible();
+    await expect(
+      k.tabs().getByRole("button", { name: "Today" }),
+    ).toHaveAttribute("aria-current", "page");
   });
 
   test("a cuisine's dishes", async ({ page }) => {

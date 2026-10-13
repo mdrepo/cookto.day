@@ -93,4 +93,7 @@ export const mr: Messages = {
   needsCount: { one: "{n} वस्तू हवी", other: "{n} वस्तू हव्यात" },
   pieces: { one: "{n} नग", other: "{n} नग" },
   piecesUnit: "नग",
+  otherIdeas: "इतर पर्याय",
+  pages: "पाने",
+  close: "बंद करा",
 };

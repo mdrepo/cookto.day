@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useId, useRef } from "react";
+import { type ReactNode, useId, useLayoutEffect, useRef } from "react";
 import { Button } from "../Button/Button.js";
 import styles from "./Sheet.module.css";
 
@@ -29,11 +29,16 @@ export function Sheet({
 }: SheetProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
-  useEffect(() => {
+  // Layout effects, so a sheet taken off the page closes first, and the
+  // browser gives focus back to what opened it.
+  useLayoutEffect(() => {
     const dialog = ref.current;
     if (!dialog || inPlace) return;
     if (open && !dialog.open) dialog.showModal();
     if (!open && dialog.open) dialog.close();
+    return () => {
+      if (dialog.open) dialog.close();
+    };
   }, [open, inPlace]);
   return (
     <dialog
@@ -47,7 +52,15 @@ export function Sheet({
         <h2 id={titleId} className={styles.title}>
           {title}
         </h2>
-        <Button kind="plain" icon="x" label={closeLabel} onClick={onClose} />
+        <Button
+          kind="plain"
+          icon="x"
+          label={closeLabel}
+          onClick={() => {
+            if (ref.current?.open) ref.current.close();
+            else onClose();
+          }}
+        />
       </div>
       {children}
     </dialog>

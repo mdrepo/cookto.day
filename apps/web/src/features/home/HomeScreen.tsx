@@ -1,16 +1,9 @@
-import {
-  Button,
-  Cluster,
-  EmptyState,
-  Note,
-  Screen,
-  Stack,
-  Tag,
-} from "@cookto/ui";
+import { Button, Cluster, EmptyState, Note, Screen, Tag } from "@cookto/ui";
 import type { ReactNode } from "react";
 import { CookToday } from "./CookToday.js";
 import { useHomeScreen } from "./useHomeScreen.js";
 import { useKitchenStart } from "./useKitchenStart.js";
+import { UseSoon } from "./UseSoon.js";
 
 /** The first page: the household, the kitchen, and what to cook today. */
 export function HomeScreen({ header }: { header: ReactNode }) {
@@ -40,30 +33,17 @@ export function HomeScreen({ header }: { header: ReactNode }) {
           <Note>{t.privacy}</Note>
         </>
       )}
-      <Stack gap={2}>
-        <Cluster gap={2}>
-          <Button kind={k.empty ? "main" : "quiet"} onClick={k.choose.onClick}>
-            {k.choose.label}
+      <Cluster gap={2}>
+        <Button kind={k.empty ? "main" : "quiet"} onClick={k.choose.onClick}>
+          {k.choose.label}
+        </Button>
+        {k.trySample && (
+          <Button kind="quiet" onClick={k.trySample.onClick}>
+            {k.trySample.label}
           </Button>
-          {k.trySample && (
-            <Button kind="quiet" onClick={k.trySample.onClick}>
-              {k.trySample.label}
-            </Button>
-          )}
-        </Cluster>
-        {!k.empty && (
-          <Cluster gap={2}>
-            <Button kind="quiet" onClick={k.pantry.onClick}>
-              {k.pantry.label}
-            </Button>
-            {k.dishes && (
-              <Button kind="quiet" onClick={k.dishes.onClick}>
-                {k.dishes.label}
-              </Button>
-            )}
-          </Cluster>
         )}
-      </Stack>
+      </Cluster>
+      <UseSoon />
       <CookToday />
       {!k.empty && <Note>{t.privacy}</Note>}
     </Screen>

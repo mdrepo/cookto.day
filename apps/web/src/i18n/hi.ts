@@ -96,4 +96,7 @@ export const hi: Messages = {
   needsCount: { one: "{n} चीज़ चाहिए", other: "{n} चीज़ें चाहिए" },
   pieces: { one: "{n} नग", other: "{n} नग" },
   piecesUnit: "नग",
+  otherIdeas: "और विकल्प",
+  pages: "पन्ने",
+  close: "बंद करें",
 };

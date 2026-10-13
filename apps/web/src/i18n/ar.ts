@@ -137,4 +137,7 @@ export const ar: Messages = {
     other: "{n} قطعة",
   },
   piecesUnit: "قطع",
+  otherIdeas: "أفكار أخرى",
+  pages: "الصفحات",
+  close: "إغلاق",
 };

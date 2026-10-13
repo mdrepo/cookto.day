@@ -13,14 +13,12 @@ test.describe("Cook today", () => {
     await k.add("Paneer", { value: "200", unit: "g" });
     await k.home();
     for (const meal of ["Lunch", "Dinner"]) {
-      const top = k.suggestions(meal).first();
-      await expect(top).toContainText("Palak paneer");
-      await expect(top).toContainText("Uses Spinach and Paneer");
+      const [top] = await k.ideas(meal);
+      expect(top).toContain("Palak paneer");
+      expect(top).toContain("Uses Spinach and Paneer");
+      expect(top).toContain("Needs:");
     }
-    await expect(k.suggestions("Breakfast")).toHaveCount(0);
-    await expect(
-      k.suggestions("Lunch").filter({ hasText: "Palak paneer" }),
-    ).toContainText("Needs:");
+    await expect(k.pick("Breakfast")).toHaveCount(0);
   });
 
   test("food that needs using comes first", async ({ page }) => {
@@ -31,9 +29,8 @@ test.describe("Cook today", () => {
     await k.add("Spinach", { value: "250", unit: "g" });
     await k.mark("Spinach", "Past its best");
     await k.home();
-    const rows = k.suggestions("Lunch");
-    await expect(rows.first()).toContainText("Spinach");
-    const texts = await rows.allTextContents();
+    const texts = await k.ideas("Lunch");
+    expect(texts[0]).toContain("Spinach");
     const spinach = texts.findIndex((t) => t.includes("Spinach"));
     const potatoOnly = texts.findIndex(
       (t) => t.includes("Potato") && !t.includes("Spinach"),

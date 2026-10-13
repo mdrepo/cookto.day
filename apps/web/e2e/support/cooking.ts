@@ -73,15 +73,18 @@ export class Cooking {
     await expect(this.item(name)).toBeVisible();
   }
 
-  /** The pantry's fresh food, top first. */
+  /** The pantry's fresh food, what needs using first: "Use soon", then "Fresh". */
   fresh(): Locator {
     return this.page
-      .getByRole("region", { name: "Fresh" })
-      .getByRole("article");
+      .getByRole("list", { name: /^(Use soon|Fresh)$/ })
+      .getByRole("button");
   }
 
+  /** A pantry row: one button, read with its line and its tag. */
   item(name: string): Locator {
-    return this.card(name);
+    return this.page
+      .getByRole("list", { name: /^(Use soon|Fresh|Staples)$/ })
+      .getByRole("button", { name: new RegExp(`^${name}`) });
   }
 
   staples(): Locator {
@@ -90,35 +93,78 @@ export class Cooking {
       .getByRole("listitem");
   }
 
+  /** The sheet a row opens. */
+  sheet(name: string): Locator {
+    return this.page.getByRole("dialog", { name });
+  }
+
+  async open(name: string): Promise<void> {
+    await this.item(name).click();
+    await expect(this.sheet(name)).toBeVisible();
+  }
+
   async mark(name: string, condition: string): Promise<void> {
-    await this.item(name)
+    await this.open(name);
+    await this.sheet(name)
       .getByRole("combobox", { name: "How it is" })
       .selectOption({ label: condition });
+    await expect(this.sheet(name)).toBeHidden();
   }
 
   async changeAmount(name: string, value: string): Promise<void> {
-    await this.item(name)
-      .getByRole("button", { name: "Change amount" })
-      .click();
-    await this.item(name).getByRole("textbox", { name: "Amount" }).fill(value);
-    await this.item(name).getByRole("button", { name: "Save" }).click();
+    await this.open(name);
+    const sheet = this.sheet(name);
+    await sheet.getByRole("button", { name: "Change amount" }).click();
+    await sheet.getByRole("textbox", { name: "Amount" }).fill(value);
+    await sheet.getByRole("button", { name: "Save" }).click();
+    await expect(sheet).toBeHidden();
   }
 
   async usedUp(name: string): Promise<void> {
-    await this.item(name).getByRole("button", { name: "Used up" }).click();
+    await this.open(name);
+    await this.sheet(name).getByRole("button", { name: "Used up" }).click();
+  }
+
+  /** The bar at the bottom. */
+  tabs(): Locator {
+    return this.page.getByRole("navigation", { name: "Pages" });
   }
 
   async home(): Promise<void> {
-    await this.press("Back");
+    const back = this.button("Back");
+    if (await back.isVisible()) await back.click();
+    else await this.tabs().getByRole("button", { name: "Today" }).click();
     await expect(this.title()).toHaveText("cookto.day");
   }
 
-  /** Cook today's suggestions for one meal, best first. */
-  suggestions(meal: string): Locator {
+  /** One meal's pick on Today. */
+  pick(meal: string): Locator {
     return this.page
       .getByRole("region", { name: "Cook today" })
-      .getByRole("article", { name: meal })
-      .getByRole("listitem");
+      .getByRole("article", { name: meal });
+  }
+
+  /**
+   * One meal's ideas, best first: the pick (its dish, what it's served with
+   * and why), then each of "Other ideas".
+   */
+  async ideas(meal: string): Promise<string[]> {
+    const pick = this.pick(meal);
+    const more = pick.getByRole("list", { name: "Other ideas" });
+    if (!(await more.isVisible()))
+      await pick.getByRole("button", { name: "Other ideas" }).click();
+    const top = await pick.locator(":scope > p, :scope > ul").allTextContents();
+    return [
+      top.join(" "),
+      ...(await more.getByRole("listitem").allTextContents()),
+    ];
+  }
+
+  /** Today's "Use soon": what needs using. */
+  useSoon(): Locator {
+    return this.page
+      .getByRole("list", { name: "Use soon" })
+      .getByRole("button");
   }
 
   dishes(): Locator {

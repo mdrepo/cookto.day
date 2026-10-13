@@ -47,6 +47,7 @@ bun run new layout <Name>     # a new layout, the same way
 bun run new screen <feature>  # a new screen and its hook in apps/web/src/features/, tests red
 bun run check          # everything CI checks: allowlist, agent files, design, file sizes, packs, words, Prettier, knip, and every workspace's types, ESLint and tests
 bun run packs:refresh  # store Wikidata's labels and FoodKeeper's entries for the ids packs use (needs the internet)
+bun run packs:bundle   # write each pack as the app loads it, into packages/data/src/packs/ (run after changing a pack)
 bun run check:affected # the same, but only the workspaces your branch affects (what CI runs on a PR)
 bun run test           # every workspace's unit and DOM tests (not a bare `bun test`)
 bun run e2e            # browser tests (CI does not run these on PRs; you must)

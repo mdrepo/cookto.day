@@ -38,6 +38,11 @@ export interface Words {
   ingredients: Record<string, string>;
   parts: Record<string, string>;
 }
+export interface SampleItem {
+  ingredient: string;
+  amount?: number;
+  unit?: string;
+}
 export interface Pack {
   id: string;
   languages: string[];
@@ -46,6 +51,8 @@ export interface Pack {
   ingredients: Record<string, Ingredient>;
   dishes: Record<string, Dish>;
   words: Record<string, Words>;
+  /** A sample pantry, for trying the app (sample.json, optional). */
+  sample?: SampleItem[];
 }
 export interface FoodKeeperEntry {
   name: string;
@@ -142,6 +149,23 @@ function dishProblems(pack: Pack): string[] {
   });
 }
 
+function sampleProblems(pack: Pack): string[] {
+  const at = `${pack.id}/sample.json`;
+  return (pack.sample ?? []).flatMap(({ ingredient, amount, unit }) => {
+    if (!(ingredient in pack.ingredients))
+      return [`${at}: ${ingredient} has no ingredients/${ingredient}.json.`];
+    const none = amount === undefined && unit === undefined;
+    if (
+      none ||
+      (amount !== undefined && amount > 0 && UNITS.includes(unit ?? ""))
+    )
+      return [];
+    return [
+      `${at}: ${ingredient} needs an amount above 0, in g, ml or pieces, or no amount.`,
+    ];
+  });
+}
+
 function wordsProblems(pack: Pack): string[] {
   return pack.languages.flatMap((lang) => {
     const at = `${pack.id}/words/${lang}.json`;
@@ -183,6 +207,7 @@ export function packProblems(pack: Pack, sources: Sources): string[] {
     ...ingredientProblems(pack, sources, staples),
     ...undefinedStaples,
     ...dishProblems(pack),
+    ...sampleProblems(pack),
     ...wordsProblems(pack),
   ];
 }

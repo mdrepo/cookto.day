@@ -12,4 +12,16 @@ export {
   startHousehold,
   toggleMeal,
 } from "./household.js";
+export {
+  addFood,
+  addStaples,
+  changeAmount,
+  clearSample,
+  type Food,
+  loadCuisine,
+  markFood,
+  setMakes,
+  trySample,
+  useUp,
+} from "./kitchen.js";
 export { chooseCountry, chooseLanguage } from "./settings.js";

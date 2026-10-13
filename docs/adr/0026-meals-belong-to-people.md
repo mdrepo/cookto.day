@@ -1,6 +1,6 @@
 # 0026. Meal slots belong to people, and shops to where the household lives
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-10-13
 - **Deciders:** Mayur
 

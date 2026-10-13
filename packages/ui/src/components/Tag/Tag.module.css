@@ -1,0 +1,23 @@
+/* Tags (DESIGN.md): small words in a pill, beside what they label. No outer
+   margin: the space between parts belongs to the screen. */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding-block: var(--space-1);
+  padding-inline: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.soft {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+.outline {
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+}

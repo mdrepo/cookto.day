@@ -1,0 +1,28 @@
+/* Chips (DESIGN.md): a pill, 44px tall. Ticked: the accent colour with a
+   tick; not ticked: the surface, with a border. No outer margin: the space
+   between parts belongs to the screen. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: 44px;
+  padding-inline: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.chip[aria-pressed="true"] {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.chip:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}

@@ -1,5 +1,5 @@
 /* Buttons (DESIGN.md): at least 44px tall, words in 600 or 700, one main
-   action in the accent colour. No outer margin: the space between parts
+   action in the action colour, with white words. No outer margin: the space between parts
    belongs to the screen. */
 .button {
   display: inline-flex;
@@ -16,9 +16,9 @@
 }
 
 .main {
-  border-color: var(--color-accent);
-  background: var(--color-accent);
-  color: var(--color-on-accent);
+  border-color: var(--color-action);
+  background: var(--color-action);
+  color: var(--color-on-action);
   font-weight: 700;
 }
 

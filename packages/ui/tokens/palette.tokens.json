@@ -29,6 +29,10 @@
       "$value": "#d9a3c6",
       "$description": "Aubergine, light, for night"
     },
+    "aubergine-500": {
+      "$value": "#8a4f78",
+      "$description": "Aubergine, deep enough for white words, for night"
+    },
     "aubergine-700": {
       "$value": "#6e3b5f",
       "$description": "Aubergine: the action colour"

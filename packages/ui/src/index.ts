@@ -1,6 +1,7 @@
 // The design system's components (ADR 0019). Apps import UI from here only.
 export { Button } from "./components/Button/Button.js";
 export { Card } from "./components/Card/Card.js";
+export { Chip } from "./components/Chip/Chip.js";
 export {
   EmptyState,
   type EmptyStateProps,
@@ -11,8 +12,10 @@ export {
   type FieldProps,
 } from "./components/Field/Field.js";
 export { Icon } from "./components/Icon/Icon.js";
+export { Input } from "./components/Input/Input.js";
 export { Note, type NoteProps } from "./components/Note/Note.js";
 export { Select, type SelectProps } from "./components/Select/Select.js";
+export { Tag } from "./components/Tag/Tag.js";
 export { Cluster, type ClusterProps } from "./layouts/Cluster/Cluster.js";
 export { Screen, type ScreenProps } from "./layouts/Screen/Screen.js";
 export { Stack, type StackProps } from "./layouts/Stack/Stack.js";

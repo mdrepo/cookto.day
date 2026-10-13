@@ -1,0 +1,46 @@
+/* A sheet (DESIGN.md): from the bottom, as wide as the column, on the
+   surface with large top corners; the page behind is dimmed. */
+.sheet {
+  inset-block: auto 0;
+  inline-size: min(100%, 40rem);
+  max-inline-size: 100%;
+  max-block-size: 85dvh;
+  margin-inline: auto;
+  margin-block-end: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-block-end: 0;
+  border-start-start-radius: var(--radius-lg);
+  border-start-end-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-sizing: border-box;
+}
+
+.sheet[open] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sheet::backdrop {
+  background: color-mix(in srgb, var(--color-text) 40%, transparent);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+/* On the kit page: drawn where it is, so it can be looked at. */
+.inPlace {
+  position: static;
+}

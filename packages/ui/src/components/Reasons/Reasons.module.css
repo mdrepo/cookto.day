@@ -1,0 +1,40 @@
+/* Reasons (DESIGN.md): a dot before each, as in the prototype. The dot is
+   warm for food that needs using, aubergine for good news, the border
+   colour for what's missing. No outer margin. */
+.reasons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reason {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.dot {
+  flex-shrink: 0;
+  inline-size: var(--space-2);
+  block-size: var(--space-2);
+  border-radius: var(--radius-full);
+}
+
+.warm .dot {
+  background: var(--color-warn);
+}
+
+.good .dot {
+  background: var(--color-accent);
+}
+
+.quiet {
+  color: var(--color-text-muted);
+}
+
+.quiet .dot {
+  background: var(--color-border);
+}

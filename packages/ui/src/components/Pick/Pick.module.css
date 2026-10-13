@@ -1,0 +1,31 @@
+/* A pick (DESIGN.md): the prototype's "Tonight" card. The meal small and
+   muted, the dish large, then why. No outer margin: the space between parts
+   belongs to the screen. */
+.pick {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.label {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.dish {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.note {
+  margin: 0;
+  color: var(--color-text-muted);
+}

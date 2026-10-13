@@ -14,10 +14,15 @@ export {
 } from "./components/Field/Field.js";
 export { Icon } from "./components/Icon/Icon.js";
 export { Input } from "./components/Input/Input.js";
+export { ItemList } from "./components/ItemList/ItemList.js";
 export { Note, type NoteProps } from "./components/Note/Note.js";
+export { Pick } from "./components/Pick/Pick.js";
+export { Reasons } from "./components/Reasons/Reasons.js";
 export { Rows } from "./components/Rows/Rows.js";
 export { Select, type SelectProps } from "./components/Select/Select.js";
+export { Sheet } from "./components/Sheet/Sheet.js";
 export { Steps } from "./components/Steps/Steps.js";
+export { TabBar } from "./components/TabBar/TabBar.js";
 export { Tag } from "./components/Tag/Tag.js";
 export { ActionBar } from "./layouts/ActionBar/ActionBar.js";
 export { Cluster, type ClusterProps } from "./layouts/Cluster/Cluster.js";

@@ -126,6 +126,11 @@ Build screens from these React components, imported from `@cookto/ui` ([ADR 0019
 | One answer from a few cards      | `Choice`     | Radio buttons in a `fieldset`, each a whole card with a title and a line under it; the radio at the start. Chosen: accent-soft fill, accent border. An option with `soon` is dashed, muted and disabled, with an outline `Tag`. `hideLegend` when the screen's title already asks the question |
 | Where someone is in a few steps  | `Steps`      | "Step 1 of 2" in muted small words, then a thin bar per step, accent up to this one; the bars are hidden from screen readers                                                                                                                                                                   |
 | Each meal, with who it's for     | `Rows`       | A list of labels with their values at the end, on one surface with a border; a line between rows. A `quiet` value is muted ("Not planned")                                                                                                                                                     |
+| One meal's best dish             | `Pick`       | The prototype's "Tonight": an article named by its meal (small, muted heading), the dish in large bold words, what it's served with, then its `Reasons` and a plain "Other ideas"                                                                                                              |
+| Why something is suggested       | `Reasons`    | A dot, then a few words, per reason. `tone` warm (warning-colour dot: uses food that needs using), good (aubergine dot: "Has everything"), quiet (border-colour dot, muted words: "Needs: …")                                                                                                  |
+| Moving between the main pages    | `TabBar`     | The bar at the bottom: sticky, on the surface above a border, a button per page with its icon (lg) over its name, each at least 44px. The current page (`aria-current`) is aubergine. Starts from the right in Arabic                                                                          |
+| A list you tap, a row per thing  | `ItemList`   | One surface with a border, a line between rows. Each row is a whole button, 44px or more: the name (bold), a muted line under it ("250 g · use within 3 days"), a `Tag` or an amount at the end. It opens a `Sheet`                                                                            |
+| One thing's controls             | `Sheet`      | The browser's own modal dialog, from the bottom, as wide as the column, large top corners, the page behind dimmed. Its title names it; a plain `x` button closes it, so does Escape, and focus goes back to what opened it                                                                     |
 
 ### Layouts
 
@@ -142,9 +147,9 @@ How parts sit together. Screens are layouts filled with parts; the space between
 
 A component has no outer margin: the space between parts belongs to the screen (and later, to layouts). Every component has the same files, which `design:check` checks: `<Name>.tsx`, `<Name>.module.css` and `<Name>.kit.tsx` in `packages/ui/src/components/<Name>/`, its test in `packages/ui/test/`, and a row here.
 
-**The pantry list** (from the prototype's Fridge screen): fresh food first, then staples, each under its own heading. A fresh item is a `Card`: its name, then "250 g · use within 3 days", then a warn `Tag` when it needs using, then its controls. What needs using sits at the top. Staples are `Rows`: the name, and "Have it" or the amount. **The "use it today" warning** is the warn `Tag`: never a fill, a banner or a red screen.
+**Today** (the prototype's Today): a `Pick` per meal someone eats, then "Use soon" (an `ItemList` of what needs using) and the `TabBar`. **The pantry list** (the prototype's Fridge): "Add food" at the top, then "Use soon", "Fresh" and "Staples", each an `ItemList`; a row opens its `Sheet` (how it is, change amount, used up). **The "use it today" warning** is the warn `Tag`: never a fill, a banner or a red screen.
 
-Not designed yet, so ask before building: the bill upload, the shopping list, a card you tap as a whole, a link that looks like a button.
+Not designed yet, so ask before building: the bill upload, the shopping list, a link that looks like a button.
 
 **Motion:** only the busy button's turning circle (`Button`). The foundation stops it, and every animation, for people who turn motion off. No other animation without a code owner.
 

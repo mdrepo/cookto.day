@@ -64,6 +64,21 @@ test.describe("The prototype's layout", () => {
     ).toBeVisible();
   });
 
+  test("Today's warm card shows the logo, the pot", async ({ page }) => {
+    const k = new Cooking(page);
+    await k.start();
+    const empty = page.getByRole("region", { name: "Your kitchen is empty" });
+    const logo = empty.locator("img");
+    await expect(logo).toBeVisible();
+    expect(
+      await logo.evaluate((img: HTMLImageElement) => img.naturalWidth),
+    ).toBeGreaterThan(0);
+    await k.press("Try a sample kitchen");
+    await expect(
+      page.getByRole("region", { name: "Sample kitchen" }).locator("img"),
+    ).toBeVisible();
+  });
+
   test("the pantry: Add food at the title's end, and small section titles", async ({
     page,
   }) => {

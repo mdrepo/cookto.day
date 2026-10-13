@@ -78,7 +78,7 @@ export const ar: Messages = {
     other: "أضف {n} صنف",
   },
   haveIt: "موجود",
-  pantry: "المخزن",
+  pantry: "الثلاجة",
   fresh: "طازج",
   staples: "المؤونة",
   addFood: "أضف طعامًا",

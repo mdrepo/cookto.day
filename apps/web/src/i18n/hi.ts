@@ -58,7 +58,7 @@ export const hi: Messages = {
   basics: "ज़रूरी चीज़ें",
   addStapleCount: { one: "{n} चीज़ जोड़ें", other: "{n} चीज़ें जोड़ें" },
   haveIt: "है",
-  pantry: "रसोई का सामान",
+  pantry: "फ़्रिज",
   fresh: "ताज़ा",
   staples: "राशन",
   addFood: "सामान जोड़ें",

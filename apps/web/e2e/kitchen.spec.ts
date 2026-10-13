@@ -34,7 +34,7 @@ test.describe("The kitchen", () => {
     await k.chip("Chickpeas").click();
     await k.chip("Rajma").click();
     await k.press("Add 23 staples");
-    await expect(k.title()).toHaveText("Pantry");
+    await expect(k.title()).toHaveText("Fridge");
     await expect(k.staples()).toHaveCount(23);
     await expect(k.staples().filter({ hasText: "Basmati rice" })).toContainText(
       "Have it",
@@ -111,7 +111,7 @@ test.describe("The kitchen", () => {
       page.getByText("Sample kitchen", { exact: true }),
     ).toBeVisible();
     await expect(k.pick("Dinner")).toBeVisible();
-    await k.press("Pantry");
+    await k.press("Fridge");
     await expect(k.fresh().first()).toBeVisible();
     await k.home();
     await k.press("Choose what you cook");

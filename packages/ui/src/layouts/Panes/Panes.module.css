@@ -1,6 +1,7 @@
 /* Panes (DESIGN.md): one above the other, the side pane first; on a wide
    screen (the Screen's width, 840px) side by side, the main pane at the
-   start, twice as wide. Empty panes take no room. */
+   start, twice as wide. An empty pane takes no room: the other one has the
+   whole width. */
 .panes {
   display: flex;
   flex-direction: column;
@@ -27,5 +28,9 @@
   .secondary {
     grid-row: 1;
     grid-column: 2;
+  }
+
+  .panes:has(> :empty) {
+    grid-template-columns: 1fr;
   }
 }

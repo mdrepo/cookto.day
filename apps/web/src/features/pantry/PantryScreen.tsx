@@ -36,7 +36,6 @@ export function PantryScreen({ bar }: { bar: ReactNode }) {
   return (
     <Screen
       bar={bar}
-      wide
       title={s.title}
       action={
         !s.add.adding && (

@@ -13,7 +13,8 @@ import { useRoute } from "./routes.js";
 // The app: features put together (ADR 0022). Features don't import each
 // other, so this is where one sits inside another, and which one shows. The
 // language is chosen on setup's first step and in Settings, not on every
-// page (#84).
+// page (#84). Every page after setup has the tab bar, so on a wide screen
+// each one sits beside the rail, at the same place.
 
 export function App() {
   useDocumentLanguage();
@@ -22,11 +23,11 @@ export function App() {
     case "home":
       return <HomeScreen bar={<Tabs current={route} />} />;
     case "settings":
-      return <SettingsScreen />;
+      return <SettingsScreen bar={<Tabs current={route} />} />;
     case "cuisines":
-      return <CuisinesScreen />;
+      return <CuisinesScreen bar={<Tabs current={route} />} />;
     case "staples":
-      return <StaplesScreen />;
+      return <StaplesScreen bar={<Tabs current={route} />} />;
     case "pantry":
       return <PantryScreen bar={<Tabs current={route} />} />;
     case "dishes":

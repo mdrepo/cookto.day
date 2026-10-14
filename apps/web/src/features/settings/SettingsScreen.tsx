@@ -1,13 +1,15 @@
+import type { ReactNode } from "react";
 import { Button, Cluster, Screen } from "@cookto/ui";
 import { useWords } from "../../i18n/useWords.js";
 import { goHome } from "../../routes.js";
 import { LanguagePicker } from "./LanguagePicker.js";
 
 /** Settings, behind the gear on Today: the language, for now (#84). */
-export function SettingsScreen() {
+export function SettingsScreen({ bar }: { bar: ReactNode }) {
   const { t } = useWords();
   return (
     <Screen
+      bar={bar}
       title={t.settings}
       header={
         <Cluster>

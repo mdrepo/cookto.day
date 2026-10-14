@@ -18,8 +18,6 @@ export interface ScreenProps {
    * wide screen, a rail down the side.
    */
   bar?: ReactNode;
-  /** On a wide screen, wider than one column: for pages in Panes. */
-  wide?: boolean;
   /** The space between the main part's parts: a spacing step. */
   gap?: Space;
   children: ReactNode;
@@ -28,7 +26,8 @@ export interface ScreenProps {
 /**
  * A whole page: its light header, then its main part, in one centred
  * column. On a wide screen (840px, as Android's), its bar is a rail at the
- * side and a `wide` page has room for Panes.
+ * side and the column is wider, with room for Panes. Every page has the same
+ * width and edge: pages can't change it.
  */
 export function Screen({
   title,
@@ -37,13 +36,12 @@ export function Screen({
   action,
   header,
   bar,
-  wide = false,
   gap = 4,
   children,
 }: ScreenProps) {
   return (
     <div className={styles.screen}>
-      <div className={styles.frame} data-wide={wide || undefined}>
+      <div className={styles.frame}>
         <div className={styles.content}>
           <header className={`${styles.column} ${styles.header}`}>
             {header}

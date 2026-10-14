@@ -72,6 +72,8 @@ export function goHome(): void {
 /** To a dish's page (#95), as a new entry in the browser's history. */
 export function openDish(pack: string, dish: string): void {
   location.hash = `${DISH}${pack}/${dish}`;
+  // A new page starts at its top, not where the list was scrolled to.
+  scrollTo(0, 0);
 }
 
 /** The dish a dish's page shows: its pack and its id, or null. */

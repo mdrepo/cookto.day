@@ -11,6 +11,7 @@ import { join, resolve } from "node:path";
 import { claimedExemption, isVerifiableCode } from "./pr-rules.js";
 import {
   changedLines,
+  onePerTest,
   touchedTests,
   type TestResult,
 } from "./tdd-verify-lib.js";
@@ -186,7 +187,7 @@ function runAppE2e(
     for (const child of suite.suites ?? []) walk(child);
   };
   for (const suite of report.suites ?? []) walk(suite);
-  return results;
+  return onePerTest(results);
 }
 
 function runAll(cwd: string, port: number): TestResult[] {

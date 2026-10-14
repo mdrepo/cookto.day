@@ -1,8 +1,6 @@
 import { lazy, Suspense } from "react";
 import { HomeScreen } from "./features/home/HomeScreen.js";
 import { OnboardingScreen } from "./features/onboarding/OnboardingScreen.js";
-import { ItemSheet } from "./features/pantry/ItemSheet.js";
-import { PantryScreen } from "./features/pantry/PantryScreen.js";
 import { LanguagePicker } from "./features/settings/LanguagePicker.js";
 import { SettingsScreen } from "./features/settings/SettingsScreen.js";
 import { useDocumentLanguage } from "./features/settings/useDocumentLanguage.js";
@@ -18,7 +16,7 @@ import { useRoute } from "./routes.js";
 
 // Pages a first visit doesn't show load when someone opens them, so the
 // first page stays within its budget as the app grows (ADR 0013; #95, #97).
-// Today, the fridge, setup and Settings come with the first page.
+// Setup, Today and Settings come with the first page.
 const DishScreen = lazy(() =>
   import("./features/dish/DishScreen.js").then((m) => ({
     default: m.DishScreen,
@@ -32,6 +30,16 @@ const DishesScreen = lazy(() =>
 const CuisinesScreen = lazy(() =>
   import("./features/cuisines/CuisinesScreen.js").then((m) => ({
     default: m.CuisinesScreen,
+  })),
+);
+const PantryScreen = lazy(() =>
+  import("./features/pantry/PantryScreen.js").then((m) => ({
+    default: m.PantryScreen,
+  })),
+);
+const ItemSheet = lazy(() =>
+  import("./features/pantry/ItemSheet.js").then((m) => ({
+    default: m.ItemSheet,
   })),
 );
 const ShoppingScreen = lazy(() =>
@@ -62,7 +70,11 @@ function Page() {
       return (
         <HomeScreen
           bar={<Tabs current={route} />}
-          itemSheet={(id, onClose) => <ItemSheet id={id} onClose={onClose} />}
+          itemSheet={(id, onClose) => (
+            <Suspense fallback={null}>
+              <ItemSheet id={id} onClose={onClose} />
+            </Suspense>
+          )}
         />
       );
     case "settings":

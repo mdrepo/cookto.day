@@ -12,12 +12,12 @@ test.describe("Cook today", () => {
     await k.add("Spinach", { value: "250", unit: "g" });
     await k.add("Paneer", { value: "200", unit: "g" });
     await k.home();
-    for (const meal of ["Lunch", "Dinner"]) {
-      const [top] = await k.ideas(meal);
-      expect(top).toContain("Palak paneer");
-      expect(top).toContain("Uses Spinach and Paneer");
-      expect(top).toContain("Needs:");
-    }
+    const [top] = await k.ideas("Lunch");
+    expect(top).toContain("Palak paneer");
+    expect(top).toContain("Uses Spinach and Paneer");
+    expect(top).toContain("Needs:");
+    // #94: dinner gets a different dish, and still has suggestions.
+    expect(await k.pickedDish("Dinner")).not.toBe("Palak paneer");
     await expect(k.pick("Breakfast")).toHaveCount(0);
   });
 

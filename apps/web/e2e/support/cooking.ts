@@ -144,6 +144,14 @@ export class Cooking {
       .getByRole("article", { name: meal });
   }
 
+  /** The dish one meal's pick names, in large words. */
+  async pickedDish(meal: string): Promise<string> {
+    return (
+      (await this.pick(meal).locator(":scope > :nth-child(2)").textContent()) ??
+      ""
+    );
+  }
+
   /**
    * One meal's ideas, best first: the pick (its dish, what it's served with
    * and why), then each of "Other ideas".

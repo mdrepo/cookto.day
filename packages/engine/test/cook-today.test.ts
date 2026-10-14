@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { cookToday, type Dish } from "../src/cook-today.js";
+import { cookToday, cookTodayForMeals, type Dish } from "../src/cook-today.js";
 import type { PantryItem } from "../src/pantry.js";
 
 // specs/72-kitchen.md: what to cook today, food that needs using first, and
@@ -148,5 +148,43 @@ describe("cook today", () => {
       today,
     });
     expect(lunch[0]?.uses).toEqual(["potato"]);
+  });
+});
+
+describe("cook today, for each meal", () => {
+  test("a dish picked for one meal isn't the next meal's pick, but stays an idea, last", () => {
+    const pantry = [item("spinach"), item("paneer"), item("potato")];
+    const meals = cookTodayForMeals({
+      slots: ["lunch", "dinner"],
+      dishes,
+      pantry,
+      staples,
+      today,
+    });
+    expect(meals.map((m) => m.slot)).toEqual(["lunch", "dinner"]);
+    expect(ids(meals[0]?.suggestions ?? [])).toEqual([
+      "palak-paneer",
+      "aloo-jeera",
+      "chole",
+    ]);
+    expect(ids(meals[1]?.suggestions ?? [])).toEqual([
+      "aloo-jeera",
+      "chole",
+      "palak-paneer",
+    ]);
+  });
+
+  test("with only one dish for both meals, both get it", () => {
+    const meals = cookTodayForMeals({
+      slots: ["lunch", "dinner"],
+      dishes: [chole],
+      pantry: [],
+      staples,
+      today,
+    });
+    expect(meals.map((m) => ids(m.suggestions))).toEqual([
+      ["chole"],
+      ["chole"],
+    ]);
   });
 });

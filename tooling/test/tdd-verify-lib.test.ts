@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   changedLines,
+  onePerTest,
   touchedTests,
   type TestResult,
 } from "../scripts/tdd-verify-lib.js";
@@ -10,6 +11,19 @@ const result = (line: number, title: string): TestResult => ({
   line,
   title,
   passed: true,
+});
+
+describe("onePerTest", () => {
+  // Playwright reports a test once per project (phone, iPhone, desktop).
+  test("a test passes only when it passes in every project", () => {
+    const phone = result(10, "a screen is one column");
+    const desktop = { ...phone, passed: false };
+    const other = result(20, "another");
+    expect(onePerTest([phone, desktop, other, other])).toEqual([
+      desktop,
+      other,
+    ]);
+  });
 });
 
 describe("touchedTests", () => {

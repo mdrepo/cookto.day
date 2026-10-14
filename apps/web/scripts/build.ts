@@ -33,6 +33,22 @@ export interface BuildOptions {
   split?: boolean;
 }
 
+/**
+ * A script loaded later (like a dish's page, #95) gets a stylesheet of its
+ * own from Bun, a copy of styles the page's own stylesheet already has, and
+ * nothing loads it. Ship only the stylesheets a page links.
+ */
+function dropUnlinkedStyles(files: string[]): void {
+  const pages = files
+    .filter((f) => f.endsWith(".html"))
+    .map((f) => readFileSync(f, "utf8"));
+  for (const css of files.filter((f) => f.endsWith(".css"))) {
+    if (pages.some((html) => html.includes(`./${basename(css)}`))) continue;
+    rmSync(css);
+    files.splice(files.indexOf(css), 1);
+  }
+}
+
 /** Builds every page into `outdir` and returns the files written. */
 export async function buildSite(
   outdir = join(APP_DIR, "dist"),
@@ -65,6 +81,7 @@ export async function buildSite(
   const app = await renderApp();
   for (const page of files.filter((f) => f.endsWith(".html")))
     prerender(page, app);
+  dropUnlinkedStyles(files);
   writeHeaders(outdir, files);
   return files;
 }

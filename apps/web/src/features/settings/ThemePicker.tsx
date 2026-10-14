@@ -1,26 +1,19 @@
-import { Field, Select } from "@cookto/ui";
+import { Choice } from "@cookto/ui";
 import { useThemePicker } from "./useThemePicker.js";
 
-/** Light, dark, or the phone's theme (specs/96). */
+/**
+ * Light, dark, or the phone's theme (specs/96): three cards, each one tap,
+ * all in sight.
+ */
 export function ThemePicker() {
   const { theme, label, options, choose } = useThemePicker();
   return (
-    <Field label={label} layout="inline" id="theme">
-      {(control) => (
-        <Select
-          {...control}
-          value={theme}
-          onChange={(e) => {
-            choose(e.currentTarget.value);
-          }}
-        >
-          {options.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </Select>
-      )}
-    </Field>
+    <Choice
+      legend={label}
+      name="theme"
+      value={theme}
+      options={options.map((o) => ({ value: o.value, title: o.label }))}
+      onChange={choose}
+    />
   );
 }

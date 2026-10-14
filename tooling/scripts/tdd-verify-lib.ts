@@ -67,3 +67,17 @@ export function changedLines(diff: string): number[] {
   }
   return [...new Set(lines)];
 }
+
+/**
+ * One result per test. Playwright reports a test once per project (phone,
+ * iPhone, desktop), so a test passes only when it passes in all of them.
+ */
+export function onePerTest(results: TestResult[]): TestResult[] {
+  const byTest = new Map<string, TestResult>();
+  for (const r of results) {
+    const key = `${r.file}:${r.line}:${r.title}`;
+    const seen = byTest.get(key);
+    byTest.set(key, seen ? { ...seen, passed: seen.passed && r.passed } : r);
+  }
+  return [...byTest.values()];
+}

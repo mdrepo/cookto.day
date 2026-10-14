@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { HomeScreen } from "./features/home/HomeScreen.js";
 import { OnboardingScreen } from "./features/onboarding/OnboardingScreen.js";
+import { ItemSheet } from "./features/pantry/ItemSheet.js";
 import { PantryScreen } from "./features/pantry/PantryScreen.js";
 import { LanguagePicker } from "./features/settings/LanguagePicker.js";
 import { SettingsScreen } from "./features/settings/SettingsScreen.js";
@@ -53,7 +54,12 @@ function Page() {
   const route = useRoute();
   switch (route) {
     case "home":
-      return <HomeScreen bar={<Tabs current={route} />} />;
+      return (
+        <HomeScreen
+          bar={<Tabs current={route} />}
+          itemSheet={(id, onClose) => <ItemSheet id={id} onClose={onClose} />}
+        />
+      );
     case "settings":
       return <SettingsScreen bar={<Tabs current={route} />} />;
     case "cuisines":

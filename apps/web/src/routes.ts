@@ -17,6 +17,9 @@ const STEPS: Partial<Record<string, Step>> = {
   "#/start/done": "done",
 };
 
+/** Dishes that use one food (#105): `#/kitchen/dishes/with/<ingredient>`. */
+const DISHES_WITH = "#/kitchen/dishes/with/";
+
 /** A dish's page (#95): `#/kitchen/dish/<pack>/<dish>`. */
 const DISH = "#/kitchen/dish/";
 
@@ -46,6 +49,7 @@ export function useRoute(): Route {
   if (!onboarded) return "where";
   if (at === "#/settings") return "settings";
   if (at.startsWith(DISH)) return "dish";
+  if (at.startsWith(DISHES_WITH)) return "dishes";
   return PAGES[at] ?? "home";
 }
 
@@ -88,4 +92,18 @@ export function useDish(): { pack: string; dish: string } | null {
 /** Back where they came from: the page before, in the browser's history. */
 export function goBack(): void {
   history.back();
+}
+
+/** To the dishes that use one food (#105). */
+export function openDishesWith(ingredient: string): void {
+  location.hash = `${DISHES_WITH}${encodeURIComponent(ingredient)}`;
+  scrollTo(0, 0);
+}
+
+/** The food Dishes is narrowed to, or null for every dish. */
+export function useDishesWith(): string | null {
+  const at = useSyncExternalStore(subscribe, hash, () => null);
+  return at?.startsWith(DISHES_WITH)
+    ? decodeURIComponent(at.slice(DISHES_WITH.length))
+    : null;
 }

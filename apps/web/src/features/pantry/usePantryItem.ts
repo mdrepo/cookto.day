@@ -8,8 +8,10 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useWords } from "../../i18n/useWords.js";
-import { useItemWords } from "../../food.js";
+import { fill } from "../../i18n/format.js";
+import { useItemWords, useLoadedPacks } from "../../food.js";
 import { kitchen, pantryQuery, queries, today } from "../../platform.js";
+import { openDishesWith } from "../../routes.js";
 import { toGramsOrMl, UNIT_CHOICES } from "./units.js";
 
 const CONDITION_WORDS = {
@@ -27,6 +29,7 @@ export function usePantryItem(id: string, done: () => void = () => undefined) {
   const { t } = useWords();
   const words = useItemWords();
   const [editing, setEditing] = useState(false);
+  const packs = useLoadedPacks();
   const { data: item } = useQuery(
     {
       ...pantryQuery,
@@ -36,9 +39,22 @@ export function usePantryItem(id: string, done: () => void = () => undefined) {
   );
   if (!item) return null;
   const w = words(item, today());
+  const used = packs.some((p) =>
+    p.dishes.some((d) => d.ingredients.includes(item.ingredient)),
+  );
   return {
     ...w,
     closeLabel: t.close,
+    // The dishes that use it (#105), when any loaded dish does.
+    dishesWith: used
+      ? {
+          label: fill(t.dishesWith, { item: w.name }),
+          open: () => {
+            done();
+            openDishesWith(item.ingredient);
+          },
+        }
+      : null,
     howItIs: {
       label: t.howItIs,
       value: w.condition,

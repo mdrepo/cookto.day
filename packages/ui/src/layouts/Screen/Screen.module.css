@@ -23,8 +23,16 @@
   inset-block-end: 0;
 }
 
-/* Wide: the bar is a rail at the start, as tall as the screen, and a wide
-   page gets a wider column. */
+/* One centred column, at most 40rem, with the screen's side padding. */
+.column {
+  inline-size: 100%;
+  max-width: 40rem;
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+
+/* Wide: the bar is a rail at the start, as tall as the screen, and every
+   page gets the same wider column. */
 @container (min-width: 840px) {
   .frame {
     flex-direction: row;
@@ -37,18 +45,10 @@
     block-size: 100dvh;
   }
 
-  .frame[data-wide] .column {
-    max-width: 72rem;
+  .column {
+    max-width: 64rem;
     padding-inline: var(--space-8);
   }
-}
-
-/* One centred column, at most 40rem, with the screen's side padding. */
-.column {
-  inline-size: 100%;
-  max-width: 40rem;
-  margin-inline: auto;
-  padding-inline: var(--space-4);
 }
 
 /* The prototype's light header (#84): no line under it, and the same 16px

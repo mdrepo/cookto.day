@@ -1,9 +1,16 @@
+import type { ReactNode } from "react";
+import { Screen } from "@cookto/ui";
 import { use__Name__Screen } from "./use__Name__Screen.js";
 
 // Written by `bun run new screen __feature__`. Build it from its spec: a
 // screen draws what its hook gives it, with parts from @cookto/ui (ADR 0019,
-// 0022).
-export function __Name__Screen() {
+// 0022). It starts inside the kit's Screen, so it has the same width and
+// edge as every page; put it in app.tsx with the tab bar.
+export function __Name__Screen({ bar }: { bar: ReactNode }) {
   use__Name__Screen();
-  return null;
+  return (
+    <Screen bar={bar} title="">
+      {null}
+    </Screen>
+  );
 }

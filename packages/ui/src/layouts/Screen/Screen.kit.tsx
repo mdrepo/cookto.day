@@ -8,7 +8,7 @@ import { Screen } from "./Screen.js";
 export const kit: Kit = {
   name: "Screen",
   about:
-    "A whole page: a light header (a small line, the title, one action), then one centred column, at most 40rem.",
+    "A whole page: a light header (a small line, the title, one action), then one centred column: at most 40rem, or 64rem on a wide screen, the same on every page.",
   wide: true,
   examples: [
     {

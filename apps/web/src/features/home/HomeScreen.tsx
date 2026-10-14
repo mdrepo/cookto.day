@@ -31,7 +31,6 @@ export function HomeScreen({ bar }: { bar: ReactNode }) {
   return (
     <Screen
       bar={bar}
-      wide
       title="cookto.day"
       eyebrow={t.date}
       action={

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import {
   ActionBar,
   Button,
@@ -10,10 +11,10 @@ import {
 import { useStaplesScreen } from "./useStaplesScreen.js";
 
 /** The usual staples, ticked for you (specs/72, criterion 2). */
-export function StaplesScreen() {
+export function StaplesScreen({ bar }: { bar: ReactNode }) {
   const s = useStaplesScreen();
   return (
-    <Screen title={s.title}>
+    <Screen bar={bar} title={s.title}>
       <Cluster>
         <Button kind="plain" icon="arrow-left" onClick={s.onBack}>
           {s.back}

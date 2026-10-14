@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import {
   ActionBar,
   Button,
@@ -11,10 +12,10 @@ import {
 import { useCuisinesScreen } from "./useCuisinesScreen.js";
 
 /** Choose what you cook: load a cuisine's dishes (specs/72, criteria 1, 8). */
-export function CuisinesScreen() {
+export function CuisinesScreen({ bar }: { bar: ReactNode }) {
   const s = useCuisinesScreen();
   return (
-    <Screen title={s.title}>
+    <Screen bar={bar} title={s.title}>
       <Cluster>
         <Button kind="plain" icon="arrow-left" onClick={s.onBack}>
           {s.back}

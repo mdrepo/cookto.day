@@ -35,10 +35,12 @@
   outline-offset: -2px;
 }
 
-/* On a wide screen, a rail down the start side (Screen's bar). */
+/* On a wide screen, a rail down the start side (Screen's bar), always as
+   wide, so the page beside it doesn't move when the current tab is bold. */
 @container (min-width: 840px) {
   .bar {
     flex-direction: column;
+    inline-size: calc(var(--space-8) * 3);
     block-size: 100%;
     padding-block: var(--space-6);
     border-block-start: 0;
@@ -47,6 +49,6 @@
 
   .tab {
     flex: 0 0 auto;
-    padding-inline: var(--space-4);
+    padding-inline: var(--space-1);
   }
 }

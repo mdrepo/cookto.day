@@ -28,6 +28,8 @@ export {
 export {
   type CookTodayInput,
   cookToday,
+  cookTodayForMeals,
   type Dish,
+  type MealSuggestions,
   type Suggestion,
 } from "./cook-today.js";

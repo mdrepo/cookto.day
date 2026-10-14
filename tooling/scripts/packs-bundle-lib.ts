@@ -1,8 +1,8 @@
 // A pack as the app loads it (ADR 0015, 0027): one small file per pack,
 // written by `bun run packs:bundle` into packages/data/src/packs/ and loaded
 // only when a household picks its cuisine. Ingredients are Wikidata ids, as
-// the pantry keys them. Sources, labels and amounts stay in the pack: the
-// app doesn't use them yet, and they'd only add weight.
+// the pantry keys them. A dish keeps its amounts for one person and its
+// source, for its page (specs/95); labels stay in the pack.
 import { type Pack, STAPLE_GROUPS } from "./packs-lib.js";
 
 type Group = (typeof STAPLE_GROUPS)[number];
@@ -13,7 +13,11 @@ export interface AppPack {
     id: string;
     slots: string[];
     ingredients: string[];
+    /** For one person, in the same order as `ingredients`. */
+    amounts: [number, string][];
     servedWith?: string[];
+    /** Where the recipe is: the app links to it, it doesn't copy it. */
+    source: string;
   }[];
   /** Fresh food: Wikidata id to the days it keeps. */
   fresh: Record<string, number>;
@@ -39,7 +43,12 @@ export function bundlePack(pack: Pack): AppPack {
       id,
       slots: dish.slots,
       ingredients: Object.keys(dish.ingredients).map(q),
+      amounts: Object.values(dish.ingredients).map((i): [number, string] => [
+        i.amount,
+        i.unit,
+      ]),
       ...(dish.servedWith ? { servedWith: dish.servedWith } : {}),
+      source: dish.source,
     })),
     fresh: Object.fromEntries(
       Object.values(pack.ingredients).flatMap((i) =>

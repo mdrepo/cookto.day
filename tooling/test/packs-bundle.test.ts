@@ -50,7 +50,7 @@ const pack: Pack = {
 };
 
 describe("a pack, as the app loads it", () => {
-  test("ingredients are Wikidata ids; fresh food keeps its days; sources and amounts stay behind", () => {
+  test("ingredients are Wikidata ids; fresh food keeps its days; a dish keeps its amounts and source for its page (#95)", () => {
     expect(bundlePack(pack)).toEqual({
       id: "test-kitchen",
       dishes: [
@@ -58,7 +58,12 @@ describe("a pack, as the app loads it", () => {
           id: "spinach-rice",
           slots: ["lunch"],
           ingredients: ["Q36814998", "Q5090"],
+          amounts: [
+            [100, "g"],
+            [80, "g"],
+          ],
           servedWith: ["rice"],
+          source: "https://example.com/spinach-rice",
         },
       ],
       fresh: { Q36814998: 3 },

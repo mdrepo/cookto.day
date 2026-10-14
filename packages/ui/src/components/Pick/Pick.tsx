@@ -10,17 +10,27 @@ export interface PickProps {
   note?: string;
   /** Why it's picked (Reasons), and anything else, like "Other ideas". */
   children?: ReactNode;
+  /** Opens the dish's page (#95): the dish becomes a button. */
+  onOpen?: () => void;
 }
 
 /** The best dish for one meal, in large words, and why (the prototype's "Tonight"). */
-export function Pick({ label, dish, note, children }: PickProps) {
+export function Pick({ label, dish, note, children, onOpen }: PickProps) {
   const labelId = useId();
   return (
     <article className={styles.pick} aria-labelledby={labelId}>
       <h3 id={labelId} className={styles.label}>
         {label}
       </h3>
-      <p className={styles.dish}>{dish}</p>
+      <p className={styles.dish}>
+        {onOpen ? (
+          <button type="button" className={styles.open} onClick={onOpen}>
+            {dish}
+          </button>
+        ) : (
+          dish
+        )}
+      </p>
       {note && <p className={styles.note}>{note}</p>}
       {children}
     </article>

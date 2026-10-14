@@ -10,9 +10,12 @@ import {
   useLoadedPacks,
 } from "../../food.js";
 import { pantryQuery, queries } from "../../platform.js";
-import { goHome } from "../../routes.js";
+import { goHome, openDish } from "../../routes.js";
 
-/** The loaded cuisines' dishes: the meals each suits, and what it needs. */
+/**
+ * The loaded cuisines' dishes: the meals each suits, and what it needs. Each
+ * opens its page (#95).
+ */
 export function useDishesScreen() {
   const { locale, t } = useWords();
   const packs = useLoadedPacks();
@@ -24,7 +27,7 @@ export function useDishesScreen() {
     title: t.dishes,
     back: t.back,
     onBack: goHome,
-    rows: packs.flatMap((pack) =>
+    items: packs.flatMap((pack) =>
       pack.dishes.map((dish) => {
         const needs = dish.ingredients.filter(
           (i) => !have.has(i) && !staples.has(i),
@@ -34,11 +37,13 @@ export function useDishesScreen() {
         );
         return {
           key: `${pack.id}/${dish.id}`,
-          label: name("dishes", dish.id),
-          value: `${listOf(locale, meals)} · ${
-            needs === 0 ? t.hasEverything : count(locale, t.needsCount, needs)
-          }`,
-          quiet: needs > 0,
+          name: name("dishes", dish.id),
+          line: listOf(locale, meals),
+          end:
+            needs === 0 ? t.hasEverything : count(locale, t.needsCount, needs),
+          onOpen: () => {
+            openDish(pack.id, dish.id);
+          },
         };
       }),
     ),

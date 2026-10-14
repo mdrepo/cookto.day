@@ -10,6 +10,7 @@ import {
 } from "@cookto/ui";
 import { AddFood } from "./AddFood.js";
 import { ItemSheet } from "./ItemSheet.js";
+import { ListButton } from "./ListButton.js";
 import { usePantryScreen } from "./usePantryScreen.js";
 
 /** What's in the kitchen, as a short list you tap (specs/72, 80; #84). */
@@ -45,6 +46,7 @@ export function PantryScreen({ bar }: { bar: ReactNode }) {
         )
       }
     >
+      <ListButton />
       {s.add.adding && <AddFood onDone={s.add.done} />}
       <Panes
         primary={

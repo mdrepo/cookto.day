@@ -2,6 +2,7 @@
 export type { CookedWriter } from "./cooked.js";
 export type { HouseholdWriter } from "./household.js";
 export type { PantryWriter } from "./pantry.js";
+export type { ShoppingWriter } from "./shopping.js";
 export type {
   KitchenSettingsWriter,
   SettingsWriter,

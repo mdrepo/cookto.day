@@ -2,4 +2,5 @@
 export type { CookedReader } from "./cooked.js";
 export type { HouseholdReader } from "./household.js";
 export type { PantryReader } from "./pantry.js";
+export type { ShoppingReader } from "./shopping.js";
 export type { KitchenSettings, Settings, SettingsStore } from "./settings.js";

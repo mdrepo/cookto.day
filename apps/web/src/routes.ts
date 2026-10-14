@@ -8,7 +8,7 @@ import { settings } from "./platform.js";
 
 export type Step = "where" | "who" | "done";
 /** The kitchen's pages (specs/72-kitchen.md). */
-export type Page = "cuisines" | "staples" | "pantry" | "dishes";
+export type Page = "cuisines" | "staples" | "pantry" | "dishes" | "list";
 export type Route = "home" | "settings" | "dish" | Step | Page;
 
 const STEPS: Partial<Record<string, Step>> = {
@@ -28,6 +28,7 @@ const PAGES: Partial<Record<string, Page>> = {
   "#/kitchen/staples": "staples",
   "#/kitchen/pantry": "pantry",
   "#/kitchen/dishes": "dishes",
+  "#/kitchen/list": "list",
 };
 
 function subscribe(onChange: () => void): () => void {

@@ -10,11 +10,13 @@ export function DishesScreen({ bar }: { bar: ReactNode }) {
   const s = useDishesScreen();
   return (
     <Screen bar={bar} title={s.title}>
-      <Cluster>
-        <Button kind="plain" icon="arrow-left" onClick={s.onBack}>
-          {s.back}
-        </Button>
-      </Cluster>
+      {s.back && (
+        <Cluster>
+          <Button kind="plain" icon="arrow-left" onClick={s.back.run}>
+            {s.back.label}
+          </Button>
+        </Cluster>
+      )}
       {[s.ready, s.rest].map(
         (group) =>
           group.items.length > 0 && (

@@ -24,14 +24,14 @@ Use the variables, never a raw value. A token that's missing is added by a code 
 
 | Use                                                                                       | Variable                   | Light   | Dark    |
 | ----------------------------------------------------------------------------------------- | -------------------------- | ------- | ------- |
-| Page background (paper)                                                                   | `var(--color-bg)`          | #fbf7f0 | #1c1a17 |
-| Cards, panels, inputs                                                                     | `var(--color-surface)`     | #fffdf9 | #26231f |
+| Page background (paper)                                                                   | `var(--color-bg)`          | #fbf7f0 | #211913 |
+| Cards, panels, inputs                                                                     | `var(--color-surface)`     | #fffdf9 | #2c221b |
 | Text (ink)                                                                                | `var(--color-text)`        | #2b2622 | #f1ebe2 |
 | Secondary text: hints, dates, quantities                                                  | `var(--color-text-muted)`  | #6b6259 | #b3a99c |
-| Borders and dividers                                                                      | `var(--color-border)`      | #e6ddd0 | #3a352f |
+| Borders and dividers                                                                      | `var(--color-border)`      | #e6ddd0 | #45372c |
 | Actions: the main button, selected state, links                                           | `var(--color-accent)`      | #6e3b5f | #d9a3c6 |
 | A soft fill behind a selected chip or row                                                 | `var(--color-accent-soft)` | #f1e4ec | #3a2934 |
-| Text and icons on `--color-accent`                                                        | `var(--color-on-accent)`   | #fffdf9 | #1c1a17 |
+| Text and icons on `--color-accent`                                                        | `var(--color-on-accent)`   | #fffdf9 | #211913 |
 | The main button's fill, never text: aubergine, deep enough for white words in both themes | `var(--color-action)`      | #6e3b5f | #8a4f78 |
 | Words and icons on `--color-action`: white                                                | `var(--color-on-action)`   | #fffdf9 | #fffdf9 |
 | About to go off, errors                                                                   | `var(--color-warn)`        | #a64b17 | #e8955f |
@@ -149,6 +149,7 @@ How parts sit together. Screens are layouts filled with parts; the space between
 | A part of a page under a title | `Section`   | Its title small (`--text-sm`), 600 and muted, 8px above what it names; `tone="warn"` makes it warm, for food to use soon. Never a big heading for a section                                                                                                                                                                                                                                                                               |
 | Parts side by side that wrap   | `Cluster`   | `gap`, default 2. Buttons in a row, chips. Starts from the right in Arabic `fill`: each part takes an equal share of the row, like a sheet's buttons.                                                                                                                                                                                                                                                                                     |
 | The actions at the bottom      | `ActionBar` | Sticky at the bottom, on the surface above a border. Actions side by side, the last (the main one) takes the room; `below` holds a way out, like a plain "Skip for now"                                                                                                                                                                                                                                                                   |
+| Cards side by side             | `Tiles`     | A grid of cards, each at least 18rem: one column on a phone, two or more on a wide screen, a row's cards as tall as each other. Today's meal picks (#80).                                                                                                                                                                                                                                                                                 |
 
 **Apps don't style.** An app's `src/` has no CSS of its own (`design:check`): if a screen needs something, it's a part or a layout in `@cookto/ui`. The kit page's frame is the one exception.
 

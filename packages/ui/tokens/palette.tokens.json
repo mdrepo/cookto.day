@@ -17,11 +17,17 @@
     "ink-500": { "$value": "#6b6259", "$description": "Faded ink" },
     "ink-900": { "$value": "#2b2622", "$description": "Dark ink" },
     "night-700": {
-      "$value": "#3a352f",
+      "$value": "#45372c",
       "$description": "Lines on night paper"
     },
-    "night-800": { "$value": "#26231f", "$description": "Night cards" },
-    "night-900": { "$value": "#1c1a17", "$description": "Night paper" },
+    "night-800": {
+      "$value": "#2c221b",
+      "$description": "Night cards: warm, like the paper"
+    },
+    "night-900": {
+      "$value": "#211913",
+      "$description": "Night paper: a warm brown, not grey"
+    },
     "mist-100": { "$value": "#f1ebe2", "$description": "Light ink, for night" },
     "mist-400": { "$value": "#b3a99c", "$description": "Faded light ink" },
     "aubergine-100": { "$value": "#f1e4ec", "$description": "Aubergine wash" },

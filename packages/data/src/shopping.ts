@@ -52,14 +52,15 @@ export function createShopping(
     },
     writer: {
       async add(ingredients) {
-        const on = new Set((await live()).map((r) => r.ingredient));
+        const list = await live();
+        const on = new Set(list.map((r) => r.ingredient));
         const fresh = [...new Set(ingredients)].filter((i) => !on.has(i));
         if (fresh.length === 0) return 0;
         const at = now();
         await store.put(
           SHOPPING,
-          fresh.map((ingredient, place) =>
-            created({ ingredient, addedAt: at, place }, at),
+          fresh.map((ingredient, i) =>
+            created({ ingredient, addedAt: at, place: list.length + i }, at),
           ),
         );
         changes.announce(TOPIC);

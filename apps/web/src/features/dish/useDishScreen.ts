@@ -38,11 +38,13 @@ export function useDishScreen() {
   const have = new Set(items.map((i) => i.ingredient));
   const staples = assumedStaples(packs, items);
   const rows = dish.ingredients.map((id, i) => {
-    const [amount, unit] = dish.amounts[i] ?? [0, "g"];
+    const per = dish.amounts?.[i];
     return {
       key: id,
       label: name("ingredients", id),
-      value: amountOf({ amount: amount * people, unit }) ?? "",
+      value: per
+        ? (amountOf({ amount: per[0] * people, unit: per[1] }) ?? "")
+        : "",
       has: have.has(id) || staples.has(id),
     };
   });

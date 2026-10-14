@@ -52,7 +52,7 @@ export function DishScreen({ bar }: { bar: ReactNode }) {
         secondary={
           <Stack gap={3}>
             <Reasons items={s.reasons} />
-            <LinkOut href={s.source}>{s.seeRecipe}</LinkOut>
+            {s.source && <LinkOut href={s.source}>{s.seeRecipe}</LinkOut>}
           </Stack>
         }
       />

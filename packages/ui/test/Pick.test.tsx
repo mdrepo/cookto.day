@@ -23,3 +23,15 @@ describe("Pick", () => {
     expect(card?.textContent).toContain("why");
   });
 });
+
+describe("Pick, opening its dish (#95)", () => {
+  test("with onOpen, the dish is a button", () => {
+    // Pressing it is in the e2e tests: this markup has no handlers.
+    const doc = render(
+      <Pick label="Lunch" dish="Palak paneer" onOpen={() => undefined} />,
+    );
+    const button = doc.querySelector("article button");
+    expect(button?.textContent).toBe("Palak paneer");
+    expect(button?.getAttribute("type")).toBe("button");
+  });
+});

@@ -180,4 +180,21 @@ export class Cooking {
       .getByRole("list", { name: "Dishes" })
       .getByRole("listitem");
   }
+
+  /** From anywhere after setup: opens a dish's page from Dishes (#95). */
+  async openDish(name: string): Promise<void> {
+    await this.tabs()
+      .getByRole("button", { name: "Dishes", exact: true })
+      .click();
+    await expect(this.title()).toHaveText("Dishes");
+    await this.dishes()
+      .getByRole("button", { name: new RegExp(`^${name}`) })
+      .click();
+    await expect(this.title()).toHaveText(name);
+  }
+
+  /** On a dish's page: one of its lists, "You have" or "You need". */
+  dishList(name: "You have" | "You need"): Locator {
+    return this.page.getByRole("region", { name });
+  }
 }

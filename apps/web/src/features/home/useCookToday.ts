@@ -1,6 +1,6 @@
 import type { AppPack } from "@cookto/data";
 import {
-  cookToday,
+  cookTodayForMeals,
   defaultMeals,
   plannedSlots,
   type Suggestion,
@@ -71,7 +71,10 @@ function ideaOf(
   };
 }
 
-/** What to cook today, for each meal someone eats (specs/72, criteria 6 to 8). */
+/**
+ * What to cook today, for each meal someone eats (specs/72, criteria 6 to 8),
+ * a different dish for each when there's more than one (specs/94).
+ */
 export function useCookToday() {
   const { locale, t } = useWords();
   const packs = useLoadedPacks();
@@ -91,17 +94,15 @@ export function useCookToday() {
   return {
     title: t.cookToday,
     otherIdeas: t.otherIdeas,
-    meals: slots.flatMap((slot) => {
-      const [best, ...rest] = cookToday({
-        slot,
-        dishes,
-        pantry: items,
-        staples,
-        today: today(),
-        skip: new Set(skip),
-      })
-        .slice(0, SHOWN)
-        .map(idea);
+    meals: cookTodayForMeals({
+      slots,
+      dishes,
+      pantry: items,
+      staples,
+      today: today(),
+      skip: new Set(skip),
+    }).flatMap(({ slot, suggestions }) => {
+      const [best, ...rest] = suggestions.slice(0, SHOWN).map(idea);
       if (!best) return [];
       return [
         {

@@ -12,12 +12,13 @@ test.describe("Today and the pantry", () => {
     await k.add("Spinach", { value: "250", unit: "g" });
     await k.add("Paneer", { value: "200", unit: "g" });
     await k.home();
-    for (const meal of ["Lunch", "Dinner"]) {
-      const pick = k.pick(meal);
-      await expect(pick).toContainText("Palak paneer");
-      await expect(pick).toContainText("with Roti or Rice");
-      await expect(pick).toContainText("Uses Spinach and Paneer");
-    }
+    const lunch = k.pick("Lunch");
+    await expect(lunch).toContainText("Palak paneer");
+    await expect(lunch).toContainText("with Roti or Rice");
+    await expect(lunch).toContainText("Uses Spinach and Paneer");
+    // #94: dinner picks another dish, with its own reason.
+    await expect(k.pick("Dinner")).not.toContainText("Palak paneer");
+    await expect(k.pick("Dinner")).toContainText(/Uses|Needs/);
     const ideas = await k.ideas("Lunch");
     expect(ideas).toHaveLength(5);
     for (const idea of ideas.slice(1)) expect(idea).toMatch(/Uses|Needs/);

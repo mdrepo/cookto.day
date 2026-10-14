@@ -175,10 +175,16 @@ export class Cooking {
       .getByRole("button");
   }
 
+  /** Every dish in Dishes: ready ones first, then the rest (#97). */
   dishes(): Locator {
     return this.page
-      .getByRole("list", { name: "Dishes" })
+      .getByRole("list", { name: /^(You can cook now|Need a few things)$/ })
       .getByRole("listitem");
+  }
+
+  /** One of Dishes' two lists' rows, in order (#97). */
+  dishGroup(name: "You can cook now" | "Need a few things"): Locator {
+    return this.page.getByRole("list", { name }).getByRole("listitem");
   }
 
   /** From anywhere after setup: opens a dish's page from Dishes (#95). */

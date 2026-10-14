@@ -103,6 +103,12 @@ export const mr: Messages = {
   themeSystem: "फोनसारखे",
   themeLight: "फिकट",
   themeDark: "गडद",
+  cookNow: "आता बनवू शकता",
+  needAFewThings: "काही गोष्टी हव्यात",
+  canCookCount: {
+    one: "तुम्ही आता {n} पदार्थ बनवू शकता",
+    other: "तुम्ही आता {n} पदार्थ बनवू शकता",
+  },
   otherIdeas: "इतर पर्याय",
   pages: "पाने",
   close: "बंद करा",

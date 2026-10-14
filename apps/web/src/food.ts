@@ -130,3 +130,23 @@ export function useItemWords() {
     };
   };
 }
+
+/**
+ * Each loaded dish and how many things it needs that the kitchen doesn't
+ * have; staples are assumed until the household adds its own (specs/72, 97).
+ */
+export function dishNeeds(
+  packs: readonly AppPack[],
+  items: readonly KitchenItem[],
+): { pack: string; dish: AppPack["dishes"][number]; needs: number }[] {
+  const have = new Set(items.map((i) => i.ingredient));
+  const staples = assumedStaples(packs, items);
+  return packs.flatMap((pack) =>
+    pack.dishes.map((dish) => ({
+      pack: pack.id,
+      dish,
+      needs: dish.ingredients.filter((i) => !have.has(i) && !staples.has(i))
+        .length,
+    })),
+  );
+}

@@ -101,6 +101,12 @@ export const en = {
   themeSystem: "Same as phone",
   themeLight: "Light",
   themeDark: "Dark",
+  cookNow: "You can cook now",
+  needAFewThings: "Need a few things",
+  canCookCount: {
+    one: "You can cook {n} dish now",
+    other: "You can cook {n} dishes now",
+  },
   otherIdeas: "Other ideas",
   pages: "Pages",
   close: "Close",

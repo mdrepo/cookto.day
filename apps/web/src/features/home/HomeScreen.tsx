@@ -9,6 +9,7 @@ import {
   Screen,
 } from "@cookto/ui";
 import { openSettings } from "../../routes.js";
+import { CookNow } from "./CookNow.js";
 import { CookToday } from "./CookToday.js";
 import { useHomeScreen } from "./useHomeScreen.js";
 import { useKitchenStart } from "./useKitchenStart.js";
@@ -80,6 +81,7 @@ export function HomeScreen({ bar }: { bar: ReactNode }) {
           {t.emptyBody}
         </Callout>
       )}
+      <CookNow />
       <Panes primary={<CookToday />} secondary={<UseSoon />} />
       {!k.empty && !k.sample && (
         <Cluster gap={2}>

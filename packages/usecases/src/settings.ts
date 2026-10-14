@@ -1,4 +1,5 @@
-import type { SettingsWriter } from "@cookto/data/write";
+import type { Theme } from "@cookto/data";
+import type { SettingsWriter, ThemeWriter } from "@cookto/data/write";
 
 /**
  * Switches the app to `language`, if the app speaks it. Returns whether it
@@ -21,4 +22,12 @@ export function chooseCountry(
   if (!settings.knowsCountry(country)) return false;
   settings.setCountry(country);
   return true;
+}
+
+/** Light, dark, or the phone's theme (specs/96). */
+export function chooseTheme(
+  { settings }: { settings: ThemeWriter },
+  theme: Theme,
+): void {
+  settings.setTheme(theme);
 }

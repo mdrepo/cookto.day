@@ -1,10 +1,11 @@
 import type { ReactNode } from "react";
-import { Button, Cluster, Screen } from "@cookto/ui";
+import { Button, Cluster, Screen, Stack } from "@cookto/ui";
 import { useWords } from "../../i18n/useWords.js";
 import { goHome } from "../../routes.js";
 import { LanguagePicker } from "./LanguagePicker.js";
+import { ThemePicker } from "./ThemePicker.js";
 
-/** Settings, behind the gear on Today: the language, for now (#84). */
+/** Settings, behind the gear on Today: the language (#84) and the theme (#96). */
 export function SettingsScreen({ bar }: { bar: ReactNode }) {
   const { t } = useWords();
   return (
@@ -19,7 +20,10 @@ export function SettingsScreen({ bar }: { bar: ReactNode }) {
         </Cluster>
       }
     >
-      <LanguagePicker />
+      <Stack gap={4}>
+        <LanguagePicker />
+        <ThemePicker />
+      </Stack>
     </Screen>
   );
 }

@@ -4,8 +4,13 @@ import type { KeyValue } from "./kv.js";
 // App-wide settings (ADR 0023): one Zustand store, read by screen hooks
 // through selectors, and written only by use cases (ADR 0022).
 
+/** Light, dark, or whatever the phone is set to (specs/96). */
+export const THEMES = ["system", "light", "dark"] as const;
+export type Theme = (typeof THEMES)[number];
+
 export interface Settings {
   language: string;
+  theme: Theme;
   /** Where the household lives: its currency and shops (ADR 0026). */
   country: string;
   /** Whether onboarding is done or skipped: it's asked once (specs/65). */
@@ -39,6 +44,11 @@ export interface SettingsWriter {
   setOnboarded(): void;
 }
 
+/** The theme (specs/96), for its use case only. */
+export interface ThemeWriter {
+  setTheme(theme: Theme): void;
+}
+
 /** The kitchen's settings, for the kitchen's use cases only. */
 export interface KitchenSettingsWriter {
   kitchen(): KitchenSettings;
@@ -48,6 +58,7 @@ export interface KitchenSettingsWriter {
 /** The key is today's, so people keep the language they chose. */
 const LANGUAGE = "cookto.day:language";
 const COUNTRY = "cookto.day:country";
+const THEME = "cookto.day:theme";
 const ONBOARDED = "cookto.day:onboarded";
 const KITCHEN = "cookto.day:kitchen";
 
@@ -106,13 +117,14 @@ export function createSettings(
   },
 ): {
   store: SettingsStore;
-  writer: SettingsWriter & KitchenSettingsWriter;
+  writer: SettingsWriter & KitchenSettingsWriter & ThemeWriter;
 } {
   const speaks = (language: string) => options.languages.includes(language);
   const knowsCountry = (country: string) => options.countries.includes(country);
   const { preview = null, previews = [] } = options;
   const saved = read(kv, LANGUAGE);
   const savedCountry = read(kv, COUNTRY);
+  const savedTheme = read(kv, THEME);
   const store = createStore<Settings>(() => ({
     language:
       preview !== null && (speaks(preview) || previews.includes(preview))
@@ -120,6 +132,7 @@ export function createSettings(
         : saved !== null && speaks(saved)
           ? saved
           : options.fallback,
+    theme: THEMES.find((t) => t === savedTheme) ?? "system",
     country:
       savedCountry !== null && knowsCountry(savedCountry)
         ? savedCountry
@@ -134,6 +147,10 @@ export function createSettings(
       setLanguage(language) {
         store.setState({ language });
         write(kv, LANGUAGE, language);
+      },
+      setTheme(theme) {
+        store.setState({ theme });
+        write(kv, THEME, theme);
       },
       knowsCountry,
       setCountry(country) {

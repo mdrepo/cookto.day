@@ -16,4 +16,4 @@ export {
 export { createPantry, type KitchenItem, type NewItem } from "./pantry.js";
 export { memoryRecordStore, type RecordStore } from "./record-store.js";
 export { type SyncRecord } from "./records.js";
-export { createSettings } from "./settings.js";
+export { createSettings, THEMES, type Theme } from "./settings.js";

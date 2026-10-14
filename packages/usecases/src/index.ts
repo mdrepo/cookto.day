@@ -24,4 +24,4 @@ export {
   trySample,
   useUp,
 } from "./kitchen.js";
-export { chooseCountry, chooseLanguage } from "./settings.js";
+export { chooseCountry, chooseLanguage, chooseTheme } from "./settings.js";

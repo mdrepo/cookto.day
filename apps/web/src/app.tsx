@@ -7,6 +7,7 @@ import { PantryScreen } from "./features/pantry/PantryScreen.js";
 import { LanguagePicker } from "./features/settings/LanguagePicker.js";
 import { SettingsScreen } from "./features/settings/SettingsScreen.js";
 import { useDocumentLanguage } from "./features/settings/useDocumentLanguage.js";
+import { useDocumentTheme } from "./features/settings/useDocumentTheme.js";
 import { StaplesScreen } from "./features/staples/StaplesScreen.js";
 import { Tabs } from "./features/tabs/Tabs.js";
 import { useRoute } from "./routes.js";
@@ -19,6 +20,7 @@ import { useRoute } from "./routes.js";
 
 export function App() {
   useDocumentLanguage();
+  useDocumentTheme();
   const route = useRoute();
   switch (route) {
     case "home":

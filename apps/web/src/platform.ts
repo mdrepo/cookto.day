@@ -5,6 +5,7 @@ import {
   createPacks,
   createPantry,
   createSettings,
+  createShopping,
 } from "@cookto/data";
 import { browserKeyValue, browserRecordStore } from "@cookto/data-web";
 import { openCountries } from "@cookto/engine";
@@ -50,9 +51,17 @@ export const membersQuery = queryOptions({
 /** The pantry, and the cuisine packs a household loads (ADR 0027). */
 export const pantry = createPantry(records, { changes });
 export const packs = createPacks();
+/** The shopping list (specs/103). */
+export const shopping = createShopping(records, { changes });
 
 /** What the kitchen's use cases need. */
-export const kitchen = { pantry, settings: settings.writer, packs };
+export const kitchen = { pantry, settings: settings.writer, packs, shopping };
+
+/** What's on the shopping list. Hooks narrow it with `select`. */
+export const shoppingQuery = queryOptions({
+  queryKey: ["shopping", "items"],
+  queryFn: ({ signal }) => shopping.reader.items(signal),
+});
 
 /** What was cooked, and when (specs/104). */
 export const cooked = createCooked(records, { changes });

@@ -34,6 +34,11 @@ const CuisinesScreen = lazy(() =>
     default: m.CuisinesScreen,
   })),
 );
+const ShoppingScreen = lazy(() =>
+  import("./features/shopping/ShoppingScreen.js").then((m) => ({
+    default: m.ShoppingScreen,
+  })),
+);
 const StaplesScreen = lazy(() =>
   import("./features/staples/StaplesScreen.js").then((m) => ({
     default: m.StaplesScreen,
@@ -70,6 +75,8 @@ function Page() {
       return <PantryScreen bar={<Tabs current={route} />} />;
     case "dish":
       return <DishScreen bar={<Tabs current={route} />} />;
+    case "list":
+      return <ShoppingScreen bar={<Tabs current={route} />} />;
     case "dishes":
       return <DishesScreen bar={<Tabs current={route} />} />;
     default:

@@ -2,6 +2,7 @@
 export { Button } from "./components/Button/Button.js";
 export { Callout } from "./components/Callout/Callout.js";
 export { Card } from "./components/Card/Card.js";
+export { CheckList } from "./components/CheckList/CheckList.js";
 export { Chip } from "./components/Chip/Chip.js";
 export { Choice } from "./components/Choice/Choice.js";
 export {

@@ -7,7 +7,7 @@ import type { Condition, Unit } from "@cookto/engine";
 // it doesn't make, and a sample kitchen to try. No cuisine here: food comes
 // from the loaded packs, by Wikidata id.
 
-interface Kitchen {
+export interface Kitchen {
   pantry: { reader: PantryReader; writer: PantryWriter };
   settings: KitchenSettingsWriter;
   packs: PackLoader;
@@ -79,6 +79,36 @@ export async function addFood(
     item.unit = food.unit;
   }
   await k.pantry.writer.add([item]);
+}
+
+/**
+ * Food bought today, by a loaded pack's id (with its use-by) or as typed
+ * words, which a loaded pack may know by name (specs/103).
+ */
+export async function addBought(
+  k: Kitchen,
+  ingredient: string,
+  today: string,
+  language: string,
+): Promise<void> {
+  const packs = await loaded(k);
+  const known = packs.some((p) =>
+    Object.values(p.words).some((w) => w && ingredient in w.ingredients),
+  );
+  if (!known) {
+    await addFood(k, { name: ingredient, boughtOn: today }, language);
+    return;
+  }
+  const days = packs
+    .map((p) => p.fresh[ingredient])
+    .find((d) => d !== undefined);
+  await k.pantry.writer.add([
+    {
+      ingredient,
+      boughtOn: today,
+      ...(days === undefined ? {} : { shelfLifeDays: days }),
+    },
+  ]);
 }
 
 export function changeAmount(

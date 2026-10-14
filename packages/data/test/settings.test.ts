@@ -58,3 +58,17 @@ describe("the settings remember the language", () => {
     expect(writer.speaks("xx")).toBe(false);
   });
 });
+
+describe("the settings remember the theme (#96)", () => {
+  test("the phone's theme until one is chosen, then the chosen one, saved", () => {
+    const kv = memoryKeyValue();
+    expect(make(kv).store.getState().theme).toBe("system");
+    make(kv).writer.setTheme("dark");
+    expect(make(kv).store.getState().theme).toBe("dark");
+  });
+
+  test("a saved theme it doesn't know is the phone's", () => {
+    const { store } = make(memoryKeyValue({ "cookto.day:theme": "purple" }));
+    expect(store.getState().theme).toBe("system");
+  });
+});

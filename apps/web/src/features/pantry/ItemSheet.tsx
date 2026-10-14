@@ -2,7 +2,10 @@ import { Button, Cluster, Field, Select, Sheet, Stack, Tag } from "@cookto/ui";
 import { AmountForm } from "./AmountForm.js";
 import { usePantryItem } from "./usePantryItem.js";
 
-/** One item's sheet: how it is, its amount, used up (specs/80, criterion 5). */
+/**
+ * One item's sheet: how it is, its amount, used up (specs/80, criterion 5),
+ * and the dishes that use it (#105).
+ */
 export function ItemSheet({
   id,
   onClose,
@@ -51,6 +54,11 @@ export function ItemSheet({
               {p.usedUp.label}
             </Button>
           </Cluster>
+        )}
+        {p.dishesWith && (
+          <Button kind="plain" icon="cooking-pot" onClick={p.dishesWith.open}>
+            {p.dishesWith.label}
+          </Button>
         )}
       </Stack>
     </Sheet>

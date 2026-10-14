@@ -1,6 +1,6 @@
 import { MEAL_SLOTS } from "@cookto/engine";
 import { useQuery } from "@tanstack/react-query";
-import { count } from "../../i18n/format.js";
+import { count, fill } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
 import {
   dishNeeds,
@@ -10,18 +10,22 @@ import {
   useLoadedPacks,
 } from "../../food.js";
 import { pantryQuery, queries } from "../../platform.js";
-import { goHome, openDish } from "../../routes.js";
+import { goHome, open, openDish, useDishesWith } from "../../routes.js";
 
 /**
  * The loaded cuisines' dishes: the ones the kitchen can make now first, A to
- * Z, then the rest, fewest missing first (#97). Each opens its page (#95).
+ * Z, then the rest, fewest missing first (#97), or only those using one food
+ * (#105). Each opens its page (#95).
  */
 export function useDishesScreen() {
   const { locale, t } = useWords();
   const packs = useLoadedPacks();
   const name = namer(packs, locale);
   const { data: items = [] } = useQuery(pantryQuery, queries);
+  // Narrowed to one food (#105): only the dishes that use it.
+  const food = useDishesWith();
   const rows = dishNeeds(packs, items)
+    .filter(({ dish }) => food === null || dish.ingredients.includes(food))
     .map(({ pack, dish, needs }) => ({
       needs,
       item: {
@@ -44,9 +48,17 @@ export function useDishesScreen() {
         a.needs - b.needs || a.item.name.localeCompare(b.item.name, locale),
     );
   return {
-    title: t.dishes,
-    back: t.back,
-    onBack: goHome,
+    title:
+      food === null
+        ? t.dishes
+        : fill(t.withItem, { item: name("ingredients", food) }),
+    back: food === null ? t.back : t.allDishes,
+    onBack:
+      food === null
+        ? goHome
+        : () => {
+            open("dishes");
+          },
     ready: {
       title: t.cookNow,
       items: rows.filter((r) => r.needs === 0).map((r) => r.item),

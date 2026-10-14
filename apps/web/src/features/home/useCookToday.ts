@@ -17,7 +17,16 @@ import {
   useKitchenSettings,
   useLoadedPacks,
 } from "../../food.js";
-import { membersQuery, pantryQuery, queries, today } from "../../platform.js";
+import { cookedIt, KEEP_DIFFERENT_DAYS } from "@cookto/usecases";
+import {
+  cooked,
+  cookedQuery,
+  daysBefore,
+  membersQuery,
+  pantryQuery,
+  queries,
+  today,
+} from "../../platform.js";
 import { openDish } from "../../routes.js";
 
 /** How many dishes each meal suggests. */
@@ -88,6 +97,16 @@ export function useCookToday() {
   );
   // Nobody saved yet (a sample, or onboarding skipped): one adult's meals.
   const slots = planned.length > 0 ? planned : defaultMeals("adult");
+  const { data: history = [] } = useQuery(cookedQuery, queries);
+  const day = today();
+  const since = daysBefore(day, KEEP_DIFFERENT_DAYS);
+  // Cooked in the last days, not today: no meal's pick (specs/104).
+  const avoid = new Set(
+    history.filter((c) => c.on >= since && c.on < day).map((c) => c.dish),
+  );
+  const cookedToday = new Set(
+    history.filter((c) => c.on === day).map((c) => c.dish),
+  );
   const dishes = dishesOf(packs);
   if (dishes.length === 0) return null;
   const staples = assumedStaples(packs, items);
@@ -103,13 +122,16 @@ export function useCookToday() {
   return {
     title: t.cookToday,
     otherIdeas: t.otherIdeas,
+    weCookedThis: t.weCookedThis,
+    cookedTodayWords: t.cookedToday,
     meals: cookTodayForMeals({
       slots,
       dishes,
       pantry: items,
       staples,
-      today: today(),
+      today: day,
       skip: new Set(skip),
+      avoid,
     }).flatMap(({ slot, suggestions }) => {
       const [best, ...rest] = suggestions.slice(0, SHOWN).map(idea);
       if (!best) return [];
@@ -118,6 +140,10 @@ export function useCookToday() {
           slot,
           label: t[SLOT_WORDS[slot]],
           best,
+          cooked: cookedToday.has(best.key),
+          onCooked: () => {
+            void cookedIt({ cooked }, best.key, day);
+          },
           others: rest.map((o) => ({
             key: o.key,
             name: o.dish,

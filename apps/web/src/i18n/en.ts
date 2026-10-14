@@ -107,6 +107,8 @@ export const en = {
     one: "You can cook {n} dish now",
     other: "You can cook {n} dishes now",
   },
+  weCookedThis: "We cooked this",
+  cookedToday: "Cooked today",
   otherIdeas: "Other ideas",
   pages: "Pages",
   close: "Close",

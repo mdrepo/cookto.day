@@ -2,6 +2,7 @@
 // cached and synced. Screen hooks read through ./read; only use cases import
 // ./write. The app creates them here, handing in the browser's storage.
 export { createChanges, type Changes } from "./changes.js";
+export { createCooked, type Cooked } from "./cooked.js";
 export { createHousehold } from "./household.js";
 export { memoryKeyValue, type KeyValue } from "./kv.js";
 export {

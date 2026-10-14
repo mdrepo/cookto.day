@@ -34,5 +34,6 @@ export { Panes } from "./layouts/Panes/Panes.js";
 export { Screen, type ScreenProps } from "./layouts/Screen/Screen.js";
 export { Section } from "./layouts/Section/Section.js";
 export { Stack, type StackProps } from "./layouts/Stack/Stack.js";
+export { Tiles } from "./layouts/Tiles/Tiles.js";
 export type { Space } from "./tokens.js";
 export type { Kit, KitExample, KitLanguage } from "./kit.js";

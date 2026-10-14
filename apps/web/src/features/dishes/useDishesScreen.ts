@@ -10,7 +10,7 @@ import {
   useLoadedPacks,
 } from "../../food.js";
 import { pantryQuery, queries } from "../../platform.js";
-import { goHome, open, openDish, useDishesWith } from "../../routes.js";
+import { open, openDish, useDishesWith } from "../../routes.js";
 
 /**
  * The loaded cuisines' dishes: the ones the kitchen can make now first, A to
@@ -52,12 +52,16 @@ export function useDishesScreen() {
       food === null
         ? t.dishes
         : fill(t.withItem, { item: name("ingredients", food) }),
-    back: food === null ? t.back : t.allDishes,
-    onBack:
+    // Dishes is a tab, so it has no Back; narrowed to one food, it has a
+    // way back to every dish (#105).
+    back:
       food === null
-        ? goHome
-        : () => {
-            open("dishes");
+        ? null
+        : {
+            label: t.allDishes,
+            run: () => {
+              open("dishes");
+            },
           },
     ready: {
       title: t.cookNow,

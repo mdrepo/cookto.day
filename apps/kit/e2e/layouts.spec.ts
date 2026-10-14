@@ -72,7 +72,12 @@ test.describe("Parts sit together the same way on every screen", () => {
     const [content] = await kit.boxes(main.locator(":scope > *").first());
     if (!outer || !column || !content) throw new Error("no screen to measure");
 
-    expect(column.right - column.x).toBeLessThanOrEqual(640);
+    // 40rem, or 64rem on a wide screen (840px and up): the same on every page.
+    const width = column.right - column.x;
+    if (outer.right - outer.x >= 840) {
+      expect(width).toBeGreaterThan(640);
+      expect(width).toBeLessThanOrEqual(1024);
+    } else expect(width).toBeLessThanOrEqual(640);
     expect(
       Math.abs(column.x - outer.x - (outer.right - column.right)),
     ).toBeLessThanOrEqual(1);

@@ -42,6 +42,51 @@ test.describe("On a wide screen", () => {
     expect(Math.abs(soon.y - cook.y)).toBeLessThan(8);
   });
 
+  test("every page starts at the same place, and is as wide", async ({
+    page,
+  }) => {
+    const k = new Cooking(page);
+    await k.start();
+    await k.press("Try a sample kitchen");
+    const place = async () => {
+      const title = await k.title().boundingBox();
+      const main = await page.getByRole("main").boundingBox();
+      if (!title || !main) throw new Error("no page");
+      return [Math.round(title.x), Math.round(main.x), Math.round(main.width)];
+    };
+    const today = await place();
+    for (const tab of ["Fridge", "Dishes"]) {
+      await k.tabs().getByRole("button", { name: tab, exact: true }).click();
+      await expect(k.title()).toHaveText(tab);
+      expect(await place(), tab).toEqual(today);
+    }
+    await k.home();
+    await k.press("Settings");
+    await expect(k.title()).toHaveText("Settings");
+    expect(await place(), "Settings").toEqual(today);
+  });
+
+  test("the button at the title's end lines up with the page under it", async ({
+    page,
+  }) => {
+    const k = new Cooking(page);
+    await k.start();
+    // Nothing fresh, so nothing to use soon: one pane, as wide as the page.
+    await k.loadNorthIndianWithStaples();
+    const end = async (what: Promise<{ x: number; width: number } | null>) => {
+      const box = await what;
+      if (!box) throw new Error("nothing to measure");
+      return Math.round(box.x + box.width);
+    };
+    expect(await end(k.button("Add food").boundingBox())).toBe(
+      await end(page.getByRole("list", { name: "Staples" }).boundingBox()),
+    );
+    await k.home();
+    expect(await end(k.button("Settings").boundingBox())).toBe(
+      await end(page.getByRole("region", { name: "Cook today" }).boundingBox()),
+    );
+  });
+
   test("a row opens a dialog in the middle, not a sheet at the bottom", async ({
     page,
   }) => {

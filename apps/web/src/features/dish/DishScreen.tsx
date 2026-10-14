@@ -51,7 +51,27 @@ export function DishScreen({ bar }: { bar: ReactNode }) {
         }
         secondary={
           <Stack gap={3}>
-            <Reasons items={s.reasons} />
+            <Reasons
+              items={[
+                ...s.reasons,
+                ...(s.cookedToday
+                  ? [
+                      {
+                        key: "cooked",
+                        text: s.cookedToday,
+                        tone: "good" as const,
+                      },
+                    ]
+                  : []),
+              ]}
+            />
+            {!s.cookedToday && (
+              <div>
+                <Button kind="quiet" icon="check" onClick={s.onCooked}>
+                  {s.weCookedThis}
+                </Button>
+              </div>
+            )}
             {s.source && <LinkOut href={s.source}>{s.seeRecipe}</LinkOut>}
           </Stack>
         }

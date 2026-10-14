@@ -19,6 +19,19 @@ export function CookToday() {
             onOpen={meal.best.onOpen}
           >
             <Reasons items={meal.best.reasons} />
+            {meal.cooked ? (
+              <Reasons
+                items={[
+                  { key: "cooked", text: c.cookedTodayWords, tone: "good" },
+                ]}
+              />
+            ) : (
+              <div>
+                <Button kind="quiet" icon="check" onClick={meal.onCooked}>
+                  {c.weCookedThis}
+                </Button>
+              </div>
+            )}
             {meal.others.length > 0 &&
               (more.has(meal.slot) ? (
                 <div>

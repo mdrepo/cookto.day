@@ -94,12 +94,17 @@ export interface MealSuggestions {
 /**
  * What to cook today for each meal, in the day's order (specs/94). A dish
  * picked for an earlier meal moves to the end of a later meal's list, so
- * lunch and dinner differ when the kitchen offers more than one dish.
+ * lunch and dinner differ when the kitchen offers more than one dish. Dishes
+ * to avoid, cooked lately, move to the end the same way (specs/104).
  */
 export function cookTodayForMeals(
-  input: Omit<CookTodayInput, "slot"> & { slots: readonly MealSlot[] },
+  input: Omit<CookTodayInput, "slot"> & {
+    slots: readonly MealSlot[];
+    /** Dishes cooked lately (specs/104): no meal's pick, but still ideas. */
+    avoid?: ReadonlySet<string>;
+  },
 ): MealSuggestions[] {
-  const picked = new Set<string>();
+  const picked = new Set<string>(input.avoid);
   return input.slots.map((slot) => {
     const ranked = cookToday({ ...input, slot });
     const suggestions = [

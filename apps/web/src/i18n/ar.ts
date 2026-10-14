@@ -162,6 +162,8 @@ export const ar: Messages = {
     many: "يمكنك طبخ {n} طبقًا الآن",
     other: "يمكنك طبخ {n} طبق الآن",
   },
+  weCookedThis: "طبخنا هذا",
+  cookedToday: "طُبخ اليوم",
   otherIdeas: "أفكار أخرى",
   pages: "الصفحات",
   close: "إغلاق",

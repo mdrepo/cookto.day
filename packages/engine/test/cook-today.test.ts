@@ -188,3 +188,21 @@ describe("cook today, for each meal", () => {
     ]);
   });
 });
+
+describe("cook today, after cooking (#104)", () => {
+  test("a dish to avoid isn't any meal's pick, but stays an idea, last", () => {
+    const pantry = [item("spinach"), item("paneer"), item("potato")];
+    const meals = cookTodayForMeals({
+      slots: ["lunch", "dinner"],
+      dishes,
+      pantry,
+      staples,
+      today,
+      avoid: new Set(["palak-paneer"]),
+    });
+    expect(meals.map((m) => ids(m.suggestions))).toEqual([
+      ["aloo-jeera", "chole", "palak-paneer"],
+      ["chole", "palak-paneer", "aloo-jeera"],
+    ]);
+  });
+});

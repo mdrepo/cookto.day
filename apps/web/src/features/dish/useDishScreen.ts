@@ -11,7 +11,15 @@ import {
   useKitchenSettings,
   useLoadedPacks,
 } from "../../food.js";
-import { membersQuery, pantryQuery, queries } from "../../platform.js";
+import { cookedIt } from "@cookto/usecases";
+import {
+  cooked,
+  cookedQuery,
+  membersQuery,
+  pantryQuery,
+  queries,
+  today,
+} from "../../platform.js";
 import { goBack, useDish } from "../../routes.js";
 
 /**
@@ -28,6 +36,7 @@ export function useDishScreen() {
   const { skip } = useKitchenSettings();
   const { data: items = [] } = useQuery(pantryQuery, queries);
   const { data: members = [] } = useQuery(membersQuery, queries);
+  const { data: history = [] } = useQuery(cookedQuery, queries);
   const dish = packs
     .find((p) => p.id === at?.pack)
     ?.dishes.find((d) => d.id === at?.dish);
@@ -89,6 +98,13 @@ export function useDishScreen() {
         : []),
     ],
     seeRecipe: t.seeRecipe,
+    weCookedThis: t.weCookedThis,
+    cookedToday: history.some((c) => c.dish === dish.id && c.on === today())
+      ? t.cookedToday
+      : null,
+    onCooked: () => {
+      void cookedIt({ cooked }, dish.id, today());
+    },
     source: dish.source,
   };
 }

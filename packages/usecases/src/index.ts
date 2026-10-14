@@ -24,4 +24,5 @@ export {
   trySample,
   useUp,
 } from "./kitchen.js";
+export { cookedIt, KEEP_DIFFERENT_DAYS } from "./cooked.js";
 export { chooseCountry, chooseLanguage, chooseTheme } from "./settings.js";

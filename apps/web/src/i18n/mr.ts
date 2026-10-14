@@ -109,6 +109,8 @@ export const mr: Messages = {
     one: "तुम्ही आता {n} पदार्थ बनवू शकता",
     other: "तुम्ही आता {n} पदार्थ बनवू शकता",
   },
+  weCookedThis: "आम्ही हे बनवले",
+  cookedToday: "आज बनवले",
   otherIdeas: "इतर पर्याय",
   pages: "पाने",
   close: "बंद करा",

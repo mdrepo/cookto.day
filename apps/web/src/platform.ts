@@ -1,5 +1,6 @@
 import {
   createChanges,
+  createCooked,
   createHousehold,
   createPacks,
   createPantry,
@@ -52,6 +53,23 @@ export const packs = createPacks();
 
 /** What the kitchen's use cases need. */
 export const kitchen = { pantry, settings: settings.writer, packs };
+
+/** What was cooked, and when (specs/104). */
+export const cooked = createCooked(records, { changes });
+
+/** Everything cooked. Hooks narrow it with `select`. */
+export const cookedQuery = queryOptions({
+  queryKey: ["cooked", "all"],
+  queryFn: ({ signal }) => cooked.reader.all(signal),
+});
+
+/** The day `days` before `day`, both "YYYY-MM-DD". */
+export function daysBefore(day: string, days: number): string {
+  const d = new Date(`${day}T12:00:00`);
+  d.setDate(d.getDate() - days);
+  const two = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`;
+}
 
 /** Everything in the pantry. Hooks narrow it with `select`. */
 export const pantryQuery = queryOptions({

@@ -112,6 +112,8 @@ export const hi: Messages = {
     one: "आप अभी {n} व्यंजन बना सकते हैं",
     other: "आप अभी {n} व्यंजन बना सकते हैं",
   },
+  weCookedThis: "हमने यह बनाया",
+  cookedToday: "आज बनाया",
   otherIdeas: "और विकल्प",
   pages: "पन्ने",
   close: "बंद करें",

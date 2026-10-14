@@ -39,7 +39,7 @@ Each criterion becomes one e2e test, on an Android phone, an iPhone and a deskto
 - **Given** a household of two adults who both eat lunch
 - **When** they open Palak paneer
 - **Then** it says "For 2 people", and each ingredient shows its amount for two: spinach 130 g (65 g each)
-- **And** small amounts read naturally: "a pinch" is not needed, but no "0.3 g" shows as "0 g"
+- **And** small amounts stay readable: cumin shows 0.6 g, never "0 g"
 
 ### 5. what to serve it with
 

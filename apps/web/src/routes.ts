@@ -9,13 +9,16 @@ import { settings } from "./platform.js";
 export type Step = "where" | "who" | "done";
 /** The kitchen's pages (specs/72-kitchen.md). */
 export type Page = "cuisines" | "staples" | "pantry" | "dishes";
-export type Route = "home" | "settings" | Step | Page;
+export type Route = "home" | "settings" | "dish" | Step | Page;
 
 const STEPS: Partial<Record<string, Step>> = {
   "#/start/where": "where",
   "#/start/who": "who",
   "#/start/done": "done",
 };
+
+/** A dish's page (#95): `#/kitchen/dish/<pack>/<dish>`. */
+const DISH = "#/kitchen/dish/";
 
 const PAGES: Partial<Record<string, Page>> = {
   "#/kitchen/cuisines": "cuisines",
@@ -42,6 +45,7 @@ export function useRoute(): Route {
   if (step) return step;
   if (!onboarded) return "where";
   if (at === "#/settings") return "settings";
+  if (at.startsWith(DISH)) return "dish";
   return PAGES[at] ?? "home";
 }
 
@@ -63,4 +67,23 @@ export function openSettings(): void {
 /** Home, in place of the step that led there. */
 export function goHome(): void {
   location.replace("#/");
+}
+
+/** To a dish's page (#95), as a new entry in the browser's history. */
+export function openDish(pack: string, dish: string): void {
+  location.hash = `${DISH}${pack}/${dish}`;
+}
+
+/** The dish a dish's page shows: its pack and its id, or null. */
+export function useDish(): { pack: string; dish: string } | null {
+  const at = useSyncExternalStore(subscribe, hash, () => null);
+  const [pack, dish] = (
+    at?.startsWith(DISH) ? at.slice(DISH.length) : ""
+  ).split("/");
+  return pack && dish ? { pack, dish } : null;
+}
+
+/** Back where they came from: the page before, in the browser's history. */
+export function goBack(): void {
+  history.back();
 }

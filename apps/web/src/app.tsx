@@ -1,4 +1,5 @@
 import { CuisinesScreen } from "./features/cuisines/CuisinesScreen.js";
+import { DishScreen } from "./features/dish/DishScreen.js";
 import { DishesScreen } from "./features/dishes/DishesScreen.js";
 import { HomeScreen } from "./features/home/HomeScreen.js";
 import { OnboardingScreen } from "./features/onboarding/OnboardingScreen.js";
@@ -30,6 +31,8 @@ export function App() {
       return <StaplesScreen bar={<Tabs current={route} />} />;
     case "pantry":
       return <PantryScreen bar={<Tabs current={route} />} />;
+    case "dish":
+      return <DishScreen bar={<Tabs current={route} />} />;
     case "dishes":
       return <DishesScreen bar={<Tabs current={route} />} />;
     default:

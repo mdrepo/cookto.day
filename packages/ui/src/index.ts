@@ -15,6 +15,7 @@ export {
 } from "./components/Field/Field.js";
 export { Icon } from "./components/Icon/Icon.js";
 export { Input } from "./components/Input/Input.js";
+export { LinkOut } from "./components/LinkOut/LinkOut.js";
 export { Logo } from "./components/Logo/Logo.js";
 export { ItemList } from "./components/ItemList/ItemList.js";
 export { Note, type NoteProps } from "./components/Note/Note.js";

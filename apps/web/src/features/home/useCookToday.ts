@@ -18,6 +18,7 @@ import {
   useLoadedPacks,
 } from "../../food.js";
 import { membersQuery, pantryQuery, queries, today } from "../../platform.js";
+import { openDish } from "../../routes.js";
 
 /** How many dishes each meal suggests. */
 const SHOWN = 5;
@@ -90,7 +91,15 @@ export function useCookToday() {
   const dishes = dishesOf(packs);
   if (dishes.length === 0) return null;
   const staples = assumedStaples(packs, items);
-  const idea = (s: Suggestion) => ideaOf(s, name, t, locale);
+  const packOf = new Map(
+    packs.flatMap((p) => p.dishes.map((d) => [d.id, p.id] as const)),
+  );
+  const idea = (s: Suggestion) => ({
+    ...ideaOf(s, name, t, locale),
+    onOpen: () => {
+      openDish(packOf.get(s.dish.id) ?? "", s.dish.id);
+    },
+  });
   return {
     title: t.cookToday,
     otherIdeas: t.otherIdeas,
@@ -111,9 +120,11 @@ export function useCookToday() {
           best,
           others: rest.map((o) => ({
             key: o.key,
-            label: o.note ? `${o.dish} · ${o.note}` : o.dish,
-            value: o.reasons.map((r) => r.text).join(" · "),
-            quiet: o.reasons[0]?.tone !== "warm",
+            name: o.dish,
+            line: [o.note, ...o.reasons.map((r) => r.text)]
+              .filter(Boolean)
+              .join(" · "),
+            onOpen: o.onOpen,
           })),
         },
       ];

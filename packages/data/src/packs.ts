@@ -22,7 +22,11 @@ export interface AppPack {
     slots: MealSlot[];
     /** Wikidata ids, as the pantry keys them. */
     ingredients: string[];
+    /** For one person, in the same order as `ingredients` (specs/95). */
+    amounts: [number, "g" | "ml" | "pieces"][];
     servedWith?: string[];
+    /** Where the recipe is: the app links to it, it doesn't copy it. */
+    source: string;
   }[];
   /** Fresh food: Wikidata id to the days it keeps. */
   fresh: Record<string, number>;

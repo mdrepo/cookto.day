@@ -11,6 +11,7 @@ import {
 import { AddFood } from "./AddFood.js";
 import { ItemSheet } from "./ItemSheet.js";
 import { ListButton } from "./ListButton.js";
+import { SetUpSteps } from "./SetUpSteps.js";
 import { usePantryScreen } from "./usePantryScreen.js";
 
 /** What's in the kitchen, as a short list you tap (specs/72, 80; #84). */
@@ -40,13 +41,18 @@ export function PantryScreen({ bar }: { bar: ReactNode }) {
       title={s.title}
       action={
         !s.add.adding && (
-          <Button icon="plus" onClick={s.add.start}>
+          <Button
+            kind={s.guiding ? "quiet" : "main"}
+            icon="plus"
+            onClick={s.add.start}
+          >
             {s.add.label}
           </Button>
         )
       }
     >
       <ListButton />
+      <SetUpSteps setup={s.setup} shown={s.guiding} />
       {s.add.adding && <AddFood onDone={s.add.done} />}
       <Panes
         primary={

@@ -1,5 +1,13 @@
 import type { ReactNode } from "react";
-import { Button, Cluster, ItemList, Screen, Section } from "@cookto/ui";
+import {
+  Button,
+  Cluster,
+  EmptyState,
+  ItemList,
+  Screen,
+  Section,
+  Stack,
+} from "@cookto/ui";
 import { useDishesScreen } from "./useDishesScreen.js";
 
 /**
@@ -16,6 +24,14 @@ export function DishesScreen({ bar }: { bar: ReactNode }) {
             {s.back.label}
           </Button>
         </Cluster>
+      )}
+      {s.none && (
+        <Stack gap={3}>
+          <EmptyState title={s.none.title}>{s.none.body}</EmptyState>
+          <Cluster>
+            <Button onClick={s.none.choose}>{s.none.chooseLabel}</Button>
+          </Cluster>
+        </Stack>
       )}
       {[s.ready, s.rest].map(
         (group) =>

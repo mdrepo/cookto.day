@@ -7,6 +7,7 @@ import {
   listOf,
   namer,
   SLOT_WORDS,
+  useKitchenSettings,
   useLoadedPacks,
 } from "../../food.js";
 import { pantryQuery, queries } from "../../platform.js";
@@ -20,6 +21,7 @@ import { open, openDish, useDishesWith } from "../../routes.js";
 export function useDishesScreen() {
   const { locale, t } = useWords();
   const packs = useLoadedPacks();
+  const { cuisines } = useKitchenSettings();
   const name = namer(packs, locale);
   const { data: items = [] } = useQuery(pantryQuery, queries);
   // Narrowed to one food (#105): only the dishes that use it.
@@ -48,6 +50,18 @@ export function useDishesScreen() {
         a.needs - b.needs || a.item.name.localeCompare(b.item.name, locale),
     );
   return {
+    // No cuisine loaded: no dishes, and the way to get some (#115).
+    none:
+      cuisines.length === 0
+        ? {
+            title: t.noDishesYet,
+            body: t.noDishesBody,
+            chooseLabel: t.chooseCuisines,
+            choose: () => {
+              open("cuisines");
+            },
+          }
+        : null,
     title:
       food === null
         ? t.dishes

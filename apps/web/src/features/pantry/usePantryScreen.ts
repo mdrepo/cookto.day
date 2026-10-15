@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useWords } from "../../i18n/useWords.js";
 import { packStaples, useItemWords, useLoadedPacks } from "../../food.js";
 import { pantryQuery, queries, today } from "../../platform.js";
+import { wantsAddFood } from "../../routes.js";
+import { useKitchenSetup } from "../../setup.js";
 
 /**
  * The pantry as the prototype's Fridge: "Use soon", "Fresh", "Staples", a
@@ -13,8 +15,14 @@ export function usePantryScreen() {
   const { t } = useWords();
   const packs = useLoadedPacks();
   const words = useItemWords();
-  const [adding, setAdding] = useState(false);
+  const [adding, setAdding] = useState(wantsAddFood);
   const [open, setOpen] = useState<string | null>(null);
+  const setup = useKitchenSetup(() => {
+    setAdding(true);
+  });
+  // Until there's fresh food, the steps show, with the next one as the main
+  // button; "Add food" steps back to a quiet button (#115).
+  const guiding = setup.known && !setup.hasFresh && !adding;
   const staples = packStaples(packs);
   const { data: items = [] } = useQuery(pantryQuery, queries);
   const day = today();
@@ -46,6 +54,8 @@ export function usePantryScreen() {
         rows: items.filter((i) => staples.has(i.ingredient)).map(row),
       },
     ].filter((g) => g.rows.length > 0),
+    setup,
+    guiding,
     open,
     close: () => {
       setOpen(null);

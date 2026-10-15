@@ -63,5 +63,10 @@
     }
   },
   "source": "https://www.vegrecipesofindia.com/paneer-tikka-recipe/",
-  "note": "Hung curd counted as curd."
+  "note": "Hung curd counted as curd.",
+  "photo": {
+    "author": "Meghana Mohanty",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Paneer_tikka.jpg"
+  }
 }

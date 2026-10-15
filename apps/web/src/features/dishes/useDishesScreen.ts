@@ -40,6 +40,8 @@ export function useDishesScreen() {
           ),
         ),
         end: needs === 0 ? t.hasEverything : count(locale, t.needsCount, needs),
+        /** Its small photo's address, if it has one (specs/118). */
+        photo: dish.photo?.small,
         onOpen: () => {
           openDish(pack, dish.id);
         },

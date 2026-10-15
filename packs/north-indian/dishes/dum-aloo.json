@@ -56,5 +56,10 @@
   },
   "servedWith": ["roti"],
   "source": "https://www.vegrecipesofindia.com/dum-aloo-recipe/",
-  "note": "Baby potatoes."
+  "note": "Baby potatoes.",
+  "photo": {
+    "author": "Maskaravivek",
+    "licence": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Kashmiri_Dum_aloo.jpeg"
+  }
 }

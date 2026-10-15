@@ -63,5 +63,10 @@
     }
   },
   "servedWith": ["roti", "rice"],
-  "source": "https://www.vegrecipesofindia.com/aloo-matar-curry-aloo-matar-gravy/"
+  "source": "https://www.vegrecipesofindia.com/aloo-matar-curry-aloo-matar-gravy/",
+  "photo": {
+    "author": "Quadell",
+    "licence": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Aloo_Mattar.jpg"
+  }
 }

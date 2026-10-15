@@ -4,6 +4,7 @@ import {
   Cluster,
   EmptyState,
   ItemList,
+  Photo,
   Screen,
   Section,
   Stack,
@@ -37,7 +38,14 @@ export function DishesScreen({ bar }: { bar: ReactNode }) {
         (group) =>
           group.items.length > 0 && (
             <Section key={group.title} title={group.title}>
-              <ItemList label={group.title} items={group.items} />
+              <ItemList
+                label={group.title}
+                items={group.items.map(({ photo, ...item }) => ({
+                  ...item,
+                  // The name beside it says what it is.
+                  media: <Photo src={photo} alt="" shape="square" />,
+                }))}
+              />
             </Section>
           ),
       )}

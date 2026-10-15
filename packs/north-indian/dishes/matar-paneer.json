@@ -75,5 +75,10 @@
     }
   },
   "servedWith": ["roti", "rice"],
-  "source": "https://www.vegrecipesofindia.com/matar-paneer/"
+  "source": "https://www.vegrecipesofindia.com/matar-paneer/",
+  "photo": {
+    "author": "CNEcija12345",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Matar_paneer_dish.jpg"
+  }
 }

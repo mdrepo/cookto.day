@@ -71,5 +71,10 @@
     }
   },
   "source": "https://www.vegrecipesofindia.com/vegetable-pulao-recipe-veg-pulao/",
-  "note": "Mint and whole spices left out."
+  "note": "Mint and whole spices left out.",
+  "photo": {
+    "author": "Subhankar.c",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Vegetable_pulao.JPG"
+  }
 }

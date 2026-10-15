@@ -35,5 +35,10 @@
     }
   },
   "source": "https://www.vegrecipesofindia.com/aloo-paratha-indian-bread-stuffed-with-potato-filling/",
-  "note": "A serving is one paratha. Oil or ghee for roasting has no amount in the recipe, so it isn't counted."
+  "note": "A serving is one paratha. Oil or ghee for roasting has no amount in the recipe, so it isn't counted.",
+  "photo": {
+    "author": "AjayDas",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Aloo_paratha_served_with_daal,_curd_and_achar.jpg"
+  }
 }

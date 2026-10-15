@@ -39,7 +39,14 @@
 
 .text {
   display: flex;
+  flex: 1;
   flex-direction: column;
+}
+
+/* A picture at the row's start (specs/118). */
+.media {
+  display: flex;
+  flex: none;
 }
 
 .name {

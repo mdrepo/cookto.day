@@ -21,6 +21,7 @@ export { Logo } from "./components/Logo/Logo.js";
 export { ItemList } from "./components/ItemList/ItemList.js";
 export { NextSteps } from "./components/NextSteps/NextSteps.js";
 export { Note, type NoteProps } from "./components/Note/Note.js";
+export { Photo } from "./components/Photo/Photo.js";
 export { Pick } from "./components/Pick/Pick.js";
 export { Reasons } from "./components/Reasons/Reasons.js";
 export { Rows } from "./components/Rows/Rows.js";

@@ -115,6 +115,7 @@ export const hi: Messages = {
   forPeople: { one: "{n} व्यक्ति के लिए", other: "{n} लोगों के लिए" },
   serveWith: "{items} के साथ परोसें",
   seeRecipe: "रेसिपी देखें",
+  photoBy: "फ़ोटो: {author}, {licence}",
   theme: "थीम",
   themeSystem: "फ़ोन जैसा",
   themeLight: "हल्का",

@@ -4,6 +4,7 @@ import {
   Cluster,
   LinkOut,
   Panes,
+  Photo,
   Reasons,
   Rows,
   Screen,
@@ -18,6 +19,7 @@ type Dish = NonNullable<ReturnType<typeof useDishScreen>>;
 function DishSide({ s }: { s: Dish }) {
   return (
     <Stack gap={3}>
+      <Photo src={s.photo?.src} alt={s.title} shape="wide" eager />
       <Reasons
         items={[
           ...s.reasons,
@@ -59,6 +61,7 @@ function DishSide({ s }: { s: Dish }) {
         />
       )}
       {s.source && <LinkOut href={s.source}>{s.seeRecipe}</LinkOut>}
+      {s.photo && <LinkOut href={s.photo.source}>{s.photo.credit}</LinkOut>}
     </Stack>
   );
 }

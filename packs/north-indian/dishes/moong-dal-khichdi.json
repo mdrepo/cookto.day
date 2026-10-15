@@ -47,5 +47,10 @@
     }
   },
   "source": "https://www.vegrecipesofindia.com/moong-dal-khichdi-recipe/",
-  "note": "The recipe says any rice; basmati used."
+  "note": "The recipe says any rice; basmati used.",
+  "photo": {
+    "author": "Rpande",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Dall_Khichdi.jpg"
+  }
 }

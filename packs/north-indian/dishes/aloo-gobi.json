@@ -68,5 +68,10 @@
   },
   "servedWith": ["roti"],
   "source": "https://www.vegrecipesofindia.com/aloo-gobi-recipe/",
-  "note": "The linked recipe is a rich restaurant-style aloo gobi (cashews, cream), not a dry home one."
+  "note": "The linked recipe is a rich restaurant-style aloo gobi (cashews, cream), not a dry home one.",
+  "photo": {
+    "author": "Sapanabehl",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Aloo_Ghobi.jpg"
+  }
 }

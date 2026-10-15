@@ -110,6 +110,7 @@ export const en = {
   forPeople: { one: "For {n} person", other: "For {n} people" },
   serveWith: "Serve with {items}",
   seeRecipe: "See the recipe",
+  photoBy: "Photo: {author}, {licence}",
   theme: "Theme",
   themeSystem: "Same as phone",
   themeLight: "Light",

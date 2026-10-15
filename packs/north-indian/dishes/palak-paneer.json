@@ -72,5 +72,10 @@
   },
   "servedWith": ["roti", "rice"],
   "source": "https://www.vegrecipesofindia.com/palak-paneer/",
-  "note": "Salt 'as required': 1.5 g a serving."
+  "note": "Salt 'as required': 1.5 g a serving.",
+  "photo": {
+    "author": "DreamyFlutura11",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Palak_Paneer_(Cottage_cheese_in_spinach_gravy).jpg"
+  }
 }

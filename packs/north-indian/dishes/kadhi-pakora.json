@@ -56,5 +56,10 @@
   },
   "servedWith": ["rice"],
   "source": "https://www.vegrecipesofindia.com/punjabi-kadhi-recipe-punjabi-kadhi-pakora/",
-  "note": "Oil for frying the pakoras has no amount in the recipe, so it isn't counted."
+  "note": "Oil for frying the pakoras has no amount in the recipe, so it isn't counted.",
+  "photo": {
+    "author": "Ams4wiki",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Kadhi_Pakora.jpg"
+  }
 }

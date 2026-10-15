@@ -1,5 +1,6 @@
 import { Button, Callout, Cluster, Logo } from "@cookto/ui";
 import { useWords } from "../../i18n/useWords.js";
+import { useKitchenSetup } from "../../setup.js";
 import { useKitchenStart } from "./useKitchenStart.js";
 
 // Today's ways into the kitchen (specs/72, 80): the sample or the empty
@@ -21,11 +22,29 @@ function useButtons() {
   return { k, t, choose, trySample };
 }
 
-/** The sample kitchen's card, or the empty kitchen's. */
+/** Staples in, but nothing fresh: the next step is what you bought (#115). */
+function NoFreshFood() {
+  const { t } = useWords();
+  const setup = useKitchenSetup();
+  const fresh = setup.steps.find((s) => s.key === "fresh");
+  if (!setup.hasStaples || setup.hasFresh || !fresh) return null;
+  return (
+    <Callout
+      title={t.noFreshYet}
+      art={<Logo />}
+      actions={<Button onClick={fresh.onPress}>{fresh.label}</Button>}
+    >
+      {t.noFreshBody}
+    </Callout>
+  );
+}
+
+/** The sample kitchen's card, the empty kitchen's, or the next step's. */
 export function KitchenCards() {
   const { k, t, choose, trySample } = useButtons();
   return (
     <>
+      {!k.sample && !k.empty && <NoFreshFood />}
       {k.sample && (
         <Callout
           title={k.sample.tag}

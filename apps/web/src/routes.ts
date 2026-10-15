@@ -23,10 +23,14 @@ const DISHES_WITH = "#/kitchen/dishes/with/";
 /** A dish's page (#95): `#/kitchen/dish/<pack>/<dish>`. */
 const DISH = "#/kitchen/dish/";
 
+/** The Fridge with "Add food" open (#115). */
+const ADD_FOOD = "#/kitchen/pantry/add";
+
 const PAGES: Partial<Record<string, Page>> = {
   "#/kitchen/cuisines": "cuisines",
   "#/kitchen/staples": "staples",
   "#/kitchen/pantry": "pantry",
+  [ADD_FOOD]: "pantry",
   "#/kitchen/dishes": "dishes",
   "#/kitchen/list": "list",
 };
@@ -62,6 +66,16 @@ export function go(step: Step): void {
 /** To one of the kitchen's pages, as a new entry in the browser's history. */
 export function open(page: Page): void {
   location.hash = `#/kitchen/${page}`;
+}
+
+/** To the Fridge, with "Add food" open (#115). */
+export function openAddFood(): void {
+  location.hash = ADD_FOOD;
+}
+
+/** Whether the Fridge was opened to add food: read when the Fridge opens. */
+export function wantsAddFood(): boolean {
+  return typeof location !== "undefined" && location.hash === ADD_FOOD;
 }
 
 /** To Settings, where the language is chosen after setup (#84). */

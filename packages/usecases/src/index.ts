@@ -25,5 +25,10 @@ export {
   useUp,
 } from "./kitchen.js";
 export { cookedIt, KEEP_DIFFERENT_DAYS } from "./cooked.js";
-export { addToList, addTypedToList, bought } from "./shopping.js";
+export {
+  addBoughtFood,
+  addToList,
+  addTypedToList,
+  bought,
+} from "./shopping.js";
 export { chooseCountry, chooseLanguage, chooseTheme } from "./settings.js";

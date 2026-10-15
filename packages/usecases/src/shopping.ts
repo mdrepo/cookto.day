@@ -37,3 +37,21 @@ export async function bought(
   await k.shopping.writer.remove(item.id);
   await addBought(k, item.ingredient, today, language);
 }
+
+/**
+ * Fresh food tapped as bought (specs/113): into the fridge, bought that day,
+ * and off the list.
+ */
+export async function addBoughtFood(
+  k: Shopping & Kitchen,
+  ingredients: readonly string[],
+  boughtOn: string,
+  language: string,
+): Promise<void> {
+  const list = await k.shopping.reader.items();
+  for (const ingredient of ingredients) {
+    for (const item of list.filter((i) => i.ingredient === ingredient))
+      await k.shopping.writer.remove(item.id);
+    await addBought(k, ingredient, boughtOn, language);
+  }
+}

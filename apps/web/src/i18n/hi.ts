@@ -62,6 +62,8 @@ export const hi: Messages = {
   fresh: "ताज़ा",
   staples: "राशन",
   addFood: "सामान जोड़ें",
+  tapWhatYouBought: "जो खरीदा, उस पर टैप करें",
+  addCount: { one: "{n} जोड़ें", other: "{n} जोड़ें" },
   name: "नाम",
   amount: "मात्रा",
   unit: "इकाई",

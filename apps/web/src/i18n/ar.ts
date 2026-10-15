@@ -82,6 +82,8 @@ export const ar: Messages = {
   fresh: "طازج",
   staples: "المؤونة",
   addFood: "أضف طعامًا",
+  tapWhatYouBought: "اضغط على ما اشتريته",
+  addCount: { other: "أضف {n}" },
   name: "الاسم",
   amount: "الكمية",
   unit: "الوحدة",

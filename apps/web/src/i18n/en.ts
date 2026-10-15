@@ -60,6 +60,8 @@ export const en = {
   fresh: "Fresh",
   staples: "Staples",
   addFood: "Add food",
+  tapWhatYouBought: "Tap what you bought",
+  addCount: { one: "Add {n}", other: "Add {n}" },
   name: "Name",
   amount: "Amount",
   unit: "Unit",

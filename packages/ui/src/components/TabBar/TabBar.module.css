@@ -52,3 +52,8 @@
     padding-inline: var(--space-1);
   }
 }
+
+/* The chosen page's colour eases in (#80). */
+.tab {
+  transition: color var(--motion-quick) ease-out;
+}

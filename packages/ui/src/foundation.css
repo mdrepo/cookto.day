@@ -59,6 +59,16 @@ img {
   color: var(--color-text);
 }
 
+/* Motion (#80, micro animations): small and quick, so a tap feels answered,
+   using --motion-quick and ease-out. The rule below stills it all for people
+   who turn motion down. A tick or mark appearing: */
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

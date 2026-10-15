@@ -1,13 +1,5 @@
-import {
-  Button,
-  Card,
-  Chip,
-  Cluster,
-  Field,
-  Input,
-  Select,
-  Stack,
-} from "@cookto/ui";
+import { Button, Card, Cluster, Field, Input, Select, Stack } from "@cookto/ui";
+import { TapBought } from "./TapBought.js";
 import { useAddFood } from "./useAddFood.js";
 
 /** Add food: tap what you bought (specs/113), or type it (specs/72). */
@@ -33,20 +25,7 @@ export function AddFood({ onDone }: { onDone: () => void }) {
         }}
       >
         <Stack gap={3}>
-          {a.fresh.length > 0 && (
-            <div role="group" aria-labelledby="food-tap">
-              <Stack gap={2}>
-                <p id="food-tap">{a.tapLabel}</p>
-                <Cluster gap={2}>
-                  {a.fresh.map((f) => (
-                    <Chip key={f.id} pressed={f.pressed} onClick={f.toggle}>
-                      {f.label}
-                    </Chip>
-                  ))}
-                </Cluster>
-              </Stack>
-            </div>
-          )}
+          <TapBought label={a.tapLabel} fresh={a.fresh} />
           <Field label={a.nameLabel} id="food-name">
             {(control) => (
               <Input

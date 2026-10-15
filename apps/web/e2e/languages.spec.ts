@@ -26,7 +26,7 @@ test.describe("English to start, other languages coming soon", () => {
     await kitchen.savedLanguage("mr");
     await kitchen.open();
     await expect(kitchen.emptyState()).toContainText(
-      "Add a grocery bill to see what you can cook today",
+      "Choose what you cook, then add what's in your kitchen.",
     );
   });
 
@@ -36,7 +36,7 @@ test.describe("English to start, other languages coming soon", () => {
     const kitchen = new Kitchen(page);
     await kitchen.open("hi");
     await expect(kitchen.emptyState()).toContainText(
-      "आज क्या पका सकते हैं, यह देखने के लिए किराने का बिल जोड़ें",
+      "क्या पकाते हैं चुनें, फिर रसोई में जो है वह जोड़ें।",
     );
     await expect(page.locator("html")).toHaveAttribute("lang", "hi");
   });

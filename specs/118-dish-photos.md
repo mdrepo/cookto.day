@@ -2,7 +2,7 @@
 
 - **Issue:** #118
 - **Approval:** a code owner merging the PR that adds this file. Write no tests or code until it's merged.
-- **Decision for Mayur:** the photos come from Wikimedia Commons under free licences, with credit. They're public content in a public repo.
+- **Decision:** the photos come from Wikimedia Commons under free licences, with credit. Mayur approved this on 16 Oct.
 
 ## Why
 
@@ -12,7 +12,7 @@ A dish name is easy to skip. A photo makes you hungry, and it tells you what the
 
 - **Wikimedia Commons,** usually the photo on the dish's Wikipedia page.
 - **Only these licences:** public domain, CC0, CC BY and CC BY-SA. Each photo keeps its own licence. The app shows the credit, and the photo's file keeps it too.
-- **A person checks each photo is the right dish.** Wikipedia's "Saag aloo" page shows sarson ka saag, for example. Claude checks first, and the pack's cook confirms (ADR 0015).
+- **Claude checks each photo is the right dish,** by looking at it. Wikipedia's "Saag aloo" page shows sarson ka saag, for example. Mayur asked not to be part of this check (16 Oct).
 - **We host them ourselves,** shrunk to WebP, so nothing loads from other sites ([ADR 0013](../docs/adr/0013-static-browser-only.md)).
 - A dish with no good free photo has none, for now.
 

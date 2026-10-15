@@ -11,13 +11,16 @@ On a first visit, the Fridge and Dishes are blank pages: no words, nothing to pr
 
 Each criterion becomes one e2e test, on an Android phone, an iPhone and a desktop (ADR 0002, 0003, 0021).
 
-### 1. an empty Fridge
+### 1. an empty Fridge shows the next step
 
 - **Given** no cuisine loaded
 - **When** they open the Fridge
-- **Then** it says "Nothing here yet", with "Choose what you cook"
+- **Then** it says "Nothing here yet" and shows three steps: "Choose what you cook", "Add the usual staples", "Add what you bought"
+- **And** only the first step is a main button; the others wait their turn
 - **Given** North Indian loaded and nothing in the fridge
-- **Then** it offers "Add the usual staples" and "Add food"
+- **Then** "Choose what you cook" is ticked as done, and "Add the usual staples" is the main button
+- **Given** staples in, but no fresh food
+- **Then** the Fridge lists the staples, with "Add what you bought" above them as the main button, which opens "Add food"
 
 ### 2. empty Dishes
 
@@ -40,7 +43,7 @@ Each criterion becomes one e2e test, on an Android phone, an iPhone and a deskto
 
 English; Hindi, Marathi and Arabic stay preview-only until a native speaker reviews them (ADR 0012).
 
-- Nothing here yet · No dishes yet · Choose what you cook, then add what's in your kitchen. · No fresh food yet · Add what you bought
+- Nothing here yet · Set up your kitchen · Done · No dishes yet · Choose what you cook, then add what's in your kitchen. · No fresh food yet · Add what you bought
 
 ## Out of scope
 

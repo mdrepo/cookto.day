@@ -14,7 +14,7 @@ const deps = { household, settings: settings.writer };
  * criterion 9).
  */
 export function usePersonCard(id: string) {
-  const { t } = useWords();
+  const { locale, t } = useWords();
   const { data } = useQuery(
     {
       ...membersQuery,
@@ -38,6 +38,15 @@ export function usePersonCard(id: string) {
     toddlerFood: person?.kind === "toddler" ? t.toddlerFood : null,
     nameLabel: t.nameOptional,
     mealsLabel: t.meals,
+    /** Their meals, for the folded line: "Lunch, Dinner". */
+    summary: new Intl.ListFormat(locale, {
+      type: "unit",
+      style: "short",
+    }).format(
+      MEAL_SLOTS.filter((slot) => person?.meals.includes(slot)).map(
+        (slot) => t[SLOT_WORDS[slot]],
+      ),
+    ),
     removeLabel: fill(t.removePerson, { name: title }),
     meals: MEAL_SLOTS.map((slot) => ({
       slot,

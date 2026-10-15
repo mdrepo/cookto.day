@@ -49,7 +49,10 @@ test.describe("Onboarding", () => {
     await start.add("Toddler");
     await expect(start.person("Toddler")).toContainText("toddler food");
 
-    // Tapping a meal ticks it, and again unticks it.
+    // Tapping a meal ticks it, and again unticks it. Adding the toddler
+    // folded the adult's card to one line (#114): open it first.
+    await expect(start.person("Adult")).toContainText("Lunch, Dinner");
+    await start.openCard("Adult");
     await start.meal("Adult", "Breakfast").click();
     await expect(start.meal("Adult", "Breakfast")).toHaveAttribute(
       "aria-pressed",

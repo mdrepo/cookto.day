@@ -61,10 +61,22 @@ export class Onboarding {
       .click();
   }
 
+  /** A person's name box, while their card is open. */
+  nameBox(person: string): Locator {
+    return this.person(person).getByRole("textbox", {
+      name: "Name (optional)",
+    });
+  }
+
+  /** Opens a person's card when it's folded to one line (#114). */
+  async openCard(person: string): Promise<void> {
+    const folded = this.person(person).getByRole("button", { expanded: false });
+    if ((await folded.count()) > 0) await folded.click();
+  }
+
   async name(person: string, name: string): Promise<void> {
-    await this.person(person)
-      .getByRole("textbox", { name: "Name (optional)" })
-      .fill(name);
+    await this.openCard(person);
+    await this.nameBox(person).fill(name);
   }
 
   /** "All set": who a meal is planned for, as the row for that meal says. */

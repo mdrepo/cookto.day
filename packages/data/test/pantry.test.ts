@@ -71,6 +71,23 @@ describe("the pantry", () => {
     expect(kept?.deletedAt).not.toBeNull();
   });
 
+  test("used up by mistake comes back as it was, one version on (#116)", async () => {
+    const { store, pantry } = setUp();
+    const [item] = await pantry.writer.add([spinach]);
+    const id = item?.id ?? "";
+    await pantry.writer.useUp(id);
+    await pantry.writer.bringBack(id);
+    expect(await pantry.reader.items()).toEqual([
+      { ...spinach, id, sample: false },
+    ]);
+    const kept = await store.get<{ deletedAt: string | null; version: number }>(
+      PANTRY,
+      id,
+    );
+    expect(kept?.deletedAt).toBeNull();
+    expect(kept?.version).toBe(3);
+  });
+
   test("sample items are marked, and clearing the sample removes only them", async () => {
     const { pantry } = setUp();
     await pantry.writer.add([onions]);

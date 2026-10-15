@@ -26,3 +26,21 @@
   color: var(--color-text-muted);
   cursor: not-allowed;
 }
+
+/* A tap answers (#80): the chip gives a little, its colours ease, and the
+   tick pops in. */
+.chip {
+  transition:
+    background-color var(--motion-quick) ease-out,
+    border-color var(--motion-quick) ease-out,
+    color var(--motion-quick) ease-out,
+    transform var(--motion-quick) ease-out;
+}
+
+.chip:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.chip[aria-pressed="true"] > svg {
+  animation: appear var(--motion-quick) ease-out;
+}

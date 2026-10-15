@@ -48,3 +48,8 @@
 .step[data-state="done"] .label {
   color: var(--color-text);
 }
+
+/* A step done: its tick pops in (#80). */
+.step[data-state="done"] .mark > svg {
+  animation: appear var(--motion-quick) ease-out;
+}

@@ -156,5 +156,15 @@
       },
       "$description": "Icons on their own, like a close or back button"
     }
+  },
+  "motion": {
+    "$type": "duration",
+    "quick": {
+      "$value": {
+        "value": 160,
+        "unit": "ms"
+      },
+      "$description": "A tap's answer: colours easing, a button giving a little, a tick popping in (#80). Still for people who turn motion down"
+    }
   }
 }

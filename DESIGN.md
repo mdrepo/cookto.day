@@ -160,7 +160,7 @@ A component has no outer margin: the space between parts belongs to the screen (
 
 Not designed yet, so ask before building: the bill upload, the shopping list, a link that looks like a button.
 
-**Motion:** only the busy button's turning circle (`Button`). The foundation stops it, and every animation, for people who turn motion off. No other animation without a code owner.
+**Motion:** small and quick, so a tap feels answered (#80, asked for on 16 Oct). Taps ease colours over `var(--motion-quick)` (160ms) with `ease-out`: a `Button` or `Chip` gives a little (`scale(0.97)` / `0.95`), a `Choice` card barely (`0.99`), list rows flash the accent's soft colour, and a tick pops in (`@keyframes appear` in the foundation). Plus the busy button's turning circle. The foundation stops all of it for people who turn motion off. Nothing moves on its own, nothing loops, and nothing slower: anything bigger needs a code owner.
 
 **HTML:** render text with JSX, never `dangerouslySetInnerHTML` or `innerHTML` (AGENTS.md).
 

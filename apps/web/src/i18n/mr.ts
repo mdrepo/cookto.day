@@ -62,6 +62,8 @@ export const mr: Messages = {
   fresh: "ताजे",
   staples: "वाणसामान",
   addFood: "सामान जोडा",
+  tapWhatYouBought: "जे घेतले त्यावर टॅप करा",
+  addCount: { one: "{n} जोडा", other: "{n} जोडा" },
   name: "नाव",
   amount: "प्रमाण",
   unit: "एकक",

@@ -1,7 +1,8 @@
 import { Button, Card, Cluster, Field, Input, Select, Stack } from "@cookto/ui";
+import { TapBought } from "./TapBought.js";
 import { useAddFood } from "./useAddFood.js";
 
-/** Add food by hand (specs/72, criterion 3). */
+/** Add food: tap what you bought (specs/113), or type it (specs/72). */
 export function AddFood({ onDone }: { onDone: () => void }) {
   const a = useAddFood(onDone);
   const text = (form: FormData, key: string) => {
@@ -24,8 +25,18 @@ export function AddFood({ onDone }: { onDone: () => void }) {
         }}
       >
         <Stack gap={3}>
+          <TapBought label={a.tapLabel} fresh={a.fresh} />
           <Field label={a.nameLabel} id="food-name">
-            {(control) => <Input {...control} name="name" required />}
+            {(control) => (
+              <Input
+                {...control}
+                name="name"
+                required={a.nameRequired}
+                onChange={(e) => {
+                  a.onType(e.currentTarget.value);
+                }}
+              />
+            )}
           </Field>
           <Cluster gap={3}>
             <Field label={a.amountLabel} id="food-amount">

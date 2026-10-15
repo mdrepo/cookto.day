@@ -7,6 +7,7 @@ import {
   Section,
   Stack,
   Tag,
+  UndoBar,
 } from "@cookto/ui";
 import { AddFood } from "./AddFood.js";
 import { ItemSheet } from "./ItemSheet.js";
@@ -62,7 +63,14 @@ export function PantryScreen({ bar }: { bar: ReactNode }) {
         }
         secondary={s.groups.filter((g) => g.key === "soon").map(group)}
       />
-      {s.open && <ItemSheet id={s.open} onClose={s.close} />}
+      {s.undo && (
+        <UndoBar undoLabel={s.undo.label} onUndo={s.undo.run}>
+          {s.undo.text}
+        </UndoBar>
+      )}
+      {s.open && (
+        <ItemSheet id={s.open} onClose={s.close} onUsedUp={s.onUsedUp} />
+      )}
     </Screen>
   );
 }

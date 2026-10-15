@@ -92,6 +92,8 @@ export const hi: Messages = {
   useSoon: "जल्दी इस्तेमाल करें",
   pastItsBest: "ख़राब होने लगा",
   usedUp: "ख़त्म",
+  undo: "वापस लें",
+  usedUpNote: "{food} ख़त्म",
   changeAmount: "मात्रा बदलें",
   cookToday: "आज क्या पकाएँ",
   uses: "इसमें लगेगा: {items}",

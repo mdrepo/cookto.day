@@ -32,6 +32,13 @@ function DishSide({ s }: { s: Dish }) {
             : []),
         ]}
       />
+      {s.cookedToday && (
+        <div>
+          <Button kind="plain" onClick={s.onUndo}>
+            {s.undo}
+          </Button>
+        </div>
+      )}
       {!s.cookedToday && (
         <div>
           <Button kind="quiet" icon="check" onClick={s.onCooked}>

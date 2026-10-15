@@ -1,6 +1,6 @@
 import type { Changes } from "./changes.js";
 import type { RecordStore } from "./record-store.js";
-import { created, type SyncRecord } from "./records.js";
+import { created, deleted, type SyncRecord } from "./records.js";
 
 // What the household cooked, and on which day (specs/104), saved as
 // sync-ready records, so Today can keep the next days different. Hooks read
@@ -25,6 +25,8 @@ export interface CookedReader {
 export interface CookedWriter {
   /** A dish cooked on a day; once a day is enough. */
   add(dish: string, on: string): Promise<void>;
+  /** Not cooked that day after all (#116). */
+  remove(dish: string, on: string): Promise<void>;
 }
 
 export function createCooked(
@@ -52,6 +54,17 @@ export function createCooked(
       async add(dish, on) {
         if ((await live()).some((r) => r.dish === dish && r.on === on)) return;
         await store.put(COOKED, [created({ dish, on }, now())]);
+        changes.announce(TOPIC);
+      },
+      async remove(dish, on) {
+        const gone = (await live()).filter(
+          (r) => r.dish === dish && r.on === on,
+        );
+        if (gone.length === 0) return;
+        await store.put(
+          COOKED,
+          gone.map((r) => deleted(r, now())),
+        );
         changes.announce(TOPIC);
       },
     },

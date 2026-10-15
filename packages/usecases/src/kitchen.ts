@@ -132,6 +132,11 @@ export function useUp(k: Kitchen, id: string): Promise<void> {
   return k.pantry.writer.useUp(id);
 }
 
+/** Used up by mistake: back as it was (#116). */
+export function bringBack(k: Kitchen, id: string): Promise<void> {
+  return k.pantry.writer.bringBack(id);
+}
+
 /** Turns a part ("roti") off for this household, or back on. */
 export function setMakes(
   k: Kitchen,

@@ -29,6 +29,7 @@ export { Sheet } from "./components/Sheet/Sheet.js";
 export { Steps } from "./components/Steps/Steps.js";
 export { TabBar } from "./components/TabBar/TabBar.js";
 export { Tag } from "./components/Tag/Tag.js";
+export { UndoBar } from "./components/UndoBar/UndoBar.js";
 export { ActionBar } from "./layouts/ActionBar/ActionBar.js";
 export { Cluster, type ClusterProps } from "./layouts/Cluster/Cluster.js";
 export { Panes } from "./layouts/Panes/Panes.js";

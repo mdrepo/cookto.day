@@ -17,7 +17,7 @@ import {
   useKitchenSettings,
   useLoadedPacks,
 } from "../../food.js";
-import { cookedIt, KEEP_DIFFERENT_DAYS } from "@cookto/usecases";
+import { cookedIt, notCooked, KEEP_DIFFERENT_DAYS } from "@cookto/usecases";
 import {
   cooked,
   cookedQuery,
@@ -124,6 +124,7 @@ export function useCookToday() {
     otherIdeas: t.otherIdeas,
     weCookedThis: t.weCookedThis,
     cookedTodayWords: t.cookedToday,
+    undo: t.undo,
     meals: cookTodayForMeals({
       slots,
       dishes,
@@ -143,6 +144,9 @@ export function useCookToday() {
           cooked: cookedToday.has(best.key),
           onCooked: () => {
             void cookedIt({ cooked }, best.key, day);
+          },
+          onUndo: () => {
+            void notCooked({ cooked }, best.key, day);
           },
           others: rest.map((o) => ({
             key: o.key,

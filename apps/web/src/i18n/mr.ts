@@ -89,6 +89,8 @@ export const mr: Messages = {
   useSoon: "लवकर वापरा",
   pastItsBest: "खराब होऊ लागले",
   usedUp: "संपले",
+  undo: "मागे घ्या",
+  usedUpNote: "{food} संपले",
   changeAmount: "प्रमाण बदला",
   cookToday: "आज काय शिजवायचे",
   uses: "यात लागेल: {items}",

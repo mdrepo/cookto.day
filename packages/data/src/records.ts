@@ -76,3 +76,13 @@ export function deleted<T extends SyncRecord>(record: T, now: string): T {
     deletedAt: now,
   };
 }
+
+/** A deleted record brought back, one version up (#116: undo). */
+export function restored<T extends SyncRecord>(record: T, now: string): T {
+  return {
+    ...record,
+    version: record.version + 1,
+    updatedAt: now,
+    deletedAt: null,
+  };
+}

@@ -18,6 +18,25 @@ describe("Card", () => {
     );
   });
 
+  test("folded, it's one line: a button with its title and summary, still named by its title", () => {
+    const doc = render(
+      <Card
+        title="Adult 1"
+        folded={{ summary: "Lunch, Dinner", onOpen: () => undefined }}
+      >
+        <p>Name</p>
+      </Card>,
+    );
+    const article = doc.querySelector("article");
+    expect(textOf(doc, article?.getAttribute("aria-labelledby") ?? null)).toBe(
+      "Adult 1",
+    );
+    const button = article?.querySelector("button[aria-expanded='false']");
+    expect(button?.textContent).toContain("Adult 1");
+    expect(button?.textContent).toContain("Lunch, Dinner");
+    expect(article?.querySelector("p")).toBeNull();
+  });
+
   test("its title is a heading, level 3 unless the screen says otherwise", () => {
     expect(
       render(<Card title="Palak paneer">x</Card>).querySelector("h3"),

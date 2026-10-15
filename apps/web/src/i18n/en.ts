@@ -87,6 +87,8 @@ export const en = {
   useSoon: "Use soon",
   pastItsBest: "Past its best",
   usedUp: "Used up",
+  undo: "Undo",
+  usedUpNote: "{food} used up",
   changeAmount: "Change amount",
   cookToday: "Cook today",
   uses: "Uses {items}",

@@ -1,7 +1,13 @@
 import type { Condition, PantryItem, Unit } from "@cookto/engine";
 import type { Changes } from "./changes.js";
 import type { RecordStore } from "./record-store.js";
-import { created, deleted, type SyncRecord, updated } from "./records.js";
+import {
+  created,
+  deleted,
+  restored,
+  type SyncRecord,
+  updated,
+} from "./records.js";
 
 // The pantry (ADR 0027): what's in the kitchen, how much, and how it is,
 // saved as sync-ready records. Hooks read through the reader; only use
@@ -34,6 +40,8 @@ export interface PantryWriter {
   /** The person's mark, or none: then the date says. */
   mark(id: string, condition: Condition | undefined): Promise<void>;
   useUp(id: string): Promise<void>;
+  /** Food used up by mistake, back as it was (#116). */
+  bringBack(id: string): Promise<void>;
   removeSample(): Promise<void>;
 }
 
@@ -101,6 +109,9 @@ export function createPantry(
       },
       async useUp(id) {
         await save([deleted(await stored(id), now())]);
+      },
+      async bringBack(id) {
+        await save([restored(await stored(id), now())]);
       },
       async removeSample() {
         const sample = (await live()).filter((r) => r.sample === true);

@@ -25,7 +25,11 @@ const CONDITION_WORDS = {
  * leaves it as it was (ADR 0023, specs/72 criterion 11). `done` closes the
  * sheet after a change.
  */
-export function usePantryItem(id: string, done: () => void = () => undefined) {
+export function usePantryItem(
+  id: string,
+  done: () => void = () => undefined,
+  usedUp?: (id: string, name: string) => void,
+) {
   const { t } = useWords();
   const words = useItemWords();
   const [editing, setEditing] = useState(false);
@@ -73,7 +77,7 @@ export function usePantryItem(id: string, done: () => void = () => undefined) {
       label: t.usedUp,
       run: () => {
         done();
-        void markUsedUp(kitchen, id);
+        void markUsedUp(kitchen, id).then(() => usedUp?.(id, w.name));
       },
     },
     change: {

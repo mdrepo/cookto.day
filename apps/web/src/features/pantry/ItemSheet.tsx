@@ -9,11 +9,14 @@ import { usePantryItem } from "./usePantryItem.js";
 export function ItemSheet({
   id,
   onClose,
+  onUsedUp,
 }: {
   id: string;
   onClose: () => void;
+  /** After "Used up", with the food's name: the Fridge offers Undo (#116). */
+  onUsedUp?: (id: string, name: string) => void;
 }) {
-  const p = usePantryItem(id, onClose);
+  const p = usePantryItem(id, onClose, onUsedUp);
   if (!p) return null;
   const { change, howItIs } = p;
   return (

@@ -121,6 +121,8 @@ export const ar: Messages = {
   useSoon: "استخدمه قريبًا",
   pastItsBest: "تجاوز أفضل حالاته",
   usedUp: "نفد",
+  undo: "تراجع",
+  usedUpNote: "نفد {food}",
   changeAmount: "غيّر الكمية",
   cookToday: "اطبخ اليوم",
   uses: "يستخدم {items}",

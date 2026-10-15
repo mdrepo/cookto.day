@@ -33,4 +33,14 @@ describe("what was cooked", () => {
     ]);
     expect(announced).toContain("cooked");
   });
+
+  test("a dish marked by mistake can be taken back, for that day only (#116)", async () => {
+    const { cooked } = setUp();
+    await cooked.writer.add("palak-paneer", "2026-10-15");
+    await cooked.writer.add("palak-paneer", "2026-10-14");
+    await cooked.writer.remove("palak-paneer", "2026-10-15");
+    expect((await cooked.reader.all()).map((c) => [c.dish, c.on])).toEqual([
+      ["palak-paneer", "2026-10-14"],
+    ]);
+  });
 });

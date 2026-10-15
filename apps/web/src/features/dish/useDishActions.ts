@@ -1,4 +1,4 @@
-import { addToList, cookedIt } from "@cookto/usecases";
+import { addToList, cookedIt, notCooked } from "@cookto/usecases";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { count } from "../../i18n/format.js";
@@ -27,6 +27,10 @@ export function useDishActions(dish: string | undefined, need: string[]) {
       : null,
     onCooked: () => {
       if (dish) void cookedIt({ cooked }, dish, today());
+    },
+    undo: t.undo,
+    onUndo: () => {
+      if (dish) void notCooked({ cooked }, dish, today());
     },
     addToList:
       need.length > 0

@@ -1,3 +1,4 @@
+import type { DishPhoto } from "@cookto/data";
 import { MEAL_SLOTS } from "@cookto/engine";
 import { useQuery } from "@tanstack/react-query";
 import { count, fill } from "../../i18n/format.js";
@@ -14,6 +15,17 @@ import {
 import { membersQuery, pantryQuery, queries } from "../../platform.js";
 import { goBack, useDish } from "../../routes.js";
 import { useDishActions } from "./useDishActions.js";
+
+/** Its photo, credited, linking to its page on Commons (specs/118). */
+function photoOf(photo: DishPhoto | undefined, words: string) {
+  if (!photo) return null;
+  const { author, licence } = photo;
+  return {
+    src: photo.large,
+    credit: fill(words, { author, licence }),
+    source: photo.source,
+  };
+}
 
 /**
  * A dish's page (specs/95): what it needs, for everyone at home, split into
@@ -96,5 +108,6 @@ export function useDishScreen() {
     seeRecipe: t.seeRecipe,
     ...actions,
     source: dish.source,
+    photo: photoOf(dish.photo, t.photoBy),
   };
 }

@@ -56,5 +56,10 @@
   },
   "servedWith": ["roti"],
   "source": "https://www.vegrecipesofindia.com/bhindi-masala/",
-  "note": "Fennel and amchur powder left out."
+  "note": "Fennel and amchur powder left out.",
+  "photo": {
+    "author": "Monali.mishra",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bhindi_Masala.jpg"
+  }
 }

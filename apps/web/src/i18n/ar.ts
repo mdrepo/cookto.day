@@ -162,6 +162,7 @@ export const ar: Messages = {
   },
   serveWith: "يُقدَّم مع {items}",
   seeRecipe: "اقرأ الوصفة",
+  photoBy: "الصورة: {author}، {licence}",
   theme: "المظهر",
   themeSystem: "مثل الهاتف",
   themeLight: "فاتح",

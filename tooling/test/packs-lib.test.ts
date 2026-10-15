@@ -47,6 +47,18 @@ function goodPack(): Pack {
   };
 }
 
+/** goodPack, with a credited photo whose files are small enough (#118). */
+function withPhoto(): Pack {
+  const pack = goodPack();
+  (pack.dishes["spinach-rice"] as { photo?: unknown }).photo = {
+    author: "A. Cook",
+    licence: "CC BY-SA 4.0",
+    source: "https://commons.wikimedia.org/wiki/File:Spinach_rice.jpg",
+  };
+  pack.photos = { "spinach-rice": { large: 35_000, small: 6_000 } };
+  return pack;
+}
+
 describe("packs:check", () => {
   test("a pack with sources, matching ids and cited shelf lives passes", () => {
     expect(packProblems(goodPack(), sources)).toEqual([]);
@@ -141,6 +153,43 @@ describe("packs:check", () => {
     ] = { amount: 0, unit: "cups" };
     expect(packProblems(pack, sources)).toEqual([
       "test-kitchen/dishes/spinach-rice.json: rice needs an amount per serving above 0, in g, ml or pieces.",
+    ]);
+  });
+
+  test("a photo needs its author, a free licence and its Commons page (#118)", () => {
+    const pack = withPhoto();
+    (pack.dishes["spinach-rice"] as { photo?: unknown }).photo = {
+      author: "",
+      licence: "CC BY-NC 4.0",
+      source: "https://example.com/spinach.jpg",
+    };
+    const at = "test-kitchen/dishes/spinach-rice.json";
+    expect(packProblems(pack, sources)).toEqual([
+      `${at}: its photo has no author. Copy "Author" from its Commons page.`,
+      `${at}: its photo's licence, CC BY-NC 4.0, isn't one we can use. Pick a photo in the public domain, or under CC0, CC BY or CC BY-SA.`,
+      `${at}: its photo's "source" must be its page on commons.wikimedia.org.`,
+    ]);
+  });
+
+  test("photos stay small, and every photo is credited (#118)", () => {
+    const pack = withPhoto();
+    pack.photos = {
+      "spinach-rice": { large: 41_000, small: 9_000 },
+      "no-dish": { large: 1_000, small: 1_000 },
+    };
+    expect(packProblems(pack, sources)).toEqual([
+      "test-kitchen/photos/spinach-rice.webp: 41 KB, over 40 KB. Make it smaller.",
+      "test-kitchen/photos/spinach-rice.small.webp: 9 KB, over 8 KB. Make it smaller.",
+      'test-kitchen/photos/no-dish.webp: no dish credits it. Add "photo" to its dish, or remove the files.',
+    ]);
+  });
+
+  test("a credited photo needs its files (#118)", () => {
+    const pack = withPhoto();
+    expect(packProblems(pack, sources)).toEqual([]);
+    pack.photos = {};
+    expect(packProblems(pack, sources)).toEqual([
+      "test-kitchen/dishes/spinach-rice.json: its photo has no files. Add photos/spinach-rice.webp and photos/spinach-rice.small.webp.",
     ]);
   });
 });

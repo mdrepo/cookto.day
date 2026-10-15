@@ -67,5 +67,10 @@
     }
   },
   "servedWith": ["roti", "rice"],
-  "source": "https://www.vegrecipesofindia.com/dal-makhani-restaurant-style-recipe/"
+  "source": "https://www.vegrecipesofindia.com/dal-makhani-restaurant-style-recipe/",
+  "photo": {
+    "author": "Radhikamprabhu82",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Punjabi_style_Dal_Makhani.jpg"
+  }
 }

@@ -38,5 +38,10 @@
       "unit": "g"
     }
   },
-  "source": "https://www.indianhealthyrecipes.com/omelette/"
+  "source": "https://www.indianhealthyrecipes.com/omelette/",
+  "photo": {
+    "author": "SwingingUvula",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Masala_omelette.JPG"
+  }
 }

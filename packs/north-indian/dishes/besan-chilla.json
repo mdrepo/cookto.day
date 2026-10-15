@@ -39,5 +39,10 @@
     }
   },
   "source": "https://www.vegrecipesofindia.com/besan-cheela-recipe-besan-chilla/",
-  "note": "A serving is one chilla. Cooking oil has no amount in the recipe."
+  "note": "A serving is one chilla. Cooking oil has no amount in the recipe.",
+  "photo": {
+    "author": "Mdsmds0",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Gram_flour_Chilla_(Besan_ka_Cheela).JPG"
+  }
 }

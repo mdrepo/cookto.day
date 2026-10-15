@@ -7,6 +7,7 @@ export { createHousehold } from "./household.js";
 export { memoryKeyValue, type KeyValue } from "./kv.js";
 export {
   type AppPack,
+  type DishPhoto,
   createPacks,
   type Cuisine,
   type PackLoader,

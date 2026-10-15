@@ -68,5 +68,10 @@
   },
   "servedWith": ["roti", "rice"],
   "source": "https://www.vegrecipesofindia.com/restaurant-style-dal-tadka/",
-  "note": "Whole dry red chillies left out."
+  "note": "Whole dry red chillies left out.",
+  "photo": {
+    "author": "AugustineKajur",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Dal_Tadka-Delhi.jpg"
+  }
 }

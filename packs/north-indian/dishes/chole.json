@@ -60,5 +60,10 @@
   },
   "servedWith": ["roti", "rice"],
   "source": "https://www.vegrecipesofindia.com/chana-masala-recipe/",
-  "note": "Amchur and ajwain left out (not in the pack)."
+  "note": "Amchur and ajwain left out (not in the pack).",
+  "photo": {
+    "author": "Simon Law (sfllaw) from Montréal, QC, Canada",
+    "licence": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Chana_masala.jpg"
+  }
 }

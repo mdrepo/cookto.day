@@ -68,5 +68,10 @@
   },
   "servedWith": ["roti", "rice"],
   "source": "https://www.indianhealthyrecipes.com/egg-masala-curry-for-biryanichapathipulao/",
-  "note": "Read through a page summary, not the page itself. One egg a serving looks low: check."
+  "note": "Read through a page summary, not the page itself. One egg a serving looks low: check.",
+  "photo": {
+    "author": "Yakshitha",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Egg_Curry_2022.jpg"
+  }
 }

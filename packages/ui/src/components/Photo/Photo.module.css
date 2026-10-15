@@ -1,0 +1,29 @@
+/* A dish's photo (specs/118): its shape is set before it arrives, so the
+   page never moves. Large corners, like cards; the accent's soft colour
+   shows until it loads, and as a plain tile without a photo. */
+.photo {
+  display: block;
+  border-radius: var(--radius-lg);
+  background: var(--color-accent-soft);
+  object-fit: cover;
+}
+
+.wide {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 4 / 3;
+}
+
+.square {
+  flex: none;
+  inline-size: 56px;
+  block-size: 56px;
+  border-radius: var(--radius-md);
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+}

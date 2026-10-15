@@ -75,5 +75,10 @@
     }
   },
   "servedWith": ["rice"],
-  "source": "https://www.vegrecipesofindia.com/rajma-masala-recipe-restaurant-style/"
+  "source": "https://www.vegrecipesofindia.com/rajma-masala-recipe-restaurant-style/",
+  "photo": {
+    "author": "Gaurav Nemade",
+    "licence": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Rajma_Masala_(32081557778).jpg"
+  }
 }

@@ -8,6 +8,8 @@ export interface Item {
   line?: string;
   /** At the end: a Tag, or an amount. */
   end?: ReactNode;
+  /** At the start: a small picture, like a dish's photo (specs/118). */
+  media?: ReactNode;
   onOpen: () => void;
 }
 
@@ -34,6 +36,7 @@ export function ItemList({
               item.onOpen();
             }}
           >
+            {item.media && <span className={styles.media}>{item.media}</span>}
             <span className={styles.text}>
               <strong className={styles.name}>{item.name}</strong>
               {item.line && <span className={styles.line}>{item.line}</span>}

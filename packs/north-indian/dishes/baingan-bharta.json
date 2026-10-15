@@ -39,5 +39,10 @@
     }
   },
   "servedWith": ["roti"],
-  "source": "https://www.vegrecipesofindia.com/baingan-bharta-recipe/"
+  "source": "https://www.vegrecipesofindia.com/baingan-bharta-recipe/",
+  "photo": {
+    "author": "Dheerajk88",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Baigan_Bharta_from_Nagpur.JPG"
+  }
 }

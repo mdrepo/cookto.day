@@ -112,6 +112,7 @@ export const mr: Messages = {
   forPeople: { one: "{n} व्यक्तीसाठी", other: "{n} लोकांसाठी" },
   serveWith: "{items} सोबत वाढा",
   seeRecipe: "पाककृती पाहा",
+  photoBy: "फोटो: {author}, {licence}",
   theme: "थीम",
   themeSystem: "फोनसारखे",
   themeLight: "फिकट",

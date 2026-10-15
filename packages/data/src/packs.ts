@@ -15,6 +15,16 @@ export interface PackWords {
   parts: Record<string, string>;
 }
 
+export interface DishPhoto {
+  author: string;
+  licence: string;
+  /** Its page on Wikimedia Commons, where its licence is. */
+  source: string;
+  /** 800 by 600 at most, and 160 by 160. */
+  large: string;
+  small: string;
+}
+
 export interface AppPack {
   id: string;
   dishes: {
@@ -30,6 +40,8 @@ export interface AppPack {
     servedWith?: string[];
     /** Where the recipe is: the app links to it, it doesn't copy it. */
     source?: string;
+    /** A free photo of it, credited, and the addresses of its files (specs/118). */
+    photo?: DishPhoto;
   }[];
   /** Fresh food: Wikidata id to the days it keeps. */
   fresh: Record<string, number>;
@@ -57,9 +69,29 @@ export interface PackLoader {
 /** Every cuisine people see, in this order; only the ones with a pack open. */
 const CUISINES = ["north-indian", "south-indian", "european", "sri-lankan"];
 
-const LOADERS: Record<string, () => Promise<{ default: string }>> = {
-  "north-indian": () => import("./packs/north-indian.js"),
+type Photos = Record<string, readonly [string, string]>;
+
+/** A pack's file, and its photos' addresses (specs/118). */
+const LOADERS: Record<
+  string,
+  () => Promise<[{ default: string }, { default: Photos }]>
+> = {
+  "north-indian": () =>
+    Promise.all([
+      import("./packs/north-indian.js"),
+      import("./packs/north-indian.photos.js"),
+    ]),
 };
+
+/** Each credited dish gets its photo's files. */
+function withPhotos(pack: AppPack, photos: Photos): AppPack {
+  for (const dish of pack.dishes) {
+    const files = photos[dish.id];
+    if (dish.photo && files) [dish.photo.large, dish.photo.small] = files;
+    else delete dish.photo;
+  }
+  return pack;
+}
 
 export function createPacks(): PackLoader {
   const dishes = JSON.parse(catalog) as Record<string, number>;
@@ -73,7 +105,8 @@ export function createPacks(): PackLoader {
     async load(id) {
       const loader = LOADERS[id];
       if (!loader) throw new Error(`No pack "${id}" to load yet.`);
-      return JSON.parse((await loader()).default) as AppPack;
+      const [pack, photos] = await loader();
+      return withPhotos(JSON.parse(pack.default) as AppPack, photos.default);
     },
   };
 }

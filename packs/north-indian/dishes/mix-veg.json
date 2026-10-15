@@ -84,5 +84,10 @@
   },
   "servedWith": ["roti"],
   "source": "https://www.vegrecipesofindia.com/mix-veg-recipe/",
-  "note": "Optional paneer left out: the recipe gives no weight."
+  "note": "Optional paneer left out: the recipe gives no weight.",
+  "photo": {
+    "author": "Foody1989",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Mix_veg_with_garlic_kulcha.jpg"
+  }
 }

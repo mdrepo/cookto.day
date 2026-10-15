@@ -18,6 +18,8 @@ export interface AppPack {
     servedWith?: string[];
     /** Where the recipe is: the app links to it, it doesn't copy it. */
     source: string;
+    /** Its photo's credit (specs/118); the files come in their own module. */
+    photo?: { author: string; licence: string; source: string };
   }[];
   /** Fresh food: Wikidata id to the days it keeps. */
   fresh: Record<string, number>;
@@ -49,6 +51,7 @@ export function bundlePack(pack: Pack): AppPack {
       ]),
       ...(dish.servedWith ? { servedWith: dish.servedWith } : {}),
       source: dish.source,
+      ...(dish.photo ? { photo: dish.photo } : {}),
     })),
     fresh: Object.fromEntries(
       Object.values(pack.ingredients).flatMap((i) =>

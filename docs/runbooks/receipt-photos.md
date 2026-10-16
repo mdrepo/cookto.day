@@ -20,10 +20,10 @@ A deploy keeps secrets, so this survives every merge.
 Do this before turning reading on, and before changing `RECEIPT_MODEL`.
 
 ```sh
-GEMINI_API_KEY=... bun apps/api/scripts/try-reader.ts path/to/receipt.jpg
+GEMINI_API_KEY=... bun apps/api/scripts/try-reader.ts path/to/receipt.jpg gemini-2.5-flash-lite
 ```
 
-It reads the photo exactly as the API does (same instruction, schema, limits and checks) and prints the lines. Try at least three of your own receipts, including a creased one. Every line should be right, and none marked "check" unless the receipt really is unclear. **Never commit the photos:** receipts can carry names and card digits.
+It reads the photo exactly as the API does (same instruction, schema, limits and checks) with the model you name, and prints the lines. A phone photo over 1.5 MB must be shrunk first, as the app will: `sips -Z 1600 receipt.jpg`. Try at least three of your own receipts, including a creased one. Every line should be right, and none marked "check" unless the receipt really is unclear. **Never commit the photos:** receipts can carry names and card digits.
 
 ## 4. Turn it on
 

@@ -41,8 +41,8 @@ export function claimedExemption(body: string): Exemption | null {
 
 // An app's src/ runs on people's devices and can change what they see, and so
 // does the design system's (ADR 0019). The engine is pure logic, which unit
-// tests cover (ADR 0016).
-const UI_CODE = /^(apps\/[^/]+|packages\/ui)\/src\//;
+// tests cover (ADR 0016), and the API is a server with its own tests (ADR 0025).
+const UI_CODE = /^(apps\/(?!api\/)[^/]+|packages\/ui)\/src\//;
 const E2E = /(^|\/)e2e\//;
 
 /** ADR 0004: e2e doesn't run in CI, so a UI change must at least touch an e2e/ folder. */

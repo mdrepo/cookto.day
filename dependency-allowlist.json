@@ -45,6 +45,12 @@
     "typescript": {
       "reason": "Type checking; pinned to 6.x for typescript-eslint (ADR 0007)."
     },
+    "@cloudflare/workers-types": {
+      "reason": "Types for the Worker that answers cookto.day/api/* (apps/api, ADR 0025, 0028): Durable Objects and the Workers runtime. Types only, never runs or ships.",
+      "exceptions": {
+        "scorecard": "deps.dev publishes no OpenSSF Scorecard for cloudflare/workerd, its source (checked 16 Oct 2026). Published by Cloudflare's own release accounts; types only, no install scripts, MIT OR Apache-2.0. Approved with ADR 0028."
+      }
+    },
     "knip": {
       "reason": "Finds unused files, exports and dependencies, and dependencies used but not declared. Agents leave all four behind.",
       "exceptions": {

@@ -1,0 +1,7 @@
+// The tests and scripts, which run in Bun. The Worker's own code has
+// src/tsconfig.json, with the Workers runtime's types instead.
+{
+  "extends": "../../tsconfig.base.json",
+  "include": ["test", "scripts"],
+  "exclude": ["node_modules"]
+}

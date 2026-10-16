@@ -1,0 +1,62 @@
+# 0028. Read receipt photos with Gemini Flash-Lite, only through our API, within hard limits
+
+- **Status:** Accepted
+- **Date:** 2026-10-16
+- **Deciders:** Mayur
+
+## Context
+
+Market and corner-shop receipts come on paper, with no PDF to read ([#127](../../specs/127-receipt-pdf.md) reads PDFs on the phone). On 16 October we tested a real one: faded thermal paper, creased, half in shadow.
+
+| Reader | Lines right | Time | Cost a receipt |
+|---|---|---|---|
+| Tesseract, the free OCR a phone can run | 9 of 11, only after cleaning the photo; one weight wrong | not measured on a phone | free, about 4 MB to download |
+| Gemini 2.5 Flash-Lite | 11 of 11, raw photo, twice | 5 s | about $0.0003 |
+| Gemini 3.5 Flash-Lite | 11 of 11, raw photo, twice | 4 s | about $0.002 |
+
+An AI call costs us money each time, so the endpoint is a target. People could run up the bill, or use it as free general-purpose AI. [0025](0025-server.md) allows AI only through our API, after the person agrees, "only with providers that don't keep or train on the data". Gemini's paid tier never trains on what we send, but Google logs it for a limited time, only to detect abuse; there is no self-serve way to turn that off. Its free tier does train on it.
+
+## Decision
+
+**Gemini 2.5 Flash-Lite, on a billed Google project.** Never the free tier. The model is a setting, `RECEIPT_MODEL`, so moving to a newer Flash-Lite (when Google retires this one) changes no code; it changes only after the new model passes the check in [`docs/runbooks/receipt-photos.md`](../runbooks/receipt-photos.md).
+
+**This refines one sentence of 0025:** a provider may keep what we send for a limited time only to detect abuse, and must never train on it. Before the first photo, the app says so in plain words. The rest of 0025 stands.
+
+**One endpoint, `POST /api/receipts/read`, behind five layers, cheapest first:**
+
+1. **Switch.** Off unless `RECEIPT_PHOTOS` is `on` and the key is set. Off answers 503. Off is the default, and turning it off is the emergency stop.
+2. **Who.** Only from `https://cookto.day` (the `Origin` header) and only signed in (0025's session). Until sign-in ships, nobody gets through.
+3. **What.** The body is one JPEG or WebP photo, judged by its first bytes, not its label, at most 1.5 MB, read with a cap. Nothing the phone sends but the photo reaches the AI.
+4. **How many.** One Durable Object counts every call, atomically, before the AI is called:
+   - per household: 3 a day and 30 a month;
+   - per network address: 20 a day (stored only as a keyed hash, for a day);
+   - everyone together: 2,000 a day.
+
+   Days and months are UTC. Over a limit answers 429, saying which limit and when it resets. If the AI fails, the call is given back; "not a receipt" is not.
+5. **The AI call.** Our fixed instruction and the photo; an answer forced into a schema of item lines; temperature 0, no thinking, at most 4,096 output tokens, a 20-second timeout, no retries. The key travels only in a header, and only the adapter holds it.
+
+**We check the answer ourselves.** Its shape, lengths and numbers are validated again; at most 80 lines; a line whose quantity × price isn't its amount is marked "check"; the lines are compared with the printed total. Only the shop, the date and the lines go back, never the AI's raw text. No lines answers 422, "not a receipt".
+
+**A money backstop.** The Google project gets a spend cap of $10 a month and an alert at $5. Our counter is the real limit: Google applies its cap up to about 10 minutes late. Worst case, every limit reached every day: 2,000 × $0.0003 = $0.60 a day.
+
+**Nothing kept.** The photo is never stored or logged. Each call logs one line: the outcome, the time taken, how many lines, and the tokens used. No addresses, no accounts, no content.
+
+**Checked by lint:** `fetch` only in the AI adapter, `console` only in the API's log helper. The API's types come from `@cloudflare/workers-types` (development only).
+
+## Alternatives
+
+- **Free OCR on the phone (Tesseract.js):** private and free, but 9 of 11 lines on a cleaned photo, and about 4 MB to download. It may come later, as the offline fallback.
+- **Claude Haiku 4.5:** not tested on receipts; about 15 times the price.
+- **Gemini 3.5 Flash-Lite now:** same accuracy, 7 times the price. It's the next step when 2.5 retires.
+- **Cloudflare Turnstile against bots:** loads a script from another site, which our page policy forbids. Sign-in plus the limits cover it.
+- **Cloudflare's rate-limiting binding:** approximate, counted per data centre, and can't hold a month. The Durable Object is exact.
+- **Counting in Supabase:** a table with row-level rules, and a round trip per call. The limits belong at the edge, next to the endpoint.
+- **Remembering photos already read, on the server:** means storing results; the limits already bound the cost. The phone avoids sending the same photo twice.
+
+## Consequences
+
+- Receipt photos work once sign-in ships and the keys are set; until then the endpoint is built and tested, and refuses everyone.
+- The worst-case cost is known and capped twice.
+- A third company, Google, briefly sees receipt photos. The app says so first, and the person chooses.
+- When Google retires 2.5 Flash-Lite, we switch the setting after the runbook's check.
+- Revisit the limits when real families hit them.

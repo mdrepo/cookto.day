@@ -86,3 +86,7 @@ Deleting an account deletes its data within 30 days, and export works at any tim
 - A privacy policy page must say exactly what the table above says.
 - Supabase pauses a free project after a week with no use. Fine for a live app; forks of the template should know.
 - Supersedes [0013](0013-static-browser-only.md). What it got right stays: the phone first, nothing from other sites, small pages.
+
+## Notes (2026-10-16)
+
+- **AI providers:** [0028](0028-receipt-photos-ai.md) refines the sentence on AI: a provider may keep what we send for a limited time only to detect abuse, and must never train on it. The app says so before the person agrees.

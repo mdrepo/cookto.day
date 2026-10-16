@@ -70,3 +70,11 @@
 /apps/kit/playwright.config.ts      @mdrepo
 /apps/kit/scripts/                  @mdrepo
 /apps/kit/e2e/                      @mdrepo
+/apps/api/package.json              @mdrepo
+/apps/api/tsconfig.json             @mdrepo
+/apps/api/src/tsconfig.json         @mdrepo
+/apps/api/scripts/                  @mdrepo
+/apps/api/test/                     @mdrepo
+# How much the AI may cost us (ADR 0028).
+/apps/api/src/usage/limits.ts       @mdrepo
+/docs/runbooks/                     @mdrepo

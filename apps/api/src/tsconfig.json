@@ -1,0 +1,10 @@
+// The Worker runs in Cloudflare's runtime, not a browser or Bun, so it gets
+// that runtime's types only (ADR 0025, 0028).
+{
+  "extends": "../../../tsconfig.base.json",
+  "include": ["."],
+  "compilerOptions": {
+    "lib": ["ES2023"],
+    "types": ["@cloudflare/workers-types"]
+  }
+}

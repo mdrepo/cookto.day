@@ -60,3 +60,9 @@ An AI call costs us money each time, so the endpoint is a target. People could r
 - A third company, Google, briefly sees receipt photos. The app says so first, and the person chooses.
 - When Google retires 2.5 Flash-Lite, we switch the setting after the runbook's check.
 - Revisit the limits when real families hit them.
+
+## Notes (2026-10-16)
+
+- **The worst case is higher than the Decision says.** Its $0.60 a day assumes real receipts (about $0.0003 each). A photo whose text tells the AI to ramble makes it write until the 4,096-token cap: about $0.0017 a read (tested). With every limit reached that way, about $3.40 a day, so Google's $10 cap stops it within three days. Reaching it takes about 667 signed-in households; one abusive household costs at most about half a cent a day. The answer never reaches anyone: our check drops it.
+- **The schema has no line limit.** Gemini refuses `maxItems: 80` as too complex to serve; our check keeps at most 80 lines.
+- **A read is given back whenever Google refuses or fails** (any HTTP error), not only when it's busy or down: Google doesn't bill a failed request ("If your request fails with a 400 or 500 error, you won't be charged", its billing page). Only a billed answer that we can't use still counts.

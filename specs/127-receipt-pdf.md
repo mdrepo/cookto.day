@@ -29,21 +29,21 @@ Each criterion becomes one e2e test, on an Android phone, an iPhone and a deskto
 
 ### 3. ask about the rest
 
-- **Given** a receipt with lines we don't recognise, such as "Thai Hom Mali Jasmine Rice" and "Coca-Cola Zero Sugar"
+- **Given** a receipt with lines we don't recognise, such as "Velvet Almond Milk Drink" and "Coca-Cola Zero Sugar"
 - **When** it's read
 - **Then** "Not sure" lists each one with three choices: which of our foods it is, "Add as it is", or "Skip"
-- **When** they say the rice is Rice, add the Coke as it is, and leave the rest
-- **Then** the button counts what's ticked and answered, such as "Add 10", and lines with no answer are left out
+- **When** they add the almond milk as it is, skip the Coke, and leave the rest
+- **Then** the button counts what's ticked and added, such as "Add 16", and lines with no answer are left out
 
 ### 4. ask only once
 
-- **Given** they said "Thai Hom Mali Jasmine Rice" is Rice on an earlier receipt
-- **When** they read a receipt with the same line
-- **Then** it's ticked as Rice, not under "Not sure"
+- **Given** they added "Velvet Almond Milk Drink" as it is, and skipped "Coca-Cola Zero Sugar", on an earlier receipt
+- **When** they read a receipt with the same lines
+- **Then** the almond milk is ticked under its own name, the Coke is left out, and neither is under "Not sure"
 
 ### 5. added as bought on delivery day
 
-- **When** they press "Add 10"
+- **When** they press "Add 16"
 - **Then** fresh food is in Fresh, bought on the receipt's delivery date, each with its use-by
 - **And** staples on the receipt, such as cumin, count as in the kitchen
 - **And** anything on the shopping list that was bought comes off it (as specs/113, criterion 4)

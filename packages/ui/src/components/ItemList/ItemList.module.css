@@ -39,7 +39,14 @@
 
 .text {
   display: flex;
+  flex: 1;
   flex-direction: column;
+}
+
+/* A picture at the row's start (specs/118). */
+.media {
+  display: flex;
+  flex: none;
 }
 
 .name {
@@ -49,4 +56,13 @@
 .line {
   font-size: var(--text-sm);
   color: var(--color-text-muted);
+}
+
+/* A row answers a tap (#80). */
+.row {
+  transition: background-color var(--motion-quick) ease-out;
+}
+
+.row:active {
+  background: var(--color-accent-soft);
 }

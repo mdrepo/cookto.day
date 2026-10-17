@@ -1,0 +1,20 @@
+/* A change, and a way back (#116): the accent's soft colour, at the bottom
+   of the screen's content while it scrolls. */
+.bar {
+  position: sticky;
+  inset-block-end: var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-block: var(--space-1);
+  padding-inline: var(--space-4) var(--space-2);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-lg);
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+.text {
+  font-weight: 600;
+}

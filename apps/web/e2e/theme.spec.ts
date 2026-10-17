@@ -6,7 +6,8 @@ import { Cooking } from "./support/cooking.js";
 /** The page's background: the theme people see. */
 const background = (page: Page) =>
   page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-const DARK = "rgb(28, 26, 23)";
+/** Night paper, warm since #80's polish. */
+const DARK = "rgb(33, 25, 19)";
 const LIGHT = "rgb(251, 247, 240)";
 
 async function openSettings(k: Cooking) {

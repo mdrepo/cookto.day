@@ -54,6 +54,13 @@
       "Edit(apps/kit/playwright.config.ts)",
       "Edit(apps/kit/scripts/**)",
       "Edit(apps/kit/e2e/**)",
+      "Edit(apps/api/package.json)",
+      "Edit(apps/api/tsconfig.json)",
+      "Edit(apps/api/src/tsconfig.json)",
+      "Edit(apps/api/scripts/**)",
+      "Edit(apps/api/test/**)",
+      "Edit(apps/api/src/usage/limits.ts)",
+      "Edit(docs/runbooks/**)",
       "Bash(gh pr merge:*)",
       "Bash(gh pr merge)"
     ],

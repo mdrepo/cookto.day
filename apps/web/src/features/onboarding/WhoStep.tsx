@@ -7,7 +7,14 @@ export function WhoStep() {
   return (
     <Stack gap={3}>
       {w.ids.map((id) => (
-        <PersonCard key={id} id={id} />
+        <PersonCard
+          key={id}
+          id={id}
+          open={id === w.open}
+          onOpen={() => {
+            w.setOpen(id);
+          }}
+        />
       ))}
       {w.nobody && <p>{w.nobody}</p>}
       <Cluster gap={2}>

@@ -84,5 +84,10 @@
   },
   "servedWith": ["roti", "rice"],
   "source": "https://www.indianhealthyrecipes.com/butter-chicken/",
-  "note": "Read through a page summary, not the page itself. Lemon is about 0.1 a serving, raised to the 0.5 minimum."
+  "note": "Read through a page summary, not the page itself. Lemon is about 0.1 a serving, raised to the 0.5 minimum.",
+  "photo": {
+    "author": "Yuvraj Singh 97",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Butter_Chicken_%26_Butter_Naan_-_Home_-_Chandigarh_-_India_-_0006.jpg"
+  }
 }

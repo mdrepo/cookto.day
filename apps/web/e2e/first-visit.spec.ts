@@ -15,7 +15,7 @@ test.describe("A first visit", () => {
     await kitchen.open("ar");
 
     await expect(kitchen.emptyState()).toContainText(
-      "أضف فاتورة بقالة لترى ما يمكنك طبخه اليوم",
+      "اختر ما تطبخه، ثم أضف ما في مطبخك.",
     );
     expect(await kitchen.direction()).toBe("rtl");
     expect(await kitchen.taglineStartsFrom()).toBe("right");

@@ -32,6 +32,8 @@ export interface Dish {
   ingredients: Record<string, { amount: number; unit: string }>;
   servedWith?: string[];
   source: string;
+  /** A free photo of the dish, credited (specs/118). */
+  photo?: { author: string; licence: string; source: string };
 }
 export interface Words {
   dishes: Record<string, string>;
@@ -53,6 +55,8 @@ export interface Pack {
   words: Record<string, Words>;
   /** A sample pantry, for trying the app (sample.json, optional). */
   sample?: SampleItem[];
+  /** photos/<dish>.webp and .small.webp: each file's size in bytes. */
+  photos?: Record<string, { large: number; small: number }>;
 }
 export interface FoodKeeperEntry {
   name: string;
@@ -149,6 +153,53 @@ function dishProblems(pack: Pack): string[] {
   });
 }
 
+/** Photo licences we can use (specs/118): free, with credit at most. */
+const LICENCE = /^(Public domain|CC0( 1\.0)?|CC BY(-SA)? \d\.\d)$/;
+const COMMONS = /^https:\/\/commons\.wikimedia\.org\/wiki\/File:/;
+const MAX = { large: 40_000, small: 8_000 } as const;
+
+/** Every photo credited and small; every credit with its files (specs/118). */
+function photoProblems(pack: Pack): string[] {
+  const files = pack.photos ?? {};
+  const problems: string[] = [];
+  for (const [slug, dish] of Object.entries(pack.dishes)) {
+    const photo = dish.photo;
+    if (!photo) continue;
+    const at = `${pack.id}/dishes/${slug}.json`;
+    if (!photo.author.trim())
+      problems.push(
+        `${at}: its photo has no author. Copy "Author" from its Commons page.`,
+      );
+    if (!LICENCE.test(photo.licence))
+      problems.push(
+        `${at}: its photo's licence, ${photo.licence}, isn't one we can use. Pick a photo in the public domain, or under CC0, CC BY or CC BY-SA.`,
+      );
+    if (!COMMONS.test(photo.source))
+      problems.push(
+        `${at}: its photo's "source" must be its page on commons.wikimedia.org.`,
+      );
+    if (!(slug in files))
+      problems.push(
+        `${at}: its photo has no files. Add photos/${slug}.webp and photos/${slug}.small.webp.`,
+      );
+  }
+  for (const [slug, sizes] of Object.entries(files)) {
+    const at = `${pack.id}/photos/${slug}`;
+    if (!pack.dishes[slug]?.photo) {
+      problems.push(
+        `${at}.webp: no dish credits it. Add "photo" to its dish, or remove the files.`,
+      );
+      continue;
+    }
+    for (const size of ["large", "small"] as const)
+      if (sizes[size] > MAX[size])
+        problems.push(
+          `${at}${size === "small" ? ".small" : ""}.webp: ${String(Math.round(sizes[size] / 1000))} KB, over ${String(MAX[size] / 1000)} KB. Make it smaller.`,
+        );
+  }
+  return problems;
+}
+
 function sampleProblems(pack: Pack): string[] {
   const at = `${pack.id}/sample.json`;
   return (pack.sample ?? []).flatMap(({ ingredient, amount, unit }) => {
@@ -209,5 +260,6 @@ export function packProblems(pack: Pack, sources: Sources): string[] {
     ...dishProblems(pack),
     ...sampleProblems(pack),
     ...wordsProblems(pack),
+    ...photoProblems(pack),
   ];
 }

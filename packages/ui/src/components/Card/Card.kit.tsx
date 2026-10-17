@@ -43,5 +43,17 @@ export const kit: Kit = {
         </Card>
       ),
     },
+    {
+      title: "Folded to one line",
+      render: (lang) => (
+        <Card
+          title={words[lang].dish}
+          folded={{ summary: words[lang].tomorrow, onOpen: () => undefined }}
+          action={<Button kind="plain" icon="x" label={words[lang].remove} />}
+        >
+          {words[lang].tomorrow}
+        </Card>
+      ),
+    },
   ],
 };

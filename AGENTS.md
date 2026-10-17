@@ -28,11 +28,13 @@ One repository, split into workspaces ([ADR 0016](docs/adr/0016-monorepo.md)). R
 | `apps/web/scripts/` | The build and the dev server |
 | `packages/engine/` | Pure functions (dates, ranking, planning): no DOM, storage or network. Unit tests in its `test/` |
 | `packs/` | Cuisine packs: dishes, staples, ingredients and words, as data ([ADR 0015](docs/adr/0015-kitchen-packs.md), [0027](docs/adr/0027-pantry-and-cuisine-packs.md)). `packs/sources/` stores Wikidata's labels and the USDA FoodKeeper entries they cite |
+| `apps/api/` | The Worker behind cookto.day/api/* ([ADR 0025](docs/adr/0025-server.md), [0028](docs/adr/0028-receipt-photos-ai.md)): routes in `src/router.ts`, receipt photos in `src/receipts/`, the AI limits in `src/usage/`. Its tests in `test/` run in Bun, with Bun's SQLite standing in for the Durable Object's. Configured in `apps/web/wrangler.jsonc` |
 | `tooling/` | The checks (`scripts/`) and their tests (`test/`). `banned-words.json` lists the filler words the app may not use |
 | `specs/` | Acceptance criteria, one file per issue |
 | `DESIGN.md` | How every screen looks. You don't decide the look; this file or a code owner does |
 | `docs/adr/` | Decisions. **Accepted ADRs are binding** |
 | `docs/workflow.md` | The workflow for the person driving you, with a worked example |
+| `docs/runbooks/` | Steps only a code owner takes: keys, switches, emergency stops. Never hold a key yourself |
 
 Outside packages are declared only in the root `package.json`. A workspace depends on another with `"workspace:*"`.
 
@@ -74,7 +76,7 @@ There's no behaviour change for docs, dependency bumps, pure refactors covered b
 - **Small files.** A component (a `.tsx` file in `src/`) stays under 150 lines; any other file under 300. Split it into smaller parts; never raise the limit. *(`size:check`)*
 - **Never weaken a check to make it pass.** Don't edit `eslint.config.js`, any `tsconfig*.json`, `knip.json`, `turbo.json`, `tooling/`, `.githooks/`, `.github/` or ADRs, and don't add `eslint-disable`, `@ts-expect-error`, `.skip` or `.only`, raise a size budget or a design cap. Fix the cause. If you believe a rule is wrong, stop and ask. *(ESLint, CODEOWNERS)*
 - **React is the only package the app ships; few in the tooling.** Nothing else that runs in people's browsers, no router, state or component library: use React, Bun and Web APIs ([ADR 0018](docs/adr/0018-ui-react.md)). If something truly needs a package, use the `add-dependency` skill: a code owner must approve it. *(`deps:check`, `deps:health`, knip)*
-- **Nothing leaves the browser except through our own API.** No `fetch` outside `packages/data`'s network adapter (none yet), no analytics, no fonts, scripts or styles from other sites. People's bills have their name, address and phone number on them, so the server never holds bill PDFs, bill emails, or those details ([ADR 0025](docs/adr/0025-server.md)). *(ESLint, the page's Content-Security-Policy, the size budget test, e2e runs with no internet)*
+- **Nothing leaves the browser except through our own API.** No `fetch` outside `packages/data`'s network adapter (none yet), no analytics, no fonts, scripts or styles from other sites. People's bills have their name, address and phone number on them, so the server never holds bill PDFs, bill emails, or those details ([ADR 0025](docs/adr/0025-server.md)). The API itself calls out only from its AI adapter, logs only through `apps/api/src/log.ts` (codes and numbers, never content), and every AI call passes its limits first ([ADR 0028](docs/adr/0028-receipt-photos-ai.md)). *(ESLint, the page's Content-Security-Policy, the size budget test, e2e runs with no internet)*
 - **Keep the page small.** `apps/web/test/budget/page-size.test.ts` sets size budgets. If a change goes over, make it smaller; never raise a budget. *(`bun run test`)*
 - **Every word in every language.** Text the user sees lives in `apps/web/src/i18n/`: add the key to `en.ts`, then to `hi.ts`, `mr.ts` and `ar.ts` ([ADR 0012](docs/adr/0012-localisation.md)). Never hard-code UI text in a component. *(TypeScript: a missing key fails the typecheck)*
 - **Right to left works.** Use logical CSS (`margin-inline-start`, `inset-inline-end`, `text-align: start`), never `left`/`right`. *(`design:check`)*

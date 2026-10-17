@@ -1,3 +1,4 @@
+import type { DishPhoto } from "@cookto/data";
 import { MEAL_SLOTS } from "@cookto/engine";
 import { useQuery } from "@tanstack/react-query";
 import { count, fill } from "../../i18n/format.js";
@@ -11,16 +12,20 @@ import {
   useKitchenSettings,
   useLoadedPacks,
 } from "../../food.js";
-import { cookedIt } from "@cookto/usecases";
-import {
-  cooked,
-  cookedQuery,
-  membersQuery,
-  pantryQuery,
-  queries,
-  today,
-} from "../../platform.js";
+import { membersQuery, pantryQuery, queries } from "../../platform.js";
 import { goBack, useDish } from "../../routes.js";
+import { useDishActions } from "./useDishActions.js";
+
+/** Its photo, credited, linking to its page on Commons (specs/118). */
+function photoOf(photo: DishPhoto | undefined, words: string) {
+  if (!photo) return null;
+  const { author, licence } = photo;
+  return {
+    src: photo.large,
+    credit: fill(words, { author, licence }),
+    source: photo.source,
+  };
+}
 
 /**
  * A dish's page (specs/95): what it needs, for everyone at home, split into
@@ -36,16 +41,19 @@ export function useDishScreen() {
   const { skip } = useKitchenSettings();
   const { data: items = [] } = useQuery(pantryQuery, queries);
   const { data: members = [] } = useQuery(membersQuery, queries);
-  const { data: history = [] } = useQuery(cookedQuery, queries);
   const dish = packs
     .find((p) => p.id === at?.pack)
     ?.dishes.find((d) => d.id === at?.dish);
+  const have = new Set(items.map((i) => i.ingredient));
+  const staples = assumedStaples(packs, items);
+  const actions = useDishActions(
+    dish?.id,
+    (dish?.ingredients ?? []).filter((i) => !have.has(i) && !staples.has(i)),
+  );
   if (!dish) return null;
 
   // Nobody saved yet (a sample, or setup skipped): one person.
   const people = Math.max(members.length, 1);
-  const have = new Set(items.map((i) => i.ingredient));
-  const staples = assumedStaples(packs, items);
   const rows = dish.ingredients.map((id, i) => {
     const per = dish.amounts?.[i];
     return {
@@ -98,13 +106,8 @@ export function useDishScreen() {
         : []),
     ],
     seeRecipe: t.seeRecipe,
-    weCookedThis: t.weCookedThis,
-    cookedToday: history.some((c) => c.dish === dish.id && c.on === today())
-      ? t.cookedToday
-      : null,
-    onCooked: () => {
-      void cookedIt({ cooked }, dish.id, today());
-    },
+    ...actions,
     source: dish.source,
+    photo: photoOf(dish.photo, t.photoBy),
   };
 }

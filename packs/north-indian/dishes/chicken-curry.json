@@ -64,5 +64,10 @@
   },
   "servedWith": ["roti", "rice"],
   "source": "https://www.indianhealthyrecipes.com/chicken-curry/",
-  "note": "Read through a page summary, not the page itself. Onion: the recipe says '1 cup (3 medium)'; 1 cup was used, and 3 medium would be about 110 g a serving."
+  "note": "Read through a page summary, not the page itself. Onion: the recipe says '1 cup (3 medium)'; 1 cup was used, and 3 medium would be about 110 g a serving.",
+  "photo": {
+    "author": "Deepti135",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Chicken_Curry_North_Indian_Style.jpg"
+  }
 }

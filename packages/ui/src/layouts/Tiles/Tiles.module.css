@@ -1,0 +1,9 @@
+/* Tiles (DESIGN.md): cards in a grid, each at least 18rem, so a phone has
+   one column and a wide screen two or more; cards share the row's width,
+   so two meals fill it, and all of a row are as tall. No outer
+   margin: the space between parts belongs to the screen. */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+  gap: var(--space-4);
+}

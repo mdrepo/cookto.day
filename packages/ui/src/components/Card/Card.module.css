@@ -23,3 +23,41 @@
   justify-content: space-between;
   gap: var(--space-2);
 }
+
+/* Folded to one line (#114): the title and its summary are one button. */
+.folded {
+  padding-block: var(--space-1);
+}
+
+/* The line takes the room left beside the action, never more. */
+.folded .title {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.fold {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  overflow: hidden;
+  inline-size: 100%;
+  min-block-size: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+/* One line: a long summary ends in "…". */
+.summary {
+  overflow: hidden;
+  min-inline-size: 0;
+  color: var(--color-text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-sm);
+  font-weight: 400;
+}

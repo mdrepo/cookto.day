@@ -15,6 +15,7 @@ export {
 export {
   addFood,
   addStaples,
+  bringBack,
   changeAmount,
   clearSample,
   type Food,
@@ -24,5 +25,11 @@ export {
   trySample,
   useUp,
 } from "./kitchen.js";
-export { cookedIt, KEEP_DIFFERENT_DAYS } from "./cooked.js";
+export { cookedIt, KEEP_DIFFERENT_DAYS, notCooked } from "./cooked.js";
+export {
+  addBoughtFood,
+  addToList,
+  addTypedToList,
+  bought,
+} from "./shopping.js";
 export { chooseCountry, chooseLanguage, chooseTheme } from "./settings.js";

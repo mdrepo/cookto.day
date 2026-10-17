@@ -56,5 +56,10 @@
   },
   "servedWith": ["roti"],
   "source": "https://www.vegrecipesofindia.com/kadai-paneer-recipe/",
-  "note": "Whole dried Kashmiri chillies left out, so no chilli powder."
+  "note": "Whole dried Kashmiri chillies left out, so no chilli powder.",
+  "photo": {
+    "author": "Koynadalmia",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Kadai_Paneer-Delhi-12.jpg"
+  }
 }

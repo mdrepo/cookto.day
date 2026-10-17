@@ -51,5 +51,10 @@
     }
   },
   "source": "https://www.indianhealthyrecipes.com/aloo-tikki-recipe/",
-  "note": "A serving is one tikki, with the optional peas-and-paneer stuffing."
+  "note": "A serving is one tikki, with the optional peas-and-paneer stuffing.",
+  "photo": {
+    "author": "Raveesh Vyas from [Ahmedabad, Noida], India",
+    "licence": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Aloo_Tikki_served_with_chutneys.jpg"
+  }
 }

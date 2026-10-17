@@ -19,3 +19,12 @@ export async function cookedIt(
 ): Promise<void> {
   await k.cooked.writer.add(dish, today);
 }
+
+/** Not cooked today after all: "Undo" (#116). */
+export async function notCooked(
+  k: Cooked,
+  dish: string,
+  today: string,
+): Promise<void> {
+  await k.cooked.writer.remove(dish, today);
+}

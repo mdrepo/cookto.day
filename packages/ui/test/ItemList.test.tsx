@@ -33,4 +33,25 @@ describe("ItemList", () => {
     );
     expect(rows[1]?.textContent).toBe("Onion");
   });
+
+  test("a row can start with a picture, inside its button (#118)", () => {
+    const doc = render(
+      <ItemList
+        label="Dishes"
+        items={[
+          {
+            key: "p",
+            name: "Palak paneer",
+            media: <img src="palak.webp" alt="" />,
+            onOpen: () => undefined,
+          },
+        ]}
+      />,
+    );
+    const row = doc.querySelector("ul > li > button");
+    expect(
+      row?.firstElementChild?.querySelector("img")?.getAttribute("src"),
+    ).toBe("palak.webp");
+    expect(row?.textContent).toBe("Palak paneer");
+  });
 });

@@ -7,9 +7,12 @@ import {
   Section,
   Stack,
   Tag,
+  UndoBar,
 } from "@cookto/ui";
 import { AddFood } from "./AddFood.js";
 import { ItemSheet } from "./ItemSheet.js";
+import { ListButton } from "./ListButton.js";
+import { SetUpSteps } from "./SetUpSteps.js";
 import { usePantryScreen } from "./usePantryScreen.js";
 
 /** What's in the kitchen, as a short list you tap (specs/72, 80; #84). */
@@ -39,12 +42,18 @@ export function PantryScreen({ bar }: { bar: ReactNode }) {
       title={s.title}
       action={
         !s.add.adding && (
-          <Button icon="plus" onClick={s.add.start}>
+          <Button
+            kind={s.guiding ? "quiet" : "main"}
+            icon="plus"
+            onClick={s.add.start}
+          >
             {s.add.label}
           </Button>
         )
       }
     >
+      <ListButton />
+      <SetUpSteps setup={s.setup} shown={s.guiding} />
       {s.add.adding && <AddFood onDone={s.add.done} />}
       <Panes
         primary={
@@ -54,7 +63,14 @@ export function PantryScreen({ bar }: { bar: ReactNode }) {
         }
         secondary={s.groups.filter((g) => g.key === "soon").map(group)}
       />
-      {s.open && <ItemSheet id={s.open} onClose={s.close} />}
+      {s.undo && (
+        <UndoBar undoLabel={s.undo.label} onUndo={s.undo.run}>
+          {s.undo.text}
+        </UndoBar>
+      )}
+      {s.open && (
+        <ItemSheet id={s.open} onClose={s.close} onUsedUp={s.onUsedUp} />
+      )}
     </Screen>
   );
 }

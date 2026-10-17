@@ -1,4 +1,12 @@
-import { Button, ItemList, Pick, Reasons, Section, Stack } from "@cookto/ui";
+import {
+  Button,
+  Cluster,
+  ItemList,
+  Pick,
+  Reasons,
+  Section,
+  Tiles,
+} from "@cookto/ui";
 import { useState } from "react";
 import { useCookToday } from "./useCookToday.js";
 
@@ -9,7 +17,7 @@ export function CookToday() {
   if (!c) return null;
   return (
     <Section title={c.title}>
-      <Stack gap={4}>
+      <Tiles>
         {c.meals.map((meal) => (
           <Pick
             key={meal.slot}
@@ -20,11 +28,16 @@ export function CookToday() {
           >
             <Reasons items={meal.best.reasons} />
             {meal.cooked ? (
-              <Reasons
-                items={[
-                  { key: "cooked", text: c.cookedTodayWords, tone: "good" },
-                ]}
-              />
+              <Cluster gap={2}>
+                <Reasons
+                  items={[
+                    { key: "cooked", text: c.cookedTodayWords, tone: "good" },
+                  ]}
+                />
+                <Button kind="plain" onClick={meal.onUndo}>
+                  {c.undo}
+                </Button>
+              </Cluster>
             ) : (
               <div>
                 <Button kind="quiet" icon="check" onClick={meal.onCooked}>
@@ -51,7 +64,7 @@ export function CookToday() {
               ))}
           </Pick>
         ))}
-      </Stack>
+      </Tiles>
     </Section>
   );
 }

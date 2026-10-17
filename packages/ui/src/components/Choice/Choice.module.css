@@ -75,3 +75,15 @@
   font-size: var(--text-sm);
   color: var(--color-text-muted);
 }
+
+/* A choice answers (#80): its frame and colour ease in. */
+.card {
+  transition:
+    background-color var(--motion-quick) ease-out,
+    border-color var(--motion-quick) ease-out,
+    transform var(--motion-quick) ease-out;
+}
+
+.card:active {
+  transform: scale(0.99);
+}

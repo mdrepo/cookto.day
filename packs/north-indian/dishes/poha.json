@@ -55,5 +55,10 @@
     }
   },
   "source": "https://www.indianhealthyrecipes.com/poha-recipe/",
-  "note": "Potato is optional in the recipe; curry leaves and peanuts left out."
+  "note": "Potato is optional in the recipe; curry leaves and peanuts left out.",
+  "photo": {
+    "author": "Pranit pawar",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Maharastrian_Kanda_Poha.jpg"
+  }
 }

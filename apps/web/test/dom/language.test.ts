@@ -6,10 +6,10 @@ import { openPage } from "../helpers/page.js";
 
 describe("language switch", () => {
   test.each([
-    ["en", "ltr", "Add a grocery bill to see what you can cook today"],
-    ["hi", "ltr", "आज क्या पका सकते हैं, यह देखने के लिए किराने का बिल जोड़ें"],
-    ["mr", "ltr", "आज काय शिजवता येईल ते पाहण्यासाठी किराणा बिल जोडा"],
-    ["ar", "rtl", "أضف فاتورة بقالة لترى ما يمكنك طبخه اليوم"],
+    ["en", "ltr", "Choose what you cook, then add what's in your kitchen."],
+    ["hi", "ltr", "क्या पकाते हैं चुनें, फिर रसोई में जो है वह जोड़ें।"],
+    ["mr", "ltr", "काय शिजवता ते निवडा, मग स्वयंपाकघरात जे आहे ते जोडा."],
+    ["ar", "rtl", "اختر ما تطبخه، ثم أضف ما في مطبخك."],
   ])(
     "previewing %p sets lang, direction %p and the words",
     (code, dir, body) => {

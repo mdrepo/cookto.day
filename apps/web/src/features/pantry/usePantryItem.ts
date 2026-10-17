@@ -8,8 +8,10 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useWords } from "../../i18n/useWords.js";
-import { useItemWords } from "../../food.js";
+import { fill } from "../../i18n/format.js";
+import { useItemWords, useLoadedPacks } from "../../food.js";
 import { kitchen, pantryQuery, queries, today } from "../../platform.js";
+import { openDishesWith } from "../../routes.js";
 import { toGramsOrMl, UNIT_CHOICES } from "./units.js";
 
 const CONDITION_WORDS = {
@@ -23,10 +25,15 @@ const CONDITION_WORDS = {
  * leaves it as it was (ADR 0023, specs/72 criterion 11). `done` closes the
  * sheet after a change.
  */
-export function usePantryItem(id: string, done: () => void = () => undefined) {
+export function usePantryItem(
+  id: string,
+  done: () => void = () => undefined,
+  usedUp?: (id: string, name: string) => void,
+) {
   const { t } = useWords();
   const words = useItemWords();
   const [editing, setEditing] = useState(false);
+  const packs = useLoadedPacks();
   const { data: item } = useQuery(
     {
       ...pantryQuery,
@@ -36,9 +43,22 @@ export function usePantryItem(id: string, done: () => void = () => undefined) {
   );
   if (!item) return null;
   const w = words(item, today());
+  const used = packs.some((p) =>
+    p.dishes.some((d) => d.ingredients.includes(item.ingredient)),
+  );
   return {
     ...w,
     closeLabel: t.close,
+    // The dishes that use it (#105), when any loaded dish does.
+    dishesWith: used
+      ? {
+          label: fill(t.dishesWith, { item: w.name }),
+          open: () => {
+            done();
+            openDishesWith(item.ingredient);
+          },
+        }
+      : null,
     howItIs: {
       label: t.howItIs,
       value: w.condition,
@@ -57,7 +77,7 @@ export function usePantryItem(id: string, done: () => void = () => undefined) {
       label: t.usedUp,
       run: () => {
         done();
-        void markUsedUp(kitchen, id);
+        void markUsedUp(kitchen, id).then(() => usedUp?.(id, w.name));
       },
     },
     change: {

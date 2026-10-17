@@ -4,6 +4,7 @@ import {
   Cluster,
   LinkOut,
   Panes,
+  Photo,
   Reasons,
   Rows,
   Screen,
@@ -11,6 +12,59 @@ import {
   Stack,
 } from "@cookto/ui";
 import { useDishScreen } from "./useDishScreen.js";
+
+type Dish = NonNullable<ReturnType<typeof useDishScreen>>;
+
+/** Why, what to do, and the recipe: beside the lists on a wide screen. */
+function DishSide({ s }: { s: Dish }) {
+  return (
+    <Stack gap={3}>
+      <Photo src={s.photo?.src} alt={s.title} shape="wide" eager />
+      <Reasons
+        items={[
+          ...s.reasons,
+          ...(s.cookedToday
+            ? [
+                {
+                  key: "cooked",
+                  text: s.cookedToday,
+                  tone: "good" as const,
+                },
+              ]
+            : []),
+        ]}
+      />
+      {s.cookedToday && (
+        <div>
+          <Button kind="plain" onClick={s.onUndo}>
+            {s.undo}
+          </Button>
+        </div>
+      )}
+      {!s.cookedToday && (
+        <div>
+          <Button kind="quiet" icon="check" onClick={s.onCooked}>
+            {s.weCookedThis}
+          </Button>
+        </div>
+      )}
+      {s.addToList && (
+        <div>
+          <Button kind="quiet" icon="shopping-cart" onClick={s.addToList.run}>
+            {s.addToList.label}
+          </Button>
+        </div>
+      )}
+      {s.addToList?.added && (
+        <Reasons
+          items={[{ key: "added", text: s.addToList.added, tone: "good" }]}
+        />
+      )}
+      {s.source && <LinkOut href={s.source}>{s.seeRecipe}</LinkOut>}
+      {s.photo && <LinkOut href={s.photo.source}>{s.photo.credit}</LinkOut>}
+    </Stack>
+  );
+}
 
 /**
  * A dish's page (specs/95): on a phone, why and the recipe first, then what
@@ -49,32 +103,7 @@ export function DishScreen({ bar }: { bar: ReactNode }) {
             </Section>
           </Stack>
         }
-        secondary={
-          <Stack gap={3}>
-            <Reasons
-              items={[
-                ...s.reasons,
-                ...(s.cookedToday
-                  ? [
-                      {
-                        key: "cooked",
-                        text: s.cookedToday,
-                        tone: "good" as const,
-                      },
-                    ]
-                  : []),
-              ]}
-            />
-            {!s.cookedToday && (
-              <div>
-                <Button kind="quiet" icon="check" onClick={s.onCooked}>
-                  {s.weCookedThis}
-                </Button>
-              </div>
-            )}
-            {s.source && <LinkOut href={s.source}>{s.seeRecipe}</LinkOut>}
-          </Stack>
-        }
+        secondary={<DishSide s={s} />}
       />
     </Screen>
   );

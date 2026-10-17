@@ -1,6 +1,7 @@
 import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 import { layers } from "./tooling/scripts/eslint-layers.js";
+import { server } from "./tooling/scripts/eslint-server.js";
 import { storage } from "./tooling/scripts/eslint-storage.js";
 import { RAW_HTML, syntax } from "./tooling/scripts/eslint-syntax.js";
 
@@ -91,6 +92,9 @@ export default defineConfig(
   // Only packages/data, and the file that hands it the browser's storage,
   // touch storage or the network (ADR 0024).
   ...storage,
+  // The API calls out only from its AI adapter, and logs only through its
+  // log helper (ADR 0028).
+  ...server,
   {
     // A test file's describe() callback is long by nature.
     files: ["**/test/**", "**/e2e/**"],

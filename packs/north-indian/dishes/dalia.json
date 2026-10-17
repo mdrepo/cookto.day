@@ -47,5 +47,10 @@
     }
   },
   "source": "https://www.vegrecipesofindia.com/dalia-recipe/",
-  "note": "Savoury vegetable dalia."
+  "note": "Savoury vegetable dalia.",
+  "photo": {
+    "author": "Vashisthapathak2015",
+    "licence": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:India_Dalia.JPG"
+  }
 }

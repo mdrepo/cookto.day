@@ -1,34 +1,22 @@
 import type { ReactNode } from "react";
-import {
-  Button,
-  Callout,
-  Cluster,
-  Logo,
-  Note,
-  Panes,
-  Screen,
-} from "@cookto/ui";
+import { Button, Cluster, Note, Panes, Screen } from "@cookto/ui";
 import { openSettings } from "../../routes.js";
 import { CookNow } from "./CookNow.js";
 import { CookToday } from "./CookToday.js";
 import { useHomeScreen } from "./useHomeScreen.js";
-import { useKitchenStart } from "./useKitchenStart.js";
-import { UseSoon } from "./UseSoon.js";
+import { KitchenCards, KitchenMore } from "./KitchenStart.js";
+import { type ItemSheetFor, UseSoon } from "./UseSoon.js";
 
 /** Today: the household, the kitchen, and what to cook (specs/72, 80; #84). */
-export function HomeScreen({ bar }: { bar: ReactNode }) {
+export function HomeScreen({
+  bar,
+  itemSheet,
+}: {
+  bar: ReactNode;
+  /** The fridge's sheet for one item, for "Use soon" (#105). */
+  itemSheet: ItemSheetFor;
+}) {
   const t = useHomeScreen();
-  const k = useKitchenStart();
-  const choose = (kind: "main" | "quiet") => (
-    <Button kind={kind} onClick={k.choose.onClick}>
-      {k.choose.label}
-    </Button>
-  );
-  const trySample = k.trySample && (
-    <Button kind="quiet" onClick={k.trySample.onClick}>
-      {k.trySample.label}
-    </Button>
-  );
   return (
     <Screen
       bar={bar}
@@ -51,44 +39,13 @@ export function HomeScreen({ bar }: { bar: ReactNode }) {
           </Button>
         </Cluster>
       )}
-      {k.sample && (
-        <Callout
-          title={k.sample.tag}
-          art={<Logo />}
-          actions={
-            <>
-              {choose("main")}
-              <Button kind="quiet" onClick={k.sample.onClear}>
-                {k.sample.clear}
-              </Button>
-            </>
-          }
-        >
-          {k.sample.body}
-        </Callout>
-      )}
-      {k.empty && (
-        <Callout
-          title={t.emptyTitle}
-          art={<Logo />}
-          actions={
-            <>
-              {choose("main")}
-              {trySample}
-            </>
-          }
-        >
-          {t.emptyBody}
-        </Callout>
-      )}
+      <KitchenCards />
       <CookNow />
-      <Panes primary={<CookToday />} secondary={<UseSoon />} />
-      {!k.empty && !k.sample && (
-        <Cluster gap={2}>
-          {choose("quiet")}
-          {trySample}
-        </Cluster>
-      )}
+      <Panes
+        primary={<CookToday />}
+        secondary={<UseSoon sheet={itemSheet} />}
+      />
+      <KitchenMore />
       <Note>{t.privacy}</Note>
     </Screen>
   );

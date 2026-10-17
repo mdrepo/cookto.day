@@ -63,5 +63,10 @@
     }
   },
   "servedWith": ["roti"],
-  "source": "https://www.vegrecipesofindia.com/aloo-palak/"
+  "source": "https://www.vegrecipesofindia.com/aloo-palak/",
+  "photo": {
+    "author": "Miansari66",
+    "licence": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Aloo_Palak_(Spinach_with_Potatoes).JPG"
+  }
 }

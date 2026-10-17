@@ -67,3 +67,16 @@
     transform: rotate(1turn);
   }
 }
+
+/* A tap answers: colours ease, and the button gives a little (#80). */
+.button {
+  transition:
+    background-color var(--motion-quick) ease-out,
+    border-color var(--motion-quick) ease-out,
+    color var(--motion-quick) ease-out,
+    transform var(--motion-quick) ease-out;
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.97);
+}

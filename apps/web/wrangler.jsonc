@@ -1,13 +1,29 @@
-// Cloudflare Workers static assets: dist/ is the whole site, no server code
-// (ADR 0013). Deployed by .github/workflows/deploy.yml on every merge to main
-// (ADR 0014), never by hand from a laptop.
+// The site, and the API beside it (ADR 0025). dist/ is the site's files; the
+// Worker in apps/api answers /api/* only, so every other request is a file,
+// served without running any of our code. Deployed by
+// .github/workflows/deploy.yml on every merge to main (ADR 0017), never by
+// hand from a laptop.
 {
   "$schema": "https://unpkg.com/wrangler@4.147.0/config-schema.json",
   "name": "cookto-day",
+  "main": "../api/src/index.ts",
   "compatibility_date": "2026-10-01",
   "assets": {
     "directory": "./dist",
     "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"],
+  },
+  // One counter for every AI read (ADR 0028), in its own SQLite storage.
+  "durable_objects": {
+    "bindings": [{ "name": "USAGE", "class_name": "UsageCounter" }],
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["UsageCounter"] }],
+  // Receipt photos stay off until sign-in ships, then a PR turns them on.
+  // The Gemini key is a secret, set in Cloudflare's dashboard, never here
+  // (docs/runbooks/receipt-photos.md).
+  "vars": {
+    "RECEIPT_PHOTOS": "off",
+    "RECEIPT_MODEL": "gemini-2.5-flash-lite",
   },
   "routes": [{ "pattern": "cookto.day", "custom_domain": true }],
   "workers_dev": false,

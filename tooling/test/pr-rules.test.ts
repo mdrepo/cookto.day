@@ -92,6 +92,15 @@ describe("checkUiChangesHaveE2e", () => {
       checkUiChangesHaveE2e(["packages/engine/src/expiry.ts"], null),
     ).toEqual([]);
   });
+
+  test("treats the API as a server, not UI: its own tests cover it (ADR 0025)", () => {
+    expect(
+      checkUiChangesHaveE2e(["apps/api/src/receipts/read.ts"], null),
+    ).toEqual([]);
+    expect(
+      checkUiChangesHaveE2e(["apps/apiary/src/main.tsx"], null),
+    ).not.toEqual([]);
+  });
 });
 
 describe("checkTddCommits", () => {

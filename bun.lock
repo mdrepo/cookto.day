@@ -12,6 +12,7 @@
         "zustand": "5.0.15",
       },
       "devDependencies": {
+        "@cloudflare/workers-types": "5.20261009.1",
         "@playwright/test": "1.63.0",
         "@types/bun": "1.4.2",
         "@types/node": "26.1.1",
@@ -26,6 +27,10 @@
         "typescript": "6.0.3",
         "typescript-eslint": "8.70.1",
       },
+    },
+    "apps/api": {
+      "name": "@cookto/api",
+      "version": "0.0.0",
     },
     "apps/kit": {
       "name": "@cookto/kit",
@@ -129,6 +134,10 @@
     "@cacheable/memory": ["@cacheable/memory@2.2.0", "", { "dependencies": { "@cacheable/utils": "^2.5.0", "@keyv/bigmap": "^1.3.1", "hookified": "^1.15.1", "keyv": "^5.6.0" } }, "sha512-CTLKqLItRCEixEAewD3/j9DB3/o96gpTPD4eJ1v+DGOlxZRZncRQkGYqqnAGCscYd6RNeXfGeiuCphsPtqyIfQ=="],
 
     "@cacheable/utils": ["@cacheable/utils@2.5.0", "", { "dependencies": { "hashery": "^1.5.1", "keyv": "^5.6.0" } }, "sha512-buipgOVDkkPXNR5+xBpDw7Zk2n1EvU7qBJCNUcL7rhQ//kfpOXPAvQ511Os0vpLYJ1pZnvudNytkQt2hst3wqA=="],
+
+    "@cloudflare/workers-types": ["@cloudflare/workers-types@5.20261009.1", "", {}, "sha512-Oa/7pS2upeCKG0lEvPSGHLK8B8sx3lPanEaXDlOj13H6HfZV5agBeHq5A1VtJj+/x9dXuMJpHTg7U7kTYt4xDA=="],
+
+    "@cookto/api": ["@cookto/api@workspace:apps/api"],
 
     "@cookto/data": ["@cookto/data@workspace:packages/data"],
 

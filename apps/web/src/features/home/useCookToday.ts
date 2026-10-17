@@ -12,7 +12,7 @@ import { fill } from "../../i18n/format.js";
 import type { Messages } from "../../i18n/en.js";
 import { useWords } from "../../i18n/useWords.js";
 import {
-  assumedStaples,
+  staplesToAssume,
   listOf,
   namer,
   SLOT_WORDS,
@@ -105,7 +105,7 @@ export function useCookToday() {
   const cookedToday = cookedOn(history, day);
   const dishes = dishesOf(packs);
   if (dishes.length === 0) return null;
-  const staples = assumedStaples(packs, items);
+  const staples = staplesToAssume(packs, items);
   const packOf = new Map(
     packs.flatMap((p) => p.dishes.map((d) => [d.id, p.id] as const)),
   );

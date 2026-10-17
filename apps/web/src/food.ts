@@ -1,7 +1,7 @@
 import type { AppPack, KitchenItem } from "@cookto/data";
 import type { KitchenSettings } from "@cookto/data/read";
 import {
-  assumedStaples as assumedFrom,
+  assumedStaples,
   conditionOf,
   daysLeft,
   type MealSlot,
@@ -64,11 +64,11 @@ export function packStaples(packs: readonly AppPack[]): Set<string> {
 }
 
 /** The staples to assume are in the kitchen (the engine's rule, ADR 0027). */
-export function assumedStaples(
+export function staplesToAssume(
   packs: readonly AppPack[],
   items: readonly KitchenItem[],
 ): Set<string> {
-  return assumedFrom(packStaples(packs), items);
+  return assumedStaples(packStaples(packs), items);
 }
 
 /** "250 g", "1.5 kg", "2 pieces"; nothing when the amount isn't known. */
@@ -138,7 +138,7 @@ export function dishNeeds(
   items: readonly KitchenItem[],
 ): { pack: string; dish: AppPack["dishes"][number]; needs: number }[] {
   const have = new Set(items.map((i) => i.ingredient));
-  const staples = assumedStaples(packs, items);
+  const staples = staplesToAssume(packs, items);
   return packs.flatMap((pack) =>
     pack.dishes.map((dish) => ({
       pack: pack.id,

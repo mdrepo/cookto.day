@@ -2,7 +2,8 @@ import { eatersOf, MEAL_SLOTS } from "@cookto/engine";
 import { useQuery } from "@tanstack/react-query";
 import { useWords } from "../../i18n/useWords.js";
 import { membersQuery, queries } from "../../platform.js";
-import { numberOf, SLOT_WORDS, titleOf } from "./names.js";
+import { SLOT_WORDS } from "../../food.js";
+import { numberOf, titleOf } from "./names.js";
 
 /** All set: each meal, with who it's for (criterion 4). */
 export function useDoneStep() {

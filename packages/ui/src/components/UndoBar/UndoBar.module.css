@@ -1,8 +1,6 @@
-/* A change, and a way back (#116): the accent's soft colour, at the bottom
-   of the screen's content while it scrolls. */
+/* A change, and a way back (#116): the accent's soft colour. Screen's note
+   slot keeps it in view. */
 .bar {
-  position: sticky;
-  inset-block-end: var(--space-4);
   display: flex;
   align-items: center;
   justify-content: space-between;

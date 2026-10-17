@@ -70,9 +70,9 @@ function Page() {
       return (
         <HomeScreen
           bar={<Tabs current={route} />}
-          itemSheet={(id, onClose) => (
+          itemSheet={(id, onClose, onUsedUp) => (
             <Suspense fallback={null}>
-              <ItemSheet id={id} onClose={onClose} />
+              <ItemSheet id={id} onClose={onClose} onUsedUp={onUsedUp} />
             </Suspense>
           )}
         />

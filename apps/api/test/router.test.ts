@@ -20,10 +20,12 @@ function deps() {
     tokensIn: 1,
     tokensOut: 1,
   });
+  const { usage, strikes } = ledger();
   return {
     reader,
     auth: signedIn,
-    usage: ledger().usage,
+    usage,
+    strikes,
     log: () => undefined,
     now: () => 0,
   };

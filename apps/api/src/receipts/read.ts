@@ -1,10 +1,10 @@
 import type { Auth } from "../auth.js";
 import { json, problem } from "../http.js";
 import type { LogEntry } from "../log.js";
-import type { Usage } from "../usage/usage.js";
+import type { Strikes, Usage } from "../usage/usage.js";
 import { readPhoto } from "./photo.js";
 import type { Reader } from "./reader.js";
-import { checkReceipt } from "./receipt.js";
+import { checkReceipt, signOfAbuse } from "./receipt.js";
 
 // POST /api/receipts/read (ADR 0028, specs/129-receipt-photos.md). Five
 // layers, cheapest first: nothing costs money until the last, and nothing is
@@ -17,6 +17,7 @@ export interface ReadDeps {
   reader: Reader | null;
   auth: Auth;
   usage: Usage;
+  strikes: Strikes;
   log: (entry: LogEntry) => void;
   /** Milliseconds since 1970. */
   now: () => number;
@@ -64,7 +65,15 @@ async function attempt(request: Request, deps: ReadDeps): Promise<Done> {
     return refuse(502, "reader");
   }
   const tokens = { tokensIn: read.tokensIn, tokensOut: read.tokensOut };
-  const receipt = read.ok ? checkReceipt(read.output) : { lines: [] };
+  // Rule 8: a sign of abuse refuses the answer whole, and ends the day.
+  const reject = async (sign: string): Promise<Done> => {
+    await deps.strikes.strike(verdict.ticket);
+    return { ...refuse(422, "rejected"), sign, ...tokens };
+  };
+  if (!read.ok) return reject(read.reason);
+  const sign = signOfAbuse(read.output);
+  if (sign !== undefined) return reject(sign);
+  const receipt = checkReceipt(read.output);
   if (receipt.lines.length === 0)
     return { ...refuse(422, "not-a-receipt"), ...tokens };
   return {

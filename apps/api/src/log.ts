@@ -7,6 +7,8 @@ export interface LogEntry {
   status: number;
   /** The error code the answer carried, if any. */
   error?: string;
+  /** Why an answer was rejected as abuse (spec #129, rule 8). */
+  sign?: string;
   /** Time spent, in milliseconds. */
   ms: number;
   /** How many receipt lines came back. */

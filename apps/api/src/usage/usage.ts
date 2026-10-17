@@ -22,3 +22,8 @@ export interface Usage {
   take(who: Who): Promise<Verdict>;
   giveBack(ticket: Ticket): Promise<void>;
 }
+
+/** Ending a household's day after a sign of abuse (spec #129, rule 8). */
+export interface Strikes {
+  strike(ticket: Ticket): Promise<void>;
+}

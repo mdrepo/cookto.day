@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { gemini } from "../src/receipts/gemini.js";
 import { MAX_PHOTO_BYTES, photoType } from "../src/receipts/photo.js";
-import { checkReceipt } from "../src/receipts/receipt.js";
+import { checkReceipt, signOfAbuse } from "../src/receipts/receipt.js";
 
 // docs/runbooks/receipt-photos.md, step 3: read one photo exactly as the API
 // does (the same instruction, schema, limits and checks) and print what it
@@ -33,10 +33,13 @@ const read = await gemini({ key, model }).read({ bytes, type });
 const seconds = ((Date.now() - started) / 1000).toFixed(1);
 if (!read.ok) fail(`${model}: ${read.reason}, after ${seconds} s`);
 
-const receipt = checkReceipt(read.output);
 console.log(
   `${model}: ${seconds} s, ${read.tokensIn} tokens in, ${read.tokensOut} out`,
 );
+const sign = signOfAbuse(read.output);
+if (sign !== undefined)
+  fail(`Rejected as a sign of abuse: ${sign} (spec #129, rule 8)`);
+const receipt = checkReceipt(read.output);
 console.log(`${receipt.shop ?? "(no shop)"}, ${receipt.date ?? "(no date)"}`);
 for (const line of receipt.lines) {
   const price = line.unitPrice === undefined ? "" : ` × ${line.unitPrice}`;

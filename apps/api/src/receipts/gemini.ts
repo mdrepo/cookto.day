@@ -6,7 +6,8 @@ import type { Photo, Reader, ReaderResult } from "./reader.js";
 
 export const INSTRUCTION = [
   "You read photos of shop receipts for a grocery app.",
-  "Return each item line exactly as printed: the item's name without any item code, the quantity (a count, or a weight in kg), the unit price, and the line's amount.",
+  'Return each item bought as one row "name|quantity|unit price|amount": the name as printed, without any item code; the quantity as a plain number, a count or a weight in kg, or 1 if none is printed; the unit price, or nothing if none is printed; and the line\'s amount. Numbers have no currency or units. For example "LOOSE ONION|0.85|2.40|2.04" or "MILK 1L|2||5.10".',
+  "Leave out discounts, bag charges, fees, deposits, rounding and payments.",
   "Return the shop's name, the date as YYYY-MM-DD, and the subtotal of the item lines before fees, rounding and payment.",
   "Never return people's names, addresses or phone numbers, or card, member or loyalty numbers.",
   "If the photo isn't a shop receipt, return no lines.",
@@ -14,9 +15,10 @@ export const INSTRUCTION = [
 ].join("\n");
 
 /**
- * The only shape Gemini may answer in (its OpenAPI subset). Lengths are
- * hints it may overrun; checkReceipt enforces them, and maxOutputTokens
- * bounds what a photo can make it write (and cost) at all.
+ * The only shape Gemini may answer in (its OpenAPI subset). Each item is a
+ * row of text, not an object: Gemini pretty-prints objects, and the spaces
+ * cost half the answer (ADR 0028, notes of 2026-10-17). Lengths are hints it
+ * may overrun; receipt.ts enforces them.
  */
 const SCHEMA = {
   type: "OBJECT",
@@ -25,22 +27,17 @@ const SCHEMA = {
     date: { type: "STRING", maxLength: "10" },
     subtotal: { type: "NUMBER" },
     // No maxItems: Gemini refuses a limit like 80 as too complex to serve.
-    lines: {
-      type: "ARRAY",
-      items: {
-        type: "OBJECT",
-        properties: {
-          name: { type: "STRING", maxLength: "80" },
-          qty: { type: "NUMBER" },
-          unitPrice: { type: "NUMBER" },
-          amount: { type: "NUMBER" },
-        },
-        required: ["name", "qty", "amount"],
-      },
-    },
+    lines: { type: "ARRAY", items: { type: "STRING", maxLength: "120" } },
   },
   required: ["lines"],
+  propertyOrdering: ["shop", "date", "subtotal", "lines"],
 };
+
+/**
+ * Bounds what a photo can make Gemini write, and cost. A made-up receipt of
+ * 80 lines, the most we keep, took 1,928 tokens; this leaves a third spare.
+ */
+const MAX_OUTPUT_TOKENS = 2_560;
 
 const API = "https://generativelanguage.googleapis.com/v1beta/models";
 
@@ -79,7 +76,7 @@ function request(photo: Photo): string {
       responseMimeType: "application/json",
       responseSchema: SCHEMA,
       temperature: 0,
-      maxOutputTokens: 4096,
+      maxOutputTokens: MAX_OUTPUT_TOKENS,
       thinkingConfig: { thinkingBudget: 0 },
     },
   });
@@ -100,27 +97,21 @@ interface Answer {
 /** Gemini's answer as our result: only a finished, JSON answer is read. */
 function result(answer: Answer): ReaderResult {
   const usage = answer.usageMetadata ?? {};
-  const tokensIn = usage.promptTokenCount ?? 0;
-  const tokensOut =
-    (usage.candidatesTokenCount ?? 0) + (usage.thoughtsTokenCount ?? 0);
-  const unreadable = {
-    ok: false,
-    reason: "unreadable",
-    tokensIn,
-    tokensOut,
-  } as const;
+  const tokens = {
+    tokensIn: usage.promptTokenCount ?? 0,
+    tokensOut:
+      (usage.candidatesTokenCount ?? 0) + (usage.thoughtsTokenCount ?? 0),
+  };
+  const unreadable = { ok: false, reason: "unreadable", ...tokens } as const;
   const candidate = answer.candidates?.[0];
+  if (candidate?.finishReason === "MAX_TOKENS")
+    return { ok: false, reason: "cut-off", ...tokens };
   if (candidate?.finishReason !== "STOP") return unreadable;
   const text = (candidate.content?.parts ?? [])
     .map((p) => p.text ?? "")
     .join("");
   try {
-    return {
-      ok: true,
-      output: JSON.parse(text),
-      tokensIn,
-      tokensOut,
-    };
+    return { ok: true, output: JSON.parse(text), ...tokens };
   } catch {
     return unreadable;
   }

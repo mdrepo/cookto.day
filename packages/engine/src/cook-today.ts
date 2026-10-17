@@ -42,7 +42,14 @@ export function cookToday(input: CookTodayInput): Suggestion[] {
   const have = new Set<string>();
   for (const item of pantry) {
     have.add(item.ingredient);
-    if (item.shelfLifeDays !== undefined && !staples.has(item.ingredient))
+    if (item.shelfLifeDays === undefined || staples.has(item.ingredient))
+      continue;
+    // Two of the same food: the one that needs using first counts.
+    const seen = fresh.get(item.ingredient);
+    if (
+      seen === undefined ||
+      compareUrgency(urgency(item, today), urgency(seen, today)) < 0
+    )
       fresh.set(item.ingredient, item);
   }
   const key = (id: string) => urgency(fresh.get(id) as PantryItem, today);

@@ -33,9 +33,9 @@ An AI call costs us money each time, so the endpoint is a target. People could r
    - everyone together: 2,000 a day.
 
    Days and months are UTC. Over a limit answers 429, saying which limit and when it resets. If the AI fails, the call is given back; "not a receipt" is not.
-5. **The AI call.** Our fixed instruction and the photo; an answer forced into a schema of item lines; temperature 0, no thinking, at most 4,096 output tokens, a 20-second timeout, no retries. The key travels only in a header, and only the adapter holds it.
+5. **The AI call.** Our fixed instruction and the photo; an answer forced into a schema of item rows, one string each (`name|quantity|unit price|amount`); temperature 0, no thinking, at most 2,560 output tokens (see the notes of 2026-10-17), a 20-second timeout, no retries. The key travels only in a header, and only the adapter holds it.
 
-**We check the answer ourselves.** Its shape, lengths and numbers are validated again; at most 80 lines; a line whose quantity × price isn't its amount is marked "check"; the lines are compared with the printed total. Only the shop, the date and the lines go back, never the AI's raw text. No lines answers 422, "not a receipt".
+**We check the answer ourselves.** Its shape, lengths and numbers are validated again; at most 80 lines; a line whose quantity × price isn't its amount is marked "check"; the lines are compared with the printed subtotal. Only the shop, the date and the lines go back, never the AI's raw text. No lines answers 422, "not a receipt".
 
 **A money backstop.** The Google project gets a spend cap of $10 a month and an alert at $5. Our counter is the real limit: Google applies its cap up to about 10 minutes late. Worst case, every limit reached every day: 2,000 × $0.0003 = $0.60 a day.
 
@@ -71,7 +71,7 @@ An AI call costs us money each time, so the endpoint is a target. People could r
 
 How far prompt injection can reach, and three changes that shrink it (spec #129, rules 6 and 8). Text printed in a photo can always steer the AI; the design keeps what it can do small: it sees only our instruction and that one photo, has no tools, and only checked item lines reach the person, who reviews them before anything is added.
 
-- **The AI answers in rows, with at most 2,560 output tokens.** Each item is one string, `name|quantity|unit price|amount`, instead of a JSON object; Gemini pretty-prints objects, and the spaces were half the bill. Measured: the GK receipt took 297 output tokens instead of 607, and a made-up 80-line receipt 1,928, which the cap clears by a third. An answer run up to the cap now costs about $0.0011, not $0.0017.
+- **The AI answers in rows, with at most 2,560 output tokens.** Each item is one string, `name|quantity|unit price|amount`, instead of a JSON object; Gemini pretty-prints objects, and the spaces were half the bill. Measured: a real 11-line receipt took 297 output tokens instead of 607, and a made-up 80-line receipt 1,928, which the cap clears by a third. An answer run up to the cap now costs about $0.0011, not $0.0017.
 - **Signs of abuse end the household's day:** an answer cut off at the cap, not JSON, a line over 120 characters, or a name with a link, an email address or a long number (a phone or card number). The answer is refused whole and the log line names the sign. The household's daily count is set to its limit, so a clumsy abuser gets one costly read a day instead of three.
 - **Not every odd line is a sign.** On a made-up but honest receipt, the AI left quantities empty, wrote "0.912kg" and kept a bag charge. Such lines are read leniently or dropped one by one; refusing the whole answer for them, and ending the family's day, would punish honest receipts.
 - **The worst case, again.** An abuser who keeps each answer just under the cap, with clean rows, isn't struck. So every limit reached that way is about 2,000 × $0.0011 ≈ $2.10 a day, from about 667 signed-in households; Google's $10 cap stops it within about five days. One household costs at most about a third of a cent a day.

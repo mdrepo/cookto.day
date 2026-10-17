@@ -30,14 +30,17 @@ test.describe("English to start, other languages coming soon", () => {
     );
   });
 
-  test("a reviewer previews a coming-soon language from the address", async ({
-    page,
-  }) => {
-    const kitchen = new Kitchen(page);
-    await kitchen.open("hi");
-    await expect(kitchen.emptyState()).toContainText(
-      "क्या पकाते हैं चुनें, फिर रसोई में जो है वह जोड़ें।",
-    );
-    await expect(page.locator("html")).toHaveAttribute("lang", "hi");
-  });
+  for (const [code, dir, words] of [
+    ["hi", "ltr", "क्या पकाते हैं चुनें, फिर रसोई में जो है वह जोड़ें।"],
+    ["mr", "ltr", "काय शिजवता ते निवडा, मग स्वयंपाकघरात जे आहे ते जोडा."],
+    ["ar", "rtl", "اختر ما تطبخه، ثم أضف ما في مطبخك."],
+  ] as const) {
+    test(`a reviewer previews ${code} from the address`, async ({ page }) => {
+      const kitchen = new Kitchen(page);
+      await kitchen.open(code);
+      await expect(kitchen.emptyState()).toContainText(words);
+      await expect(page.locator("html")).toHaveAttribute("lang", code);
+      await expect(page.locator("html")).toHaveAttribute("dir", dir);
+    });
+  }
 });

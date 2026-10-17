@@ -23,11 +23,20 @@ if (!pr || !/^\d+$/.test(pr)) {
   process.exit(2);
 }
 
+// The review runs on the owner's Claude subscription, never on API billing:
+// an API key in the environment would take precedence over the login, so
+// claude never sees one.
+const API_KEYS = ["ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN"];
+const env = Object.fromEntries(
+  Object.entries(process.env).filter(([name]) => !API_KEYS.includes(name)),
+);
+
 function run(cmd: string, args: string[], input?: string): string {
   const result = spawnSync(cmd, args, {
     cwd: repo,
     encoding: "utf8",
     input,
+    env,
     maxBuffer: 64 * 1024 * 1024,
   });
   if (result.status !== 0)

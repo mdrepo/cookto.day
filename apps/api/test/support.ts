@@ -2,7 +2,7 @@ import { Database } from "bun:sqlite";
 import type { Auth } from "../src/auth.js";
 import type { Photo, Reader, ReaderResult } from "../src/receipts/reader.js";
 import { Ledger } from "../src/usage/ledger.js";
-import type { Usage } from "../src/usage/usage.js";
+import type { Strikes, Usage } from "../src/usage/usage.js";
 
 // What the API's tests share. The counters run for real, on SQLite: Bun's
 // stands in for the Durable Object's, which speaks the same SQL. Only the
@@ -26,6 +26,12 @@ export function ledger(start = "2026-10-16T09:00:00Z") {
       return Promise.resolve();
     },
   };
+  const strikes: Strikes = {
+    strike: (ticket) => {
+      counts.strike(ticket);
+      return Promise.resolve();
+    },
+  };
   /** Every count held, added up. */
   const counted = () =>
     (
@@ -33,7 +39,7 @@ export function ledger(start = "2026-10-16T09:00:00Z") {
         n: number;
       }
     ).n;
-  return { counts, usage, clock, db, counted };
+  return { counts, usage, strikes, clock, db, counted };
 }
 
 export const signedIn: Auth = {
@@ -88,22 +94,22 @@ export function post(
   });
 }
 
-/** What the AI said about the GK Minimart receipt we tested on 16 Oct. */
+/** What the AI said about the GK Minimart receipt, in rows, on 17 Oct. */
 export const MINIMART = {
   shop: "GK MINIMART",
   date: "2026-10-07",
   subtotal: 38.72,
   lines: [
-    { name: "VAIGAI DOSABATTER", qty: 1, unitPrice: 3.9, amount: 3.9 },
-    { name: "FRESH PANEER 200GM", qty: 2, unitPrice: 4.4, amount: 8.8 },
-    { name: "PALAK", qty: 0.41, unitPrice: 9.5, amount: 3.9 },
-    { name: "GREEN CHILLI PADI", qty: 0.14, unitPrice: 9.8, amount: 1.37 },
-    { name: "CORIANDER", qty: 0.12, unitPrice: 18, amount: 2.16 },
-    { name: "BIG ONION", qty: 1.42, unitPrice: 2.3, amount: 3.27 },
-    { name: "REDCARROT", qty: 0.75, unitPrice: 2.4, amount: 1.8 },
-    { name: "LADIES FINGER", qty: 0.67, unitPrice: 6.8, amount: 4.56 },
-    { name: "BLACK BRINJAL", qty: 0.58, unitPrice: 5.6, amount: 3.25 },
-    { name: "CUCUMBER", qty: 0.83, unitPrice: 2.7, amount: 2.24 },
-    { name: "TOMATO", qty: 2.17, unitPrice: 1.6, amount: 3.47 },
+    "VAIGAI DOSABATTER|1||3.90",
+    "FRESH PANEER 200GM|2||8.80",
+    "PALAK|0.41|9.50|3.90",
+    "GREEN CHILLI PADI|0.14|9.80|1.37",
+    "CORIANDER|0.12|18.00|2.16",
+    "BIG ONION|1.42|2.30|3.27",
+    "REDCARROT|0.75|2.40|1.80",
+    "LADIES FINGER|0.67|6.80|4.56",
+    "BLACK BRINJAL|0.58|5.60|3.25",
+    "CUCUMBER|0.83|2.70|2.24",
+    "TOMATO|2.17|1.60|3.47",
   ],
 };

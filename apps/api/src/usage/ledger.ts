@@ -107,6 +107,31 @@ export class Ledger {
     });
   }
 
+  /**
+   * Ends the day of the household behind a read: its daily count is set to
+   * its limit. The read stays counted, and can't be given back after.
+   */
+  strike(ticket: Ticket): void {
+    this.transaction(() => {
+      const row = this.sql.exec(
+        "DELETE FROM tickets WHERE id = ? RETURNING keys",
+        ticket.id,
+      )[0] as { keys: string } | undefined;
+      if (!row) return;
+      const keys = JSON.parse(row.keys) as string[];
+      for (const limit of LIMITS) {
+        if (limit.per !== "household" || limit.period !== "day") continue;
+        const key = keys.find((k) => k.startsWith(`${limit.name}|`));
+        if (key)
+          this.sql.exec(
+            "UPDATE counts SET n = MAX(n, ?) WHERE key = ?",
+            limit.max,
+            key,
+          );
+      }
+    });
+  }
+
   private count(key: string): number {
     const row = this.sql.exec("SELECT n FROM counts WHERE key = ?", key)[0] as
       { n: number } | undefined;

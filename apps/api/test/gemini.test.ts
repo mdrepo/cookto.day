@@ -75,12 +75,12 @@ describe("reading a photo with Gemini", () => {
     expect(body["generationConfig"]).toMatchObject({
       responseMimeType: "application/json",
       temperature: 0,
-      maxOutputTokens: 4096,
+      maxOutputTokens: 2560,
       thinkingConfig: { thinkingBudget: 0 },
       responseSchema: {
         required: ["lines"],
         properties: {
-          lines: { items: { required: ["name", "qty", "amount"] } },
+          lines: { items: { type: "STRING", maxLength: "120" } },
         },
       },
     });
@@ -110,7 +110,7 @@ describe("reading a photo with Gemini", () => {
     }
   });
 
-  test("an answer cut short, blocked or not JSON is 'unreadable', and its tokens still count", async () => {
+  test("an answer cut short is 'cut-off', blocked or not JSON 'unreadable', and its tokens still count", async () => {
     const replies = [
       answer('{"lines": [', "MAX_TOKENS"),
       answer("", "SAFETY"),
@@ -122,13 +122,13 @@ describe("reading a photo with Gemini", () => {
       results.push(await gemini({ key: "k", model: MODEL, send }).read(photo));
     }
     expect(results.map((r) => (r.ok ? "ok" : r.reason))).toEqual([
-      "unreadable",
+      "cut-off",
       "unreadable",
       "unreadable",
     ]);
     expect(results[0]).toEqual({
       ok: false,
-      reason: "unreadable",
+      reason: "cut-off",
       tokensIn: 291,
       tokensOut: 595,
     });

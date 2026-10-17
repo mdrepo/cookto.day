@@ -15,7 +15,7 @@ import {
   webp,
 } from "./support.js";
 
-// specs/129-receipt-photos.md, rules 1 to 7: POST /api/receipts/read, from
+// specs/129-receipt-photos.md, rules 1 to 8: POST /api/receipts/read, from
 // the switch to the log line. The counters are real; sign-in and the AI are
 // faked at their edges.
 
@@ -34,6 +34,7 @@ function setUp(overrides: Partial<ReadDeps> = {}, result = READ) {
     reader: ai.reader,
     auth: signedIn,
     usage: counts.usage,
+    strikes: counts.strikes,
     log: (entry) => logged.push(entry),
     now: () => counts.clock.now.getTime(),
     ...overrides,
@@ -136,13 +137,66 @@ describe("POST /api/receipts/read", () => {
     for (const result of [
       { ...READ, output: { lines: [] } },
       { ...READ, output: "a poem" },
-      { ok: false, reason: "unreadable", tokensIn: 291, tokensOut: 4096 },
     ] as ReaderResult[]) {
       const { read, counted } = setUp({}, result);
       const refused = await read();
       expect(refused.status).toBe(422);
       expect(await body(refused)).toEqual({ error: "not-a-receipt" });
       expect(counted()).toBeGreaterThan(0);
+      expect((await read()).status).toBe(422);
+    }
+  });
+
+  test("signs of abuse are 422 'rejected', end the household's day, and the log says which", async () => {
+    const cases: [ReaderResult, string, number][] = [
+      [
+        { ok: false, reason: "cut-off", tokensIn: 291, tokensOut: 2560 },
+        "cut-off",
+        2560,
+      ],
+      [
+        { ok: false, reason: "unreadable", tokensIn: 291, tokensOut: 12 },
+        "unreadable",
+        12,
+      ],
+      [
+        {
+          ...READ,
+          output: {
+            ...MINIMART,
+            lines: ["TOMATO|1||1.60", "CALL +65 9123 4567|1||0"],
+          },
+        },
+        "contact",
+        595,
+      ],
+      [
+        { ...READ, output: { lines: [`${"A".repeat(200)}|1||1.00`] } },
+        "long-line",
+        595,
+      ],
+    ];
+    for (const [result, sign, tokensOut] of cases) {
+      const { read, ai, logged } = setUp({}, result);
+      const refused = await read();
+      expect(refused.status).toBe(422);
+      expect(await body(refused)).toEqual({ error: "rejected" });
+      expect(logged).toEqual([
+        {
+          route: "receipts/read",
+          status: 422,
+          error: "rejected",
+          sign,
+          ms: 0,
+          tokensIn: 291,
+          tokensOut,
+        },
+      ]);
+
+      const next = await read();
+      expect(next.status).toBe(429);
+      expect(await body(next)).toMatchObject({ limit: "household-day" });
+      expect(ai.seen).toHaveLength(1);
     }
   });
 

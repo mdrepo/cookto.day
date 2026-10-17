@@ -3,7 +3,7 @@ import { log } from "./log.js";
 import { gemini } from "./receipts/gemini.js";
 import { route } from "./router.js";
 import type { UsageCounter } from "./usage/durable.js";
-import type { Usage } from "./usage/usage.js";
+import type { Strikes, Usage } from "./usage/usage.js";
 
 export { UsageCounter } from "./usage/durable.js";
 
@@ -20,11 +20,12 @@ interface Env {
   USAGE: DurableObjectNamespace<UsageCounter>;
 }
 
-function usage(env: Env): Usage {
+function usage(env: Env): Usage & Strikes {
   const counter = env.USAGE.get(env.USAGE.idFromName("everyone"));
   return {
     take: (who) => counter.take(who),
     giveBack: (ticket) => counter.giveBack(ticket),
+    strike: (ticket) => counter.strike(ticket),
   };
 }
 
@@ -32,10 +33,12 @@ export default {
   fetch(request, env) {
     const key = env.GEMINI_API_KEY ?? "";
     const on = env.RECEIPT_PHOTOS === "on" && key !== "";
+    const counter = usage(env);
     return route(request, {
       reader: on ? gemini({ key, model: env.RECEIPT_MODEL }) : null,
       auth: noSignInYet,
-      usage: usage(env),
+      usage: counter,
+      strikes: counter,
       log,
       now: () => Date.now(),
     });

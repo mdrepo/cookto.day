@@ -45,4 +45,8 @@ export class UsageCounter extends DurableObject {
   giveBack(ticket: Ticket): void {
     this.ledger.giveBack(ticket);
   }
+
+  strike(ticket: Ticket): void {
+    this.ledger.strike(ticket);
+  }
 }

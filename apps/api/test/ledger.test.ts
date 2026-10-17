@@ -82,6 +82,33 @@ describe("the limits on receipt photos", () => {
     expect(counts.take(home("home-1"), now).ok).toBe(true);
   });
 
+  test("a strike ends only that household's day, and its read stays counted", () => {
+    // specs/129-receipt-photos.md, rule 8.
+    const { counts, db } = ledger();
+    const now = new Date("2026-10-16T09:00:00Z");
+    const read = counts.take(home("home-1"), now);
+    if (!read.ok) throw new Error("the read was refused");
+    counts.strike(read.ticket);
+    counts.strike(read.ticket);
+    counts.giveBack(read.ticket);
+
+    expect(counts.take(home("home-1", "addr-2"), now)).toEqual({
+      ok: false,
+      limit: "household-day",
+      resetsAt: "2026-10-17T00:00:00Z",
+    });
+    expect(counts.take(home("home-2"), now).ok).toBe(true);
+    const count = (key: string) =>
+      (db.query("SELECT n FROM counts WHERE key = ?").get(key) as { n: number })
+        .n;
+    expect(count("household-month|home-1|2026-10")).toBe(1);
+    expect(count("address-day|addr-1|2026-10-16")).toBe(2);
+    expect(count("everyone-day|all|2026-10-16")).toBe(2);
+    expect(
+      counts.take(home("home-1"), new Date("2026-10-17T00:00:00Z")).ok,
+    ).toBe(true);
+  });
+
   test("yesterday's counts are deleted", () => {
     const { counts, db } = ledger();
     counts.take(home("home-1"), new Date("2026-10-16T09:00:00Z"));

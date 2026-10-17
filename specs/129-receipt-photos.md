@@ -46,6 +46,7 @@ Built first, with the API's own tests ([ADR 0025](../docs/adr/0025-server.md)); 
 - **When** the AI answers
 - **Then** the API returns only the shop, the date and up to 80 lines, each with its name, quantity, price and amount
 - **And** a line whose quantity × price isn't its amount is marked "check"
+- **And** a line that makes no sense (a missing or impossible number) is left out, and the rest come back
 - **And** an answer with no lines is 422, "not a receipt", and still counts
 
 ### 7. nothing kept
@@ -53,27 +54,36 @@ Built first, with the API's own tests ([ADR 0025](../docs/adr/0025-server.md)); 
 - **When** any photo is read
 - **Then** the log line holds the outcome, the time, the line count and the tokens, and nothing from the photo, the address or the account
 
+### 8. signs of abuse end the day
+
+- **When** the AI's answer is cut off at the length limit, isn't JSON, has a line over 120 characters, or has a name with a link, an email address, or a long number such as a phone or card number
+- **Then** the API answers 422, "rejected", and returns none of it
+- **And** that household can't read another receipt until midnight UTC
+- **And** the log line says which sign it was
+- **And** "not a receipt", or a line that only makes no sense, is no such sign: a blurry photo or an odd receipt is honest
+
 ## Acceptance criteria (the app)
 
 Built after sign-in ships. Each becomes one e2e test, on an Android phone, an iPhone and a desktop (ADR 0002, 0003, 0021), with the API faked in the browser.
 
-### 8. ask before the first photo
+### 9. ask before the first photo
 
 - **Given** they're signed in, and have never sent a receipt photo
 - **When** they press "Add food", then "Photo of a receipt"
 - **Then** they read that the photo goes to Google's Gemini to be read, that Google keeps it for a short time only to check for abuse and never trains on it, and that cookto.day keeps only the items
 - **And** nothing is sent until they press "Read it"
 
-### 9. found in your photo
+### 10. found in your photo
 
 - **When** they take a photo of a receipt
 - **Then** they see "Found in your receipt", as for a PDF (specs/127, criteria 1 to 5), and lines marked "check" say "Check this line"
 
-### 10. what stops a read, in plain words
+### 11. what stops a read, in plain words
 
 - **When** they're signed out: "Sign in to read receipt photos"
 - **When** they've reached a limit: "You've read 3 receipts today. Try again tomorrow."
 - **When** the photo isn't a receipt: "This doesn't look like a receipt"
+- **When** the answer was rejected: "We couldn't read this photo. Try again tomorrow."
 - **When** reading is off, offline, or failed: "Receipt photos aren't working right now"
 - **Then** each offers "Tap what you bought" instead
 
@@ -81,8 +91,8 @@ Built after sign-in ships. Each becomes one e2e test, on an Android phone, an iP
 
 English; Hindi, Marathi and Arabic stay preview-only until a native speaker reviews them (ADR 0012).
 
-- Photo of a receipt · Read it · Check this line · Sign in to read receipt photos · You've read {n} receipts today. Try again tomorrow. · You've read {n} receipts this month. · This doesn't look like a receipt · Receipt photos aren't working right now
-- The consent text in criterion 8
+- Photo of a receipt · Read it · Check this line · Sign in to read receipt photos · You've read {n} receipts today. Try again tomorrow. · You've read {n} receipts this month. · This doesn't look like a receipt · We couldn't read this photo. Try again tomorrow. · Receipt photos aren't working right now
+- The consent text in criterion 9
 
 ## Out of scope
 

@@ -47,6 +47,7 @@ Built first, with the API's own tests ([ADR 0025](../docs/adr/0025-server.md)); 
 - **Then** the API returns only the shop, the date and up to 80 lines, each with its name, quantity, price and amount
 - **And** a line whose quantity × price isn't its amount is marked "check"
 - **And** a line that makes no sense (a missing or impossible number) is left out, and the rest come back
+- **And** prices read the same in every country we serve: `S$`, `$`, `₹`, `Rs`, `AED` and `Dhs` before a number are ignored
 - **And** an answer with no lines is 422, "not a receipt", and still counts
 
 ### 7. nothing kept
@@ -56,11 +57,13 @@ Built first, with the API's own tests ([ADR 0025](../docs/adr/0025-server.md)); 
 
 ### 8. signs of abuse end the day
 
-- **When** the AI's answer is cut off at the length limit, isn't JSON, has a line over 120 characters, or has a name with a link, an email address, or a long number such as a phone or card number
+- **When** the AI's answer is cut off at the length limit, isn't JSON, has a line over 120 characters, or has a name with a link, an email address, a phone number or a card number
 - **Then** the API answers 422, "rejected", and returns none of it
 - **And** that household can't read another receipt until midnight UTC
 - **And** the log line says which sign it was
 - **And** "not a receipt", or a line that only makes no sense, is no such sign: a blurry photo or an odd receipt is honest
+- **And** a bare long number in a name is no such sign either: Indian and Gulf receipts print a 12 or 13-digit barcode or item code on the item's line. A number counts as a phone only when it starts with `+` or follows a word like call, tel, phone, WhatsApp, SMS or hotline. It counts as a card number when it has 15 or 16 digits, alone or in groups of four
+- **And** links count in any country: `.in` and `.ae` as well as `.com`, `.net`, `.org`, `.io` and `.sg`
 
 ## Acceptance criteria (the app)
 
@@ -87,12 +90,20 @@ Built after sign-in ships. Each becomes one e2e test, on an Android phone, an iP
 - **When** reading is off, offline, or failed: "Receipt photos aren't working right now"
 - **Then** each offers "Tap what you bought" instead
 
+### 12. the privacy line stays true
+
+- **Given** receipt photos are on
+- **When** they open Today
+- **Then** its privacy line no longer says "Nothing is uploaded". It says: "Your fridge and family stay in this browser. A receipt photo is sent to be read only when you choose, and isn't kept."
+- **And** while photos are off, the line stays as it is today
+
 ## Words
 
 English; Hindi, Marathi and Arabic stay preview-only until a native speaker reviews them (ADR 0012).
 
 - Photo of a receipt · Read it · Check this line · Sign in to read receipt photos · You've read {n} receipts today. Try again tomorrow. · You've read {n} receipts this month. · This doesn't look like a receipt · We couldn't read this photo. Try again tomorrow. · Receipt photos aren't working right now
 - The consent text in criterion 9
+- The privacy line in criterion 12
 
 ## Out of scope
 

@@ -1,9 +1,11 @@
 import type { AppPack, KitchenItem } from "@cookto/data";
 import type { KitchenSettings } from "@cookto/data/read";
 import {
+  assumedStaples,
   conditionOf,
   daysLeft,
   type MealSlot,
+  missing,
   type PantryItem,
   shownAmount,
 } from "@cookto/engine";
@@ -61,16 +63,12 @@ export function packStaples(packs: readonly AppPack[]): Set<string> {
   return new Set(packs.flatMap((p) => Object.values(p.staples).flat()));
 }
 
-/**
- * The staples to assume: all of them until the household adds its own, then
- * only the ones it added (ADR 0027).
- */
-export function assumedStaples(
+/** The staples to assume are in the kitchen (the engine's rule, ADR 0027). */
+export function staplesToAssume(
   packs: readonly AppPack[],
   items: readonly KitchenItem[],
 ): Set<string> {
-  const all = packStaples(packs);
-  return items.some((i) => all.has(i.ingredient)) ? new Set() : all;
+  return assumedStaples(packStaples(packs), items);
 }
 
 /** "250 g", "1.5 kg", "2 pieces"; nothing when the amount isn't known. */
@@ -140,13 +138,12 @@ export function dishNeeds(
   items: readonly KitchenItem[],
 ): { pack: string; dish: AppPack["dishes"][number]; needs: number }[] {
   const have = new Set(items.map((i) => i.ingredient));
-  const staples = assumedStaples(packs, items);
+  const staples = staplesToAssume(packs, items);
   return packs.flatMap((pack) =>
     pack.dishes.map((dish) => ({
       pack: pack.id,
       dish,
-      needs: dish.ingredients.filter((i) => !have.has(i) && !staples.has(i))
-        .length,
+      needs: missing(dish.ingredients, have, staples).length,
     })),
   );
 }

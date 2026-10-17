@@ -36,7 +36,7 @@ export const kit: Kit = {
       title: "In muted text",
       render: (lang) => (
         <span className={`${KIT.row} ${KIT.muted}`}>
-          <Icon name="calendar" />
+          <Icon name="cooking-pot" />
           {words[lang].tomorrow}
         </span>
       ),

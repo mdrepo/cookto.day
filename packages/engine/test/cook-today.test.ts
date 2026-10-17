@@ -149,6 +149,26 @@ describe("cook today", () => {
     });
     expect(lunch[0]?.uses).toEqual(["potato"]);
   });
+
+  test("with two of the same food, the one going off first counts, whatever the pantry's order", () => {
+    // Old spinach has a day left; the potato has three; new spinach, five.
+    const oldSpinach = item("spinach", { id: "old", boughtOn: "2026-10-09" });
+    const newSpinach = item("spinach", { id: "new" });
+    const rest = [item("potato", { boughtOn: "2026-10-11" }), item("paneer")];
+    for (const pantry of [
+      [oldSpinach, newSpinach, ...rest],
+      [newSpinach, oldSpinach, ...rest],
+    ]) {
+      const lunch = cookToday({
+        slot: "lunch",
+        dishes: [alooJeera, palakPaneer],
+        pantry,
+        staples,
+        today,
+      });
+      expect(ids(lunch)).toEqual(["palak-paneer", "aloo-jeera"]);
+    }
+  });
 });
 
 describe("cook today, for each meal", () => {

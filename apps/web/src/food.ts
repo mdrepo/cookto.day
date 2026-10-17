@@ -92,7 +92,8 @@ export function listOf(
   return new Intl.ListFormat(locale, { type }).format(items);
 }
 
-const CONDITION_WORDS = {
+/** Each condition's word. */
+export const CONDITION_WORDS = {
   good: "good",
   "use-soon": "useSoon",
   "past-its-best": "pastItsBest",

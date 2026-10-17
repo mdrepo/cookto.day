@@ -1,5 +1,5 @@
 import type { DishPhoto } from "@cookto/data";
-import { MEAL_SLOTS } from "@cookto/engine";
+import { MEAL_SLOTS, missing } from "@cookto/engine";
 import { useQuery } from "@tanstack/react-query";
 import { count, fill } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
@@ -48,7 +48,7 @@ export function useDishScreen() {
   const staples = assumedStaples(packs, items);
   const actions = useDishActions(
     dish?.id,
-    (dish?.ingredients ?? []).filter((i) => !have.has(i) && !staples.has(i)),
+    missing(dish?.ingredients ?? [], have, staples),
   );
   if (!dish) return null;
 

@@ -18,9 +18,15 @@
   min-inline-size: 0;
 }
 
-.bar {
+/* The note and the bar share one sticky dock, so the note always sits
+   just above the bar, however tall the bar grows with the text size. */
+.dock {
   position: sticky;
   inset-block-end: 0;
+}
+
+.note {
+  padding-block-end: var(--space-3);
 }
 
 /* One centred column, at most 40rem, with the screen's side padding. */
@@ -38,11 +44,26 @@
     flex-direction: row;
   }
 
+  /* The dock steps aside: the bar becomes the rail, and the note floats
+     at the bottom of the column beside it (the rail is TabBar's width). */
+  .dock {
+    display: contents;
+  }
+
   .bar {
+    position: sticky;
     order: -1;
     align-self: flex-start;
     inset-block: 0 auto;
     block-size: 100dvh;
+  }
+
+  .note {
+    position: fixed;
+    inset-block-end: var(--space-4);
+    inset-inline: calc(var(--space-8) * 3) 0;
+    inline-size: auto;
+    padding-block-end: 0;
   }
 
   .column {

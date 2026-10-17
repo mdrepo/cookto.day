@@ -18,6 +18,11 @@ export interface ScreenProps {
    * wide screen, a rail down the side.
    */
   bar?: ReactNode;
+  /**
+   * A short note that stays in view, like an UndoBar: just above the bar on
+   * a phone, at the bottom of the column on a wide screen.
+   */
+  note?: ReactNode;
   /** The space between the main part's parts: a spacing step. */
   gap?: Space;
   children: ReactNode;
@@ -36,6 +41,7 @@ export function Screen({
   action,
   header,
   bar,
+  note,
   gap = 4,
   children,
 }: ScreenProps) {
@@ -58,7 +64,12 @@ export function Screen({
             {children}
           </main>
         </div>
-        {bar && <div className={styles.bar}>{bar}</div>}
+        <div className={styles.dock}>
+          {note && (
+            <div className={`${styles.column} ${styles.note}`}>{note}</div>
+          )}
+          {bar && <div className={styles.bar}>{bar}</div>}
+        </div>
       </div>
     </div>
   );

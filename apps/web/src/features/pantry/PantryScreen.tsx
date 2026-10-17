@@ -40,6 +40,13 @@ export function PantryScreen({ bar }: { bar: ReactNode }) {
     <Screen
       bar={bar}
       title={s.title}
+      note={
+        s.undo && (
+          <UndoBar undoLabel={s.undo.label} onUndo={s.undo.run}>
+            {s.undo.text}
+          </UndoBar>
+        )
+      }
       action={
         !s.add.adding && (
           <Button
@@ -63,11 +70,6 @@ export function PantryScreen({ bar }: { bar: ReactNode }) {
         }
         secondary={s.groups.filter((g) => g.key === "soon").map(group)}
       />
-      {s.undo && (
-        <UndoBar undoLabel={s.undo.label} onUndo={s.undo.run}>
-          {s.undo.text}
-        </UndoBar>
-      )}
       {s.open && (
         <ItemSheet id={s.open} onClose={s.close} onUsedUp={s.onUsedUp} />
       )}

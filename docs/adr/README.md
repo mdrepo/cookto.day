@@ -42,3 +42,4 @@ Each file records one decision: the context, what we chose, what we rejected and
 | [0026](0026-meals-belong-to-people.md) | Meal slots belong to people, and shops to where the household lives | Accepted |
 | [0027](0027-pantry-and-cuisine-packs.md) | Keep amounts and condition in the pantry, and let a household load cuisine packs | Proposed |
 | [0028](0028-receipt-photos-ai.md) | Read receipt photos with Gemini Flash-Lite, only through our API, within hard limits | Accepted |
+| [0029](0029-owner-is-product-manager.md) | The owner is the product manager; agents build and merge inside gates that check judgment, not only form | Proposed |

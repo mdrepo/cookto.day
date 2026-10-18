@@ -60,9 +60,7 @@ test.describe("On a wide screen", () => {
       await expect(k.title()).toHaveText(tab);
       expect(await place(), tab).toEqual(today);
     }
-    await k.home();
-    await k.press("Settings");
-    await expect(k.title()).toHaveText("Settings");
+    await k.settings();
     expect(await place(), "Settings").toEqual(today);
   });
 
@@ -81,10 +79,9 @@ test.describe("On a wide screen", () => {
     expect(await end(k.button("Add food").boundingBox())).toBe(
       await end(page.getByRole("list", { name: "Staples" }).boundingBox()),
     );
+    // Today's title has nothing at its end: Settings moved to More (#175).
     await k.home();
-    expect(await end(k.button("Settings").boundingBox())).toBe(
-      await end(page.getByRole("region", { name: "Cook today" }).boundingBox()),
-    );
+    await expect(k.button("Settings")).toHaveCount(0);
   });
 
   test("a row opens a dialog in the middle, not a sheet at the bottom", async ({

@@ -27,9 +27,9 @@ describe("the built site", () => {
   test("the page is readable before its script runs, rendered from the app itself", () => {
     const html = page();
     expect(html).toContain("Your kitchen is empty");
-    // The header too, as the app draws it: the gear to Settings, where the
-    // language list moved in #84.
-    expect(html).toContain('aria-label="Settings"');
+    // The tab bar too, as the app draws it: More, where Settings and the
+    // packs are (specs/175).
+    expect(html).toContain(">More<");
   });
 
   test("browsers keep every hashed file for a year, and never the page", () => {

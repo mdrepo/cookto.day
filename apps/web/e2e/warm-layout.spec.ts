@@ -18,9 +18,7 @@ test.describe("The prototype's layout", () => {
       await expect(k.title()).toHaveText(tab);
       await expect(kitchen.languageField(), tab).toHaveCount(0);
     }
-    await k.home();
-    await k.press("Settings");
-    await expect(k.title()).toHaveText("Settings");
+    await k.settings();
     await expect(kitchen.languageField()).toHaveValue("en");
     await k.press("Back");
     await expect(k.title()).toHaveText("cookto.day");

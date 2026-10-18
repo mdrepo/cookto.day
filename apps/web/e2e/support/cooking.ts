@@ -20,6 +20,15 @@ export class Cooking {
     }).toPass({ timeout: 15_000 });
   }
 
+  /** Settings, from More (specs/175). */
+  async settings(): Promise<void> {
+    await this.tabs()
+      .getByRole("button", { name: "More", exact: true })
+      .click();
+    await this.press("Settings");
+    await expect(this.title()).toHaveText("Settings");
+  }
+
   title(): Locator {
     return this.page.getByRole("heading", { level: 1 });
   }

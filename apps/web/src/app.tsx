@@ -49,6 +49,11 @@ const ShoppingScreen = lazy(() =>
     default: m.ShoppingScreen,
   })),
 );
+const MoreScreen = lazy(() =>
+  import("./features/more/MoreScreen.js").then((m) => ({
+    default: m.MoreScreen,
+  })),
+);
 const StaplesScreen = lazy(() =>
   import("./features/staples/StaplesScreen.js").then((m) => ({
     default: m.StaplesScreen,
@@ -104,6 +109,8 @@ function Page() {
       return <ShoppingScreen bar={<Bar current={route} />} />;
     case "dishes":
       return <DishesScreen bar={<Bar current={route} />} />;
+    case "more":
+      return <MoreScreen bar={<Bar current={route} />} />;
     default:
       return (
         <OnboardingScreen

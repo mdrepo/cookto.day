@@ -13,17 +13,17 @@ describe("checking what the AI read", () => {
   test("keeps the shop, the date and each row's name, quantity, price and amount, and nothing else", () => {
     const receipt = checkReceipt({
       ...MINIMART,
-      cashier: "Priya",
-      phone: "87553642",
-      lines: ["PALAK|0.41|9.50|3.90", "VAIGAI DOSABATTER|1||3.90"],
+      cashier: "TEST",
+      phone: "6123 4567",
+      lines: ["PALAK|0.41|9.50|3.90", "DOSA BATTER|1||3.90"],
     });
     expect(receipt).toEqual({
-      shop: "GK MINIMART",
-      date: "2026-10-07",
+      shop: "SUNRISE MINIMART",
+      date: "2026-10-02",
       addsUp: false,
       lines: [
         { name: "PALAK", qty: 0.41, unitPrice: 9.5, amount: 3.9, check: false },
-        { name: "VAIGAI DOSABATTER", qty: 1, amount: 3.9, check: false },
+        { name: "DOSA BATTER", qty: 1, amount: 3.9, check: false },
       ],
     });
     const all = checkReceipt(MINIMART);

@@ -1,69 +1,79 @@
 {
   "slots": ["lunch", "dinner"],
   "ingredients": {
-    "potato": {
-      "amount": 115,
+    "oil": {
+      "amount": 8,
+      "unit": "ml"
+    },
+    "cumin": {
+      "amount": 0.4,
       "unit": "g"
     },
-    "spinach": {
-      "amount": 50,
+    "asafoetida": {
+      "amount": 0.05,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 3,
       "unit": "g"
     },
     "green-chilli": {
       "amount": 0.5,
       "unit": "pieces"
     },
-    "ghee": {
-      "amount": 7.5,
-      "unit": "ml"
-    },
-    "bay-leaf": {
-      "amount": 0.5,
-      "unit": "pieces"
-    },
     "onion": {
-      "amount": 30,
-      "unit": "g"
-    },
-    "ginger": {
-      "amount": 4,
-      "unit": "g"
-    },
-    "garlic": {
-      "amount": 2,
-      "unit": "g"
-    },
-    "tomato": {
       "amount": 25,
       "unit": "g"
     },
+    "potato": {
+      "amount": 110,
+      "unit": "g"
+    },
     "turmeric": {
-      "amount": 0.1,
+      "amount": 0.15,
       "unit": "g"
     },
-    "asafoetida": {
-      "amount": 0.1,
+    "coriander-powder": {
+      "amount": 0.25,
       "unit": "g"
     },
-    "besan": {
-      "amount": 3,
-      "unit": "g"
-    },
-    "garam-masala": {
+    "chilli-powder": {
       "amount": 0.2,
       "unit": "g"
     },
-    "kasuri-methi": {
-      "amount": 0.1,
+    "salt": {
+      "amount": 1,
       "unit": "g"
     },
-    "salt": {
-      "amount": 1.5,
+    "spinach": {
+      "amount": 80,
       "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.15,
+      "unit": "g"
+    },
+    "lemon": {
+      "amount": 0.15,
+      "unit": "pieces"
     }
   },
   "servedWith": ["roti"],
-  "source": "https://www.vegrecipesofindia.com/aloo-palak/",
+  "sources": [
+    "https://www.indianhealthyrecipes.com/aloo-palak-recipe/",
+    "https://www.cookwithmanali.com/aloo-palak/"
+  ],
+  "steps": [
+    "Heat the oil in a wide pan and let the cumin seeds sizzle.",
+    "Add the garlic, green chilli and a pinch of hing and fry until the garlic just colours.",
+    "Add the onion and cook until soft.",
+    "Add the potato, turmeric, coriander powder, chilli powder, salt and a few spoons of water.",
+    "Cover and cook on low for 8 to 10 minutes, stirring now and then, until the potato is tender.",
+    "Add the chopped spinach a handful at a time and stir until it wilts.",
+    "Cook on high for a couple of minutes to dry off the extra water.",
+    "Stir in the garam masala, squeeze over the lemon and serve with roti."
+  ],
+  "note": "Both sources make a dry stir-fry, not the spinach gravy the old recipe was based on, so besan, tomato, ginger, ghee and bay leaf are gone and lemon is added. Spinach goes up from 50 g to 80 g, which is what both use.",
   "photo": {
     "author": "Miansari66",
     "licence": "CC0",

@@ -2,77 +2,87 @@
   "slots": ["lunch", "dinner"],
   "ingredients": {
     "spinach": {
-      "amount": 65,
+      "amount": 75,
       "unit": "g"
     },
-    "green-chilli": {
-      "amount": 0.5,
-      "unit": "pieces"
-    },
-    "garlic": {
-      "amount": 1.5,
-      "unit": "g"
-    },
-    "ginger": {
-      "amount": 3.5,
+    "paneer": {
+      "amount": 60,
       "unit": "g"
     },
     "oil": {
       "amount": 7.5,
       "unit": "ml"
     },
+    "onion": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 3,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
     "cumin": {
       "amount": 0.3,
       "unit": "g"
     },
     "bay-leaf": {
-      "amount": 0.5,
+      "amount": 0.25,
       "unit": "pieces"
     },
-    "onion": {
-      "amount": 10,
-      "unit": "g"
-    },
-    "tomato": {
-      "amount": 10,
-      "unit": "g"
-    },
     "turmeric": {
-      "amount": 0.1,
+      "amount": 0.2,
       "unit": "g"
     },
     "chilli-powder": {
       "amount": 0.3,
       "unit": "g"
     },
-    "asafoetida": {
-      "amount": 0.1,
-      "unit": "g"
-    },
     "garam-masala": {
-      "amount": 0.2,
-      "unit": "g"
-    },
-    "paneer": {
-      "amount": 55,
+      "amount": 0.4,
       "unit": "g"
     },
     "cream": {
-      "amount": 9.5,
+      "amount": 10,
       "unit": "ml"
     },
     "kasuri-methi": {
-      "amount": 0.1,
+      "amount": 0.2,
       "unit": "g"
     },
     "salt": {
-      "amount": 1.5,
+      "amount": 1.2,
       "unit": "g"
     }
   },
   "servedWith": ["roti", "rice"],
-  "source": "https://www.vegrecipesofindia.com/palak-paneer/",
-  "note": "Salt 'as required': 1.5 g a serving.",
+  "sources": [
+    "https://www.vegrecipesofindia.com/palak-paneer/",
+    "https://www.indianhealthyrecipes.com/palak-paneer-recipe-easy-paneer-recipes-step-by-step-pics/",
+    "https://www.cookwithmanali.com/palak-paneer/"
+  ],
+  "steps": [
+    "Drop the washed spinach into boiling water for 1 to 2 minutes, then lift it straight into cold water.",
+    "Drain the spinach well and blend it with the ginger, garlic and green chilli into a smooth paste.",
+    "Heat the oil in a pan and let the cumin seeds and bay leaf sizzle.",
+    "Add the chopped onion and fry until golden.",
+    "Add the tomato and cook until it turns soft and the oil shows at the edges.",
+    "Stir in the turmeric, chilli powder and garam masala for half a minute.",
+    "Pour in the spinach paste with a splash of water and the salt, and simmer for 6 to 8 minutes.",
+    "Add the paneer cubes, cream and crushed kasuri methi, stir for a minute and turn off the heat."
+  ],
+  "note": "Spinach ranged from 45 to 90 g a serving across the sources; 75 g gives a thick green gravy. Onion and tomato are higher than before to match two of the three sources.",
   "photo": {
     "author": "DreamyFlutura11",
     "licence": "CC BY-SA 4.0",

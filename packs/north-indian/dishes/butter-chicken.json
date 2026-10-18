@@ -5,28 +5,28 @@
       "amount": 125,
       "unit": "g"
     },
+    "lemon": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
     "chilli-powder": {
-      "amount": 1,
+      "amount": 1.4,
       "unit": "g"
     },
     "salt": {
       "amount": 1.5,
       "unit": "g"
     },
-    "lemon": {
-      "amount": 0.5,
-      "unit": "pieces"
-    },
     "yogurt": {
       "amount": 20,
       "unit": "g"
     },
     "ginger": {
-      "amount": 2,
+      "amount": 2.5,
       "unit": "g"
     },
     "garlic": {
-      "amount": 3.5,
+      "amount": 3,
       "unit": "g"
     },
     "turmeric": {
@@ -46,19 +46,19 @@
       "unit": "g"
     },
     "kasuri-methi": {
-      "amount": 0.3,
+      "amount": 0.2,
       "unit": "g"
     },
     "oil": {
-      "amount": 3.5,
+      "amount": 4,
       "unit": "ml"
     },
     "butter": {
-      "amount": 9.5,
+      "amount": 9,
       "unit": "g"
     },
     "onion": {
-      "amount": 35,
+      "amount": 30,
       "unit": "g"
     },
     "tomato": {
@@ -70,21 +70,34 @@
       "unit": "pieces"
     },
     "sugar": {
-      "amount": 1,
+      "amount": 1.5,
       "unit": "g"
     },
     "cream": {
-      "amount": 22.5,
+      "amount": 25,
       "unit": "ml"
     },
     "coriander-leaves": {
-      "amount": 0.5,
+      "amount": 1,
       "unit": "g"
     }
   },
   "servedWith": ["roti", "rice"],
-  "source": "https://www.indianhealthyrecipes.com/butter-chicken/",
-  "note": "Read through a page summary, not the page itself. Lemon is about 0.1 a serving, raised to the 0.5 minimum.",
+  "sources": [
+    "https://www.indianhealthyrecipes.com/butter-chicken/",
+    "https://www.teaforturmeric.com/butter-chicken/"
+  ],
+  "steps": [
+    "Take the marinated chicken out of the fridge so it is not ice cold when it cooks.",
+    "Fry the onion in a little of the butter until soft, then blend it with the tomatoes until smooth.",
+    "Melt more butter and fry the ginger, garlic and green chilli for a minute.",
+    "Stir in the chilli powder, coriander powder, cumin and garam masala, then pour in the tomato purée.",
+    "Cook the sauce on medium until thick and the butter shows at the edges, then add a cup of hot water and simmer for 10 minutes.",
+    "Sear the chicken in a hot pan until just cooked, then add it to the sauce and simmer for 5 minutes.",
+    "Stir in the salt, sugar and crushed kasuri methi.",
+    "Turn off the heat, swirl in the cream and scatter the coriander leaves."
+  ],
+  "note": "Fresh tomato follows the source that uses 600 g for four; the other uses a can, which works out lighter. Only a small squeeze of lemon goes into the marinade, so half a lemon covers it.",
   "photo": {
     "author": "Yuvraj Singh 97",
     "licence": "CC BY-SA 4.0",

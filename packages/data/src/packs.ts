@@ -64,6 +64,8 @@ export interface Cuisine {
 export interface PackLoader {
   cuisines(): Cuisine[];
   load(id: string): Promise<AppPack>;
+  /** Each dish's steps, by dish id: loaded when a dish opens (specs/149). */
+  steps(id: string): Promise<Record<string, string[]>>;
 }
 
 /** Every cuisine people see, in this order; only the ones with a pack open. */
@@ -81,6 +83,11 @@ const LOADERS: Record<
       import("./packs/north-indian.js"),
       import("./packs/north-indian.photos.js"),
     ]),
+};
+
+/** A pack's steps: their own file, so Today never waits for them (#149). */
+const STEPS: Record<string, () => Promise<{ default: string }>> = {
+  "north-indian": () => import("./packs/north-indian.steps.js"),
 };
 
 /** Each credited dish gets its photo's files. */
@@ -107,6 +114,12 @@ export function createPacks(): PackLoader {
       if (!loader) throw new Error(`No pack "${id}" to load yet.`);
       const [pack, photos] = await loader();
       return withPhotos(JSON.parse(pack.default) as AppPack, photos.default);
+    },
+    async steps(id) {
+      const loader = STEPS[id];
+      if (!loader) throw new Error(`No pack "${id}" to load yet.`);
+      const file = await loader();
+      return JSON.parse(file.default) as Record<string, string[]>;
     },
   };
 }

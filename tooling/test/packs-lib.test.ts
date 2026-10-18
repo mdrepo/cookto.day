@@ -120,6 +120,24 @@ describe("packs:check", () => {
     ]);
   });
 
+  test("a dish's prep says what to do, to which of its ingredients, and how long before (#144)", () => {
+    const at = "test-kitchen/dishes/spinach-rice.json";
+    const pack = goodPack();
+    const dish = pack.dishes["spinach-rice"] as { prep?: unknown };
+    dish.prep = [{ do: "soak", what: "rice", hours: 1 }];
+    expect(packProblems(pack, sources)).toEqual([]);
+    dish.prep = [
+      { do: "boil", what: "rice", hours: 1 },
+      { do: "soak", what: "lentils", hours: 8 },
+      { do: "soak", what: "rice", hours: 0 },
+    ];
+    expect(packProblems(pack, sources)).toEqual([
+      `${at}: prep 1 must be one of soak, marinate, ferment, thaw, done to one of its ingredients, some hours before.`,
+      `${at}: prep 2 must be one of soak, marinate, ferment, thaw, done to one of its ingredients, some hours before.`,
+      `${at}: prep 3 must be one of soak, marinate, ferment, thaw, done to one of its ingredients, some hours before.`,
+    ]);
+  });
+
   test("a note that still asks for a check fails, naming the dish (#149)", () => {
     const at = "test-kitchen/dishes/spinach-rice.json";
     for (const note of [

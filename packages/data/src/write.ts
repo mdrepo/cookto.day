@@ -2,8 +2,10 @@
 export type { CookedWriter } from "./cooked.js";
 export type { HouseholdWriter } from "./household.js";
 export type { PantryWriter } from "./pantry.js";
+export type { PlansWriter } from "./plans.js";
 export type { ShoppingWriter } from "./shopping.js";
 export type {
+  BeansWriter,
   KitchenSettingsWriter,
   SettingsWriter,
   ThemeWriter,

@@ -7,7 +7,7 @@ import { settings } from "./platform.js";
 // goes to the step before (specs/65-onboarding.md). Until onboarding is done,
 // home is its first step.
 
-export type Step = "where" | "who" | "done";
+export type Step = "where" | "who" | "cooks" | "done";
 /** The kitchen's pages (specs/72-kitchen.md). */
 export type Page =
   "cuisines" | "staples" | "pantry" | "dishes" | "list" | "more";
@@ -16,6 +16,7 @@ export type Route = "home" | "settings" | "dish" | "pack" | Step | Page;
 const STEPS: Partial<Record<string, Step>> = {
   "#/start/where": "where",
   "#/start/who": "who",
+  "#/start/cooks": "cooks",
   "#/start/done": "done",
 };
 

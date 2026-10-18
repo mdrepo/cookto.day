@@ -62,12 +62,10 @@ test.describe("Undo", () => {
     await k.home();
     const dish = await k.pickedDish("Lunch");
     const lunch = k.pick("Lunch");
-    await lunch.getByRole("button", { name: "We cooked this" }).click();
-    await expect(lunch).toContainText("Cooked today");
+    await lunch.getByRole("button", { name: "Made" }).click();
+    await expect(lunch.getByRole("button", { name: "Made" })).toHaveCount(0);
     await lunch.getByRole("button", { name: "Undo" }).click();
-    await expect(
-      lunch.getByRole("button", { name: "We cooked this" }),
-    ).toBeVisible();
+    await expect(lunch.getByRole("button", { name: "Made" })).toBeVisible();
     await expect(lunch).not.toContainText("Cooked today");
     await onDay(page, 1);
     await page.reload();

@@ -20,6 +20,8 @@ export interface PlannedMeal {
   prep: "done" | "skipped" | null;
   /** When it was marked done, "HH:MM". */
   since?: string;
+  /** "no": it wasn't made after all (specs/195); else it counts as made. */
+  made?: "no";
   /** "child": the child's own dish, beside the meal's (specs/145). */
   for?: "child";
   /** The child's dish's extra, chosen when it's planned: "egg". */
@@ -41,6 +43,10 @@ export interface PlansWriter {
   addIn(on: string, slot: MealSlot, addIn: string): Promise<void>;
   /** Not planned after all: the child shares the meal again. */
   remove(on: string, slot: MealSlot, who?: "child"): Promise<void>;
+  /** Another dish for a planned meal (specs/195): its prep starts over. */
+  swap(on: string, slot: MealSlot, dish: string): Promise<void>;
+  /** "Didn't make it" (specs/195): the dish is free to be picked again. */
+  notMade(on: string, slot: MealSlot): Promise<void>;
   /** Its prep: done (at `since`, "HH:MM"), or not done. */
   prep(
     on: string,
@@ -67,13 +73,14 @@ export function createPlans(
     reader: {
       async all(signal) {
         return (await live(signal)).map(
-          ({ id, on, slot, dish, prep, since, for: who, addIn }) => ({
+          ({ id, on, slot, dish, prep, since, made, for: who, addIn }) => ({
             id,
             on,
             slot,
             dish,
             prep,
             ...(since === undefined ? {} : { since }),
+            ...(made === undefined ? {} : { made }),
             ...(who === undefined ? {} : { for: who }),
             ...(addIn === undefined ? {} : { addIn }),
           }),
@@ -95,6 +102,20 @@ export function createPlans(
         const plan = await find(on, slot, "child");
         if (!plan) return;
         await store.put(PLANS, [updated(plan, { addIn }, now())]);
+        changes.announce(TOPIC);
+      },
+      async swap(on, slot, dish) {
+        const plan = await find(on, slot);
+        if (!plan) return this.plan(on, slot, dish);
+        const swapped = updated(plan, { dish, prep: null }, now());
+        delete swapped.since;
+        await store.put(PLANS, [swapped]);
+        changes.announce(TOPIC);
+      },
+      async notMade(on, slot) {
+        const plan = await find(on, slot);
+        if (!plan) return;
+        await store.put(PLANS, [updated(plan, { made: "no" }, now())]);
         changes.announce(TOPIC);
       },
       async remove(on, slot, who) {

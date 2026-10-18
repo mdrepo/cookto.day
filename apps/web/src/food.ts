@@ -1,4 +1,4 @@
-import type { AppPack, KitchenItem } from "@cookto/data";
+import type { AppPack, KitchenItem, Role } from "@cookto/data";
 import type { KitchenSettings } from "@cookto/data/read";
 import {
   assumedStaples,
@@ -30,6 +30,11 @@ export const SLOT_WORDS = {
 
 export function useKitchenSettings(): KitchenSettings {
   return useStore(settings.store, (s) => s.kitchen);
+}
+
+/** Whose phone this is (specs/195): the cook's, or the planner's. */
+export function useRole(): Role {
+  return useStore(settings.store, (s) => s.role);
 }
 
 /** The packs of the cuisines loaded, once each has been read. */

@@ -12,10 +12,18 @@ export type Theme = (typeof THEMES)[number];
 export const BEANS = ["dried", "tinned"] as const;
 export type Beans = (typeof BEANS)[number];
 
+/** Who this phone is for (specs/195): the cook, or whoever plans the meals. */
+export const ROLES = ["cook", "plan"] as const;
+export type Role = (typeof ROLES)[number];
+
 export interface Settings {
   language: string;
   theme: Theme;
   beans: Beans;
+  /** The cook's phone, or the planner's (specs/195); the cook to start. */
+  role: Role;
+  /** The day whose plan was approved with "Looks good", "YYYY-MM-DD". */
+  sorted: string | null;
   /** Where the household lives: its currency and shops (ADR 0026). */
   country: string;
   /** Whether onboarding is done or skipped: it's asked once (specs/65). */
@@ -54,6 +62,12 @@ export interface ThemeWriter {
   setTheme(theme: Theme): void;
 }
 
+/** Who cooks, and tomorrow approved (specs/195), for their use cases only. */
+export interface WhoCooksWriter {
+  setRole(role: Role): void;
+  setSorted(on: string): void;
+}
+
 /** Dried or tinned beans (specs/144), for its use case only. */
 export interface BeansWriter {
   setBeans(beans: Beans): void;
@@ -73,6 +87,8 @@ const LANGUAGE = "cookto.day:language";
 const COUNTRY = "cookto.day:country";
 const THEME = "cookto.day:theme";
 const BEANS_KEY = "cookto.day:beans";
+const ROLE_KEY = "cookto.day:role";
+const SORTED_KEY = "cookto.day:sorted";
 const ONBOARDED = "cookto.day:onboarded";
 const KITCHEN = "cookto.day:kitchen";
 const MOVES = "cookto.day:moves";
@@ -126,32 +142,33 @@ function write(kv: KeyValue, key: string, value: string): void {
   }
 }
 
-export function createSettings(
+interface SettingsOptions {
+  /** The languages people can choose. */
+  languages: readonly string[];
+  fallback: string;
+  /** Languages a reviewer may see before people can choose them. */
+  previews?: readonly string[];
+  /** The language a reviewer asked to see. Shown, never saved. */
+  preview?: string | null;
+  /** The countries people can choose. */
+  countries: readonly string[];
+  fallbackCountry: string;
+}
+
+/** What's saved, where it still makes sense; else each setting's start. */
+function startingState(
   kv: KeyValue,
-  options: {
-    /** The languages people can choose. */
-    languages: readonly string[];
-    fallback: string;
-    /** Languages a reviewer may see before people can choose them. */
-    previews?: readonly string[];
-    /** The language a reviewer asked to see. Shown, never saved. */
-    preview?: string | null;
-    /** The countries people can choose. */
-    countries: readonly string[];
-    fallbackCountry: string;
-  },
-): {
-  store: SettingsStore;
-  writer: SettingsWriter & KitchenSettingsWriter & ThemeWriter & BeansWriter;
-} {
-  const speaks = (language: string) => options.languages.includes(language);
-  const knowsCountry = (country: string) => options.countries.includes(country);
+  options: SettingsOptions,
+  speaks: (language: string) => boolean,
+  knowsCountry: (country: string) => boolean,
+): Settings {
   const { preview = null, previews = [] } = options;
   const saved = read(kv, LANGUAGE);
   const savedCountry = read(kv, COUNTRY);
   const savedTheme = read(kv, THEME);
   const savedBeans = read(kv, BEANS_KEY);
-  const store = createStore<Settings>(() => ({
+  const savedRole = read(kv, ROLE_KEY);
+  return {
     language:
       preview !== null && (speaks(preview) || previews.includes(preview))
         ? preview
@@ -160,13 +177,33 @@ export function createSettings(
           : options.fallback,
     theme: THEMES.find((t) => t === savedTheme) ?? "system",
     beans: BEANS.find((b) => b === savedBeans) ?? "dried",
+    role: ROLES.find((r) => r === savedRole) ?? "cook",
+    sorted: read(kv, SORTED_KEY),
     country:
       savedCountry !== null && knowsCountry(savedCountry)
         ? savedCountry
         : options.fallbackCountry,
     onboarded: read(kv, ONBOARDED) === "yes",
     kitchen: readKitchen(read(kv, KITCHEN)),
-  }));
+  };
+}
+
+export function createSettings(
+  kv: KeyValue,
+  options: SettingsOptions,
+): {
+  store: SettingsStore;
+  writer: SettingsWriter &
+    KitchenSettingsWriter &
+    ThemeWriter &
+    BeansWriter &
+    WhoCooksWriter;
+} {
+  const speaks = (language: string) => options.languages.includes(language);
+  const knowsCountry = (country: string) => options.countries.includes(country);
+  const store = createStore<Settings>(() =>
+    startingState(kv, options, speaks, knowsCountry),
+  );
   return {
     store,
     writer: {
@@ -182,6 +219,14 @@ export function createSettings(
       setBeans(beans) {
         store.setState({ beans });
         write(kv, BEANS_KEY, beans);
+      },
+      setRole(role) {
+        store.setState({ role });
+        write(kv, ROLE_KEY, role);
+      },
+      setSorted(on) {
+        store.setState({ sorted: on });
+        write(kv, SORTED_KEY, on);
       },
       knowsCountry,
       setCountry(country) {

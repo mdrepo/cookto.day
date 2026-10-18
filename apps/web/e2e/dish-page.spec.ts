@@ -66,6 +66,7 @@ test.describe("A dish's page", () => {
     await k.press("Next");
     await k.press("Adult");
     await k.press("Next");
+    await k.press("Next");
     await k.press("Go to my kitchen");
     await k.loadNorthIndianWithStaples();
     await k.openDish("Palak paneer");

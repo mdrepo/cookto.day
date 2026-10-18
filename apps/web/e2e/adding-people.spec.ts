@@ -7,7 +7,7 @@ import { Onboarding } from "./support/onboarding.js";
 async function whoEats(start: Onboarding) {
   await start.open();
   await start.next();
-  await expect(start.step()).toHaveText("Step 2 of 2");
+  await expect(start.step()).toHaveText("Step 2 of 3");
 }
 
 /** Whether the middle of `button` is the button itself, not something over it. */
@@ -57,7 +57,7 @@ test.describe("Adding people", () => {
     await whoEats(start);
     await start.nameBox("Adult").fill("Asha");
     await start.nameBox("Asha").press("Enter");
-    await expect(start.step()).toHaveText("Step 2 of 2");
+    await expect(start.step()).toHaveText("Step 2 of 3");
     await expect(start.nameBox("Asha")).not.toBeFocused();
     await expect(start.nameBox("Asha")).toHaveValue("Asha");
   });

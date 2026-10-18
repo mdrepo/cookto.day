@@ -29,6 +29,12 @@ export {
 export { cookedIt, KEEP_DIFFERENT_DAYS, notCooked } from "./cooked.js";
 export { addToMyDishes, takeOutOfMyDishes } from "./my-dishes.js";
 export {
+  chooseRole,
+  didntMake,
+  sortTomorrow,
+  swapTomorrow,
+} from "./who-cooks.js";
+export {
   addBoughtFood,
   addToList,
   addTypedToList,

@@ -14,8 +14,8 @@ import { go, goHome, type Step } from "../../routes.js";
 // where it is in the steps, and the actions at the bottom (ADR 0022).
 
 const deps = { household, settings: settings.writer };
-const NUMBERS = { where: 1, who: 2 } as const;
-const TOTAL = 2;
+const NUMBERS = { where: 1, who: 2, cooks: 3 } as const;
+const TOTAL = 3;
 
 export function useOnboardingScreen(step: Step) {
   const { locale, t } = useWords();
@@ -31,6 +31,7 @@ export function useOnboardingScreen(step: Step) {
   const words = {
     where: { title: t.whereTitle, body: t.whereBody },
     who: { title: t.whoTitle, body: t.whoBody },
+    cooks: { title: t.whoCooks, body: t.whoCooksBody },
     done: {
       title: t.allSet,
       body: fill(t.plan, {
@@ -59,7 +60,8 @@ export function useOnboardingScreen(step: Step) {
         void startHousehold(deps).then(() => {
           go("who");
         });
-      else if (step === "who") go("done");
+      else if (step === "who") go("cooks");
+      else if (step === "cooks") go("done");
       else
         void finishOnboarding(deps).then((done) => {
           if (done) goHome();
@@ -69,7 +71,7 @@ export function useOnboardingScreen(step: Step) {
       step === "where"
         ? null
         : () => {
-            go(step === "done" ? "who" : "where");
+            go(step === "done" ? "cooks" : step === "cooks" ? "who" : "where");
           },
     skip: step === "who" ? () => void skipOnboarding(deps).then(goHome) : null,
   };

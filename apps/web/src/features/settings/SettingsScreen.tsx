@@ -4,11 +4,12 @@ import { useWords } from "../../i18n/useWords.js";
 import { goHome } from "../../routes.js";
 import { BeansPicker } from "./BeansPicker.js";
 import { LanguagePicker } from "./LanguagePicker.js";
+import { RolePicker } from "./RolePicker.js";
 import { ThemePicker } from "./ThemePicker.js";
 
 /**
- * Settings, behind the gear on Today: the language (#84), the theme (#96)
- * and the beans (#144).
+ * Settings, under More: the language (#84), who cooks (#195), the theme
+ * (#96) and the beans (#144).
  */
 export function SettingsScreen({ bar }: { bar: ReactNode }) {
   const { t } = useWords();
@@ -26,6 +27,7 @@ export function SettingsScreen({ bar }: { bar: ReactNode }) {
     >
       <Stack gap={4}>
         <LanguagePicker />
+        <RolePicker />
         <ThemePicker />
         <BeansPicker />
       </Stack>

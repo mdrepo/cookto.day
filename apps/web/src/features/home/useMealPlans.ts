@@ -7,6 +7,7 @@ import {
   defaultMeals,
   type MealSlot,
   plannedSlots,
+  plannedLately,
   waitingForPrep,
 } from "@cookto/engine";
 import { KEEP_DIFFERENT_DAYS } from "@cookto/usecases";
@@ -78,6 +79,8 @@ export function useMealPlans() {
     planned: todayPlans,
     avoid: new Set([
       ...cookedLately(history, day, KEEP_DIFFERENT_DAYS),
+      // A planned meal counts as made (specs/195).
+      ...plannedLately(plans, day, KEEP_DIFFERENT_DAYS),
       ...waitingForPrep(dishes, beans, new Set(Object.values(todayPlans))),
     ]),
   });
@@ -90,6 +93,7 @@ export function useMealPlans() {
           planned: plannedOn(next),
           avoid: new Set([
             ...cookedLately(history, next, KEEP_DIFFERENT_DAYS),
+            ...plannedLately(plans, next, KEEP_DIFFERENT_DAYS),
             ...today
               .flatMap((m) => m.suggestions.slice(0, 1))
               .map((s) => s.dish.id),

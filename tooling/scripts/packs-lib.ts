@@ -13,6 +13,8 @@ export interface Keeps {
   days: number;
   in: "fridge" | "pantry";
   foodkeeper: number;
+  /** Where FoodKeeper gives no time here: the approved spec that set one. */
+  spec?: number;
 }
 export interface Ingredient {
   wikidata: string;
@@ -79,6 +81,8 @@ export interface FoodKeeperEntry {
 export interface Sources {
   wikidata: Record<string, string>;
   foodkeeper: Record<string, FoodKeeperEntry>;
+  /** The approved specs on main, by number; unchecked when absent. */
+  specs?: number[];
 }
 
 function ingredientProblems(
@@ -125,10 +129,15 @@ function keepsProblems(
   const where = keeps.in === "pantry" ? "pantry" : "fridge";
   const range = entry[where];
   const days = keeps.days ?? NaN;
-  if (range && days >= range[0] && days <= range[1]) return [];
+  // Shorter than FoodKeeper only warns early; longer could make someone ill.
+  if (range && days > 0 && days <= range[1]) return [];
+  const decided =
+    keeps.spec !== undefined &&
+    (sources.specs === undefined || sources.specs.includes(keeps.spec));
+  if (!range && days > 0 && decided) return [];
   const says = range
-    ? `says ${range[0]} to ${range[1]}. Use a number in that range.`
-    : `gives no time in the ${where}. Cite an entry that does.`;
+    ? `says ${range[0]} to ${range[1]}. Use ${range[1]} or fewer: shorter only warns early.`
+    : `gives no time in the ${where}. Cite an entry that does, or the approved spec that decided it.`;
   return [
     `${at}: keeps ${keeps.days} days in the ${where}, but FoodKeeper ${keeps.foodkeeper} (${entry.name}) ${says}`,
   ];

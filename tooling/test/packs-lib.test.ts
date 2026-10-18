@@ -197,7 +197,7 @@ describe("packs:check", () => {
       keeps: { days: 10, in: "fridge", foodkeeper: 291 },
     };
     expect(packProblems(tooLong, sources)).toEqual([
-      "ingredients/spinach.json: keeps 10 days in the fridge, but FoodKeeper 291 (Lettuce, leaf, spinach) says 3 to 7. Use a number in that range.",
+      "ingredients/spinach.json: keeps 10 days in the fridge, but FoodKeeper 291 (Lettuce, leaf, spinach) says 3 to 7. Use 7 or fewer: shorter only warns early.",
     ]);
   });
 

@@ -124,8 +124,16 @@ export function readSources(): Sources {
     const path = join(SOURCES, name);
     return existsSync(path) ? (json(path) as Record<string, never>) : {};
   };
+  // Approved specs: merged ones are on main, as specs/<n>-<name>.md.
+  const specs = existsSync("specs")
+    ? readdirSync("specs").flatMap((f) => {
+        const n = /^(\d+)-.+\.md$/.exec(f)?.[1];
+        return n ? [Number(n)] : [];
+      })
+    : [];
   return {
     wikidata: read("wikidata.json"),
     foodkeeper: read("foodkeeper.json"),
+    specs,
   };
 }

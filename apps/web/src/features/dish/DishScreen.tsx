@@ -49,6 +49,16 @@ function DishSide({ s }: { s: Dish }) {
           </Button>
         </div>
       )}
+      {s.planned && (
+        <Cluster gap={2}>
+          <Reasons
+            items={[{ key: "planned", text: s.planned.text, tone: "quiet" }]}
+          />
+          <Button kind="plain" onClick={s.planned.run}>
+            {s.planned.label}
+          </Button>
+        </Cluster>
+      )}
       {s.addToList && (
         <div>
           <Button kind="quiet" icon="shopping-cart" onClick={s.addToList.run}>

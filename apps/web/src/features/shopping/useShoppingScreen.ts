@@ -4,16 +4,7 @@ import { useState } from "react";
 import { useWords } from "../../i18n/useWords.js";
 import { namer, useLoadedPacks } from "../../food.js";
 import { kitchen, queries, shoppingQuery, today } from "../../platform.js";
-
-/** Shares the list with the phone's share sheet, or copies it: says which. */
-async function send(text: string): Promise<"shared" | "copied"> {
-  if (typeof navigator.share === "function") {
-    await navigator.share({ text });
-    return "shared";
-  }
-  await navigator.clipboard.writeText(text);
-  return "copied";
-}
+import { send } from "../../share.js";
 
 /**
  * The shopping list (specs/103): what to buy, ticked off into the fridge,

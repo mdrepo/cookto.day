@@ -9,11 +9,14 @@ import { WhereStep } from "./WhereStep.js";
 const WhoStep = lazy(() =>
   import("./WhoStep.js").then((m) => ({ default: m.WhoStep })),
 );
+const CooksStep = lazy(() =>
+  import("./CooksStep.js").then((m) => ({ default: m.CooksStep })),
+);
 const DoneStep = lazy(() =>
   import("./DoneStep.js").then((m) => ({ default: m.DoneStep })),
 );
 
-/** Where you live, then who eats which meals, then all set (specs/65). */
+/** Where you live, who eats which meals, who cooks, then all set (specs/65, 195). */
 export function OnboardingScreen({
   step,
   language,
@@ -37,6 +40,7 @@ export function OnboardingScreen({
       {step === "where" && <WhereStep />}
       <Suspense fallback={null}>
         {step === "who" && <WhoStep />}
+        {step === "cooks" && <CooksStep />}
         {step === "done" && <DoneStep />}
       </Suspense>
       <ActionBar

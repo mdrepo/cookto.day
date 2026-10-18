@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { lazy, type ReactNode, Suspense } from "react";
 import {
   Button,
   Cluster,
@@ -12,8 +12,15 @@ import { CookNow } from "./CookNow.js";
 import { CookToday } from "./CookToday.js";
 import { useHomeScreen } from "./useHomeScreen.js";
 import { KitchenCards, KitchenMore } from "./KitchenStart.js";
-import { PrepNotes } from "./PrepNotes.js";
-import { Tomorrow } from "./Tomorrow.js";
+
+// Prep notes and the planner's evening (specs/144, 195) load with the page,
+// not before it: they keep a first visit within its budget (ADR 0013).
+const PrepNotes = lazy(() =>
+  import("./PrepNotes.js").then((m) => ({ default: m.PrepNotes })),
+);
+const Tomorrow = lazy(() =>
+  import("./Tomorrow.js").then((m) => ({ default: m.Tomorrow })),
+);
 import { type ItemSheetFor, UseSoon } from "./UseSoon.js";
 
 /** Today: the household, the kitchen, and what to cook (specs/72, 80; #84). */
@@ -48,13 +55,17 @@ export function HomeScreen({
         </Cluster>
       )}
       <KitchenCards />
-      <PrepNotes />
+      <Suspense fallback={null}>
+        <PrepNotes />
+      </Suspense>
       <CookNow />
       <Panes
         primary={
           <Stack gap={6}>
+            <Suspense fallback={null}>
+              <Tomorrow />
+            </Suspense>
             <CookToday />
-            <Tomorrow />
           </Stack>
         }
         secondary={

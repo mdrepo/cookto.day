@@ -29,6 +29,8 @@ export {
 export { type SyncRecord } from "./records.js";
 export {
   BEANS,
+  ROLES,
+  type Role,
   type Beans,
   createSettings,
   THEMES,

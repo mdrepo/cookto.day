@@ -10,4 +10,5 @@ export type {
   KitchenSettingsWriter,
   SettingsWriter,
   ThemeWriter,
+  WhoCooksWriter,
 } from "./settings.js";

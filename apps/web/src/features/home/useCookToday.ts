@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fill } from "../../i18n/format.js";
 import type { Messages } from "../../i18n/en.js";
 import { useWords } from "../../i18n/useWords.js";
-import { listOf, namer, SLOT_WORDS } from "../../food.js";
+import { listOf, namer, SLOT_WORDS, useRole } from "../../food.js";
 import { cookedIt, notCooked } from "@cookto/usecases";
 import { cooked, cookedQuery, queries } from "../../platform.js";
 import { openDish } from "../../routes.js";
@@ -62,10 +62,12 @@ function ideaOf(
 /**
  * What to cook today, for each meal someone eats (specs/72, criteria 6 to 8),
  * a different dish for each when there's more than one (specs/94); a meal
- * planned the evening before keeps its dish (specs/144).
+ * planned the evening before keeps its dish (specs/144), and is decided:
+ * no other ideas on the cook's phone, whose tap is "Made" (specs/195).
  */
 export function useCookToday() {
   const { locale, t } = useWords();
+  const role = useRole();
   const plans = useMealPlans();
   const { data: history = [] } = useQuery(cookedQuery, queries);
   if (!plans) return null;
@@ -97,14 +99,22 @@ export function useCookToday() {
   return {
     title: t.cookToday,
     otherIdeas: t.otherIdeas,
-    weCookedThis: t.weCookedThis,
-    cookedTodayWords: t.cookedToday,
+    madeLabel: t.made,
+    madeWords: t.made,
     undo: t.undo,
+    /** The planner's phone marks nothing: they decide tomorrow (specs/195). */
+    canMark: role === "cook",
     meals: plans.today.flatMap(({ slot, suggestions }) => {
       const [best, ...rest] = suggestions
         .slice(0, SHOWN)
         .map((s) => idea(s, slot));
       if (!best) return [];
+      const decided =
+        role === "cook" &&
+        plans.plans.some(
+          (p) =>
+            p.on === day && p.slot === slot && !p.for && p.prep !== "skipped",
+        );
       return [
         {
           slot,
@@ -117,7 +127,7 @@ export function useCookToday() {
           onUndo: () => {
             void notCooked({ cooked }, best.key, day);
           },
-          others: rest.map((o) => ({
+          others: (decided ? [] : rest).map((o) => ({
             key: o.key,
             name: o.dish,
             line: [o.note, ...o.reasons.map((r) => r.text)]

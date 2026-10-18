@@ -32,6 +32,7 @@
     "format:check": "prettier --check .",
     "prepare": "git config core.hooksPath .githooks 2>/dev/null || true",
     "tdd:verify": "bun tooling/scripts/tdd-verify.ts",
+    "review": "bun tooling/scripts/review.ts",
     "copies": "bun tooling/scripts/copies.ts"
   },
   "devDependencies": {

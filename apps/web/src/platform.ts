@@ -85,6 +85,11 @@ export const packQuery = (id: string) =>
     queryFn: () => packs.load(id),
   });
 
+/** This moment, for showing the date: the app's one clock. */
+export function now(): Date {
+  return new Date();
+}
+
 /** Today in the household's own calendar, "YYYY-MM-DD". */
 export function today(): string {
   const now = new Date();

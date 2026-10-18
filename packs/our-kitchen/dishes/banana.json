@@ -1,0 +1,20 @@
+{
+  "slots": ["morning-snack", "evening-snack"],
+  "ingredients": {
+    "banana": {
+      "amount": 60,
+      "unit": "g"
+    }
+  },
+  "for": ["child"],
+  "simple": true,
+  "sources": [
+    "https://solidstarts.com/foods/banana/",
+    "https://www.nhs.uk/baby/weaning-and-feeding/babys-first-solid-foods/"
+  ],
+  "steps": [
+    "Peel the banana.",
+    "Cut it into slices or spears, or hand an older toddler half a banana to bite."
+  ],
+  "note": "About half a medium banana."
+}

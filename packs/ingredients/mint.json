@@ -1,0 +1,23 @@
+{
+  "wikidata": "Q27640062",
+  "label": "mint leaf",
+  "keeps": {
+    "days": 14,
+    "in": "fridge",
+    "foodkeeper": 507
+  },
+  "names": [
+    {
+      "text": "Mint leaves",
+      "lang": "en"
+    },
+    {
+      "text": "पुदीना",
+      "lang": "hi"
+    },
+    {
+      "text": "पुदिना",
+      "lang": "mr"
+    }
+  ]
+}

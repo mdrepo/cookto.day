@@ -1,0 +1,62 @@
+{
+  "slots": ["lunch", "evening-snack", "dinner"],
+  "ingredients": {
+    "spinach": {
+      "amount": 100,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 3,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "butter": {
+      "amount": 5,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "black-pepper": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "cream": {
+      "amount": 10,
+      "unit": "ml"
+    },
+    "salt": {
+      "amount": 1,
+      "unit": "g"
+    }
+  },
+  "servedWith": ["bread"],
+  "sources": [
+    "https://udupi-recipes.com/wprm_print/palak-soup-spinach-soup-recipe",
+    "https://hebbarskitchen.com/wprm_print/palak-soup-recipe-cream-of-spinach-soup",
+    "https://binjalsvegkitchen.com/wprm_print/palak-shorba-spinach-soup"
+  ],
+  "steps": [
+    "Wash the spinach well and chop it roughly, tender stems included.",
+    "Melt butter in a pan and let the cumin sizzle.",
+    "Add garlic, ginger and onion and cook until the onion is soft but not brown.",
+    "Add the tomato and cook for 2 minutes.",
+    "Add the spinach and stir until it wilts down.",
+    "Pour in water, simmer for 5 minutes, then let it cool a little.",
+    "Blend until smooth, pour back into the pan and add water if it is too thick.",
+    "Season with salt and pepper, bring to a boil and finish with a swirl of cream."
+  ],
+  "note": "I kept it a simple home soup thickened by the spinach itself, with no flour and no milk, and cream only as a finish. 100 g spinach makes one good bowl."
+}

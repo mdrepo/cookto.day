@@ -1,0 +1,85 @@
+{
+  "slots": ["breakfast", "evening-snack", "dinner"],
+  "ingredients": {
+    "bread": {
+      "amount": 2,
+      "unit": "pieces"
+    },
+    "butter": {
+      "amount": 10,
+      "unit": "g"
+    },
+    "paneer": {
+      "amount": 50,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "capsicum": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 3,
+      "unit": "ml"
+    },
+    "cumin": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.2,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "chaat-masala": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 3,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1,
+      "unit": "g"
+    }
+  },
+  "sources": [
+    "https://www.cookclickndevour.com/wprm_print/paneer-sandwich-recipe-easy-paneer-recipes",
+    "https://www.indianhealthyrecipes.com/wprm_print/38942",
+    "https://www.vegrecipesofindia.com/wprm_print/paneer-sandwich-recipe"
+  ],
+  "steps": [
+    "Crumble the paneer coarsely with your fingers.",
+    "Heat oil in a pan and let the cumin sizzle.",
+    "Add chopped onion, green chilli and ginger and cook until the onion softens.",
+    "Add chopped tomato and capsicum and cook until the tomato turns mushy.",
+    "Stir in turmeric, chilli powder, garam masala and salt, then the paneer, and cook for 2 minutes.",
+    "Take it off the heat and mix in chaat masala and chopped coriander.",
+    "Butter the bread, spread the paneer filling on one slice and cover with the other.",
+    "Toast on a tawa or in a sandwich maker until both sides are golden."
+  ],
+  "note": "I went with the cooked paneer bhurji style filling with capsicum, the most common home version, and 50 g paneer for an adult sandwich. A spoon of green chutney inside works well if you have some left over."
+}

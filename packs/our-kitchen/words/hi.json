@@ -1,0 +1,28 @@
+{
+  "dishes": {
+    "bombay-sandwich": "बॉम्बे सैंडविच",
+    "palak-soup": "पालक सूप",
+    "paneer-sandwich": "पनीर सैंडविच",
+    "potato-beetroot-sandwich": "आलू चुकंदर सैंडविच",
+    "pumpkin-soup": "कद्दू का सूप",
+    "apple-oats": "सेब ओट्स",
+    "banana-pancakes": "केले के पैनकेक",
+    "banana": "केला",
+    "beetroot-potato-tikki": "चुकंदर आलू टिक्की",
+    "blueberries": "ब्लूबेरी",
+    "blueberry-oats": "ब्लूबेरी ओट्स",
+    "bread-butter": "ब्रेड बटर",
+    "cinnamon-rolls": "सिनेमन रोल",
+    "orange": "संतरा",
+    "pear-oats": "नाशपाती ओट्स",
+    "quinoa-chicken-rice": "क्विनोआ चिकन चावल",
+    "ragi-banana": "रागी केला दलिया",
+    "rajma-tikki-beetroot-soup": "राजमा टिक्की और चुकंदर सूप",
+    "scrambled-eggs-bread": "स्क्रैम्बल्ड अंडे और ब्रेड",
+    "veg-khichdi": "सब्ज़ी खिचड़ी"
+  },
+  "parts": {
+    "bread": "ब्रेड",
+    "curd": "दही"
+  }
+}

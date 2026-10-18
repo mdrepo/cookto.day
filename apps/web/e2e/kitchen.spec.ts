@@ -10,7 +10,7 @@ test.describe("The kitchen", () => {
     await k.start();
     await k.press("Choose what you cook");
     await expect(k.title()).toHaveText("Choose what you cook");
-    await expect(k.card("North Indian")).toContainText("30 dishes");
+    await expect(k.card("North Indian")).toContainText("28 dishes");
     for (const soon of ["South Indian", "European", "Sri Lankan"]) {
       await expect(k.card(soon)).toContainText("Coming soon");
       await expect(k.card(soon).getByRole("button")).toHaveCount(0);
@@ -147,7 +147,7 @@ test.describe("The kitchen", () => {
     await k.press("Try a sample kitchen");
     await k.press("Dishes");
     await expect(k.title()).toHaveText("Dishes");
-    await expect(k.dishes()).toHaveCount(30);
+    await expect(k.dishes()).toHaveCount(28);
     await expect(k.dishes().filter({ hasText: "Palak paneer" })).toContainText(
       "Lunch and Dinner",
     );

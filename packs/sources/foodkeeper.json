@@ -29,17 +29,47 @@
     "pantry": null,
     "freezer": [270, 270]
   },
+  "248": {
+    "name": "Apples",
+    "fridge": [28, 42],
+    "pantry": [21, 21],
+    "freezer": [240, 240]
+  },
+  "251": {
+    "name": "Bananas",
+    "fridge": [3, 3],
+    "pantry": null,
+    "freezer": [60, 90]
+  },
+  "254": {
+    "name": "Blueberries",
+    "fridge": [7, 14],
+    "pantry": null,
+    "freezer": [240, 360]
+  },
   "256": {
     "name": "Citrus fruit, lemon, lime, orange, grapefruit, tangerines, clementines",
     "fridge": [10, 21],
     "pantry": [10, 10],
     "freezer": null
   },
+  "266": {
+    "name": "Peaches, nectarines, plums, pears, sapote",
+    "fridge": [3, 5],
+    "pantry": null,
+    "freezer": [60, 60]
+  },
   "273": {
     "name": "Beans and peas, green, fava, lima, soybean, wax, snow, sugar snap",
     "fridge": [3, 5],
     "pantry": null,
     "freezer": [240, 240]
+  },
+  "274": {
+    "name": "Beets",
+    "fridge": [7, 14],
+    "pantry": [1, 1],
+    "freezer": [180, 240]
   },
   "279": {
     "name": "Carrots, parsnips",
@@ -52,6 +82,12 @@
     "fridge": [3, 5],
     "pantry": null,
     "freezer": [300, 360]
+  },
+  "283": {
+    "name": "Cucumbers",
+    "fridge": [4, 6],
+    "pantry": null,
+    "freezer": null
   },
   "284": {
     "name": "Eggplant",
@@ -70,6 +106,12 @@
     "fridge": [14, 21],
     "pantry": [2, 5],
     "freezer": [180, 180]
+  },
+  "288": {
+    "name": "Herbs",
+    "fridge": [7, 10],
+    "pantry": null,
+    "freezer": [30, 60]
   },
   "291": {
     "name": "Lettuce, leaf, spinach",
@@ -101,14 +143,38 @@
     "pantry": [30, 60],
     "freezer": [300, 360]
   },
+  "298": {
+    "name": "Pumpkins",
+    "fridge": [90, 150],
+    "pantry": [60, 90],
+    "freezer": null
+  },
   "306": {
     "name": "Tomatoes",
     "fridge": null,
     "pantry": null,
     "freezer": [60, 60]
   },
+  "392": {
+    "name": "Potato chips",
+    "fridge": null,
+    "pantry": [60, 60],
+    "freezer": null
+  },
+  "461": {
+    "name": "Whole wheat bread, commercially baked & pre-sliced",
+    "fridge": null,
+    "pantry": [3, 5],
+    "freezer": [90, 90]
+  },
   "506": {
     "name": "Cilantro",
+    "fridge": [14, 21],
+    "pantry": [7, 14],
+    "freezer": null
+  },
+  "507": {
+    "name": "Mint",
     "fridge": [14, 21],
     "pantry": [7, 14],
     "freezer": null
@@ -124,5 +190,11 @@
     "fridge": [7, 7],
     "pantry": null,
     "freezer": [270, 270]
+  },
+  "574": {
+    "name": "Bread, homemade",
+    "fridge": [60, 90],
+    "pantry": [3, 5],
+    "freezer": null
   }
 }

@@ -1,0 +1,45 @@
+{
+  "slots": ["morning-snack", "evening-snack"],
+  "ingredients": {
+    "atta": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "yogurt": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "baking-powder": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "butter": {
+      "amount": 5,
+      "unit": "g"
+    },
+    "banana": {
+      "amount": 15,
+      "unit": "g"
+    },
+    "cinnamon": {
+      "amount": 0.5,
+      "unit": "g"
+    }
+  },
+  "for": ["child"],
+  "sources": [
+    "https://www.bumkins.com/blogs/growing-with-bumkins/no-rise-yogurt-dough-cinnamon-rolls",
+    "https://healthfulblondie.com/healthy-cinnamon-rolls/",
+    "https://www.nhs.uk/baby/weaning-and-feeding/foods-to-avoid-giving-babies-and-young-children/"
+  ],
+  "steps": [
+    "Heat the oven to 190°C and grease a small baking tin.",
+    "Mix the atta and baking powder, add the thick curd and knead into a soft dough.",
+    "Mash the ripe banana with the soft butter and cinnamon into a smooth paste.",
+    "Roll the dough into a thin rectangle on a floured board.",
+    "Spread the banana paste over it and roll it up tightly from the long side.",
+    "Cut into slices about 3 cm wide and set them cut side up in the tin.",
+    "Bake for 20 to 25 minutes until lightly golden, then let them cool before serving."
+  ],
+  "note": "A home recipe: soft curd dough with no yeast or rising, and ripe banana instead of sugar, since the NHS says to skip added sugar for under-fours. If the family buys bakery rolls instead, those are sugary, so keep them for treats; amounts are for one small roll."
+}

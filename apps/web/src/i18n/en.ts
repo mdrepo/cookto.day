@@ -53,6 +53,8 @@ export const en = {
   edit: "Edit",
   chooseCuisines: "Choose what you cook",
   northIndian: "North Indian",
+  maharashtrian: "Maharashtrian",
+  ourKitchen: "Our kitchen",
   southIndian: "South Indian",
   european: "European",
   sriLankan: "Sri Lankan",

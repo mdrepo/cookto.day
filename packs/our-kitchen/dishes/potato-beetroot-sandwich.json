@@ -1,0 +1,85 @@
+{
+  "slots": ["breakfast", "evening-snack", "dinner"],
+  "ingredients": {
+    "bread": {
+      "amount": 2,
+      "unit": "pieces"
+    },
+    "butter": {
+      "amount": 10,
+      "unit": "g"
+    },
+    "potato": {
+      "amount": 75,
+      "unit": "g"
+    },
+    "beetroot": {
+      "amount": 40,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 3,
+      "unit": "ml"
+    },
+    "mustard-seeds": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "asafoetida": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "chaat-masala": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "lemon": {
+      "amount": 5,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 4,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1,
+      "unit": "g"
+    }
+  },
+  "sources": [
+    "https://hebbarskitchen.com/wprm_print/masala-sandwich-recipe-mumbai-masala-toast-sandwich",
+    "https://www.sbs.com.au/food/recipe/bombay-sandwiches/8x1vcnwpy",
+    "https://hebbarskitchen.com/wprm_print/beetroot-cutlet-recipe-beetroot-tikki-healthy-kabab"
+  ],
+  "steps": [
+    "Boil the potato and beetroot until soft, then peel both.",
+    "Mash the potato and grate the beetroot.",
+    "Heat oil, add mustard seeds, cumin and a pinch of hing, and let them crackle.",
+    "Add chopped onion, green chilli and ginger and cook until the onion softens.",
+    "Add turmeric, the potato, beetroot and salt, and mix well for 2 minutes.",
+    "Take it off the heat and stir in chaat masala, lemon juice and chopped coriander.",
+    "Butter the bread, spread the filling on one slice and cover with the other.",
+    "Toast on a tawa or in a sandwich maker until crisp and golden."
+  ],
+  "note": "No site has this exact family sandwich, so I joined the Mumbai aloo masala toast filling with grated beetroot mixed in, the way beetroot tikki does it. Grating the beetroot into the potato keeps it from sliding out and turns the filling pink."
+}

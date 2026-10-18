@@ -1,0 +1,54 @@
+{
+  "slots": ["lunch", "dinner"],
+  "ingredients": {
+    "quinoa": {
+      "amount": 15,
+      "unit": "g"
+    },
+    "basmati-rice": {
+      "amount": 15,
+      "unit": "g"
+    },
+    "chicken": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "carrot": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "ghee": {
+      "amount": 3,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.2,
+      "unit": "g"
+    }
+  },
+  "for": ["child"],
+  "sources": [
+    "https://mylittlemoppet.com/wprm_print/nutritious-quinoa-khichdi-recipe-for-babies-toddlers-easy-healthy-meal-idea",
+    "https://grocery.coop/recipes/rice-chicken-and-quinoa",
+    "https://wholefoodsmagazine.com/grocery/recipes/quinoa-chicken-mixed-veggies/"
+  ],
+  "steps": [
+    "Rinse the quinoa in a sieve until the water runs clear, then rinse the rice.",
+    "Cut the boneless chicken into very small pieces and chop the carrot small.",
+    "Heat the ghee in a pressure cooker, add the cumin, let it crackle, then add the chopped garlic.",
+    "Add the chicken, turmeric and about 200 ml water and boil for 5 minutes with the lid off.",
+    "Stir in the quinoa, rice and carrot.",
+    "Close the lid, cook for 3 to 4 whistles and let the pressure drop on its own.",
+    "Shred any bigger chicken pieces with a fork and mash lightly so it stays soft and moist.",
+    "Let it cool until just warm before serving."
+  ],
+  "note": "No salt or stock cube; the chicken boils in the pot and flavours the grains. Rinsing the quinoa takes away its bitter coating."
+}

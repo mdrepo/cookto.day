@@ -1,0 +1,23 @@
+{
+  "wikidata": "Q165308",
+  "label": "pumpkin",
+  "keeps": {
+    "days": 60,
+    "in": "pantry",
+    "foodkeeper": 298
+  },
+  "names": [
+    {
+      "text": "Red pumpkin",
+      "lang": "en"
+    },
+    {
+      "text": "कद्दू",
+      "lang": "hi"
+    },
+    {
+      "text": "लाल भोपळा",
+      "lang": "mr"
+    }
+  ]
+}

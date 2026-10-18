@@ -1,0 +1,23 @@
+{
+  "wikidata": "Q1146928",
+  "label": "puri",
+  "keeps": {
+    "days": 60,
+    "in": "pantry",
+    "foodkeeper": 392
+  },
+  "names": [
+    {
+      "text": "Papdi (bhel puri)",
+      "lang": "en"
+    },
+    {
+      "text": "पापड़ी",
+      "lang": "hi"
+    },
+    {
+      "text": "पापडी",
+      "lang": "mr"
+    }
+  ]
+}

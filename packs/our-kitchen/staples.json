@@ -1,0 +1,23 @@
+{
+  "grains-and-dals": [
+    "oats",
+    "atta",
+    "quinoa",
+    "basmati-rice",
+    "ragi-flour",
+    "rajma",
+    "moong-dal"
+  ],
+  "spices": [
+    "cumin",
+    "chaat-masala",
+    "black-pepper",
+    "turmeric",
+    "chilli-powder",
+    "garam-masala",
+    "mustard-seeds",
+    "asafoetida",
+    "cinnamon"
+  ],
+  "basics": ["salt", "oil", "ghee", "baking-powder", "milk"]
+}

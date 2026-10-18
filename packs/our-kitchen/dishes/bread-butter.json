@@ -1,0 +1,25 @@
+{
+  "slots": ["morning-snack", "evening-snack"],
+  "ingredients": {
+    "bread": {
+      "amount": 1,
+      "unit": "pieces"
+    },
+    "butter": {
+      "amount": 5,
+      "unit": "g"
+    }
+  },
+  "for": ["child"],
+  "simple": true,
+  "sources": [
+    "https://solidstarts.com/foods/bread/",
+    "https://solidstarts.com/foods/butter/"
+  ],
+  "steps": [
+    "Toast the bread lightly if your child is still new to bread.",
+    "Spread a thin layer of soft butter on it.",
+    "Cut into fingers or quarters."
+  ],
+  "note": "Light toasting keeps soft bread from turning gummy in a small mouth."
+}

@@ -1,0 +1,69 @@
+{
+  "slots": ["lunch", "dinner"],
+  "ingredients": {
+    "basmati-rice": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "moong-dal": {
+      "amount": 15,
+      "unit": "g"
+    },
+    "carrot": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "green-beans": {
+      "amount": 10,
+      "unit": "g"
+    },
+    "ghee": {
+      "amount": 3,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.2,
+      "unit": "g"
+    },
+    "asafoetida": {
+      "amount": 0.1,
+      "unit": "g"
+    }
+  },
+  "servedWith": ["curd"],
+  "for": ["child"],
+  "addIns": {
+    "egg": {
+      "amount": 1,
+      "unit": "pieces"
+    },
+    "chicken": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "paneer": {
+      "amount": 20,
+      "unit": "g"
+    }
+  },
+  "sources": [
+    "https://www.tarladalal.com/vegetable-khichdi-for-babies-and-toddlers-3072r",
+    "https://archanaskitchen.com/moong-dal-khichdi-recipe-for-babies-and-toddlers-over-10-months",
+    "https://www.apollopharmacy.in/momverse/a/khichdi-dal-rice-for-babies"
+  ],
+  "steps": [
+    "Wash the rice and moong dal and soak them for 15 minutes.",
+    "Chop the carrot and beans very small; mince the chicken too if you are adding it.",
+    "Put the rice, dal, vegetables, turmeric, any chicken and about 300 ml water in a pressure cooker.",
+    "Cook for 3 to 4 whistles, then let the pressure drop on its own.",
+    "Heat the ghee in a small pan, add the cumin, let it crackle, then add a pinch of hing.",
+    "Pour this over the khichdi and mash it soft, adding hot water if it is too thick.",
+    "For egg, scramble it until fully set and stir it in; for paneer, crumble it in and warm it a minute.",
+    "Let it cool until just warm before serving."
+  ],
+  "note": "No salt. Chicken is minced and cooked with the rice and dal so it turns soft; egg and paneer go in at the end."
+}

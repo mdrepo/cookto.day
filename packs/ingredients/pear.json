@@ -1,0 +1,23 @@
+{
+  "wikidata": "Q13099586",
+  "label": "pear",
+  "keeps": {
+    "days": 3,
+    "in": "fridge",
+    "foodkeeper": 266
+  },
+  "names": [
+    {
+      "text": "Pear",
+      "lang": "en"
+    },
+    {
+      "text": "नाशपाती",
+      "lang": "hi"
+    },
+    {
+      "text": "नासपती",
+      "lang": "mr"
+    }
+  ]
+}

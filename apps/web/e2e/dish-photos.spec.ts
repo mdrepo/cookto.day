@@ -40,8 +40,8 @@ test.describe("Dish photos", () => {
     await k.tabs().getByRole("button", { name: "Dishes", exact: true }).click();
     await expect(k.title()).toHaveText("Dishes");
     const rows = k.dishes();
-    await expect(rows).toHaveCount(30);
-    await expect(rows.locator("img")).toHaveCount(30);
+    await expect(rows).toHaveCount(28);
+    await expect(rows.locator("img")).toHaveCount(28);
     for (const lazy of await rows.locator("img").all())
       await expect(lazy).toHaveAttribute("loading", "lazy");
     await expect.poll(() => loaded(rows.first().locator("img"))).toBe(true);

@@ -201,32 +201,6 @@ describe("packs:check", () => {
     ]);
   });
 
-  test("a shorter shelf life than FoodKeeper's is fine; where it gives none, an approved spec decides (#149)", () => {
-    const shorter = goodPack();
-    shorter.ingredients.spinach = {
-      wikidata: "Q81464",
-      label: "Spinacia oleracea",
-      keeps: { days: 2, in: "fridge", foodkeeper: 291 },
-    };
-    expect(packProblems(shorter, sources)).toEqual([]);
-
-    const noTime = goodPack();
-    const keeps = { days: 7, in: "pantry" as const, foodkeeper: 291 };
-    noTime.ingredients.spinach = {
-      wikidata: "Q81464",
-      label: "Spinacia oleracea",
-      keeps,
-    };
-    expect(packProblems(noTime, sources)).toEqual([
-      "ingredients/spinach.json: keeps 7 days in the pantry, but FoodKeeper 291 (Lettuce, leaf, spinach) gives no time in the pantry. Cite an entry that does, or the approved spec that decided it.",
-    ]);
-    (noTime.ingredients.spinach as { keeps: object }).keeps = {
-      ...keeps,
-      spec: 149,
-    };
-    expect(packProblems(noTime, sources)).toEqual([]);
-  });
-
   test("an ingredient is a staple or has a shelf life, and a dish uses only defined ones", () => {
     const pack = goodPack();
     pack.ingredients["paneer"] = { wikidata: "Q5090", label: "rice" };

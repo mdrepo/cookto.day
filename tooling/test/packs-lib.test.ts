@@ -146,7 +146,7 @@ describe("packs:check", () => {
       label: "spinach",
     } as Pack["ingredients"][string];
     expect(packProblems(pack, sources)).toEqual([
-      'test-kitchen/ingredients/spinach.json: Wikidata calls Q81464 "Spinacia oleracea", not "spinach". Check the id on wikidata.org, then copy its English label exactly.',
+      'ingredients/spinach.json: Wikidata calls Q81464 "Spinacia oleracea", not "spinach". Check the id on wikidata.org, then copy its English label exactly.',
     ]);
   });
 
@@ -157,7 +157,7 @@ describe("packs:check", () => {
       wikidata: "Q999999999",
     } as Pack["ingredients"][string];
     expect(packProblems(pack, sources)).toEqual([
-      "test-kitchen/ingredients/spinach.json: Q999999999 isn't in packs/sources/wikidata.json. Run `bun run packs:refresh`; if it still isn't there, the id doesn't exist.",
+      "ingredients/spinach.json: Q999999999 isn't in packs/sources/wikidata.json. Run `bun run packs:refresh`; if it still isn't there, the id doesn't exist.",
     ]);
   });
 
@@ -169,7 +169,7 @@ describe("packs:check", () => {
       keeps: { days: 3, in: "fridge" },
     } as unknown as Pack["ingredients"][string];
     expect(packProblems(uncited, sources)).toEqual([
-      'test-kitchen/ingredients/spinach.json: its shelf life cites no FoodKeeper entry. Add "foodkeeper": the entry\'s ID from packs/sources/foodkeeper.json.',
+      'ingredients/spinach.json: its shelf life cites no FoodKeeper entry. Add "foodkeeper": the entry\'s ID from packs/sources/foodkeeper.json.',
     ]);
 
     const tooLong = goodPack();
@@ -179,7 +179,7 @@ describe("packs:check", () => {
       keeps: { days: 10, in: "fridge", foodkeeper: 291 },
     };
     expect(packProblems(tooLong, sources)).toEqual([
-      "test-kitchen/ingredients/spinach.json: keeps 10 days in the fridge, but FoodKeeper 291 (Lettuce, leaf, spinach) says 3 to 7. Use a number in that range.",
+      "ingredients/spinach.json: keeps 10 days in the fridge, but FoodKeeper 291 (Lettuce, leaf, spinach) says 3 to 7. Use a number in that range.",
     ]);
   });
 
@@ -192,7 +192,7 @@ describe("packs:check", () => {
     const en = pack.words["en"];
     if (en) en.ingredients["paneer"] = "Paneer";
     expect(packProblems(pack, sources)).toEqual([
-      'test-kitchen/ingredients/paneer.json: neither a staple nor fresh. List it in staples.json, or add "keeps" with its FoodKeeper entry.',
+      'ingredients/paneer.json: neither a staple nor fresh. List it in staples.json, or add "keeps" with its FoodKeeper entry.',
       "test-kitchen/dishes/spinach-rice.json: uses ghee, which has no ingredients/ghee.json.",
     ]);
   });

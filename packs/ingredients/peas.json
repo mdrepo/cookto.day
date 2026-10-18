@@ -1,0 +1,19 @@
+{
+  "wikidata": "Q29472543",
+  "label": "pea",
+  "keeps": {
+    "days": 5,
+    "in": "fridge",
+    "foodkeeper": 273
+  },
+  "names": [
+    {
+      "text": "Green peas",
+      "lang": "en"
+    },
+    {
+      "text": "हरी मटर",
+      "lang": "hi"
+    }
+  ]
+}

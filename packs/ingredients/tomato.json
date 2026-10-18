@@ -1,0 +1,19 @@
+{
+  "wikidata": "Q20638126",
+  "label": "tomato",
+  "keeps": {
+    "days": 10,
+    "in": "pantry",
+    "foodkeeper": 600
+  },
+  "names": [
+    {
+      "text": "Tomato",
+      "lang": "en"
+    },
+    {
+      "text": "टमाटर",
+      "lang": "hi"
+    }
+  ]
+}

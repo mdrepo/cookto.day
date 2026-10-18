@@ -1,0 +1,19 @@
+{
+  "wikidata": "Q1139546",
+  "label": "paneer",
+  "keeps": {
+    "days": 7,
+    "in": "fridge",
+    "foodkeeper": 546
+  },
+  "names": [
+    {
+      "text": "Paneer",
+      "lang": "en"
+    },
+    {
+      "text": "पनीर",
+      "lang": "hi"
+    }
+  ]
+}

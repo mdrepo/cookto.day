@@ -4,10 +4,13 @@ import { count, fill } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
 import { membersQuery, queries } from "../../platform.js";
 import { go } from "../../routes.js";
+import { useUsedUpNote } from "../../usedUp.js";
 
 /** The home screen's words, in the chosen language (ADR 0022: the screen hook). */
 export function useHomeScreen() {
   const { locale, t } = useWords();
+  // Food used up from "Use soon" gets its Undo here too (#116).
+  const usedUp = useUsedUpNote();
   const { data } = useQuery(
     {
       ...membersQuery,
@@ -20,6 +23,7 @@ export function useHomeScreen() {
   );
   return {
     ...t,
+    usedUp,
     /** Today, above the title: "Wednesday 14 October" (#84). */
     date: new Intl.DateTimeFormat(locale, {
       weekday: "long",

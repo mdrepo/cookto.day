@@ -4,6 +4,7 @@
 // cuisine logic here: only ingredients, dates, conditions, slots and what
 // the household skips.
 import type { MealSlot } from "./household.js";
+import { missing } from "./needs.js";
 import { compareUrgency, type PantryItem, urgency } from "./pantry.js";
 
 export interface Dish {
@@ -42,7 +43,14 @@ export function cookToday(input: CookTodayInput): Suggestion[] {
   const have = new Set<string>();
   for (const item of pantry) {
     have.add(item.ingredient);
-    if (item.shelfLifeDays !== undefined && !staples.has(item.ingredient))
+    if (item.shelfLifeDays === undefined || staples.has(item.ingredient))
+      continue;
+    // Two of the same food: the one that needs using first counts.
+    const seen = fresh.get(item.ingredient);
+    if (
+      seen === undefined ||
+      compareUrgency(urgency(item, today), urgency(seen, today)) < 0
+    )
       fresh.set(item.ingredient, item);
   }
   const key = (id: string) => urgency(fresh.get(id) as PantryItem, today);
@@ -65,9 +73,7 @@ export function cookToday(input: CookTodayInput): Suggestion[] {
         suggestion: {
           dish,
           uses: uses.map((u) => u.id),
-          needs: dish.ingredients.filter(
-            (i) => !have.has(i) && !staples.has(i),
-          ),
+          needs: missing(dish.ingredients, have, staples),
           servedWith: (dish.servedWith ?? []).filter((p) => !skip.has(p)),
         },
       };

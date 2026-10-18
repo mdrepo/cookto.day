@@ -1,12 +1,15 @@
+import { use } from "react";
 import { useStore } from "zustand";
 import { settings } from "../platform.js";
-import { LOCALES, type Locale, localeOf } from "./index.js";
+import type { Messages } from "./en.js";
+import { type Locale, localeOf, wordsOf } from "./index.js";
 
-/** The page's language and its words, for a screen hook. */
-export function useWords(): {
-  locale: Locale;
-  t: (typeof LOCALES)[Locale]["messages"];
-} {
+/**
+ * The page's language and its words, for a screen hook. A language other
+ * than English waits for its file (Suspense) the first time it's shown.
+ */
+export function useWords(): { locale: Locale; t: Messages } {
   const locale = localeOf(useStore(settings.store, (s) => s.language));
-  return { locale, t: LOCALES[locale].messages };
+  const words = wordsOf(locale);
+  return { locale, t: words instanceof Promise ? use(words) : words };
 }

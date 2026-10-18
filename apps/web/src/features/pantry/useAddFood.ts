@@ -1,3 +1,4 @@
+import { addDays } from "@cookto/engine";
 import { addBoughtFood, addFood } from "@cookto/usecases";
 import { useState } from "react";
 import { count } from "../../i18n/format.js";
@@ -6,13 +7,8 @@ import { namer, packStaples, useLoadedPacks } from "../../food.js";
 import { kitchen, today } from "../../platform.js";
 import { toGramsOrMl, UNIT_CHOICES } from "./units.js";
 
-const DAY_MS = 24 * 60 * 60 * 1000;
-
 /** The day `daysAgo` days before today, "YYYY-MM-DD". */
-function before(daysAgo: number): string {
-  const day = new Date(`${today()}T00:00:00Z`).getTime() - daysAgo * DAY_MS;
-  return new Date(day).toISOString().slice(0, 10);
-}
+const before = (daysAgo: number) => addDays(today(), -daysAgo);
 
 /**
  * Adding food: tapping the loaded cuisines' fresh food (specs/113), or

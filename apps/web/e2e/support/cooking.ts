@@ -57,6 +57,16 @@ export class Cooking {
     amount?: { value: string; unit: string },
     daysAgo = 0,
   ): Promise<void> {
+    await this.tryAdd(name, amount, daysAgo);
+    await expect(this.item(name)).toBeVisible();
+  }
+
+  /** Fills in "Add food" and presses Add, whether or not it saves. */
+  async tryAdd(
+    name: string,
+    amount?: { value: string; unit: string },
+    daysAgo = 0,
+  ): Promise<void> {
     await this.press("Add food");
     const form = this.page.getByRole("form", { name: "Add food" });
     await form.getByRole("textbox", { name: "Name" }).fill(name);
@@ -70,7 +80,14 @@ export class Cooking {
       .getByRole("combobox", { name: "Bought" })
       .selectOption({ index: daysAgo });
     await form.getByRole("button", { name: "Add" }).click();
-    await expect(this.item(name)).toBeVisible();
+  }
+
+  /** "Add food" is still open with what they typed: press Add again. */
+  async addAgain(): Promise<void> {
+    await this.page
+      .getByRole("form", { name: "Add food" })
+      .getByRole("button", { name: "Add" })
+      .click();
   }
 
   /** The pantry's fresh food, what needs using first: "Use soon", then "Fresh". */

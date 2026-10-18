@@ -33,7 +33,8 @@
     "format:check": "prettier --check .",
     "prepare": "git config core.hooksPath .githooks 2>/dev/null || true",
     "tdd:verify": "bun tooling/scripts/tdd-verify.ts",
-    "review": "bun tooling/scripts/review.ts"
+    "review": "bun tooling/scripts/review.ts",
+    "mutate": "bun tooling/scripts/mutate.ts"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "5.20261009.1",

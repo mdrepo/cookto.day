@@ -8,9 +8,14 @@ import type { KeyValue } from "./kv.js";
 export const THEMES = ["system", "light", "dark"] as const;
 export type Theme = (typeof THEMES)[number];
 
+/** Dried beans need soaking the night before; tinned don't (specs/144). */
+export const BEANS = ["dried", "tinned"] as const;
+export type Beans = (typeof BEANS)[number];
+
 export interface Settings {
   language: string;
   theme: Theme;
+  beans: Beans;
   /** Where the household lives: its currency and shops (ADR 0026). */
   country: string;
   /** Whether onboarding is done or skipped: it's asked once (specs/65). */
@@ -49,6 +54,11 @@ export interface ThemeWriter {
   setTheme(theme: Theme): void;
 }
 
+/** Dried or tinned beans (specs/144), for its use case only. */
+export interface BeansWriter {
+  setBeans(beans: Beans): void;
+}
+
 /** The kitchen's settings, for the kitchen's use cases only. */
 export interface KitchenSettingsWriter {
   kitchen(): KitchenSettings;
@@ -59,6 +69,7 @@ export interface KitchenSettingsWriter {
 const LANGUAGE = "cookto.day:language";
 const COUNTRY = "cookto.day:country";
 const THEME = "cookto.day:theme";
+const BEANS_KEY = "cookto.day:beans";
 const ONBOARDED = "cookto.day:onboarded";
 const KITCHEN = "cookto.day:kitchen";
 
@@ -117,7 +128,7 @@ export function createSettings(
   },
 ): {
   store: SettingsStore;
-  writer: SettingsWriter & KitchenSettingsWriter & ThemeWriter;
+  writer: SettingsWriter & KitchenSettingsWriter & ThemeWriter & BeansWriter;
 } {
   const speaks = (language: string) => options.languages.includes(language);
   const knowsCountry = (country: string) => options.countries.includes(country);
@@ -125,6 +136,7 @@ export function createSettings(
   const saved = read(kv, LANGUAGE);
   const savedCountry = read(kv, COUNTRY);
   const savedTheme = read(kv, THEME);
+  const savedBeans = read(kv, BEANS_KEY);
   const store = createStore<Settings>(() => ({
     language:
       preview !== null && (speaks(preview) || previews.includes(preview))
@@ -133,6 +145,7 @@ export function createSettings(
           ? saved
           : options.fallback,
     theme: THEMES.find((t) => t === savedTheme) ?? "system",
+    beans: BEANS.find((b) => b === savedBeans) ?? "dried",
     country:
       savedCountry !== null && knowsCountry(savedCountry)
         ? savedCountry
@@ -151,6 +164,10 @@ export function createSettings(
       setTheme(theme) {
         store.setState({ theme });
         write(kv, THEME, theme);
+      },
+      setBeans(beans) {
+        store.setState({ beans });
+        write(kv, BEANS_KEY, beans);
       },
       knowsCountry,
       setCountry(country) {

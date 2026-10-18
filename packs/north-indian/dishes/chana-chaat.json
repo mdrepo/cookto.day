@@ -46,6 +46,14 @@
       "unit": "g"
     }
   },
+  "prep": [
+    {
+      "do": "soak",
+      "what": "chickpeas",
+      "hours": 8,
+      "tinned": true
+    }
+  ],
   "sources": [
     "https://www.indianhealthyrecipes.com/chana-chaat-recipe/",
     "https://pipingpotcurry.com/chana-chaat/"

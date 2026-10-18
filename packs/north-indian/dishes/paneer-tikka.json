@@ -62,6 +62,13 @@
       "unit": "g"
     }
   },
+  "prep": [
+    {
+      "do": "marinate",
+      "what": "paneer",
+      "hours": 1
+    }
+  ],
   "sources": [
     "https://www.vegrecipesofindia.com/paneer-tikka-recipe/",
     "https://www.indianhealthyrecipes.com/paneer-tikka-on-stove-top/",

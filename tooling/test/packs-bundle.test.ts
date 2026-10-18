@@ -114,6 +114,21 @@ describe("a pack, as the app loads it", () => {
     expect(dish && "source" in dish).toBe(false);
   });
 
+  test("a dish's prep goes with it, its food keyed by Wikidata id (#144)", () => {
+    const soaked: Pack = {
+      ...pack,
+      dishes: {
+        "spinach-rice": {
+          ...(pack.dishes["spinach-rice"] as Pack["dishes"][string]),
+          prep: [{ do: "soak", what: "rice", hours: 8, tinned: true }],
+        },
+      },
+    };
+    expect(bundlePack(soaked).dishes[0]?.prep).toEqual([
+      { do: "soak", what: "Q5090", hours: 8, tinned: true },
+    ]);
+  });
+
   test("a sample item must be one of the pack's ingredients, with a real unit", () => {
     const bad: Pack = {
       ...pack,

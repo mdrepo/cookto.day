@@ -17,6 +17,8 @@ export interface AppPack {
     /** For one person, in the same order as `ingredients`. */
     amounts: [number, string][];
     servedWith?: string[];
+    /** Prep hours before, its food keyed by Wikidata id (specs/144). */
+    prep?: { do: string; what: string; hours: number; tinned?: boolean }[];
     /** A full version of the recipe, to link to; none when cooked at home. */
     source?: string;
     /** Its photo's credit (specs/118); the files come in their own module. */
@@ -57,6 +59,9 @@ export function bundlePack(pack: Pack): AppPack {
         i.unit,
       ]),
       ...(dish.servedWith ? { servedWith: dish.servedWith } : {}),
+      ...(dish.prep
+        ? { prep: dish.prep.map((p) => ({ ...p, what: q(p.what) })) }
+        : {}),
       ...linkOf(dish.sources),
       ...(dish.photo ? { photo: dish.photo } : {}),
     })),

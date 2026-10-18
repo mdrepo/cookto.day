@@ -11,7 +11,7 @@ test.describe("Onboarding", () => {
     const start = new Onboarding(page);
     await start.open();
     await expect(start.title()).toHaveText("Where do you live?");
-    await expect(start.step()).toHaveText("Step 1 of 2");
+    await expect(start.step()).toHaveText("Step 1 of 3");
     await expect(start.country("Singapore")).toBeChecked();
     await expect(start.countryCard("Singapore")).toContainText(
       "S$ · RedMart · GrabMart · foodpanda mart · Cold Storage · Sheng Siong",
@@ -29,7 +29,7 @@ test.describe("Onboarding", () => {
     await start.open();
     await start.next();
     await expect(start.title()).toHaveText("Who eats at home?");
-    await expect(start.step()).toHaveText("Step 2 of 2");
+    await expect(start.step()).toHaveText("Step 2 of 3");
 
     // One adult, eating lunch and dinner.
     await expect(start.people()).toHaveCount(1);
@@ -85,6 +85,7 @@ test.describe("Onboarding", () => {
     await start.next();
     await start.add("Child");
     await start.next();
+    await start.next();
     await expect(start.title()).toHaveText("All set");
     await expect(
       page.getByText("We'll plan 5 meals a day for 2 people."),
@@ -92,11 +93,14 @@ test.describe("Onboarding", () => {
     await expect(start.plannedFor("Breakfast")).toContainText("Child");
     await expect(start.plannedFor("Lunch")).toContainText("Everyone");
 
-    // Back returns to who eats, as they left it.
+    // Back returns to who cooks, then who eats, as they left it.
+    await start.button("Back").click();
+    await expect(start.title()).toHaveText("Who cooks?");
     await start.button("Back").click();
     await expect(start.title()).toHaveText("Who eats at home?");
     await expect(start.people()).toHaveCount(2);
     await start.meal("Child", "Evening snack").click();
+    await start.next();
     await start.next();
     await expect(start.plannedFor("Evening snack")).toContainText(
       "Not planned",
@@ -110,6 +114,7 @@ test.describe("Onboarding", () => {
     await start.open();
     await start.next();
     await start.add("Child");
+    await start.next();
     await start.next();
     await start.button("Go to my kitchen").click();
 
@@ -138,6 +143,7 @@ test.describe("Onboarding", () => {
     await start.next();
     await start.add("Toddler");
     await start.next();
+    await start.next();
     await start.button("Go to my kitchen").click();
     await expect(start.household()).toHaveText("2 people · 5 meals a day");
 
@@ -156,8 +162,11 @@ test.describe("Onboarding", () => {
     await start.next();
     await start.add("Child");
     await start.next();
+    await start.next();
     await expect(start.title()).toHaveText("All set");
 
+    await page.goBack();
+    await expect(start.title()).toHaveText("Who cooks?");
     await page.goBack();
     await expect(start.title()).toHaveText("Who eats at home?");
     await expect(start.people()).toHaveCount(2);

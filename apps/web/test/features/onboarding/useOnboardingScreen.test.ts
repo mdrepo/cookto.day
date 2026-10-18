@@ -23,10 +23,11 @@ const settle = () =>
   });
 
 describe("useOnboardingScreen", () => {
-  test("where is step 1 of 2; who is step 2 of 2", async () => {
+  test("where is step 1 of 3; who is step 2 of 3; who cooks is step 3 of 3", async () => {
     for (const [step, label] of [
-      ["where", "Step 1 of 2"],
-      ["who", "Step 2 of 2"],
+      ["where", "Step 1 of 3"],
+      ["who", "Step 2 of 3"],
+      ["cooks", "Step 3 of 3"],
     ] as const) {
       const screen = renderCount(() => useOnboardingScreen(step));
       try {

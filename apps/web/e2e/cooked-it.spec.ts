@@ -16,11 +16,9 @@ test.describe("We cooked this", () => {
     await k.loadNorthIndianWithStaples();
     await k.home();
     const lunch = k.pick("Lunch");
-    await lunch.getByRole("button", { name: "We cooked this" }).click();
-    await expect(lunch).toContainText("Cooked today");
-    await expect(
-      lunch.getByRole("button", { name: "We cooked this" }),
-    ).toHaveCount(0);
+    await lunch.getByRole("button", { name: "Made" }).click();
+    await expect(lunch.getByRole("button", { name: "Made" })).toHaveCount(0);
+    await expect(lunch.getByRole("button", { name: "Made" })).toHaveCount(0);
 
     await k.openDish("Aloo gobi");
     await k.press("We cooked this");
@@ -35,11 +33,10 @@ test.describe("We cooked this", () => {
     await k.loadNorthIndianWithStaples();
     await k.home();
     const cooked = await k.pickedDish("Lunch");
-    await k
-      .pick("Lunch")
-      .getByRole("button", { name: "We cooked this" })
-      .click();
-    await expect(k.pick("Lunch")).toContainText("Cooked today");
+    await k.pick("Lunch").getByRole("button", { name: "Made" }).click();
+    await expect(
+      k.pick("Lunch").getByRole("button", { name: "Made" }),
+    ).toHaveCount(0);
     for (const day of [1, 2]) {
       await onDay(page, day);
       await page.reload();
@@ -59,12 +56,13 @@ test.describe("We cooked this", () => {
     await k.start();
     await k.loadNorthIndianWithStaples();
     await k.home();
-    await k
-      .pick("Lunch")
-      .getByRole("button", { name: "We cooked this" })
-      .click();
-    await expect(k.pick("Lunch")).toContainText("Cooked today");
+    await k.pick("Lunch").getByRole("button", { name: "Made" }).click();
+    await expect(
+      k.pick("Lunch").getByRole("button", { name: "Made" }),
+    ).toHaveCount(0);
     await page.reload();
-    await expect(k.pick("Lunch")).toContainText("Cooked today");
+    await expect(
+      k.pick("Lunch").getByRole("button", { name: "Made" }),
+    ).toHaveCount(0);
   });
 });

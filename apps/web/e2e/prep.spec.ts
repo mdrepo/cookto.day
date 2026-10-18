@@ -33,6 +33,13 @@ async function reopen(page: Page, k: Cooking): Promise<void> {
 
 const tomorrow = (page: Page) => page.getByRole("region", { name: "Tomorrow" });
 
+/** Tomorrow shows on the planner's phone (specs/195): this one plans. */
+async function planner(k: Cooking, page: Page): Promise<void> {
+  await k.settings();
+  await page.getByRole("radio", { name: "I plan the meals" }).click();
+  await k.home();
+}
+
 test.describe("Prep the day before", () => {
   test("a dish that needs prep isn't tonight's pick", async ({ page }) => {
     await at(page, "2026-10-18T10:00");
@@ -52,7 +59,7 @@ test.describe("Prep the day before", () => {
   test("the evening before", async ({ page }) => {
     await at(page, "2026-10-18T21:00");
     const k = await cholesKitchen(page);
-    await k.home();
+    await planner(k, page);
     await expect(tomorrow(page)).toContainText("Chole");
     const tonight = page
       .getByRole("region", { name: "Prep" })
@@ -72,7 +79,7 @@ test.describe("Prep the day before", () => {
   test("the morning after", async ({ page }) => {
     await at(page, "2026-10-18T21:00");
     const k = await cholesKitchen(page);
-    await k.home();
+    await planner(k, page);
     await expect(tomorrow(page)).toContainText("Chole");
 
     // Soaked, and marked done: chole stays lunch's pick.
@@ -90,7 +97,7 @@ test.describe("Prep the day before", () => {
   test("the morning after, nothing marked", async ({ page }) => {
     await at(page, "2026-10-18T21:00");
     const k = await cholesKitchen(page);
-    await k.home();
+    await planner(k, page);
     await expect(tomorrow(page)).toContainText("Chole");
     await at(page, "2026-10-19T08:00");
     await reopen(page, k);

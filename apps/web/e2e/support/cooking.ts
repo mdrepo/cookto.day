@@ -11,6 +11,7 @@ export class Cooking {
     await this.page.goto(path);
     await this.button("Next").click();
     await this.button("Next").click();
+    await this.button("Next").click();
     // Under load on an iPhone, the tap on the last step can land before the
     // step is ready, and the deploy failed on it: tap until Today shows.
     await expect(async () => {
@@ -177,9 +178,27 @@ export class Cooking {
 
   /** The dish one meal's pick names, in large words. */
   async pickedDish(meal: string): Promise<string> {
+    return this.dishOf(this.pick(meal));
+  }
+
+  /** The dish a pick names, in large words, wherever the pick is. */
+  async dishOf(pick: Locator): Promise<string> {
+    return (await pick.locator(":scope > :nth-child(2)").textContent()) ?? "";
+  }
+
+  /** A row's name in a list of ideas or dishes, without its line. */
+  async nameOf(row: Locator): Promise<string> {
+    return (await row.locator("strong").textContent()) ?? "";
+  }
+
+  /** In a list of labels and values (each meal, its dish): one label's value. */
+  async valueOf(list: Locator, label: string): Promise<string> {
     return (
-      (await this.pick(meal).locator(":scope > :nth-child(2)").textContent()) ??
-      ""
+      (await list
+        .getByRole("listitem")
+        .filter({ hasText: label })
+        .locator("span")
+        .textContent()) ?? ""
     );
   }
 

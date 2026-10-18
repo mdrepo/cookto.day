@@ -203,4 +203,12 @@ export class Cooking {
   dishList(name: "You have" | "You need"): Locator {
     return this.page.getByRole("region", { name });
   }
+
+  /** On a dish's page: a food's row, with its amount, in either list. */
+  ingredient(food: string): Locator {
+    return this.page
+      .getByRole("region", { name: /^You (have|need)$/ })
+      .getByRole("listitem")
+      .filter({ hasText: food });
+  }
 }

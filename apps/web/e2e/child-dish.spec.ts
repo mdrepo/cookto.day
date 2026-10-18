@@ -22,7 +22,7 @@ async function family(page: Page): Promise<Cooking> {
 
 /** The child's dish under a meal's pick. */
 const childDish = (k: Cooking, meal: string) =>
-  k.pick(meal).getByRole("group", { name: "For the child" });
+  k.pick(meal).getByRole("list", { name: "For the child" });
 
 async function khichdiForLunch(page: Page, k: Cooking): Promise<void> {
   await k

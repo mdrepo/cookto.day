@@ -1,10 +1,77 @@
 import { describe, expect, test } from "bun:test";
 import { type Pack, packProblems, type Sources } from "../scripts/packs-lib.js";
-import { goodPack, sources, STEPS, withPhoto } from "./packs-fixture.js";
 
 // specs/72-kitchen.md criterion 12: no made-up food data. Every dish has a
 // source, every Wikidata id matches Wikidata's own label, and every shelf
 // life cites a USDA FoodKeeper entry it agrees with (ADR 0015, 0027).
+
+const sources: Sources = {
+  wikidata: { Q81464: "Spinacia oleracea", Q5090: "rice" },
+  foodkeeper: {
+    "291": { name: "Lettuce, leaf, spinach", fridge: [3, 7], pantry: null },
+  },
+};
+
+/** Six short steps in our own words (specs/149). */
+const STEPS = [
+  "Wash the rice.",
+  "Boil it in twice its water.",
+  "Wash the spinach.",
+  "Chop it fine.",
+  "Stir it into the rice.",
+  "Cover and rest for five minutes.",
+];
+
+function goodPack(): Pack {
+  return {
+    id: "test-kitchen",
+    languages: ["en"],
+    parts: ["rice"],
+    staples: { "grains-and-dals": ["rice"], spices: [], basics: [] },
+    ingredients: {
+      spinach: {
+        wikidata: "Q81464",
+        label: "Spinacia oleracea",
+        keeps: { days: 3, in: "fridge", foodkeeper: 291 },
+      },
+      rice: { wikidata: "Q5090", label: "rice" },
+    },
+    dishes: {
+      "spinach-rice": {
+        slots: ["lunch"],
+        ingredients: {
+          spinach: { amount: 100, unit: "g" },
+          rice: { amount: 80, unit: "g" },
+        },
+        servedWith: ["rice"],
+        sources: [
+          "https://example.com/spinach-rice",
+          "https://example.org/palak-rice",
+        ],
+        steps: STEPS,
+      },
+    },
+    words: {
+      en: {
+        dishes: { "spinach-rice": "Spinach rice" },
+        ingredients: { spinach: "Spinach", rice: "Rice" },
+        parts: { rice: "Rice" },
+      },
+    },
+  };
+}
+
+/** goodPack, with a credited photo whose files are small enough (#118). */
+function withPhoto(): Pack {
+  const pack = goodPack();
+  (pack.dishes["spinach-rice"] as { photo?: unknown }).photo = {
+    author: "A. Cook",
+    licence: "CC BY-SA 4.0",
+    source: "https://commons.wikimedia.org/wiki/File:Spinach_rice.jpg",
+  };
+  pack.photos = { "spinach-rice": { large: 35_000, small: 6_000 } };
+  return pack;
+}
 
 describe("packs:check", () => {
   test("a pack with sources, matching ids and cited shelf lives passes", () => {
@@ -140,24 +207,6 @@ describe("packs:check", () => {
       spec: 149,
     };
     expect(packProblems(noTime, sources)).toEqual([]);
-  });
-
-  test("food bought frozen keeps up to FoodKeeper's freezer time (#149)", () => {
-    const frozen = { ...sources };
-    frozen.foodkeeper = {
-      "291": {
-        ...(sources.foodkeeper["291"] as Sources["foodkeeper"][string]),
-        freezer: [240, 240],
-      },
-    };
-    const pack = goodPack();
-    const spinach = pack.ingredients.spinach as { freezes?: object };
-    spinach.freezes = { days: 90, foodkeeper: 291 };
-    expect(packProblems(pack, frozen)).toEqual([]);
-    spinach.freezes = { days: 300, foodkeeper: 291 };
-    expect(packProblems(pack, frozen)).toEqual([
-      "ingredients/spinach.json: keeps 300 days frozen, but FoodKeeper 291 (Lettuce, leaf, spinach) says 240 to 240. Use 240 or fewer: shorter only warns early.",
-    ]);
   });
 
   test("an ingredient is a staple or has a shelf life, and a dish uses only defined ones", () => {

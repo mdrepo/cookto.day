@@ -53,6 +53,8 @@ export interface AppPack {
   }[];
   /** Fresh food: Wikidata id to the days it keeps. */
   fresh: Record<string, number>;
+  /** Food also bought frozen: Wikidata id to its days frozen (specs/149). */
+  frozen?: Record<string, number>;
   staples: Record<StapleGroup, string[]>;
   sample: {
     ingredient: string;

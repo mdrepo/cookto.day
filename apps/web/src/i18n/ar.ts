@@ -237,4 +237,8 @@ export const ar: Messages = {
   driedBeansLine: "تُنقع في الليلة السابقة",
   tinnedBeans: "بقول معلّبة",
   tinnedBeansLine: "جاهزة للطبخ، بلا نقع",
+  where: "أين",
+  inFridge: "الثلاجة",
+  frozen: "مجمّد",
+  useWithinMonths: { other: "استخدمه خلال {n} أشهر" },
 };

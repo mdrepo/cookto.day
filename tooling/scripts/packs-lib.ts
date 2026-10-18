@@ -79,7 +79,7 @@ function ingredientProblems(
   staples: Set<string>,
 ): string[] {
   return Object.entries(pack.ingredients).flatMap(([slug, ing]) => {
-    const at = `${pack.id}/ingredients/${slug}.json`;
+    const at = `ingredients/${slug}.json`;
     const problems: string[] = [];
     const label = sources.wikidata[ing.wikidata];
     if (!/^Q\d+$/.test(ing.wikidata) || label === undefined)

@@ -11,8 +11,13 @@ export class Cooking {
     await this.page.goto(path);
     await this.button("Next").click();
     await this.button("Next").click();
-    await this.button("Go to my kitchen").click();
-    await expect(this.title()).toHaveText("cookto.day");
+    // Under load on an iPhone, the tap on the last step can land before the
+    // step is ready, and the deploy failed on it: tap until Today shows.
+    await expect(async () => {
+      const go = this.button("Go to my kitchen");
+      if (await go.isVisible()) await go.click();
+      await expect(this.title()).toHaveText("cookto.day", { timeout: 2_000 });
+    }).toPass({ timeout: 15_000 });
   }
 
   title(): Locator {

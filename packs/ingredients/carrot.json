@@ -1,0 +1,19 @@
+{
+  "wikidata": "Q81",
+  "label": "carrot",
+  "keeps": {
+    "days": 14,
+    "in": "fridge",
+    "foodkeeper": 279
+  },
+  "names": [
+    {
+      "text": "Carrot",
+      "lang": "en"
+    },
+    {
+      "text": "गाजर",
+      "lang": "hi"
+    }
+  ]
+}

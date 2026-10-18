@@ -22,6 +22,7 @@
       "Edit(.claude/**)",
       "Edit(.agents/**)",
       "Edit(specs/**)",
+      "Edit(packs/**)",
       "Edit(apps/web/package.json)",
       "Edit(apps/web/tsconfig.json)",
       "Edit(apps/web/playwright.config.ts)",

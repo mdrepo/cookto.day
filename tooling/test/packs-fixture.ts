@@ -58,15 +58,3 @@ export function goodPack(): Pack {
     },
   };
 }
-
-/** goodPack, with a credited photo whose files are small enough (#118). */
-export function withPhoto(): Pack {
-  const pack = goodPack();
-  (pack.dishes["spinach-rice"] as { photo?: unknown }).photo = {
-    author: "A. Cook",
-    licence: "CC BY-SA 4.0",
-    source: "https://commons.wikimedia.org/wiki/File:Spinach_rice.jpg",
-  };
-  pack.photos = { "spinach-rice": { large: 35_000, small: 6_000 } };
-  return pack;
-}

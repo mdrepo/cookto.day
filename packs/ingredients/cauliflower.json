@@ -1,0 +1,19 @@
+{
+  "wikidata": "Q23900272",
+  "label": "cauliflower",
+  "keeps": {
+    "days": 5,
+    "in": "fridge",
+    "foodkeeper": 280
+  },
+  "names": [
+    {
+      "text": "Cauliflower",
+      "lang": "en"
+    },
+    {
+      "text": "फूलगोभी",
+      "lang": "hi"
+    }
+  ]
+}

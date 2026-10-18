@@ -1,0 +1,19 @@
+{
+  "wikidata": "Q16587531",
+  "label": "potato",
+  "keeps": {
+    "days": 30,
+    "in": "pantry",
+    "foodkeeper": 297
+  },
+  "names": [
+    {
+      "text": "Potato",
+      "lang": "en"
+    },
+    {
+      "text": "आलू",
+      "lang": "hi"
+    }
+  ]
+}

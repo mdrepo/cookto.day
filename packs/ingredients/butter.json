@@ -1,0 +1,19 @@
+{
+  "wikidata": "Q34172",
+  "label": "butter",
+  "keeps": {
+    "days": 30,
+    "in": "fridge",
+    "foodkeeper": 1
+  },
+  "names": [
+    {
+      "text": "Butter",
+      "lang": "en"
+    },
+    {
+      "text": "मक्खन",
+      "lang": "hi"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "wikidata": "Q864693",
+  "label": "chicken as food",
+  "keeps": {
+    "days": 2,
+    "in": "fridge",
+    "foodkeeper": 118
+  },
+  "names": [
+    {
+      "text": "Chicken",
+      "lang": "en"
+    },
+    {
+      "text": "चिकन",
+      "lang": "hi"
+    }
+  ]
+}

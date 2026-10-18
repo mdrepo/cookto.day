@@ -1,0 +1,19 @@
+{
+  "wikidata": "Q1548030",
+  "label": "bell pepper",
+  "keeps": {
+    "days": 7,
+    "in": "fridge",
+    "foodkeeper": 296
+  },
+  "names": [
+    {
+      "text": "Capsicum",
+      "lang": "en"
+    },
+    {
+      "text": "शिमला मिर्च",
+      "lang": "hi"
+    }
+  ]
+}

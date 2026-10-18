@@ -153,6 +153,8 @@ export const hi: Messages = {
   otherIdeas: "और विकल्प",
   pages: "पन्ने",
   close: "बंद करें",
+  more: "और",
+  packs: "पैक",
   addDishForChild: "बच्चे के लिए अलग खाना जोड़ें",
   forTheChild: "बच्चे के लिए",
   forTheChildDish: "बच्चे के लिए: {dish}",

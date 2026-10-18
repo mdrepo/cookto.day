@@ -5,9 +5,10 @@ const TABS = [
   { key: "home", word: "today", icon: "cooking-pot" },
   { key: "pantry", word: "pantry", icon: "refrigerator" },
   { key: "dishes", word: "dishes", icon: "file-text" },
+  { key: "more", word: "more", icon: "ellipsis" },
 ] as const;
 
-/** The bar at the bottom: Today, Pantry and Dishes (specs/80, criterion 3). */
+/** The bar at the bottom: Today, Pantry, Dishes and More (specs/80, 175). */
 export function useTabs(current: Route) {
   const { t } = useWords();
   return {
@@ -20,7 +21,8 @@ export function useTabs(current: Route) {
     })),
     onPick: (key: string) => {
       if (key === "home") goHome();
-      else if (key === "pantry" || key === "dishes") open(key);
+      else if (key === "pantry" || key === "dishes" || key === "more")
+        open(key);
     },
   };
 }

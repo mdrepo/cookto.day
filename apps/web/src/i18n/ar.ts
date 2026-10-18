@@ -209,6 +209,8 @@ export const ar: Messages = {
   otherIdeas: "أفكار أخرى",
   pages: "الصفحات",
   close: "إغلاق",
+  more: "المزيد",
+  packs: "الحزم",
   addDishForChild: "أضف طبقًا للطفل",
   forTheChild: "للطفل",
   forTheChildDish: "للطفل: {dish}",

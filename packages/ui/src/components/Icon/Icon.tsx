@@ -5,6 +5,7 @@ import {
   Check,
   ChevronDown,
   CookingPot,
+  Ellipsis,
   ExternalLink,
   FileText,
   LoaderCircle,
@@ -21,7 +22,7 @@ import {
 import styles from "./Icon.module.css";
 
 // The only file that imports Lucide (ADR 0020, design:check). These are the
-// icons a code owner has approved (specs/18-icons.md, 29-button-card.md, #84, #95); a new one needs one
+// icons a code owner has approved (specs/18-icons.md, 29-button-card.md, #84, #95, #175); a new one needs one
 // too. Only icons the app uses are here, since each one ships on the first
 // visit: calendar, chevron-right, minus and triangle-alert are approved and
 // come back when a screen needs them. `turns` marks icons that point, which
@@ -33,6 +34,7 @@ const ICONS = {
   check: { svg: Check },
   "chevron-down": { svg: ChevronDown },
   "cooking-pot": { svg: CookingPot },
+  ellipsis: { svg: Ellipsis },
   "external-link": { svg: ExternalLink, turns: true },
   "file-text": { svg: FileText },
   "loader-circle": { svg: LoaderCircle },

@@ -1,7 +1,7 @@
 // The pantry (ADR 0027): what's in the kitchen, how much, and how it is.
 // Fresh food has a use-by date from its shelf life; staples don't. The
 // person's mark wins over the date.
-import { daysLeft } from "./expiry.js";
+import { addDays, daysLeft } from "./expiry.js";
 
 export const UNITS = ["g", "ml", "pieces"] as const;
 export type Unit = (typeof UNITS)[number];
@@ -23,13 +23,10 @@ export interface PantryItem {
   mark?: Condition;
 }
 
-const DAY_MS = 24 * 60 * 60 * 1000;
-
 /** The last good day, or none for a staple. */
 export function useBy(item: PantryItem): string | undefined {
   if (item.shelfLifeDays === undefined) return undefined;
-  const day = new Date(`${item.boughtOn}T00:00:00Z`).getTime();
-  return new Date(day + item.shelfLifeDays * DAY_MS).toISOString().slice(0, 10);
+  return addDays(item.boughtOn, item.shelfLifeDays);
 }
 
 /** Use soon from the day before the use-by date; past its best after it. */

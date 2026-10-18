@@ -5,70 +5,92 @@
       "amount": 50,
       "unit": "g"
     },
-    "green-chilli": {
-      "amount": 0.5,
-      "unit": "pieces"
-    },
-    "onion": {
-      "amount": 15,
-      "unit": "g"
-    },
-    "tomato": {
-      "amount": 30,
-      "unit": "g"
-    },
-    "ginger": {
-      "amount": 0.5,
-      "unit": "g"
-    },
     "turmeric": {
       "amount": 0.3,
       "unit": "g"
     },
-    "garam-masala": {
-      "amount": 0.3,
-      "unit": "g"
-    },
-    "asafoetida": {
-      "amount": 0.1,
-      "unit": "g"
-    },
-    "cream": {
-      "amount": 4,
-      "unit": "ml"
-    },
-    "coriander-leaves": {
-      "amount": 0.9,
-      "unit": "g"
-    },
-    "salt": {
-      "amount": 1.5,
-      "unit": "g"
-    },
     "oil": {
-      "amount": 10,
+      "amount": 6,
       "unit": "ml"
     },
     "cumin": {
       "amount": 0.5,
       "unit": "g"
     },
+    "onion": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 1.2,
+      "unit": "g"
+    },
     "garlic": {
       "amount": 4,
       "unit": "g"
     },
-    "kasuri-methi": {
-      "amount": 0.1,
+    "green-chilli": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "tomato": {
+      "amount": 35,
       "unit": "g"
     },
     "chilli-powder": {
+      "amount": 0.7,
+      "unit": "g"
+    },
+    "coriander-powder": {
+      "amount": 0.4,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    },
+    "garam-masala": {
       "amount": 0.3,
+      "unit": "g"
+    },
+    "kasuri-methi": {
+      "amount": 0.2,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "ghee": {
+      "amount": 7,
+      "unit": "g"
+    },
+    "bay-leaf": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "asafoetida": {
+      "amount": 0.1,
       "unit": "g"
     }
   },
   "servedWith": ["roti", "rice"],
-  "source": "https://www.vegrecipesofindia.com/restaurant-style-dal-tadka/",
-  "note": "Whole dry red chillies left out.",
+  "sources": [
+    "https://www.indianhealthyrecipes.com/dal-tadka/",
+    "https://www.mygingergarlickitchen.com/toor-dal-tadka/",
+    "https://www.mygingergarlickitchen.com/PRINT-RECIPES/RECIPE-PRINT-restaurant-style-tadka-dal-recipe-how-to-make-dal-tadka.html"
+  ],
+  "steps": [
+    "Rinse the toor dal and pressure cook it with water and the turmeric until soft.",
+    "Heat the oil, let half the cumin sizzle, then fry the onion, ginger, half the garlic and the green chilli.",
+    "Add the tomato, most of the chilli powder, the coriander powder and salt and cook until soft.",
+    "Whisk the cooked dal lightly and stir it into the pan.",
+    "Simmer for 5 to 7 minutes, adding hot water if it is too thick.",
+    "Stir in the garam masala, crushed kasuri methi and coriander leaves.",
+    "For the tadka, heat the ghee and fry the rest of the cumin, the rest of the garlic and the bay leaf until the garlic is light gold.",
+    "Take it off the heat, add the hing and the last pinch of chilli powder, and pour it over the dal."
+  ],
+  "note": "The tadka is now in ghee, as all three sources do. Cream is gone because none of the sources use it.",
   "photo": {
     "author": "AugustineKajur",
     "licence": "CC BY-SA 4.0",

@@ -10,7 +10,8 @@ import type { Condition, Unit } from "@cookto/engine";
 export interface Kitchen {
   pantry: { reader: PantryReader; writer: PantryWriter };
   settings: KitchenSettingsWriter;
-  packs: PackLoader;
+  /** The kitchen loads packs; it never needs their steps. */
+  packs: Pick<PackLoader, "cuisines" | "load">;
 }
 
 /** Loads a cuisine's dishes; one that's coming soon can't be loaded. */

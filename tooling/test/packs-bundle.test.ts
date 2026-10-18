@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { bundlePack } from "../scripts/packs-bundle-lib.js";
+import { bundlePack, stepsOf } from "../scripts/packs-bundle-lib.js";
 import { type Pack, packProblems, type Sources } from "../scripts/packs-lib.js";
 
 // specs/72-kitchen.md, step 3: the app loads a pack as one small file, keyed
@@ -11,6 +11,15 @@ const sources: Sources = {
     "291": { name: "Lettuce, leaf, spinach", fridge: [3, 7], pantry: null },
   },
 };
+
+const STEPS = [
+  "Wash the rice.",
+  "Boil it in twice its water.",
+  "Wash the spinach.",
+  "Chop it fine.",
+  "Stir it into the rice.",
+  "Cover and rest for five minutes.",
+];
 
 const pack: Pack = {
   id: "test-kitchen",
@@ -33,7 +42,11 @@ const pack: Pack = {
         rice: { amount: 80, unit: "g" },
       },
       servedWith: ["rice"],
-      source: "https://example.com/spinach-rice",
+      sources: [
+        "https://example.com/spinach-rice",
+        "https://example.org/palak-rice",
+      ],
+      steps: STEPS,
     },
   },
   sample: [
@@ -94,6 +107,25 @@ describe("a pack, as the app loads it", () => {
       },
     };
     expect(bundlePack(frozen).frozen).toEqual({ Q36814998: 90 });
+  });
+
+  test("a pack's steps go in a file of their own, loaded when a dish opens (#149)", () => {
+    expect(stepsOf(pack)).toEqual({ "spinach-rice": STEPS });
+    expect(JSON.stringify(bundlePack(pack))).not.toContain(STEPS[0]);
+  });
+
+  test("a dish links to the first recipe it was checked against; one cooked at home links nowhere (#149)", () => {
+    const home: Pack = {
+      ...pack,
+      dishes: {
+        "spinach-rice": {
+          ...(pack.dishes["spinach-rice"] as Pack["dishes"][string]),
+          sources: ["cooked at home by A. Cook"],
+        },
+      },
+    };
+    const [dish] = bundlePack(home).dishes;
+    expect(dish && "source" in dish).toBe(false);
   });
 
   test("a sample item must be one of the pack's ingredients, with a real unit", () => {

@@ -22,6 +22,18 @@ test.describe("Recipes", () => {
     expect(await top(full)).toBeGreaterThan(await top(steps));
   });
 
+  test("steps you can cook from", async ({ page }) => {
+    const k = new Cooking(page);
+    await k.start();
+    await k.loadNorthIndianWithStaples();
+    await k.openDish("Dal tadka");
+    const steps = page.getByRole("list", { name: "Steps" });
+    // The heat, how long, and how to tell it's done.
+    await expect(steps).toContainText("on medium");
+    await expect(steps).toContainText("whistles");
+    await expect(steps).toContainText(/until/);
+  });
+
   test("amounts for the household", async ({ page }) => {
     const k = new Cooking(page);
     await page.goto("/");

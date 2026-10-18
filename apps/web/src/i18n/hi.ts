@@ -183,4 +183,8 @@ export const hi: Messages = {
   driedBeansLine: "रात भर भिगोए हुए",
   tinnedBeans: "डिब्बे वाले",
   tinnedBeansLine: "भिगोने की ज़रूरत नहीं",
+  where: "कहाँ",
+  inFridge: "फ्रिज",
+  frozen: "फ्रीज़र",
+  useWithinMonths: { other: "{n} महीने में इस्तेमाल करें" },
 };

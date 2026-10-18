@@ -31,6 +31,8 @@ export interface AppPack {
   }[];
   /** Fresh food: Wikidata id to the days it keeps. */
   fresh: Record<string, number>;
+  /** Food also bought frozen: Wikidata id to the days it keeps frozen. */
+  frozen?: Record<string, number>;
   staples: Record<Group, string[]>;
   sample: { ingredient: string; amount?: number; unit?: string }[];
   words: Record<
@@ -47,6 +49,14 @@ export interface AppPack {
 function linkOf(sources: string[]): { source?: string } {
   const link = sources.find((s) => s.startsWith("https://"));
   return link ? { source: link } : {};
+}
+
+/** Food also bought frozen, and its days frozen (specs/149), if any. */
+function frozenOf(pack: Pack): { frozen?: Record<string, number> } {
+  const frozen = Object.values(pack.ingredients).flatMap((i) =>
+    i.freezes ? [[i.wikidata, i.freezes.days] as const] : [],
+  );
+  return frozen.length > 0 ? { frozen: Object.fromEntries(frozen) } : {};
 }
 
 export function bundlePack(pack: Pack): AppPack {
@@ -88,6 +98,7 @@ export function bundlePack(pack: Pack): AppPack {
         i.keeps ? [[i.wikidata, i.keeps.days]] : [],
       ),
     ),
+    ...frozenOf(pack),
     staples: Object.fromEntries(
       STAPLE_GROUPS.map((g) => [g, pack.staples[g].map(q)]),
     ) as Record<Group, string[]>,

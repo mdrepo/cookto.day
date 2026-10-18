@@ -41,9 +41,9 @@ test.describe("Quick add", () => {
     await expect(addButton(page)).toHaveText("Add 3");
     await addButton(page).click();
     await expect(k.item("Spinach")).toContainText(/use within 3 days/i);
-    await expect(k.item("Tomato")).toContainText(/use within 10 days/i);
+    await expect(k.item("Tomato")).toContainText(/use within 7 days/i);
     await expect(k.item("Coriander leaves")).toContainText(
-      /use within 14 days/i,
+      /use within 4 days/i,
     );
   });
 

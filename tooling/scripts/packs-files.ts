@@ -74,8 +74,16 @@ function withFoods(
   const used = [...usedBy(pack)].filter((s) => s in foods).sort();
   const ingredients = Object.fromEntries(
     used.map((slug) => {
-      const { wikidata, label, keeps } = foods[slug] as Food;
-      return [slug, keeps ? { wikidata, label, keeps } : { wikidata, label }];
+      const { wikidata, label, keeps, freezes } = foods[slug] as Food;
+      return [
+        slug,
+        {
+          wikidata,
+          label,
+          ...(keeps ? { keeps } : {}),
+          ...(freezes ? { freezes } : {}),
+        },
+      ];
     }),
   );
   const words = Object.fromEntries(
@@ -127,8 +135,16 @@ export function readSources(): Sources {
     const path = join(SOURCES, name);
     return existsSync(path) ? (json(path) as Record<string, never>) : {};
   };
+  // Approved specs: merged ones are on main, as specs/<n>-<name>.md.
+  const specs = existsSync("specs")
+    ? readdirSync("specs").flatMap((f) => {
+        const n = /^(\d+)-.+\.md$/.exec(f)?.[1];
+        return n ? [Number(n)] : [];
+      })
+    : [];
   return {
     wikidata: read("wikidata.json"),
     foodkeeper: read("foodkeeper.json"),
+    specs,
   };
 }

@@ -129,6 +129,20 @@ describe("a pack, as the app loads it", () => {
     ]);
   });
 
+  test("food bought frozen keeps its freezer days, by Wikidata id (#149)", () => {
+    const frozen: Pack = {
+      ...pack,
+      ingredients: {
+        ...pack.ingredients,
+        spinach: {
+          ...(pack.ingredients.spinach as Pack["ingredients"][string]),
+          freezes: { days: 90, foodkeeper: 291 },
+        },
+      },
+    };
+    expect(bundlePack(frozen).frozen).toEqual({ Q36814998: 90 });
+  });
+
   test("a child's dish goes with who it's for, its add-ins and whether to cut it (#145)", () => {
     const child: Pack = {
       ...pack,

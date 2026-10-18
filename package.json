@@ -25,6 +25,7 @@
     "packs:bundle": "bun tooling/scripts/packs-bundle.ts",
     "packs:refresh": "bun tooling/scripts/packs-refresh.ts",
     "words:check": "bun tooling/scripts/check-words.ts",
+    "copies": "bun tooling/scripts/copies.ts",
     "tokens": "bun tooling/scripts/tokens.ts",
     "new": "bun tooling/scripts/new.ts",
     "knip": "knip",
@@ -32,8 +33,7 @@
     "format:check": "prettier --check .",
     "prepare": "git config core.hooksPath .githooks 2>/dev/null || true",
     "tdd:verify": "bun tooling/scripts/tdd-verify.ts",
-    "review": "bun tooling/scripts/review.ts",
-    "copies": "bun tooling/scripts/copies.ts"
+    "review": "bun tooling/scripts/review.ts"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "5.20261009.1",

@@ -25,8 +25,11 @@ test.describe("Cook now", () => {
       "Ginger",
     ])
       await k.add(food);
-    await k.tabs().getByRole("button", { name: "Dishes", exact: true }).click();
-    await expect(k.title()).toHaveText("Dishes");
+    await k
+      .tabs()
+      .getByRole("button", { name: "My dishes", exact: true })
+      .click();
+    await expect(k.title()).toHaveText("My dishes");
 
     const ready = await k.dishGroup("You can cook now").allTextContents();
     expect(ready.length).toBeGreaterThan(0);
@@ -67,7 +70,7 @@ test.describe("Cook now", () => {
     );
     expect(shown).toBe(2); // aloo paratha and aloo tikki (#149)
     await cookNow.click();
-    await expect(k.title()).toHaveText("Dishes");
+    await expect(k.title()).toHaveText("My dishes");
     await expect(k.dishGroup("You can cook now")).toHaveCount(shown);
   });
 });

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { count } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
-import { dishNeeds, useLoadedPacks } from "../../food.js";
+import { dishNeeds, useMyPacks } from "../../food.js";
 import { pantryQuery, queries } from "../../platform.js";
 import { open } from "../../routes.js";
 
@@ -11,7 +11,7 @@ import { open } from "../../routes.js";
  */
 export function useCookNow() {
   const { locale, t } = useWords();
-  const packs = useLoadedPacks();
+  const packs = useMyPacks();
   const { data: items = [] } = useQuery(pantryQuery, queries);
   const ready = dishNeeds(packs, items).filter((d) => d.needs === 0).length;
   if (ready === 0) return null;

@@ -2,7 +2,6 @@ import { lazy, Suspense } from "react";
 import { HomeScreen } from "./features/home/HomeScreen.js";
 import { OnboardingScreen } from "./features/onboarding/OnboardingScreen.js";
 import { LanguagePicker } from "./features/settings/LanguagePicker.js";
-import { SettingsScreen } from "./features/settings/SettingsScreen.js";
 import { useDocumentLanguage } from "./features/settings/useDocumentLanguage.js";
 import { useDocumentTheme } from "./features/settings/useDocumentTheme.js";
 import { Tabs } from "./features/tabs/Tabs.js";
@@ -18,7 +17,8 @@ import { SaveProblem } from "./features/saving/SaveProblem.js";
 
 // Pages a first visit doesn't show load when someone opens them, so the
 // first page stays within its budget as the app grows (ADR 0013; #95, #97).
-// Setup, Today and Settings come with the first page.
+// Setup and Today come with the first page; Settings is under More now
+// (specs/175), so it loads when opened too.
 const DishScreen = lazy(() =>
   import("./features/dish/DishScreen.js").then((m) => ({
     default: m.DishScreen,
@@ -52,6 +52,11 @@ const ShoppingScreen = lazy(() =>
 const MoreScreen = lazy(() =>
   import("./features/more/MoreScreen.js").then((m) => ({
     default: m.MoreScreen,
+  })),
+);
+const SettingsScreen = lazy(() =>
+  import("./features/settings/SettingsScreen.js").then((m) => ({
+    default: m.SettingsScreen,
   })),
 );
 const StaplesScreen = lazy(() =>

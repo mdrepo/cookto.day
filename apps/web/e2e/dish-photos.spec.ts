@@ -37,8 +37,11 @@ test.describe("Dish photos", () => {
     const k = new Cooking(page);
     await k.start();
     await k.loadNorthIndianWithStaples();
-    await k.tabs().getByRole("button", { name: "Dishes", exact: true }).click();
-    await expect(k.title()).toHaveText("Dishes");
+    await k
+      .tabs()
+      .getByRole("button", { name: "My dishes", exact: true })
+      .click();
+    await expect(k.title()).toHaveText("My dishes");
     const rows = k.dishes();
     await expect(rows).toHaveCount(28);
     await expect(rows.locator("img")).toHaveCount(28);

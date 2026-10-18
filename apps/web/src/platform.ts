@@ -3,6 +3,7 @@ import {
   createCooked,
   createSaveProblems,
   createHousehold,
+  createMyDishes,
   createPacks,
   createPantry,
   createPlans,
@@ -79,6 +80,15 @@ export const cooked = createCooked(records, { changes });
 export const cookedQuery = queryOptions({
   queryKey: ["cooked", "all"],
   queryFn: ({ signal }) => cooked.reader.all(signal),
+});
+
+/** My dishes: the dishes taken out of them are saved (specs/175). */
+export const myDishes = createMyDishes(records, { changes });
+
+/** The dishes taken out of My dishes. */
+export const takenOutQuery = queryOptions({
+  queryKey: ["my-dishes", "taken-out"],
+  queryFn: ({ signal }) => myDishes.reader.takenOut(signal),
 });
 
 /** Meals planned the evening before, and their prep (specs/144). */

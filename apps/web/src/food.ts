@@ -9,12 +9,12 @@ import {
   type PantryItem,
   shownAmount,
 } from "@cookto/engine";
-import { useQueries } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { useStore } from "zustand";
 import { count } from "./i18n/format.js";
 import type { Messages } from "./i18n/en.js";
 import { useWords } from "./i18n/useWords.js";
-import { packQuery, queries, settings } from "./platform.js";
+import { packQuery, queries, settings, takenOutQuery } from "./platform.js";
 
 // What the kitchen's screens share (ADR 0022: below the features): the
 // kitchen's settings, the loaded packs, and food's words. Food is named by
@@ -42,6 +42,21 @@ export function useLoadedPacks(): AppPack[] {
     },
     queries,
   );
+}
+
+/**
+ * My dishes (specs/175): the loaded packs, without the dishes taken out. Only
+ * these are planned and listed; name food with the loaded packs.
+ */
+export function useMyPacks(): AppPack[] {
+  const packs = useLoadedPacks();
+  const { data: out = [] } = useQuery(takenOutQuery, queries);
+  if (out.length === 0) return packs;
+  const gone = new Set(out);
+  return packs.map((p) => ({
+    ...p,
+    dishes: p.dishes.filter((d) => !gone.has(d.id)),
+  }));
 }
 
 type Kind = "ingredients" | "dishes" | "parts";

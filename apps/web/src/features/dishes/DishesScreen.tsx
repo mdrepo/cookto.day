@@ -12,8 +12,9 @@ import {
 import { useDishesScreen } from "./useDishesScreen.js";
 
 /**
- * A cuisine's dishes, and whether the pantry has what each needs (criterion
- * 10): the ones you can cook now first (#97); each opens its page (#95).
+ * My dishes, and whether the pantry has what each needs (criterion 10): the
+ * ones you can cook now first (#97), the child's own last (specs/175); each
+ * opens its page (#95).
  */
 export function DishesScreen({ bar }: { bar: ReactNode }) {
   const s = useDishesScreen();
@@ -34,7 +35,7 @@ export function DishesScreen({ bar }: { bar: ReactNode }) {
           </Cluster>
         </Stack>
       )}
-      {[s.ready, s.rest].map(
+      {s.groups.map(
         (group) =>
           group.items.length > 0 && (
             <Section key={group.title} title={group.title}>

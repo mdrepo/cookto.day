@@ -13,7 +13,7 @@ test.describe("The prototype's layout", () => {
     await k.start();
     await k.press("Try a sample kitchen");
     await expect(kitchen.languageField()).toHaveCount(0);
-    for (const tab of ["Fridge", "Dishes"]) {
+    for (const tab of ["Fridge", "My dishes"]) {
       await k.tabs().getByRole("button", { name: tab, exact: true }).click();
       await expect(k.title()).toHaveText(tab);
       await expect(kitchen.languageField(), tab).toHaveCount(0);

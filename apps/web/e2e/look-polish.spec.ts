@@ -24,8 +24,11 @@ test.describe("The look, polished", () => {
     const k = new Cooking(page);
     await k.start();
     await k.press("Try a sample kitchen");
-    await k.tabs().getByRole("button", { name: "Dishes", exact: true }).click();
-    await expect(k.title()).toHaveText("Dishes");
+    await k
+      .tabs()
+      .getByRole("button", { name: "My dishes", exact: true })
+      .click();
+    await expect(k.title()).toHaveText("My dishes");
     await expect(k.button("Back")).toHaveCount(0);
   });
 

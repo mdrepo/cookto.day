@@ -55,7 +55,7 @@ test.describe("On a wide screen", () => {
       return [Math.round(title.x), Math.round(main.x), Math.round(main.width)];
     };
     const today = await place();
-    for (const tab of ["Fridge", "Dishes"]) {
+    for (const tab of ["Fridge", "My dishes"]) {
       await k.tabs().getByRole("button", { name: tab, exact: true }).click();
       await expect(k.title()).toHaveText(tab);
       expect(await place(), tab).toEqual(today);

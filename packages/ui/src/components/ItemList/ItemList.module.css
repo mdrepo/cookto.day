@@ -66,3 +66,38 @@
 .row:active {
   background: var(--color-accent-soft);
 }
+
+/* A row with a button of its own at the end (specs/175): the row's button
+   takes the room, the action sits beside it, as tall as the row. */
+.withAction {
+  display: flex;
+  align-items: stretch;
+}
+
+.withAction > .row {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.action {
+  flex: none;
+  min-block-size: 44px;
+  padding-inline: var(--space-4);
+  border: 0;
+  border-inline-start: 1px solid var(--color-border);
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--color-accent);
+  cursor: pointer;
+  transition: background-color var(--motion-quick) ease-out;
+}
+
+.action:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.action:active {
+  background: var(--color-accent-soft);
+}

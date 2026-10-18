@@ -34,3 +34,4 @@ export {
 } from "./shopping.js";
 export { chooseCountry, chooseLanguage, chooseTheme } from "./settings.js";
 export { chooseBeans, keepTomorrow, prepDone, prepNotDone } from "./prep.js";
+export { addChildDish, childAddIn, removeChildDish } from "./child-dish.js";

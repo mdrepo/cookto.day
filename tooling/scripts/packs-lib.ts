@@ -40,6 +40,14 @@ export interface Dish {
   note?: string;
   /** What to do hours before: soak, marinate, ferment, thaw (specs/144). */
   prep?: { do: string; what: string; hours: number; tinned?: boolean }[];
+  /** A dish of the child's own (specs/145). */
+  for?: string[];
+  /** Its one optional extra, chosen when it's planned: "egg". */
+  addIns?: Record<string, { amount: number; unit: string }>;
+  /** Small round fruit a toddler has cut in half. */
+  cut?: boolean;
+  /** Plain fruit, bread and butter: one to three steps. */
+  simple?: boolean;
   /** A free photo of the dish, credited (specs/118). */
   photo?: { author: string; licence: string; source: string };
 }

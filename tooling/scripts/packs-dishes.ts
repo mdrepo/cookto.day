@@ -41,7 +41,12 @@ function sourceProblems(at: string, dish: Dish): string[] {
 
 function stepProblems(at: string, dish: Dish): string[] {
   const steps = Array.isArray(dish.steps) ? dish.steps : [];
-  if (steps.length < 6 || steps.length > 8)
+  // Plain fruit, bread and butter: a step or three is enough (specs/145).
+  if (dish.simple && (steps.length < 1 || steps.length > 3))
+    return [
+      `${at}: has ${String(steps.length)} steps. A simple dish has one to three.`,
+    ];
+  if (!dish.simple && (steps.length < 6 || steps.length > 8))
     return [
       `${at}: has ${String(steps.length)} steps. Write six to eight short steps, one action each.`,
     ];
@@ -52,6 +57,23 @@ function stepProblems(at: string, dish: Dish): string[] {
         ]
       : [],
   );
+}
+
+/** A child's dish says so; its add-ins are foods the pack knows (#145). */
+function childProblems(at: string, dish: Dish, pack: Pack): string[] {
+  const problems: string[] = [];
+  if (dish.for && (dish.for.length !== 1 || dish.for[0] !== "child"))
+    problems.push(`${at}: "for" can only be ["child"].`);
+  for (const [food, use] of Object.entries(dish.addIns ?? {}))
+    if (
+      !(food in pack.ingredients) ||
+      !(use.amount > 0) ||
+      !UNITS.includes(use.unit)
+    )
+      problems.push(
+        `${at}: its add-in ${food} has no ingredients/${food}.json, or no amount in g, ml or pieces.`,
+      );
+  return problems;
 }
 
 /** Each prep is a known kind, done to one of the dish's ingredients (#144). */
@@ -74,7 +96,7 @@ export function dishProblems(pack: Pack): string[] {
       problems.push(
         `${at}: its note still asks for a check ("${dish.note}"). A note ships as it is: settle it, then say what was decided.`,
       );
-    problems.push(...prepProblems(at, dish));
+    problems.push(...prepProblems(at, dish), ...childProblems(at, dish, pack));
     if (dish.slots.length === 0 || dish.slots.some((s) => !SLOTS.includes(s)))
       problems.push(`${at}: slots must be some of ${SLOTS.join(", ")}.`);
     for (const [ing, use] of Object.entries(dish.ingredients)) {

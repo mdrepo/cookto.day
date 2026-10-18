@@ -1,13 +1,7 @@
 import { execFileSync, spawnSync } from "node:child_process";
-import {
-  existsSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  symlinkSync,
-} from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { join } from "node:path";
 import { claimedExemption, isVerifiableCode } from "./pr-rules.js";
 import {
   changedLines,
@@ -233,13 +227,21 @@ function withMainSource<T>(fn: (dir: string) => T): T {
     // Workspaces link to each other through node_modules, so the worktree
     // gets its own install: a link to this repo's would point an app at the
     // branch's packages instead of main's.
+    // If that install fails, stop: borrowing this repo's node_modules would
+    // run main's tests against the branch's packages, and a test could look
+    // red on main when it isn't.
     const install = spawnSync(
       "bun",
       ["install", "--frozen-lockfile", "--ignore-scripts"],
-      { cwd: dir, stdio: "ignore" },
+      { cwd: dir, encoding: "utf8" },
     );
     if (install.status !== 0) {
-      symlinkSync(resolve(repo, "node_modules"), join(dir, "node_modules"));
+      console.error(`tdd:verify: installing main's packages failed, so main's tests can't run on their own.
+${(install.stderr || install.stdout).trim().split("\n").slice(-5).join("\n")}
+
+Fix the install (try \`bun install --frozen-lockfile\` on main), then run tdd:verify again.`);
+      git("worktree", "remove", "--force", dir);
+      process.exit(1);
     }
     return fn(dir);
   } finally {

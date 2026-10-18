@@ -202,6 +202,13 @@ export const en = {
   driedBeansLine: "Soaked the night before",
   tinnedBeans: "Tinned beans",
   tinnedBeansLine: "Ready to cook, no soaking",
+  where: "Where",
+  inFridge: "Fridge",
+  frozen: "Frozen",
+  useWithinMonths: {
+    one: "use within {n} month",
+    other: "use within {n} months",
+  },
 };
 
 /** Words that change with a number: CLDR's plural forms, "other" always. */

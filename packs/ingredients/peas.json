@@ -2,8 +2,12 @@
   "wikidata": "Q29472543",
   "label": "pea",
   "keeps": {
-    "days": 5,
+    "days": 3,
     "in": "fridge",
+    "foodkeeper": 273
+  },
+  "freezes": {
+    "days": 90,
     "foodkeeper": 273
   },
   "names": [

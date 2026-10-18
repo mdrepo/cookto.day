@@ -2,6 +2,31 @@ import { Button, Card, Cluster, Field, Input, Select, Stack } from "@cookto/ui";
 import { TapBought } from "./TapBought.js";
 import { useAddFood } from "./useAddFood.js";
 
+/** A labelled choice from a few, the first chosen to start. */
+function Dropdown({
+  label,
+  name,
+  options,
+}: {
+  label: string;
+  name: string;
+  options: readonly { value: string; label: string }[];
+}) {
+  return (
+    <Field label={label} id={`food-${name}`}>
+      {(control) => (
+        <Select {...control} name={name} defaultValue={options[0]?.value}>
+          {options.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </Select>
+      )}
+    </Field>
+  );
+}
+
 /** Add food: tap what you bought (specs/113), or type it (specs/72). */
 export function AddFood({ onDone }: { onDone: () => void }) {
   const a = useAddFood(onDone);
@@ -21,6 +46,7 @@ export function AddFood({ onDone }: { onDone: () => void }) {
             amount: text(form, "amount"),
             unit: text(form, "unit"),
             daysAgo: text(form, "bought"),
+            where: text(form, "where"),
           });
         }}
       >
@@ -56,17 +82,8 @@ export function AddFood({ onDone }: { onDone: () => void }) {
               )}
             </Field>
           </Cluster>
-          <Field label={a.boughtLabel} id="food-bought">
-            {(control) => (
-              <Select {...control} name="bought" defaultValue="0">
-                {a.days.map((d) => (
-                  <option key={d.value} value={d.value}>
-                    {d.label}
-                  </option>
-                ))}
-              </Select>
-            )}
-          </Field>
+          <Dropdown label={a.boughtLabel} name="bought" options={a.days} />
+          <Dropdown label={a.whereLabel} name="where" options={a.places} />
           <Cluster>
             <Button type="submit">{a.addLabel}</Button>
           </Cluster>

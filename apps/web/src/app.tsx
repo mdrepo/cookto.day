@@ -59,6 +59,11 @@ const SettingsScreen = lazy(() =>
     default: m.SettingsScreen,
   })),
 );
+const PackScreen = lazy(() =>
+  import("./features/cuisines/PackScreen.js").then((m) => ({
+    default: m.PackScreen,
+  })),
+);
 const StaplesScreen = lazy(() =>
   import("./features/staples/StaplesScreen.js").then((m) => ({
     default: m.StaplesScreen,
@@ -116,6 +121,8 @@ function Page() {
       return <DishesScreen bar={<Bar current={route} />} />;
     case "more":
       return <MoreScreen bar={<Bar current={route} />} />;
+    case "pack":
+      return <PackScreen bar={<Bar current={route} />} />;
     default:
       return (
         <OnboardingScreen

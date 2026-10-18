@@ -3,26 +3,8 @@ import { count } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
 import { namer, useKitchenSettings, useLoadedPacks } from "../../food.js";
 import { kitchen, packs } from "../../platform.js";
-import { goHome, open } from "../../routes.js";
-
-const NAMES: Partial<
-  Record<
-    string,
-    | "northIndian"
-    | "maharashtrian"
-    | "ourKitchen"
-    | "southIndian"
-    | "european"
-    | "sriLankan"
-  >
-> = {
-  "north-indian": "northIndian",
-  maharashtrian: "maharashtrian",
-  "our-kitchen": "ourKitchen",
-  "south-indian": "southIndian",
-  european: "european",
-  "sri-lankan": "sriLankan",
-};
+import { goHome, open, openPack } from "../../routes.js";
+import { cuisineName } from "./names.js";
 
 /** "Choose what you cook": the cuisines, and what the household doesn't make. */
 export function useCuisinesScreen() {
@@ -40,15 +22,18 @@ export function useCuisinesScreen() {
     back: t.back,
     onBack: goHome,
     cuisines: packs.cuisines().map((c) => {
-      const key = NAMES[c.id];
       return {
         id: c.id,
-        name: key ? t[key] : c.id,
+        name: cuisineName(t, c.id),
         dishes: c.soon ? null : count(locale, t.dishCount, c.dishes),
         soon: c.soon ? t.comingSoon : null,
         loaded: loaded.includes(c.id) ? t.loaded : null,
         loadLabel: t.load,
         load: () => void loadCuisine(kitchen, c.id),
+        // Its dishes, to pick from (specs/175).
+        open: () => {
+          openPack(c.id);
+        },
       };
     }),
     skipTitle: t.whatWeDontMake,

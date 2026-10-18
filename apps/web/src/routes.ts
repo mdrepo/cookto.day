@@ -11,7 +11,7 @@ export type Step = "where" | "who" | "done";
 /** The kitchen's pages (specs/72-kitchen.md). */
 export type Page =
   "cuisines" | "staples" | "pantry" | "dishes" | "list" | "more";
-export type Route = "home" | "settings" | "dish" | Step | Page;
+export type Route = "home" | "settings" | "dish" | "pack" | Step | Page;
 
 const STEPS: Partial<Record<string, Step>> = {
   "#/start/where": "where",
@@ -27,6 +27,9 @@ const DISHES_WITH = "#/kitchen/dishes/with/";
  * meal it's for: `/<slot>`, or `/<slot>/child` for the child's dish (#145).
  */
 const DISH = "#/kitchen/dish/";
+
+/** A pack's dishes (specs/175): `#/kitchen/pack/<pack>`. */
+const PACK = "#/kitchen/pack/";
 
 /** The Fridge with "Add food" open (#115). */
 const ADD_FOOD = "#/kitchen/pantry/add";
@@ -60,6 +63,7 @@ export function useRoute(): Route {
   if (!onboarded) return "where";
   if (at === "#/settings") return "settings";
   if (at.startsWith(DISH)) return "dish";
+  if (at.startsWith(PACK)) return "pack";
   if (at.startsWith(DISHES_WITH)) return "dishes";
   return PAGES[at] ?? "home";
 }
@@ -144,4 +148,16 @@ export function useDishesWith(): string | null {
   return at?.startsWith(DISHES_WITH)
     ? decodeURIComponent(at.slice(DISHES_WITH.length))
     : null;
+}
+
+/** To a pack's dishes (specs/175). */
+export function openPack(pack: string): void {
+  location.hash = `${PACK}${pack}`;
+  scrollTo(0, 0);
+}
+
+/** The pack its page shows, or null. */
+export function usePackId(): string | null {
+  const at = useSyncExternalStore(subscribe, hash, () => null);
+  return at?.startsWith(PACK) ? at.slice(PACK.length) || null : null;
 }

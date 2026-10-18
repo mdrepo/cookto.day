@@ -25,7 +25,11 @@ export function CuisinesScreen({ bar }: { bar: ReactNode }) {
         {s.cuisines.map((c) => (
           <Card key={c.id} title={c.name}>
             <Cluster gap={3}>
-              {c.dishes && <span>{c.dishes}</span>}
+              {c.dishes && (
+                <Button kind="plain" onClick={c.open}>
+                  {c.dishes}
+                </Button>
+              )}
               {c.soon && <Tag tone="outline">{c.soon}</Tag>}
               {c.loaded && <Tag>{c.loaded}</Tag>}
               {!c.soon && !c.loaded && (

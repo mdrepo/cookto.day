@@ -2,7 +2,7 @@ import { plannedSlots } from "@cookto/engine";
 import { useQuery } from "@tanstack/react-query";
 import { count, fill } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
-import { membersQuery, queries } from "../../platform.js";
+import { membersQuery, now, queries } from "../../platform.js";
 import { go } from "../../routes.js";
 import { useUsedUpNote } from "../../usedUp.js";
 
@@ -29,7 +29,7 @@ export function useHomeScreen() {
       weekday: "long",
       day: "numeric",
       month: "long",
-    }).format(new Date()),
+    }).format(now()),
     /** "2 people · 5 meals a day", and Edit (specs/65, criterion 5). */
     household:
       data && data.people > 0

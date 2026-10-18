@@ -1,5 +1,6 @@
 import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
+import { bans } from "./tooling/scripts/eslint-bans.js";
 import { layers } from "./tooling/scripts/eslint-layers.js";
 import { server } from "./tooling/scripts/eslint-server.js";
 import { storage } from "./tooling/scripts/eslint-storage.js";
@@ -40,14 +41,11 @@ export default defineConfig(
       ],
       "no-eval": "error",
       "no-new-func": "error",
-      // ts-ignore comments are banned; ts-expect-error must say why.
+      // ts-ignore and ts-expect-error are both banned (AGENTS.md): fix the
+      // type, or test a type with a conditional type that must hold.
       "@typescript-eslint/ban-ts-comment": [
         "error",
-        {
-          "ts-ignore": true,
-          "ts-expect-error": "allow-with-description",
-          minimumDescriptionLength: 10,
-        },
+        { "ts-ignore": true, "ts-expect-error": true },
       ],
       // Numbers in template strings are harmless; other non-strings are not.
       "@typescript-eslint/restrict-template-expressions": [
@@ -102,4 +100,6 @@ export default defineConfig(
   },
   // Each layer imports only what it may (ADR 0022).
   ...layers,
+  // Dates in one place, and tests that use parts as people do.
+  ...bans,
 );

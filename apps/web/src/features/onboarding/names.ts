@@ -1,16 +1,8 @@
-import type { MealSlot, Member } from "@cookto/engine";
+import type { Member } from "@cookto/engine";
 import type { Messages } from "../../i18n/en.js";
 
-// What onboarding calls people and meals, in the page's language.
-
-/** Each meal slot's word. */
-export const SLOT_WORDS = {
-  breakfast: "breakfast",
-  "morning-snack": "morningSnack",
-  lunch: "lunch",
-  "evening-snack": "eveningSnack",
-  dinner: "dinner",
-} as const satisfies Record<MealSlot, keyof Messages>;
+// What onboarding calls people, in the page's language. Meals' words are
+// SLOT_WORDS in food.ts, shared by every screen.
 
 /**
  * A person's name, or their kind: "Adult", or "Child 2" when there's more

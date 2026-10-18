@@ -1,13 +1,12 @@
 import { type PantryItem, pantryOrder } from "@cookto/engine";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { bringBack } from "@cookto/usecases";
-import { fill } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
 import { packStaples, useItemWords, useLoadedPacks } from "../../food.js";
 import { wantsAddFood } from "../../routes.js";
 import { useKitchenSetup } from "../../setup.js";
-import { kitchen, pantryQuery, queries, today } from "../../platform.js";
+import { pantryQuery, queries, today } from "../../platform.js";
+import { useUsedUpNote } from "../../usedUp.js";
 
 /**
  * The pantry as the prototype's Fridge: "Use soon", "Fresh", "Staples", a
@@ -25,11 +24,7 @@ export function usePantryScreen() {
   // Until there's fresh food, the steps show, with the next one as the main
   // button; "Add food" steps back to a quiet button (#115).
   const guiding = setup.known && !setup.hasFresh && !adding;
-  // The last food used up, for "Onion used up · Undo" (#116). It goes when
-  // they move on: another food, "Add food", or another page.
-  const [usedUp, setUsedUp] = useState<{ id: string; name: string } | null>(
-    null,
-  );
+  const usedUp = useUsedUpNote();
   const staples = packStaples(packs);
   const { data: items = [] } = useQuery(pantryQuery, queries);
   const day = today();
@@ -42,7 +37,7 @@ export function usePantryScreen() {
       end: staples.has(item.ingredient) ? (w.amount ?? t.haveIt) : w.warning,
       warn: w.warning !== null,
       onOpen: () => {
-        setUsedUp(null);
+        usedUp.clear();
         setOpen(item.id);
       },
     };
@@ -68,22 +63,13 @@ export function usePantryScreen() {
     close: () => {
       setOpen(null);
     },
-    onUsedUp: (id: string, name: string) => {
-      setUsedUp({ id, name });
-    },
-    undo: usedUp && {
-      text: fill(t.usedUpNote, { food: usedUp.name }),
-      label: t.undo,
-      run: () => {
-        setUsedUp(null);
-        void bringBack(kitchen, usedUp.id);
-      },
-    },
+    onUsedUp: usedUp.onUsedUp,
+    undo: usedUp.note,
     add: {
       label: t.addFood,
       adding,
       start: () => {
-        setUsedUp(null);
+        usedUp.clear();
         setAdding(true);
       },
       done: () => {

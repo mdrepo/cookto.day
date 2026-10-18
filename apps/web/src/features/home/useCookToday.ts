@@ -1,5 +1,7 @@
 import type { AppPack } from "@cookto/data";
 import {
+  cookedLately,
+  cookedOn,
   cookTodayForMeals,
   defaultMeals,
   plannedSlots,
@@ -10,7 +12,7 @@ import { fill } from "../../i18n/format.js";
 import type { Messages } from "../../i18n/en.js";
 import { useWords } from "../../i18n/useWords.js";
 import {
-  assumedStaples,
+  staplesToAssume,
   listOf,
   namer,
   SLOT_WORDS,
@@ -21,7 +23,6 @@ import { cookedIt, notCooked, KEEP_DIFFERENT_DAYS } from "@cookto/usecases";
 import {
   cooked,
   cookedQuery,
-  daysBefore,
   membersQuery,
   pantryQuery,
   queries,
@@ -99,17 +100,12 @@ export function useCookToday() {
   const slots = planned.length > 0 ? planned : defaultMeals("adult");
   const { data: history = [] } = useQuery(cookedQuery, queries);
   const day = today();
-  const since = daysBefore(day, KEEP_DIFFERENT_DAYS);
   // Cooked in the last days, not today: no meal's pick (specs/104).
-  const avoid = new Set(
-    history.filter((c) => c.on >= since && c.on < day).map((c) => c.dish),
-  );
-  const cookedToday = new Set(
-    history.filter((c) => c.on === day).map((c) => c.dish),
-  );
+  const avoid = cookedLately(history, day, KEEP_DIFFERENT_DAYS);
+  const cookedToday = cookedOn(history, day);
   const dishes = dishesOf(packs);
   if (dishes.length === 0) return null;
-  const staples = assumedStaples(packs, items);
+  const staples = staplesToAssume(packs, items);
   const packOf = new Map(
     packs.flatMap((p) => p.dishes.map((d) => [d.id, p.id] as const)),
   );

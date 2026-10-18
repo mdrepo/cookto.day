@@ -1,4 +1,4 @@
-import { expect, type Page, test } from "@playwright/test";
+import { expect, type Locator, type Page, test } from "@playwright/test";
 import { Cooking } from "./support/cooking.js";
 
 // specs/116-undo.md: a one-tap change has a one-tap way back.
@@ -72,5 +72,39 @@ test.describe("Undo", () => {
     await onDay(page, 1);
     await page.reload();
     expect(await k.pickedDish("Lunch")).toBe(dish);
+  });
+
+  test("undo used up, from Today's Use soon", async ({ page }) => {
+    const k = new Cooking(page);
+    await withOnions(k);
+    await k.mark("Onion", "Past its best");
+    await k.home();
+    await k.useSoon().filter({ hasText: "Onion" }).click();
+    await k.sheet("Onion").getByRole("button", { name: "Used up" }).click();
+    await expect(k.useSoon().filter({ hasText: "Onion" })).toHaveCount(0);
+    await expect(note(page)).toContainText("Onion used up");
+    await note(page).getByRole("button", { name: "Undo" }).click();
+    await expect(k.useSoon().filter({ hasText: "Onion" })).toHaveCount(1);
+    await expect(note(page)).toHaveCount(0);
+  });
+
+  test("the note sits above the tab bar, on a long Fridge", async ({
+    page,
+  }) => {
+    const k = new Cooking(page);
+    await withOnions(k);
+    await k.usedUp("Onion");
+    await expect(note(page)).toContainText("Onion used up");
+    await expect(note(page)).toBeInViewport({ ratio: 1 });
+    const box = async (of: Locator) =>
+      (await of.boundingBox()) ?? { x: 0, y: 0, width: 0, height: 0 };
+    const a = await box(note(page));
+    const b = await box(k.tabs());
+    const apart =
+      a.y + a.height <= b.y ||
+      b.y + b.height <= a.y ||
+      a.x + a.width <= b.x ||
+      b.x + b.width <= a.x;
+    expect(apart, "the note and the tab bar overlap").toBe(true);
   });
 });

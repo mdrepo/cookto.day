@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Button, Cluster, Note, Panes, Screen } from "@cookto/ui";
+import { Button, Cluster, Note, Panes, Screen, UndoBar } from "@cookto/ui";
 import { openSettings } from "../../routes.js";
 import { CookNow } from "./CookNow.js";
 import { CookToday } from "./CookToday.js";
@@ -22,6 +22,13 @@ export function HomeScreen({
       bar={bar}
       title="cookto.day"
       eyebrow={t.date}
+      note={
+        t.usedUp.note && (
+          <UndoBar undoLabel={t.usedUp.note.label} onUndo={t.usedUp.note.run}>
+            {t.usedUp.note.text}
+          </UndoBar>
+        )
+      }
       action={
         <Button
           kind="plain"
@@ -43,7 +50,13 @@ export function HomeScreen({
       <CookNow />
       <Panes
         primary={<CookToday />}
-        secondary={<UseSoon sheet={itemSheet} />}
+        secondary={
+          <UseSoon
+            sheet={itemSheet}
+            onOpen={t.usedUp.clear}
+            onUsedUp={t.usedUp.onUsedUp}
+          />
+        }
       />
       <KitchenMore />
       <Note>{t.privacy}</Note>

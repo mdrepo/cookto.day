@@ -20,7 +20,9 @@ permissions: {}
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # The browser tests alone take about 13 minutes now (18 Oct); 15 cut
+    # deploys off before they reached Cloudflare.
+    timeout-minutes: 25
     environment:
       name: production
       url: https://cookto.day

@@ -8,7 +8,6 @@ import {
   Stack,
   UndoBar,
 } from "@cookto/ui";
-import { openSettings } from "../../routes.js";
 import { CookNow } from "./CookNow.js";
 import { CookToday } from "./CookToday.js";
 import { useHomeScreen } from "./useHomeScreen.js";
@@ -38,14 +37,6 @@ export function HomeScreen({
             {t.usedUp.note.text}
           </UndoBar>
         )
-      }
-      action={
-        <Button
-          kind="plain"
-          icon="settings"
-          label={t.settings}
-          onClick={openSettings}
-        />
       }
     >
       {t.household && (

@@ -11,9 +11,7 @@ const DARK = "rgb(33, 25, 19)";
 const LIGHT = "rgb(251, 247, 240)";
 
 async function openSettings(k: Cooking) {
-  await k.home();
-  await k.press("Settings");
-  await expect(k.title()).toHaveText("Settings");
+  await k.settings();
 }
 
 /** One of the theme's choices, as a radio button. */

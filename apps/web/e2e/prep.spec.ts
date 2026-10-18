@@ -111,7 +111,7 @@ test.describe("Prep the day before", () => {
     await at(page, "2026-10-18T10:00");
     const k = await cholesKitchen(page);
     await k.home();
-    await page.getByRole("button", { name: "Settings" }).click();
+    await k.settings();
     await page.getByRole("radio", { name: "Tinned beans" }).click();
     await k.home();
     expect(await k.pickedDish("Lunch")).toBe("Chole");

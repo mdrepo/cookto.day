@@ -4,9 +4,17 @@ import { defineConfig, devices } from "@playwright/test";
 // ADR 0021): a test page on localhost, on the same three devices as the app.
 const port = Number(process.env.E2E_PORT ?? 3399);
 
+/**
+ * On a Mac, WebKit's traces capture its window through WindowServer, which
+ * crashed the owner's Mac on 18 Oct: on a laptop, two tests at a time and
+ * WebKit records nothing (apps/web/playwright.config.ts says more).
+ */
+const ci = Boolean(process.env.CI);
+
 export default defineConfig({
   testDir: "e2e",
   fullyParallel: true,
+  ...(ci ? {} : { workers: 2 }),
   // `.only` must never reach the default branch (ADR 0003).
   forbidOnly: true,
   reporter: [["list"], ["html", { open: "never" }]],
@@ -24,7 +32,13 @@ export default defineConfig({
   projects: [
     { name: "mobile-chromium", use: { ...devices["Pixel 7"] } },
     // Every iPhone browser is Safari's engine, WebKit (ADR 0021).
-    { name: "iphone-webkit", use: { ...devices["iPhone 15"] } },
+    {
+      name: "iphone-webkit",
+      use: {
+        ...devices["iPhone 15"],
+        ...(ci ? {} : { trace: "off" as const }),
+      },
+    },
     {
       name: "desktop-chromium",
       use: {

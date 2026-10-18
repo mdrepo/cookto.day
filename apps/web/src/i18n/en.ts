@@ -149,6 +149,8 @@ export const en = {
   otherIdeas: "Other ideas",
   pages: "Pages",
   close: "Close",
+  more: "More",
+  packs: "Packs",
   addDishForChild: "Add a dish for the child",
   forTheChild: "For the child",
   forTheChildDish: "For the child: {dish}",

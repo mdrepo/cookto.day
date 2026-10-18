@@ -147,6 +147,8 @@ export const mr: Messages = {
   otherIdeas: "इतर पर्याय",
   pages: "पाने",
   close: "बंद करा",
+  more: "अधिक",
+  packs: "पॅक",
   addDishForChild: "मुलासाठी वेगळा पदार्थ जोडा",
   forTheChild: "मुलासाठी",
   forTheChildDish: "मुलासाठी: {dish}",

@@ -4,6 +4,7 @@
 // cuisine logic here: only ingredients, dates, conditions, slots and what
 // the household skips.
 import type { MealSlot } from "./household.js";
+import { missing } from "./needs.js";
 import { compareUrgency, type PantryItem, urgency } from "./pantry.js";
 
 export interface Dish {
@@ -72,9 +73,7 @@ export function cookToday(input: CookTodayInput): Suggestion[] {
         suggestion: {
           dish,
           uses: uses.map((u) => u.id),
-          needs: dish.ingredients.filter(
-            (i) => !have.has(i) && !staples.has(i),
-          ),
+          needs: missing(dish.ingredients, have, staples),
           servedWith: (dish.servedWith ?? []).filter((p) => !skip.has(p)),
         },
       };

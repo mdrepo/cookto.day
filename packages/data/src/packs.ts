@@ -40,6 +40,12 @@ export interface AppPack {
     servedWith?: string[];
     /** What to do hours before, its food by Wikidata id (specs/144). */
     prep?: Prep[];
+    /** A dish of the child's own (specs/145). */
+    for?: "child"[];
+    /** Its optional extras: Wikidata id and the amount for one child. */
+    addIns?: [string, number, "g" | "ml" | "pieces"][];
+    /** Small round fruit: a toddler has it cut in half. */
+    cut?: boolean;
     /** Where the recipe is: the app links to it, it doesn't copy it. */
     source?: string;
     /** A free photo of it, credited, and the addresses of its files (specs/118). */

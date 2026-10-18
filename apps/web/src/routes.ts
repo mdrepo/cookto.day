@@ -1,3 +1,4 @@
+import { MEAL_SLOTS, type MealSlot } from "@cookto/engine";
 import { useSyncExternalStore } from "react";
 import { useStore } from "zustand";
 import { settings } from "./platform.js";
@@ -20,7 +21,10 @@ const STEPS: Partial<Record<string, Step>> = {
 /** Dishes that use one food (#105): `#/kitchen/dishes/with/<ingredient>`. */
 const DISHES_WITH = "#/kitchen/dishes/with/";
 
-/** A dish's page (#95): `#/kitchen/dish/<pack>/<dish>`. */
+/**
+ * A dish's page (#95): `#/kitchen/dish/<pack>/<dish>`, and from Today, the
+ * meal it's for: `/<slot>`, or `/<slot>/child` for the child's dish (#145).
+ */
 const DISH = "#/kitchen/dish/";
 
 /** The Fridge with "Add food" open (#115). */
@@ -89,19 +93,36 @@ export function goHome(): void {
 }
 
 /** To a dish's page (#95), as a new entry in the browser's history. */
-export function openDish(pack: string, dish: string): void {
-  location.hash = `${DISH}${pack}/${dish}`;
+export function openDish(
+  pack: string,
+  dish: string,
+  meal?: { slot: MealSlot; child?: boolean },
+): void {
+  const at = meal ? `/${meal.slot}${meal.child ? "/child" : ""}` : "";
+  location.hash = `${DISH}${pack}/${dish}${at}`;
   // A new page starts at its top, not where the list was scrolled to.
   scrollTo(0, 0);
 }
 
-/** The dish a dish's page shows: its pack and its id, or null. */
-export function useDish(): { pack: string; dish: string } | null {
+/**
+ * The dish a dish's page shows: its pack and its id, and the meal it was
+ * opened for, if any; or null.
+ */
+export function useDish(): {
+  pack: string;
+  dish: string;
+  slot?: MealSlot;
+  child?: boolean;
+} | null {
   const at = useSyncExternalStore(subscribe, hash, () => null);
-  const [pack, dish] = (
+  const [pack, dish, slot, child] = (
     at?.startsWith(DISH) ? at.slice(DISH.length) : ""
   ).split("/");
-  return pack && dish ? { pack, dish } : null;
+  if (!pack || !dish) return null;
+  const meal = MEAL_SLOTS.find((s) => s === slot);
+  return meal
+    ? { pack, dish, slot: meal, child: child === "child" }
+    : { pack, dish };
 }
 
 /** Back where they came from: the page before, in the browser's history. */

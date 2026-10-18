@@ -1,5 +1,11 @@
 import type { DishPhoto } from "@cookto/data";
-import { MEAL_SLOTS, missing, type Prep, prepFor } from "@cookto/engine";
+import {
+  MEAL_SLOTS,
+  missing,
+  type Prep,
+  prepFor,
+  servings,
+} from "@cookto/engine";
 import { useQuery } from "@tanstack/react-query";
 import { useStore } from "zustand";
 import { count, fill } from "../../i18n/format.js";
@@ -16,9 +22,11 @@ import {
 import {
   membersQuery,
   pantryQuery,
+  plansQuery,
   queries,
   settings,
   stepsQuery,
+  today,
 } from "../../platform.js";
 import { prepWords } from "../../prep.js";
 import { goBack, useDish } from "../../routes.js";
@@ -57,6 +65,45 @@ function useRecipe(
   };
 }
 
+type DishOf = NonNullable<
+  ReturnType<typeof useLoadedPacks>[number]["dishes"]
+>[number];
+
+/**
+ * How many the dish is for (specs/95, 145): everyone at home; opened from a
+ * meal, who eats it then (the adults, when the child has a dish of their
+ * own; the children, for the child's dish); and the child's add-in.
+ */
+function useServings(at: ReturnType<typeof useDish>, dish: DishOf | undefined) {
+  const { data: members = [] } = useQuery(membersQuery, queries);
+  const { data: plans = [] } = useQuery(plansQuery, queries);
+  // Nobody saved yet (a sample, or setup skipped): one person.
+  if (!at?.slot) return { people: Math.max(members.length, 1), addIn: null };
+  const day = today();
+  const child = plans.find(
+    (p) => p.on === day && p.slot === at.slot && p.for === "child",
+  );
+  const own = at.child ? "child" : child !== undefined;
+  const people = Math.max(servings(at.slot, members, own), 1);
+  const addIn = at.child
+    ? (dish?.addIns?.find(([id]) => id === child?.addIn) ?? null)
+    : null;
+  return { people, addIn };
+}
+
+/** The dish with its add-in among its ingredients, for one person. */
+function withAddIn(
+  dish: DishOf,
+  addIn: [string, number, "g" | "ml" | "pieces"] | null,
+): Pick<DishOf, "ingredients" | "amounts"> {
+  if (!addIn) return dish;
+  const [id, amount, unit] = addIn;
+  return {
+    ingredients: [...dish.ingredients, id],
+    amounts: [...(dish.amounts ?? []), [amount, unit]],
+  };
+}
+
 /** The dish's steps, once its pack's steps have loaded (specs/149). */
 function useSteps(at: { pack: string; dish: string } | null): string[] {
   const { data } = useQuery(
@@ -79,21 +126,20 @@ export function useDishScreen() {
   const amountOf = useAmountWords();
   const { skip } = useKitchenSettings();
   const { data: items = [] } = useQuery(pantryQuery, queries);
-  const { data: members = [] } = useQuery(membersQuery, queries);
   const dish = packs
     .find((p) => p.id === at?.pack)
     ?.dishes.find((d) => d.id === at?.dish);
   const have = new Set(items.map((i) => i.ingredient));
   const staples = staplesToAssume(packs, items);
-  const needs = missing(dish?.ingredients ?? [], have, staples);
+  const { people, addIn } = useServings(at, dish);
+  const used = dish ? withAddIn(dish, addIn) : null;
+  const needs = missing(used?.ingredients ?? [], have, staples);
   const actions = useDishActions(dish?.id, needs);
   const recipe = useRecipe(at, dish, name);
   if (!dish) return null;
 
-  // Nobody saved yet (a sample, or setup skipped): one person.
-  const people = Math.max(members.length, 1);
-  const rows = dish.ingredients.map((id, i) => {
-    const per = dish.amounts?.[i];
+  const rows = (used ?? dish).ingredients.map((id, i) => {
+    const per = (used ?? dish).amounts?.[i];
     return {
       key: id,
       label: name("ingredients", id),

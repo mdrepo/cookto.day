@@ -1,6 +1,7 @@
 import type { AppPack } from "@cookto/data";
 import {
   addDays,
+  childrenOnly,
   cookedLately,
   cookTodayForMeals,
   defaultMeals,
@@ -41,16 +42,16 @@ export function useMealPlans() {
   const { skip } = useKitchenSettings();
   const beans = useStore(settings.store, (s) => s.beans);
   const { data: items = [] } = useQuery(pantryQuery, queries);
-  const { data: eaten = [] } = useQuery(
-    { ...membersQuery, select: plannedSlots },
-    queries,
-  );
+  const { data: members = [] } = useQuery(membersQuery, queries);
   const { data: history = [] } = useQuery(cookedQuery, queries);
   const { data: plans = [] } = useQuery(plansQuery, queries);
   const dishes = dishesOf(packs);
   if (dishes.length === 0) return null;
   // Nobody saved yet (a sample, or onboarding skipped): one adult's meals.
+  const eaten = plannedSlots(members);
   const slots = eaten.length > 0 ? eaten : defaultMeals("adult");
+  // A meal only children eat picks from the child's list (specs/145).
+  const childSlots = new Set(slots.filter((s) => childrenOnly(s, members)));
   const now = clock();
   const day = now.slice(0, 10);
   const next = addDays(day, 1);
@@ -66,6 +67,7 @@ export function useMealPlans() {
     pantry: items,
     staples: staplesToAssume(packs, items),
     skip: new Set(skip),
+    childSlots,
   };
   const todayPlans = plannedOn(day);
   const today = cookTodayForMeals({
@@ -92,5 +94,17 @@ export function useMealPlans() {
           ]),
         })
       : null;
-  return { packs, day, next, now, beans, plans, dishes, today, tomorrow };
+  return {
+    packs,
+    day,
+    next,
+    now,
+    beans,
+    plans,
+    dishes,
+    members,
+    childSlots,
+    today,
+    tomorrow,
+  };
 }

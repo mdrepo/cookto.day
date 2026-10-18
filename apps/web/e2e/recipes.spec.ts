@@ -5,6 +5,23 @@ import { Cooking } from "./support/cooking.js";
 // and short steps in our own words.
 
 test.describe("Recipes", () => {
+  test("steps on the dish page", async ({ page }) => {
+    const k = new Cooking(page);
+    await k.start();
+    await k.loadNorthIndianWithStaples();
+    await k.openDish("Dal tadka");
+    const steps = page.getByRole("list", { name: "Steps" });
+    await expect(page.getByRole("heading", { name: "Steps" })).toBeVisible();
+    await expect(steps.getByRole("listitem").first()).toContainText("toor dal");
+    expect(await steps.getByRole("listitem").count()).toBeGreaterThanOrEqual(6);
+    const full = page.getByRole("link", { name: /See a full version/ });
+    await expect(full).toHaveAttribute("target", "_blank");
+    // Under the ingredients, and the link at the end, after the steps.
+    const top = async (l: typeof full) => (await l.boundingBox())?.y ?? 0;
+    expect(await top(steps)).toBeGreaterThan(await top(k.dishList("You have")));
+    expect(await top(full)).toBeGreaterThan(await top(steps));
+  });
+
   test("amounts for the household", async ({ page }) => {
     const k = new Cooking(page);
     await page.goto("/");

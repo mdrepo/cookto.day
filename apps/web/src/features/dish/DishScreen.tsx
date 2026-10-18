@@ -3,6 +3,7 @@ import {
   Button,
   Cluster,
   LinkOut,
+  Method,
   Panes,
   Photo,
   Reasons,
@@ -15,7 +16,7 @@ import { useDishScreen } from "./useDishScreen.js";
 
 type Dish = NonNullable<ReturnType<typeof useDishScreen>>;
 
-/** Why, what to do, and the recipe: beside the lists on a wide screen. */
+/** Why, and what to do: beside the lists on a wide screen. */
 function DishSide({ s }: { s: Dish }) {
   return (
     <Stack gap={3}>
@@ -60,15 +61,15 @@ function DishSide({ s }: { s: Dish }) {
           items={[{ key: "added", text: s.addToList.added, tone: "good" }]}
         />
       )}
-      {s.source && <LinkOut href={s.source}>{s.seeRecipe}</LinkOut>}
       {s.photo && <LinkOut href={s.photo.source}>{s.photo.credit}</LinkOut>}
     </Stack>
   );
 }
 
 /**
- * A dish's page (specs/95): on a phone, why and the recipe first, then what
- * you need and have; on a wide screen, those lists beside them.
+ * A dish's page (specs/95, 149): on a phone, why first, then what you need
+ * and have, the steps and a full version's link; on a wide screen, the
+ * lists and steps beside why.
  */
 export function DishScreen({ bar }: { bar: ReactNode }) {
   const s = useDishScreen();
@@ -101,6 +102,12 @@ export function DishScreen({ bar }: { bar: ReactNode }) {
             <Section title={s.youHave}>
               <Rows label={s.youHave} rows={s.have} />
             </Section>
+            {s.steps.length > 0 && (
+              <Section title={s.stepsTitle}>
+                <Method label={s.stepsTitle} steps={s.steps} />
+              </Section>
+            )}
+            {s.source && <LinkOut href={s.source}>{s.seeFullVersion}</LinkOut>}
           </Stack>
         }
         secondary={<DishSide s={s} />}

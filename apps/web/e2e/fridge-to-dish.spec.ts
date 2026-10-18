@@ -21,7 +21,7 @@ test.describe("From the fridge to a dish", () => {
     expect(rows.join(" ")).toContain("Aloo palak");
     await k.press("All dishes");
     await expect(k.title()).toHaveText("Dishes");
-    await expect(k.dishes()).toHaveCount(30);
+    await expect(k.dishes()).toHaveCount(28);
   });
 
   test("from Today's Use soon", async ({ page }) => {

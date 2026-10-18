@@ -37,7 +37,7 @@ test.describe("Cook now", () => {
     expect(names(ready)).toEqual([...names(ready)].sort());
 
     const rest = await k.dishGroup("Need a few things").allTextContents();
-    expect(ready.length + rest.length).toBe(30);
+    expect(ready.length + rest.length).toBe(28);
     const counts = rest.map(needs);
     for (const [i, n] of counts.entries()) {
       expect(n).toBeGreaterThan(0);

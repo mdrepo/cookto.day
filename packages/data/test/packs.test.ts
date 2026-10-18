@@ -4,15 +4,18 @@ import { createPacks } from "../src/packs.js";
 // specs/72-kitchen.md, criterion 1: the cuisines, and loading one's dishes.
 
 describe("the cuisine packs", () => {
-  test("North Indian is open with its dishes; the others are coming soon", () => {
+  test("North Indian, Maharashtrian and Our kitchen are open with their dishes; the others are coming soon", () => {
     const cuisines = createPacks().cuisines();
     expect(cuisines.map((c) => [c.id, c.soon])).toEqual([
       ["north-indian", false],
+      ["maharashtrian", false],
+      ["our-kitchen", false],
       ["south-indian", true],
       ["european", true],
       ["sri-lankan", true],
     ]);
-    expect(cuisines[0]?.dishes).toBeGreaterThanOrEqual(30);
+    // Poha and bhel puri moved to Maharashtrian (specs/147).
+    expect(cuisines[0]?.dishes).toBe(28);
   });
 
   test("loads an open pack's dishes, keyed by Wikidata ids", async () => {

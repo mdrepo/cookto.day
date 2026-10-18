@@ -1,0 +1,36 @@
+/* A dish's steps (#149): a round number, then the step in full words. Long
+   steps wrap beside the number, never under it. No outer margin: the space
+   between parts belongs to the screen. */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  /* The number sits on the first line's baseline. */
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.mark {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: 28px;
+  block-size: 28px;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-full);
+  color: var(--color-accent);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.text {
+  line-height: 1.5;
+}

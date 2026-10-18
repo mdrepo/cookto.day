@@ -90,6 +90,13 @@ export function now(): Date {
   return new Date();
 }
 
+/** A pack's steps, by dish: loaded when a dish opens, read once (#149). */
+export const stepsQuery = (id: string) =>
+  queryOptions({
+    queryKey: ["packs", id, "steps"],
+    queryFn: () => packs.steps(id),
+  });
+
 /** Today in the household's own calendar, "YYYY-MM-DD". */
 export function today(): string {
   const now = new Date();

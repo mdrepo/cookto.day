@@ -57,7 +57,7 @@ export function useMealPlans() {
   const plannedOn = (on: string): Partial<Record<MealSlot, string>> =>
     Object.fromEntries(
       plans
-        .filter((p) => p.on === on && p.prep !== "skipped" && !p.for)
+        .filter((p) => p.on === on && p.prep !== "skipped")
         .map((p) => [p.slot, p.dish]),
     );
   const base = {

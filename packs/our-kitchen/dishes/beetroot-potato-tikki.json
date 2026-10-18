@@ -1,0 +1,49 @@
+{
+  "slots": ["lunch", "dinner"],
+  "ingredients": {
+    "potato": {
+      "amount": 60,
+      "unit": "g"
+    },
+    "beetroot": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "paneer": {
+      "amount": 15,
+      "unit": "g"
+    },
+    "oats": {
+      "amount": 8,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 5,
+      "unit": "g"
+    }
+  },
+  "servedWith": ["curd"],
+  "for": ["child"],
+  "sources": [
+    "https://www.mylittlemoppet.com/wprm_print/beetroot-potato-tikka-weight-gaining-recipe-for-kids",
+    "https://shwetainthekitchen.com/beetroot-cutlet-heart-shaped-cutlets/"
+  ],
+  "steps": [
+    "Boil or pressure cook the potato and beetroot until soft, then peel them.",
+    "Grate the potato, beetroot and paneer into a bowl.",
+    "Dry roast the cumin, crush it, and chop the coriander leaves fine.",
+    "Mix everything with the oats into a soft dough.",
+    "Shape into 4 small, flat rounds that a small hand can hold.",
+    "Heat the oil in a flat pan and cook the tikkis on medium-low heat, 3 to 4 minutes a side, until golden.",
+    "Let them cool a little before serving."
+  ],
+  "note": "No salt, chilli or chaat masala. Paneer helps bind and oats take the place of breadcrumbs or sooji."
+}

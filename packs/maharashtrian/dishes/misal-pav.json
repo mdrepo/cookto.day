@@ -1,0 +1,107 @@
+{
+  "slots": ["breakfast", "lunch"],
+  "ingredients": {
+    "matki": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 40,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 3,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 3,
+      "unit": "g"
+    },
+    "curry-leaves": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 12,
+      "unit": "ml"
+    },
+    "mustard-seeds": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "asafoetida": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "coriander-powder": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    },
+    "sev": {
+      "amount": 15,
+      "unit": "g"
+    },
+    "lemon": {
+      "amount": 0.25,
+      "unit": "pieces"
+    },
+    "coriander-leaves": {
+      "amount": 3,
+      "unit": "g"
+    },
+    "pav": {
+      "amount": 2,
+      "unit": "pieces"
+    },
+    "butter": {
+      "amount": 5,
+      "unit": "g"
+    }
+  },
+  "prep": [
+    {
+      "do": "soak",
+      "what": "matki",
+      "hours": 8
+    }
+  ],
+  "sources": [
+    "https://www.indianhealthyrecipes.com/misal-pav-recipe/",
+    "https://www.madhurasrecipe.com/misal-pav/"
+  ],
+  "steps": [
+    "Pressure cook the sprouted matki with a pinch of turmeric and some water for one whistle; keep the water.",
+    "Heat the oil, let the mustard and cumin seeds pop, then add the curry leaves and hing.",
+    "Fry most of the onion until light brown, then add the crushed ginger and garlic for a minute.",
+    "Add the tomato and salt and cook until soft and mushy.",
+    "Stir in the turmeric, chilli powder, coriander powder and garam masala and fry until oil shows at the edges.",
+    "Add the matki with its water and more to make a thin curry, boil, then simmer for 10 minutes.",
+    "Slit the pav and toast it on a pan with the butter.",
+    "Ladle the misal into bowls, top with sev, raw onion, coriander and lemon, and serve with the pav."
+  ],
+  "note": "After the 8-hour soak the matki needs about a day more wrapped in a damp cloth to sprout, so start two days ahead. Garam masala stands in for goda or misal masala, which the pack does not have, and sev stands in for farsan."
+}

@@ -1,0 +1,28 @@
+{
+  "dishes": {
+    "bombay-sandwich": "Bombay sandwich",
+    "palak-soup": "Palak soup",
+    "paneer-sandwich": "Paneer sandwich",
+    "potato-beetroot-sandwich": "Potato beetroot sandwich",
+    "pumpkin-soup": "Pumpkin soup",
+    "apple-oats": "Apple oats",
+    "banana-pancakes": "Banana pancakes",
+    "banana": "Banana",
+    "beetroot-potato-tikki": "Beetroot potato tikki",
+    "blueberries": "Blueberries",
+    "blueberry-oats": "Blueberry oats",
+    "bread-butter": "Bread and butter",
+    "cinnamon-rolls": "Cinnamon rolls",
+    "orange": "Orange",
+    "pear-oats": "Pear oats",
+    "quinoa-chicken-rice": "Quinoa chicken rice",
+    "ragi-banana": "Ragi banana porridge",
+    "rajma-tikki-beetroot-soup": "Rajma tikki with beetroot soup",
+    "scrambled-eggs-bread": "Scrambled eggs and bread",
+    "veg-khichdi": "Khichdi with veggies"
+  },
+  "parts": {
+    "bread": "Bread",
+    "curd": "Curd"
+  }
+}

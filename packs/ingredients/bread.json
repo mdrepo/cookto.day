@@ -1,0 +1,23 @@
+{
+  "wikidata": "Q7802",
+  "label": "bread",
+  "keeps": {
+    "days": 3,
+    "in": "pantry",
+    "foodkeeper": 461
+  },
+  "names": [
+    {
+      "text": "Bread",
+      "lang": "en"
+    },
+    {
+      "text": "ब्रेड",
+      "lang": "hi"
+    },
+    {
+      "text": "ब्रेड",
+      "lang": "mr"
+    }
+  ]
+}

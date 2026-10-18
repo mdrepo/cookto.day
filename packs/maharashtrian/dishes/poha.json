@@ -10,7 +10,15 @@
       "unit": "g"
     },
     "potato": {
-      "amount": 60,
+      "amount": 50,
+      "unit": "g"
+    },
+    "peanuts": {
+      "amount": 10,
+      "unit": "g"
+    },
+    "curry-leaves": {
+      "amount": 0.5,
       "unit": "g"
     },
     "green-chilli": {
@@ -26,7 +34,7 @@
       "unit": "g"
     },
     "cumin": {
-      "amount": 0.8,
+      "amount": 0.5,
       "unit": "g"
     },
     "asafoetida": {
@@ -50,7 +58,7 @@
       "unit": "pieces"
     },
     "coriander-leaves": {
-      "amount": 1,
+      "amount": 2,
       "unit": "g"
     }
   },
@@ -61,14 +69,14 @@
   "steps": [
     "Rinse the poha in a strainer two or three times, drain, and leave it for 5 minutes to soften.",
     "Sprinkle the salt, sugar and turmeric over it and mix lightly with your fingers.",
-    "Heat the oil in a pan, let the mustard seeds pop, then add the cumin and a pinch of asafoetida.",
+    "Heat the oil and fry the peanuts until crunchy, then lift them out onto a plate.",
+    "In the same oil let the mustard seeds pop, then add the cumin, a pinch of hing and the curry leaves.",
     "Fry the onion and green chilli until the onion turns soft and see-through.",
     "Add the small potato cubes, cover, and cook on low heat until tender.",
-    "Add the poha and toss gently so it mixes without breaking.",
-    "Cover and steam on very low heat for 2 to 3 minutes.",
+    "Add the poha and peanuts, toss gently, cover and steam on very low heat for 2 to 3 minutes.",
     "Squeeze lemon over it, scatter coriander leaves and serve hot."
   ],
-  "note": "The sources used 47 to 71 g of dry poha a serving, and 60 g makes a full breakfast plate. Potato is optional in one source and fried in the other; it is kept as it makes the dish more filling.",
+  "note": "Curry leaves and fried peanuts are now in, as every Maharashtrian kanda poha has them; peanuts are 10 g a plate, between the two sources. Potato is cut to 50 g so the onion stays the star, and the optional grated coconut is left out.",
   "photo": {
     "author": "Pranit pawar",
     "licence": "CC BY-SA 4.0",

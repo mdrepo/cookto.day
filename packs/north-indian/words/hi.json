@@ -25,14 +25,14 @@
     "besan-chilla": "बेसन चीला",
     "dalia": "वेज दलिया",
     "omelette": "मसाला ऑमलेट",
-    "poha": "पोहा",
     "chana-chaat": "चना चाट",
-    "bhel-puri": "भेल पूरी",
     "aloo-tikki": "आलू टिक्की",
     "paneer-tikka": "पनीर टिक्का"
   },
   "parts": {
     "roti": "रोटी",
-    "rice": "चावल"
+    "rice": "चावल",
+    "bhature": "भटूरे",
+    "pita": "पीटा"
   }
 }

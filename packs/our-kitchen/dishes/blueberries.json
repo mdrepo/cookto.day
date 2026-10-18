@@ -1,0 +1,21 @@
+{
+  "slots": ["morning-snack", "evening-snack"],
+  "ingredients": {
+    "blueberries": {
+      "amount": 40,
+      "unit": "g"
+    }
+  },
+  "for": ["child"],
+  "cut": true,
+  "simple": true,
+  "sources": [
+    "https://solidstarts.com/foods/blueberries/",
+    "https://www.nhs.uk/baby/weaning-and-feeding/babys-first-solid-foods/"
+  ],
+  "steps": [
+    "Wash the blueberries.",
+    "Cut each one in half; quarter or squash any big, firm ones."
+  ],
+  "note": "Halved as the family does. The NHS suggests quarters for small round foods, so big berries get quartered."
+}

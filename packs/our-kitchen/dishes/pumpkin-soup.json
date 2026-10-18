@@ -1,0 +1,62 @@
+{
+  "slots": ["lunch", "evening-snack", "dinner"],
+  "ingredients": {
+    "pumpkin": {
+      "amount": 150,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 3,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "ghee": {
+      "amount": 5,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "black-pepper": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "cream": {
+      "amount": 10,
+      "unit": "ml"
+    },
+    "coriander-leaves": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1,
+      "unit": "g"
+    }
+  },
+  "servedWith": ["bread"],
+  "sources": [
+    "https://www.tarladalal.com/pumpkin-soup-low-calorie-soup-32987r",
+    "https://hebbarskitchen.com/easy-creamy-pumpkin-soup-recipe/",
+    "https://www.cuisineindiasociety.in/?p=1315"
+  ],
+  "steps": [
+    "Peel the red pumpkin, scoop out the seeds and cut it into cubes.",
+    "Heat ghee in a pan and let the cumin sizzle.",
+    "Add onion, garlic and ginger and cook until the onion turns soft.",
+    "Add the pumpkin and stir for 3 minutes.",
+    "Add water and salt, cover and cook for about 15 minutes until the pumpkin is soft.",
+    "Let it cool a little, then blend until smooth.",
+    "Pour it back into the pan, add pepper and heat until it bubbles.",
+    "Serve with a spoon of cream and a little chopped coriander on top."
+  ],
+  "note": "I used ghee, cumin and ginger for an Indian home taste instead of the oregano and thyme some sites add. Red pumpkin is sweet on its own, so there is no sugar."
+}

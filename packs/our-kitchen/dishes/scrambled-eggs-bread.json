@@ -1,0 +1,37 @@
+{
+  "slots": ["breakfast"],
+  "ingredients": {
+    "egg": {
+      "amount": 1,
+      "unit": "pieces"
+    },
+    "milk": {
+      "amount": 5,
+      "unit": "ml"
+    },
+    "butter": {
+      "amount": 4,
+      "unit": "g"
+    },
+    "bread": {
+      "amount": 1,
+      "unit": "pieces"
+    }
+  },
+  "for": ["child"],
+  "sources": [
+    "https://www.bda.uk.com/resource/scrumptious-scrambled-eggs.html",
+    "https://babyfoode.com/wprm_print/fluffy-5-minute-scrambled-eggs-for-baby-toddlers",
+    "https://www.happyveggiekitchen.com/wprm_print/tasty-scrambled-eggs-for-babies-3-ways"
+  ],
+  "steps": [
+    "Crack the egg into a bowl, add the milk and beat with a fork.",
+    "Toast the bread lightly.",
+    "Melt the butter in a small pan on low to medium heat.",
+    "Pour in the egg, wait 15 seconds, then fold it gently from the edges to the middle.",
+    "Keep folding until no runny egg is left and the white and yolk are fully set.",
+    "Cut the toast into fingers.",
+    "Serve the egg warm with the toast fingers."
+  ],
+  "note": "No salt or pepper. The egg is cooked until fully set, as the dietitians' advice says for small children with eggs that are not specially certified."
+}

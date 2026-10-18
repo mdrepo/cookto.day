@@ -6,6 +6,7 @@ import { SettingsScreen } from "./features/settings/SettingsScreen.js";
 import { useDocumentLanguage } from "./features/settings/useDocumentLanguage.js";
 import { useDocumentTheme } from "./features/settings/useDocumentTheme.js";
 import { Tabs } from "./features/tabs/Tabs.js";
+import { useMovedDishes } from "./moves.js";
 import { useRoute } from "./routes.js";
 
 // The app: features put together (ADR 0022). Features don't import each
@@ -56,6 +57,7 @@ const StaplesScreen = lazy(() =>
 export function App() {
   useDocumentLanguage();
   useDocumentTheme();
+  useMovedDishes();
   return (
     <Suspense fallback={null}>
       <Page />

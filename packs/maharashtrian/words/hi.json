@@ -1,0 +1,16 @@
+{
+  "dishes": {
+    "bhel-puri": "भेल पूरी",
+    "matki-usal": "मटकी उसल",
+    "misal-pav": "मिसल पाव",
+    "pav-bhaji": "पाव भाजी",
+    "poha": "कांदा पोहा",
+    "sabudana-khichdi": "साबूदाना खिचड़ी",
+    "thalipeeth": "थालीपीठ",
+    "varan-bhaat": "वरण भात"
+  },
+  "parts": {
+    "roti": "रोटी",
+    "rice": "चावल"
+  }
+}

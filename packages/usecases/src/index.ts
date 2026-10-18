@@ -19,6 +19,7 @@ export {
   changeAmount,
   clearSample,
   type Food,
+  keepMovedDishes,
   loadCuisine,
   markFood,
   setMakes,

@@ -1,0 +1,23 @@
+{
+  "wikidata": "Q89",
+  "label": "apple",
+  "keeps": {
+    "days": 28,
+    "in": "fridge",
+    "foodkeeper": 248
+  },
+  "names": [
+    {
+      "text": "Apple",
+      "lang": "en"
+    },
+    {
+      "text": "सेब",
+      "lang": "hi"
+    },
+    {
+      "text": "सफरचंद",
+      "lang": "mr"
+    }
+  ]
+}

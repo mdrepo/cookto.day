@@ -1,0 +1,23 @@
+{
+  "wikidata": "Q13178",
+  "label": "blueberry",
+  "keeps": {
+    "days": 7,
+    "in": "fridge",
+    "foodkeeper": 254
+  },
+  "names": [
+    {
+      "text": "Blueberries",
+      "lang": "en"
+    },
+    {
+      "text": "ब्लूबेरी",
+      "lang": "hi"
+    },
+    {
+      "text": "ब्लूबेरी",
+      "lang": "mr"
+    }
+  ]
+}

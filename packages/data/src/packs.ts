@@ -77,7 +77,14 @@ export interface PackLoader {
 }
 
 /** Every cuisine people see, in this order; only the ones with a pack open. */
-const CUISINES = ["north-indian", "south-indian", "european", "sri-lankan"];
+const CUISINES = [
+  "north-indian",
+  "maharashtrian",
+  "our-kitchen",
+  "south-indian",
+  "european",
+  "sri-lankan",
+];
 
 type Photos = Record<string, readonly [string, string]>;
 
@@ -91,11 +98,23 @@ const LOADERS: Record<
       import("./packs/north-indian.js"),
       import("./packs/north-indian.photos.js"),
     ]),
+  maharashtrian: () =>
+    Promise.all([
+      import("./packs/maharashtrian.js"),
+      import("./packs/maharashtrian.photos.js"),
+    ]),
+  // No photos yet: the family's own dishes.
+  "our-kitchen": async () => [
+    await import("./packs/our-kitchen.js"),
+    { default: {} },
+  ],
 };
 
 /** A pack's steps: their own file, so Today never waits for them (#149). */
 const STEPS: Record<string, () => Promise<{ default: string }>> = {
   "north-indian": () => import("./packs/north-indian.steps.js"),
+  maharashtrian: () => import("./packs/maharashtrian.steps.js"),
+  "our-kitchen": () => import("./packs/our-kitchen.steps.js"),
 };
 
 /** Each credited dish gets its photo's files. */

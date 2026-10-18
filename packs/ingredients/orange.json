@@ -1,0 +1,23 @@
+{
+  "wikidata": "Q13191",
+  "label": "orange",
+  "keeps": {
+    "days": 10,
+    "in": "pantry",
+    "foodkeeper": 256
+  },
+  "names": [
+    {
+      "text": "Orange",
+      "lang": "en"
+    },
+    {
+      "text": "संतरा",
+      "lang": "hi"
+    },
+    {
+      "text": "संत्री",
+      "lang": "mr"
+    }
+  ]
+}

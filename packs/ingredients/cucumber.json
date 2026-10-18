@@ -1,0 +1,23 @@
+{
+  "wikidata": "Q2735883",
+  "label": "cucumber",
+  "keeps": {
+    "days": 4,
+    "in": "fridge",
+    "foodkeeper": 283
+  },
+  "names": [
+    {
+      "text": "Cucumber",
+      "lang": "en"
+    },
+    {
+      "text": "खीरा",
+      "lang": "hi"
+    },
+    {
+      "text": "काकडी",
+      "lang": "mr"
+    }
+  ]
+}

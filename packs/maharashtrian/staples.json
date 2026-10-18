@@ -1,0 +1,27 @@
+{
+  "grains-and-dals": [
+    "puffed-rice",
+    "peanuts",
+    "matki",
+    "poha",
+    "sabudana",
+    "jowar-flour",
+    "besan",
+    "atta",
+    "toor-dal",
+    "basmati-rice"
+  ],
+  "spices": [
+    "tamarind",
+    "cumin",
+    "chilli-powder",
+    "chaat-masala",
+    "mustard-seeds",
+    "asafoetida",
+    "turmeric",
+    "garam-masala",
+    "coriander-powder",
+    "pav-bhaji-masala"
+  ],
+  "basics": ["jaggery", "salt", "oil", "sugar", "ghee"]
+}

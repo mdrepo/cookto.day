@@ -1,0 +1,62 @@
+{
+  "slots": ["lunch", "dinner"],
+  "ingredients": {
+    "rajma": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "potato": {
+      "amount": 40,
+      "unit": "g"
+    },
+    "bread": {
+      "amount": 15,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 5,
+      "unit": "g"
+    },
+    "beetroot": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "carrot": {
+      "amount": 50,
+      "unit": "g"
+    }
+  },
+  "prep": [
+    {
+      "do": "soak",
+      "what": "rajma",
+      "hours": 8,
+      "tinned": true
+    }
+  ],
+  "for": ["child"],
+  "sources": [
+    "https://www.tarladalal.com/rajma-salad-for-toddlers-3097r",
+    "https://www.mygingergarlickitchen.com/vegetarian-recipe-rajma-tikki-kidney-beans-cutlets/",
+    "https://tarladalal.com/beetroot-carrot-soup-for-babies-and-toddlers-3054r",
+    "https://www.mylittlemoppet.com/wprm_print/carrot-beet-soup-for-babies"
+  ],
+  "steps": [
+    "Pressure cook the soaked rajma and the potato for 6 to 7 whistles until very soft, then drain.",
+    "Peel the potato and mash it with the rajma until smooth, with no whole beans left.",
+    "Mix in the crumbled bread, crushed cumin and chopped coriander and shape into small flat tikkis.",
+    "Cook the tikkis in the oil on a flat pan on medium-low heat, 3 to 4 minutes a side, until golden.",
+    "For the soup, pressure cook the chopped beetroot and carrot with 150 ml water for 3 to 4 whistles.",
+    "Blend the vegetables with their water until smooth; strain it if your child likes it thin.",
+    "Warm the soup with a pinch of cumin and serve it lukewarm next to the tikkis."
+  ],
+  "note": "Rajma must be cooked very soft and mashed fully for a toddler; rinsed tinned rajma saves the soak. No salt, chilli or amchur in either part."
+}

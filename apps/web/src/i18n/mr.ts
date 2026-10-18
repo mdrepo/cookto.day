@@ -55,6 +55,8 @@ export const mr: Messages = {
   edit: "बदला",
   chooseCuisines: "तुम्ही काय शिजवता ते निवडा",
   northIndian: "उत्तर भारतीय",
+  maharashtrian: "महाराष्ट्रीय",
+  ourKitchen: "आपलं स्वयंपाकघर",
   southIndian: "दक्षिण भारतीय",
   european: "युरोपियन",
   sriLankan: "श्रीलंकन",

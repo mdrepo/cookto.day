@@ -1,0 +1,44 @@
+{
+  "slots": ["breakfast"],
+  "ingredients": {
+    "banana": {
+      "amount": 60,
+      "unit": "g"
+    },
+    "egg": {
+      "amount": 1,
+      "unit": "pieces"
+    },
+    "oats": {
+      "amount": 15,
+      "unit": "g"
+    },
+    "milk": {
+      "amount": 20,
+      "unit": "ml"
+    },
+    "butter": {
+      "amount": 3,
+      "unit": "g"
+    },
+    "cinnamon": {
+      "amount": 0.3,
+      "unit": "g"
+    }
+  },
+  "for": ["child"],
+  "sources": [
+    "https://www.thehealthymaven.com/baby-pancakes/",
+    "https://babyfoode.com/wprm_print/the-best-3-ingredient-banana-pancakes-for-baby"
+  ],
+  "steps": [
+    "Grind the oats to a fine flour in a mixer.",
+    "Mash the banana until very smooth.",
+    "Mix in the egg, oat flour, milk and cinnamon to make a thick batter.",
+    "Heat a flat pan on medium-low heat and rub it with a little butter.",
+    "Drop in spoonfuls of batter to make small pancakes.",
+    "Cook 2 to 3 minutes until the edges set, then flip and cook 1 to 2 minutes more.",
+    "Let them cool a little and cut into strips."
+  ],
+  "note": "Oat flour instead of maida, and no sugar: a spotty, ripe banana sweetens them. Makes about five small pancakes."
+}

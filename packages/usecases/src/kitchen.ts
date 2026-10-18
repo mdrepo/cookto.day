@@ -23,6 +23,23 @@ export async function loadCuisine(k: Kitchen, id: string): Promise<void> {
   k.settings.setKitchen({ ...kitchen, cuisines: [...kitchen.cuisines, id] });
 }
 
+/**
+ * Dishes that moved to another pack: poha and bhel puri, from North Indian
+ * to Maharashtrian (specs/147). A household that had the old pack before a
+ * move gets the new one too, once; a household from after it doesn't.
+ */
+const MOVES = [{ id: "147", from: "north-indian", to: "maharashtrian" }];
+
+export async function keepMovedDishes(k: Kitchen): Promise<void> {
+  const done = k.settings.moves();
+  const todo = MOVES.filter((m) => !done.includes(m.id));
+  if (todo.length === 0) return;
+  k.settings.setMoves([...done, ...todo.map((m) => m.id)]);
+  for (const move of todo)
+    if (k.settings.kitchen().cuisines.includes(move.from))
+      await loadCuisine(k, move.to);
+}
+
 /** Ticked staples, as "have it": each once. */
 export async function addStaples(
   k: Kitchen,

@@ -50,9 +50,9 @@ test.describe("Today and the pantry", () => {
     await expect(k.title()).toHaveText("Fridge");
     await expect(tab("Fridge")).toHaveAttribute("aria-current", "page");
     await expect(tab("Today")).not.toHaveAttribute("aria-current", "page");
-    await tab("Dishes").click();
-    await expect(k.title()).toHaveText("Dishes");
-    await expect(tab("Dishes")).toHaveAttribute("aria-current", "page");
+    await tab("My dishes").click();
+    await expect(k.title()).toHaveText("My dishes");
+    await expect(tab("My dishes")).toHaveAttribute("aria-current", "page");
   });
 
   test("the pantry as a short list", async ({ page }) => {

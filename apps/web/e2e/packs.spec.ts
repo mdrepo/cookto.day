@@ -63,7 +63,10 @@ test.describe("Packs", () => {
     for (const cuisine of ["North Indian", "Maharashtrian", "Our kitchen"])
       await expect(k.card(cuisine)).toBeVisible();
     await k.load("North Indian");
-    await k.tabs().getByRole("button", { name: "Dishes", exact: true }).click();
+    await k
+      .tabs()
+      .getByRole("button", { name: "My dishes", exact: true })
+      .click();
     await expect(k.dishes().first()).toBeVisible();
     await expect(k.dishes().filter({ hasText: /^Poha/ })).toHaveCount(0);
     await expect(k.dishes().filter({ hasText: /^Bhel puri/ })).toHaveCount(0);
@@ -72,7 +75,10 @@ test.describe("Packs", () => {
   test("nothing lost", async ({ page }) => {
     await loadedBefore(page);
     const k = new Cooking(page);
-    await k.tabs().getByRole("button", { name: "Dishes", exact: true }).click();
+    await k
+      .tabs()
+      .getByRole("button", { name: "My dishes", exact: true })
+      .click();
     await expect(k.dishes().filter({ hasText: /^Poha/ })).toHaveCount(1);
     await k.openDish("Poha");
     await expect(page.getByRole("main")).toContainText("Cooked today");

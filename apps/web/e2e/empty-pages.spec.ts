@@ -50,7 +50,7 @@ test.describe("Empty pages", () => {
   test("empty Dishes", async ({ page }) => {
     const k = new Cooking(page);
     await k.start();
-    await openTab(k, "Dishes");
+    await openTab(k, "My dishes");
     await expect(page.getByRole("main")).toContainText("No dishes yet");
     await page
       .getByRole("main")

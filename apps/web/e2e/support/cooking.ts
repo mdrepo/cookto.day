@@ -206,7 +206,17 @@ export class Cooking {
       .getByRole("button");
   }
 
-  /** Every dish in Dishes: ready ones first, then the rest (#97). */
+  /** On My dishes: takes a dish out of them (specs/175). */
+  async takeOut(name: string): Promise<void> {
+    await this.dishes()
+      .filter({
+        has: this.page.getByRole("button", { name: new RegExp(`^${name}`) }),
+      })
+      .getByRole("button", { name: `Take out ${name}` })
+      .click();
+  }
+
+  /** Every dish in My dishes: ready ones first, then the rest (#97). */
   dishes(): Locator {
     return this.page
       .getByRole("list", { name: /^(You can cook now|Need a few things)$/ })
@@ -221,9 +231,9 @@ export class Cooking {
   /** From anywhere after setup: opens a dish's page from Dishes (#95). */
   async openDish(name: string): Promise<void> {
     await this.tabs()
-      .getByRole("button", { name: "Dishes", exact: true })
+      .getByRole("button", { name: "My dishes", exact: true })
       .click();
-    await expect(this.title()).toHaveText("Dishes");
+    await expect(this.title()).toHaveText("My dishes");
     await this.dishes()
       .getByRole("button", { name: new RegExp(`^${name}`) })
       .click();

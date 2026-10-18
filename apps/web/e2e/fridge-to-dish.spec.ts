@@ -20,7 +20,7 @@ test.describe("From the fridge to a dish", () => {
     expect(rows.join(" ")).toContain("Palak paneer");
     expect(rows.join(" ")).toContain("Aloo palak");
     await k.press("All dishes");
-    await expect(k.title()).toHaveText("Dishes");
+    await expect(k.title()).toHaveText("My dishes");
     await expect(k.dishes()).toHaveCount(28);
   });
 

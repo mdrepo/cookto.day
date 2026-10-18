@@ -12,7 +12,7 @@ test.describe("A dish's page", () => {
     await k.openDish("Palak paneer");
     await expect(page.getByRole("main")).toContainText("Lunch and Dinner");
     await k.press("Back");
-    await expect(k.title()).toHaveText("Dishes");
+    await expect(k.title()).toHaveText("My dishes");
   });
 
   test("open a dish from Today", async ({ page }) => {

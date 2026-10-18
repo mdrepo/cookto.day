@@ -145,8 +145,8 @@ test.describe("The kitchen", () => {
     const k = new Cooking(page);
     await k.start();
     await k.press("Try a sample kitchen");
-    await k.press("Dishes");
-    await expect(k.title()).toHaveText("Dishes");
+    await k.press("My dishes");
+    await expect(k.title()).toHaveText("My dishes");
     await expect(k.dishes()).toHaveCount(28);
     await expect(k.dishes().filter({ hasText: "Palak paneer" })).toContainText(
       "Lunch and Dinner",

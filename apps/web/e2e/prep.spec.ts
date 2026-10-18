@@ -40,7 +40,10 @@ test.describe("Prep the day before", () => {
     await k.home();
     expect(await k.pickedDish("Lunch")).not.toBe("Chole");
     expect(await k.pickedDish("Dinner")).not.toBe("Chole");
-    await k.tabs().getByRole("button", { name: "Dishes", exact: true }).click();
+    await k
+      .tabs()
+      .getByRole("button", { name: "My dishes", exact: true })
+      .click();
     await expect(k.dishes().filter({ hasText: /^Chole/ })).toContainText(
       "Soak the chickpeas 8 hours before",
     );

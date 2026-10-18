@@ -203,4 +203,8 @@ export const ar: Messages = {
   otherIdeas: "أفكار أخرى",
   pages: "الصفحات",
   close: "إغلاق",
+  where: "أين",
+  inFridge: "الثلاجة",
+  frozen: "مجمّد",
+  useWithinMonths: { other: "استخدمه خلال {n} أشهر" },
 };

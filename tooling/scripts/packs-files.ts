@@ -71,8 +71,16 @@ function withFoods(
   const used = [...usedBy(pack)].filter((s) => s in foods).sort();
   const ingredients = Object.fromEntries(
     used.map((slug) => {
-      const { wikidata, label, keeps } = foods[slug] as Food;
-      return [slug, keeps ? { wikidata, label, keeps } : { wikidata, label }];
+      const { wikidata, label, keeps, freezes } = foods[slug] as Food;
+      return [
+        slug,
+        {
+          wikidata,
+          label,
+          ...(keeps ? { keeps } : {}),
+          ...(freezes ? { freezes } : {}),
+        },
+      ];
     }),
   );
   const words = Object.fromEntries(

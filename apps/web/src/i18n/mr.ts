@@ -141,4 +141,8 @@ export const mr: Messages = {
   otherIdeas: "इतर पर्याय",
   pages: "पाने",
   close: "बंद करा",
+  where: "कुठे",
+  inFridge: "फ्रिज",
+  frozen: "फ्रीझर",
+  useWithinMonths: { other: "{n} महिन्यांत वापरा" },
 };

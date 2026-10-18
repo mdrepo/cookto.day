@@ -28,6 +28,8 @@ export interface Ingredient {
   label: string;
   /** Fresh food only: how long it keeps, from FoodKeeper. */
   keeps?: Keeps;
+  /** Food also bought frozen: how long it keeps frozen (specs/149). */
+  freezes?: { days: number; foodkeeper: number };
 }
 export interface Dish {
   slots: string[];
@@ -65,6 +67,8 @@ export interface FoodKeeperEntry {
   /** Days, least to most; null when FoodKeeper gives none. */
   fridge: [number, number] | null;
   pantry: [number, number] | null;
+  /** Frozen, where FoodKeeper says. */
+  freezer?: [number, number] | null;
 }
 export interface Sources {
   wikidata: Record<string, string>;
@@ -98,13 +102,17 @@ function ingredientProblems(
         `${at}: neither a staple nor fresh. List it in staples.json, or add "keeps" with its FoodKeeper entry.`,
       );
     if (keeps) problems.push(...keepsProblems(at, keeps, sources));
+    if (ing.freezes)
+      problems.push(
+        ...keepsProblems(at, { ...ing.freezes, in: "freezer" }, sources),
+      );
     return problems;
   });
 }
 
 function keepsProblems(
   at: string,
-  keeps: Partial<Keeps>,
+  keeps: Partial<Omit<Keeps, "in">> & { in?: Keeps["in"] | "freezer" },
   sources: Sources,
 ): string[] {
   if (keeps.foodkeeper === undefined)
@@ -116,8 +124,10 @@ function keepsProblems(
     return [
       `${at}: FoodKeeper ${keeps.foodkeeper} isn't in packs/sources/foodkeeper.json. Run \`bun run packs:refresh\`.`,
     ];
-  const where = keeps.in === "pantry" ? "pantry" : "fridge";
-  const range = entry[where];
+  const where =
+    keeps.in === "pantry" || keeps.in === "freezer" ? keeps.in : "fridge";
+  const range = entry[where] ?? null;
+  const place = where === "freezer" ? "frozen" : `in the ${where}`;
   const days = keeps.days ?? NaN;
   // Shorter than FoodKeeper only warns early; longer could make someone ill.
   if (range && days > 0 && days <= range[1]) return [];
@@ -127,9 +137,9 @@ function keepsProblems(
   if (!range && days > 0 && decided) return [];
   const says = range
     ? `says ${range[0]} to ${range[1]}. Use ${range[1]} or fewer: shorter only warns early.`
-    : `gives no time in the ${where}. Cite an entry that does, or the approved spec that decided it.`;
+    : `gives no time ${place}. Cite an entry that does, or the approved spec that decided it.`;
   return [
-    `${at}: keeps ${keeps.days} days in the ${where}, but FoodKeeper ${keeps.foodkeeper} (${entry.name}) ${says}`,
+    `${at}: keeps ${keeps.days} days ${place}, but FoodKeeper ${keeps.foodkeeper} (${entry.name}) ${says}`,
   ];
 }
 

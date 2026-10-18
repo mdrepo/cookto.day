@@ -142,6 +142,13 @@ export const en = {
   otherIdeas: "Other ideas",
   pages: "Pages",
   close: "Close",
+  where: "Where",
+  inFridge: "Fridge",
+  frozen: "Frozen",
+  useWithinMonths: {
+    one: "use within {n} month",
+    other: "use within {n} months",
+  },
 };
 
 /** Words that change with a number: CLDR's plural forms, "other" always. */

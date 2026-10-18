@@ -1,4 +1,5 @@
 import { MEAL_SLOTS, prepFor } from "@cookto/engine";
+import { takeOutOfMyDishes } from "@cookto/usecases";
 import { useQuery } from "@tanstack/react-query";
 import { useStore } from "zustand";
 import { count, fill } from "../../i18n/format.js";
@@ -10,19 +11,22 @@ import {
   SLOT_WORDS,
   useKitchenSettings,
   useLoadedPacks,
+  useMyPacks,
 } from "../../food.js";
-import { pantryQuery, queries, settings } from "../../platform.js";
+import { myDishes, pantryQuery, queries, settings } from "../../platform.js";
 import { prepWords } from "../../prep.js";
 import { open, openDish, useDishesWith } from "../../routes.js";
 
 /**
- * The loaded cuisines' dishes: the ones the kitchen can make now first, A to
- * Z, then the rest, fewest missing first (#97), or only those using one food
- * (#105). Each opens its page (#95).
+ * My dishes (specs/175): the ones the kitchen can make now first, A to Z,
+ * then the rest, fewest missing first (#97), then the child's own; or only
+ * those using one food (#105). Each opens its page (#95), and can be taken
+ * out.
  */
 export function useDishesScreen() {
   const { locale, t } = useWords();
   const packs = useLoadedPacks();
+  const mine = useMyPacks();
   const { cuisines } = useKitchenSettings();
   const name = namer(packs, locale);
   const prep = prepWords(name, t, locale);
@@ -30,10 +34,11 @@ export function useDishesScreen() {
   const { data: items = [] } = useQuery(pantryQuery, queries);
   // Narrowed to one food (#105): only the dishes that use it.
   const food = useDishesWith();
-  const rows = dishNeeds(packs, items)
+  const rows = dishNeeds(mine, items)
     .filter(({ dish }) => food === null || dish.ingredients.includes(food))
     .map(({ pack, dish, needs }) => ({
       needs,
+      forChild: dish.for?.includes("child") ?? false,
       item: {
         key: `${pack}/${dish.id}`,
         name: name("dishes", dish.id),
@@ -53,12 +58,18 @@ export function useDishesScreen() {
         onOpen: () => {
           openDish(pack, dish.id);
         },
+        action: {
+          label: t.takeOut,
+          name: fill(t.takeOutDish, { dish: name("dishes", dish.id) }),
+          run: () => void takeOutOfMyDishes({ myDishes }, dish.id),
+        },
       },
     }))
     .sort(
       (a, b) =>
         a.needs - b.needs || a.item.name.localeCompare(b.item.name, locale),
     );
+  const grown = rows.filter((r) => !r.forChild);
   return {
     // No cuisine loaded: no dishes, and the way to get some (#115).
     none:
@@ -87,13 +98,11 @@ export function useDishesScreen() {
               open("dishes");
             },
           },
-    ready: {
-      title: t.cookNow,
-      items: rows.filter((r) => r.needs === 0).map((r) => r.item),
-    },
-    rest: {
-      title: t.needAFewThings,
-      items: rows.filter((r) => r.needs > 0).map((r) => r.item),
-    },
+    groups: [
+      { title: t.cookNow, items: grown.filter((r) => r.needs === 0) },
+      { title: t.needAFewThings, items: grown.filter((r) => r.needs > 0) },
+      // The child's own dishes, their own group (specs/175, the owner's choice).
+      { title: t.forTheChild, items: rows.filter((r) => r.forChild) },
+    ].map((g) => ({ title: g.title, items: g.items.map((r) => r.item) })),
   };
 }

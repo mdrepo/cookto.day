@@ -16,6 +16,7 @@ import {
   staplesToAssume,
   useKitchenSettings,
   useLoadedPacks,
+  useMyPacks,
 } from "../../food.js";
 import {
   clock,
@@ -45,7 +46,8 @@ export function useMealPlans() {
   const { data: members = [] } = useQuery(membersQuery, queries);
   const { data: history = [] } = useQuery(cookedQuery, queries);
   const { data: plans = [] } = useQuery(plansQuery, queries);
-  const dishes = dishesOf(packs);
+  // Only My dishes are planned (specs/175).
+  const dishes = dishesOf(useMyPacks());
   if (dishes.length === 0) return null;
   // Nobody saved yet (a sample, or onboarding skipped): one adult's meals.
   const eaten = plannedSlots(members);

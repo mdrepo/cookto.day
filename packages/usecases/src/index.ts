@@ -27,6 +27,7 @@ export {
   useUp,
 } from "./kitchen.js";
 export { cookedIt, KEEP_DIFFERENT_DAYS, notCooked } from "./cooked.js";
+export { addToMyDishes, takeOutOfMyDishes } from "./my-dishes.js";
 export {
   addBoughtFood,
   addToList,

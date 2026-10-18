@@ -139,7 +139,7 @@ export const ar: Messages = {
   clearSample: "احذف المطبخ التجريبي",
   sampleBody: "طعام للتجربة، لتتعرّف على التطبيق.",
   settings: "الإعدادات",
-  dishes: "الأطباق",
+  dishes: "أطباقي",
   hasEverything: "كل شيء موجود",
   needsCount: {
     one: "يحتاج شيئًا واحدًا",
@@ -213,6 +213,8 @@ export const ar: Messages = {
   packs: "الحزم",
   addDishForChild: "أضف طبقًا للطفل",
   forTheChild: "للطفل",
+  takeOut: "أخرِج",
+  takeOutDish: "أخرِج {dish}",
   forTheChildDish: "للطفل: {dish}",
   remove: "إزالة",
   addInFood: "أضف {food}",

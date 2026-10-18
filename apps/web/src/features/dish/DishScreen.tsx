@@ -96,12 +96,11 @@ export function DishScreen({ bar }: { bar: ReactNode }) {
           <Stack gap={6}>
             {s.prep.length > 0 && (
               <Section title={s.prepTitle}>
-                <Rows
-                  label={s.prepTitle}
-                  rows={s.prep.map((line) => ({
+                <Reasons
+                  items={s.prep.map((line) => ({
                     key: line,
-                    label: line,
-                    value: "",
+                    text: line,
+                    tone: "warm" as const,
                   }))}
                 />
               </Section>

@@ -4,16 +4,29 @@ import { defineConfig, devices } from "@playwright/test";
 // (ADR 0003, 0021). Uses its own port, so `bun run dev` can keep running.
 const port = Number(process.env.E2E_PORT ?? 3299);
 
+/**
+ * On a Mac, WebKit records video and traces by capturing its window through
+ * WindowServer; many tests at once used up its GPU buffers and crashed the
+ * owner's Mac three times on 18 Oct. So on a laptop: two tests at a time, no
+ * video, and WebKit records nothing. CI records every test (ADR 0021);
+ * `E2E_VIDEO=on` records Chromium's on a laptop, for a PR's video.
+ */
+const ci = Boolean(process.env.CI);
+const video = ci || process.env.E2E_VIDEO === "on" ? "on" : "off";
+/** WebKit on a laptop: no video and no trace, ever. */
+const quietWebKit = ci ? {} : { video: "off" as const, trace: "off" as const };
+
 export default defineConfig({
   testDir: "e2e",
   fullyParallel: true,
+  ...(ci ? {} : { workers: 2 }),
   // `.only` must never reach the default branch (ADR 0003).
   forbidOnly: true,
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
     baseURL: `http://localhost:${port}`,
     // Videos are attached to PRs for UI changes (ADR 0021).
-    video: "on",
+    video,
     trace: "retain-on-failure",
     // No internet: every request but localhost goes to a proxy that isn't
     // there, so it fails, in every browser. A slow or missing outside site
@@ -26,7 +39,10 @@ export default defineConfig({
   projects: [
     { name: "mobile-chromium", use: { ...devices["Pixel 7"] } },
     // Every iPhone browser is Safari's engine, WebKit (ADR 0021).
-    { name: "iphone-webkit", use: { ...devices["iPhone 15"] } },
+    {
+      name: "iphone-webkit",
+      use: { ...devices["iPhone 15"], ...quietWebKit },
+    },
     {
       name: "desktop-chromium",
       use: {

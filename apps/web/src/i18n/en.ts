@@ -89,6 +89,10 @@ export const en = {
   usedUp: "Used up",
   undo: "Undo",
   usedUpNote: "{food} used up",
+  /** A failed save (specs/138). */
+  saveFull: "Couldn't save that. Your phone is out of space.",
+  saveFailed: "Couldn't save that. Try again.",
+  ok: "OK",
   changeAmount: "Change amount",
   cookToday: "Cook today",
   uses: "Uses {items}",

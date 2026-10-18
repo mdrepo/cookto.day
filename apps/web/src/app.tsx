@@ -7,6 +7,7 @@ import { useDocumentLanguage } from "./features/settings/useDocumentLanguage.js"
 import { useDocumentTheme } from "./features/settings/useDocumentTheme.js";
 import { Tabs } from "./features/tabs/Tabs.js";
 import { useRoute } from "./routes.js";
+import { SaveProblem } from "./features/saving/SaveProblem.js";
 
 // The app: features put together (ADR 0022). Features don't import each
 // other, so this is where one sits inside another, and which one shows. The
@@ -63,13 +64,23 @@ export function App() {
   );
 }
 
+/** The tab bar, with a failed save's note just above it (specs/138). */
+function Bar({ current }: { current: Parameters<typeof Tabs>[0]["current"] }) {
+  return (
+    <>
+      <SaveProblem />
+      <Tabs current={current} />
+    </>
+  );
+}
+
 function Page() {
   const route = useRoute();
   switch (route) {
     case "home":
       return (
         <HomeScreen
-          bar={<Tabs current={route} />}
+          bar={<Bar current={route} />}
           itemSheet={(id, onClose, onUsedUp) => (
             <Suspense fallback={null}>
               <ItemSheet id={id} onClose={onClose} onUsedUp={onUsedUp} />
@@ -78,19 +89,19 @@ function Page() {
         />
       );
     case "settings":
-      return <SettingsScreen bar={<Tabs current={route} />} />;
+      return <SettingsScreen bar={<Bar current={route} />} />;
     case "cuisines":
-      return <CuisinesScreen bar={<Tabs current={route} />} />;
+      return <CuisinesScreen bar={<Bar current={route} />} />;
     case "staples":
-      return <StaplesScreen bar={<Tabs current={route} />} />;
+      return <StaplesScreen bar={<Bar current={route} />} />;
     case "pantry":
-      return <PantryScreen bar={<Tabs current={route} />} />;
+      return <PantryScreen bar={<Bar current={route} />} />;
     case "dish":
-      return <DishScreen bar={<Tabs current={route} />} />;
+      return <DishScreen bar={<Bar current={route} />} />;
     case "list":
-      return <ShoppingScreen bar={<Tabs current={route} />} />;
+      return <ShoppingScreen bar={<Bar current={route} />} />;
     case "dishes":
-      return <DishesScreen bar={<Tabs current={route} />} />;
+      return <DishesScreen bar={<Bar current={route} />} />;
     default:
       return (
         <OnboardingScreen

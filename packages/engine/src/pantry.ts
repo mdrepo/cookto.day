@@ -20,6 +20,8 @@ export interface PantryItem {
   boughtOn: string;
   /** Fresh food only. */
   shelfLifeDays?: number;
+  /** Bought frozen: its shelf life is its days frozen (specs/149). */
+  frozen?: boolean;
   mark?: Condition;
 }
 

@@ -22,9 +22,10 @@ const ids = new Set(
 );
 const cited = new Set(
   packs.flatMap((p) =>
-    Object.values(p.ingredients).flatMap((i) =>
-      i.keeps ? [String(i.keeps.foodkeeper)] : [],
-    ),
+    Object.values(p.ingredients).flatMap((i) => [
+      ...(i.keeps ? [String(i.keeps.foodkeeper)] : []),
+      ...(i.freezes ? [String(i.freezes.foodkeeper)] : []),
+    ]),
   ),
 );
 
@@ -91,6 +92,7 @@ async function entries(): Promise<Record<string, FoodKeeperEntry>> {
       name: name.trim(),
       fridge: range(row, "Refrigerate"),
       pantry: range(row, "Pantry"),
+      freezer: range(row, "Freeze"),
     };
   }
   return out;

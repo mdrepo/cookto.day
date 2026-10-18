@@ -118,7 +118,9 @@ export function useItemWords() {
         ? null
         : left === 0
           ? t.useToday
-          : count(locale, t.useWithin, left);
+          : left >= 60
+            ? count(locale, t.useWithinMonths, Math.round(left / 30))
+            : count(locale, t.useWithin, left);
     const amount = amountOf(item);
     return {
       name: name("ingredients", item.ingredient),

@@ -2,6 +2,7 @@ import { addDays } from "@cookto/engine";
 import { addBoughtFood, addFood } from "@cookto/usecases";
 import { useState } from "react";
 import { count } from "../../i18n/format.js";
+import type { Messages } from "../../i18n/en.js";
 import { useWords } from "../../i18n/useWords.js";
 import { namer, packStaples, useLoadedPacks } from "../../food.js";
 import { kitchen, today } from "../../platform.js";
@@ -9,6 +10,31 @@ import { toGramsOrMl, UNIT_CHOICES } from "./units.js";
 
 /** The day `daysAgo` days before today, "YYYY-MM-DD". */
 const before = (daysAgo: number) => addDays(today(), -daysAgo);
+
+/** The form's fixed words and choices. */
+function formWords(t: Messages, locale: string) {
+  return {
+    nameLabel: t.name,
+    amountLabel: t.amount,
+    unitLabel: t.unit,
+    boughtLabel: t.bought,
+    /** Fridge or frozen: frozen food keeps its freezer time (specs/149). */
+    whereLabel: t.where,
+    places: [
+      { value: "fridge", label: t.inFridge },
+      { value: "frozen", label: t.frozen },
+    ],
+    units: UNIT_CHOICES.map((u) => ({
+      value: u,
+      label: u === "pieces" ? t.piecesUnit : u,
+    })),
+    days: [0, 1, 2, 3, 4, 5, 6].map((n) => ({
+      value: String(n),
+      label:
+        n === 0 ? t.today : n === 1 ? t.yesterday : count(locale, t.daysAgo, n),
+    })),
+  };
+}
 
 /**
  * Adding food: tapping the loaded cuisines' fresh food (specs/113), or
@@ -48,28 +74,19 @@ export function useAddFood(onDone: () => void) {
         });
       },
     })),
-    nameLabel: t.name,
+    ...formWords(t, locale),
     /** Typing a name is needed only when nothing is tapped. */
     nameRequired: picked.size === 0,
     onType: setTyped,
-    amountLabel: t.amount,
-    unitLabel: t.unit,
-    boughtLabel: t.bought,
+
     addLabel: picked.size > 0 ? count(locale, t.addCount, adding) : t.add,
-    units: UNIT_CHOICES.map((u) => ({
-      value: u,
-      label: u === "pieces" ? t.piecesUnit : u,
-    })),
-    days: [0, 1, 2, 3, 4, 5, 6].map((n) => ({
-      value: String(n),
-      label:
-        n === 0 ? t.today : n === 1 ? t.yesterday : count(locale, t.daysAgo, n),
-    })),
+
     add: async (form: {
       name: string;
       amount: string;
       unit: string;
       daysAgo: string;
+      where: string;
     }) => {
       const boughtOn = before(Number(form.daysAgo) || 0);
       const foodName = form.name.trim();
@@ -85,6 +102,7 @@ export function useAddFood(onDone: () => void) {
           {
             name: foodName,
             boughtOn,
+            ...(form.where === "frozen" ? { frozen: true } : {}),
             ...(amount ? { amount: amount.amount, unit: amount.unit } : {}),
           },
           locale,

@@ -10,8 +10,12 @@
       "unit": "g"
     },
     "onion": {
-      "amount": 30,
+      "amount": 35,
       "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.25,
+      "unit": "pieces"
     },
     "ginger": {
       "amount": 2,
@@ -22,59 +26,55 @@
       "unit": "g"
     },
     "tomato": {
-      "amount": 30,
+      "amount": 60,
       "unit": "g"
     },
     "turmeric": {
-      "amount": 0.3,
+      "amount": 0.2,
       "unit": "g"
     },
     "chilli-powder": {
-      "amount": 0.3,
+      "amount": 0.4,
       "unit": "g"
     },
     "coriander-powder": {
-      "amount": 1,
+      "amount": 0.8,
       "unit": "g"
     },
     "garam-masala": {
-      "amount": 0.3,
+      "amount": 0.4,
       "unit": "g"
-    },
-    "green-chilli": {
-      "amount": 0.5,
-      "unit": "pieces"
     },
     "potato": {
-      "amount": 15,
-      "unit": "g"
-    },
-    "capsicum": {
-      "amount": 10,
+      "amount": 35,
       "unit": "g"
     },
     "carrot": {
-      "amount": 10,
+      "amount": 20,
       "unit": "g"
     },
     "green-beans": {
-      "amount": 9,
+      "amount": 15,
       "unit": "g"
     },
     "cauliflower": {
-      "amount": 30,
+      "amount": 35,
       "unit": "g"
     },
     "peas": {
       "amount": 20,
       "unit": "g"
     },
+    "capsicum": {
+      "amount": 10,
+      "unit": "g"
+    },
     "cream": {
-      "amount": 7.5,
+      "amount": 5,
       "unit": "ml"
     },
     "coriander-leaves": {
-      "amount": 0.8,
+      "amount": 0.75,
       "unit": "g"
     },
     "salt": {
@@ -83,8 +83,21 @@
     }
   },
   "servedWith": ["roti"],
-  "source": "https://www.vegrecipesofindia.com/mix-veg-recipe/",
-  "note": "Optional paneer left out: the recipe gives no weight.",
+  "sources": [
+    "https://www.vegrecipesofindia.com/mix-veg-recipe/",
+    "https://www.indianhealthyrecipes.com/mixed-vegetable-curry/"
+  ],
+  "steps": [
+    "Heat the oil, add the cumin and let it sizzle.",
+    "Add the chopped onion and green chilli and fry until light golden.",
+    "Stir in the ginger and garlic and cook for a minute.",
+    "Add the chopped tomato and cook until soft and oil shows at the edges.",
+    "Stir in the turmeric, chilli powder, coriander powder and salt for a minute.",
+    "Add all the chopped vegetables and the peas and stir-fry for 3 minutes.",
+    "Pour in about a cup of hot water for four people, cover and cook on medium-low until the vegetables are tender, about 15 minutes.",
+    "Stir in the cream and garam masala, top with coriander leaves and serve."
+  ],
+  "note": "One recipe used about 90 g of vegetables a person and the other about 130 g; this follows the larger one, a fair share for a main vegetable dish.",
   "photo": {
     "author": "Foody1989",
     "licence": "CC BY-SA 4.0",

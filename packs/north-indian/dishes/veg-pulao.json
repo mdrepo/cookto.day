@@ -2,43 +2,43 @@
   "slots": ["lunch", "dinner"],
   "ingredients": {
     "basmati-rice": {
-      "amount": 75,
-      "unit": "g"
-    },
-    "cauliflower": {
-      "amount": 20,
-      "unit": "g"
-    },
-    "potato": {
-      "amount": 20,
+      "amount": 90,
       "unit": "g"
     },
     "carrot": {
-      "amount": 7.5,
-      "unit": "g"
-    },
-    "peas": {
-      "amount": 10,
+      "amount": 18,
       "unit": "g"
     },
     "green-beans": {
-      "amount": 7.5,
+      "amount": 12,
+      "unit": "g"
+    },
+    "peas": {
+      "amount": 15,
+      "unit": "g"
+    },
+    "potato": {
+      "amount": 25,
       "unit": "g"
     },
     "capsicum": {
-      "amount": 7.5,
+      "amount": 10,
+      "unit": "g"
+    },
+    "cauliflower": {
+      "amount": 10,
       "unit": "g"
     },
     "ghee": {
-      "amount": 10,
+      "amount": 12,
       "unit": "ml"
     },
     "onion": {
-      "amount": 30,
+      "amount": 35,
       "unit": "g"
     },
     "tomato": {
-      "amount": 15,
+      "amount": 25,
       "unit": "g"
     },
     "ginger": {
@@ -46,7 +46,7 @@
       "unit": "g"
     },
     "garlic": {
-      "amount": 3.5,
+      "amount": 3,
       "unit": "g"
     },
     "green-chilli": {
@@ -54,24 +54,38 @@
       "unit": "pieces"
     },
     "coriander-leaves": {
-      "amount": 1,
+      "amount": 1.5,
       "unit": "g"
     },
     "cumin": {
-      "amount": 0.5,
+      "amount": 0.8,
       "unit": "g"
     },
     "bay-leaf": {
-      "amount": 0.5,
+      "amount": 0.3,
       "unit": "pieces"
     },
     "salt": {
-      "amount": 1.5,
+      "amount": 1.8,
       "unit": "g"
     }
   },
-  "source": "https://www.vegrecipesofindia.com/vegetable-pulao-recipe-veg-pulao/",
-  "note": "Mint and whole spices left out.",
+  "sources": [
+    "https://www.vegrecipesofindia.com/vegetable-pulao-recipe-veg-pulao/",
+    "https://www.indianhealthyrecipes.com/pulao-recipe-veg-pulao-recipe/",
+    "https://hebbarskitchen.com/veg-pulao-recipe-vegetable-pulao/"
+  ],
+  "steps": [
+    "Rinse the rice, soak it in water for 20 to 30 minutes, then drain.",
+    "Heat the ghee in a pressure cooker and let the bay leaf and cumin sizzle.",
+    "Add the sliced onion and fry until light golden.",
+    "Add the ginger, garlic, green chilli and tomato, and cook until the tomato is soft.",
+    "Stir in all the chopped vegetables and cook them for 2 to 3 minutes.",
+    "Add the rice, salt and water (about 1 and 3/4 cups for each cup of rice) and bring it to a boil.",
+    "Close the lid and cook for 1 whistle, or cover a pot and cook on low heat for about 15 minutes until the water is absorbed.",
+    "Let it rest for 10 minutes, fluff it gently with a fork and top with coriander leaves."
+  ],
+  "note": "Rice ran from 75 to 97 g a serving, and 90 g suits pulao eaten as the whole meal. Cauliflower comes from one source only and can be swapped for more of the other vegetables.",
   "photo": {
     "author": "Subhankar.c",
     "licence": "CC BY-SA 4.0",

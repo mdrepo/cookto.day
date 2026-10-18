@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import type { ComponentProps } from "react";
 import { Cluster } from "../src/index.js";
 import { render } from "./render.js";
 
@@ -18,7 +19,10 @@ describe("Cluster", () => {
   });
 
   test("a gap must be a spacing step", () => {
-    // @ts-expect-error: 7 isn't a spacing step (there is no --space-7)
-    expect(render(<Cluster gap={7}>x</Cluster>).body.textContent).toBe("x");
+    // 7 isn't a spacing step (there is no --space-7): if it were, this
+    // line wouldn't compile.
+    type Gap = NonNullable<ComponentProps<typeof Cluster>["gap"]>;
+    const gap: 7 extends Gap ? "a step" : "not a step" = "not a step";
+    expect(gap).toBe("not a step");
   });
 });

@@ -61,3 +61,7 @@ No cuisine logic in the engine: only ingredients, amounts, dates, conditions, sl
 ## Implementation notes
 
 This changes three lines of [0015](0015-kitchen-packs.md): packs are cuisines (not households), a household loads several, and the first pack is `north-indian`. Everything else in 0015 stands.
+
+## Notes (2026-10-18)
+
+Food lives once, shared by every pack (specs/148). Each food is one file in `packs/ingredients/`: its Wikidata id and label, its shelf life, and its names, each tagged with a language. A pack's dishes, staples and sample name the foods they use; a pack no longer copies a food or its name. The app still loads each pack as one file, with the foods it uses and their names in its languages, so nothing changes for a household. A second pack (Maharashtrian, Our kitchen; specs/147) shares onion, tomato and the rest instead of copying them.

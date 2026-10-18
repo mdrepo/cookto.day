@@ -1,0 +1,19 @@
+{
+  "wikidata": "Q2987371",
+  "label": "green bean",
+  "keeps": {
+    "days": 5,
+    "in": "fridge",
+    "foodkeeper": 273
+  },
+  "names": [
+    {
+      "text": "Green beans",
+      "lang": "en"
+    },
+    {
+      "text": "फ्रेंच बीन्स",
+      "lang": "hi"
+    }
+  ]
+}

@@ -18,5 +18,11 @@ export {
 export { createPantry, type KitchenItem, type NewItem } from "./pantry.js";
 export { createShopping, type ListItem } from "./shopping.js";
 export { memoryRecordStore, type RecordStore } from "./record-store.js";
+export {
+  createSaveProblems,
+  type SaveProblem,
+  type SaveProblems,
+  watchSaves,
+} from "./saves.js";
 export { type SyncRecord } from "./records.js";
 export { createSettings, THEMES, type Theme } from "./settings.js";

@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { isDeepStrictEqual } from "node:util";
-import { bundlePack } from "./packs-bundle-lib.js";
+import { bundlePack, stepsOf } from "./packs-bundle-lib.js";
 import { format } from "prettier";
 import type { Pack } from "./packs-lib.js";
 import { PACKS, readPacks } from "./packs-files.js";
@@ -10,6 +10,7 @@ import { PACKS, readPacks } from "./packs-files.js";
 // packs:bundle: writes each pack as the app loads it, and how many dishes
 // each has, into packages/data/src/packs/. A pack is one JSON string in a .ts
 // file, so it stays one line (and under the file size limit) after Prettier.
+// Its dishes' steps go in <id>.steps.ts, loaded when a dish opens (#149).
 // A pack with photos also gets <id>.photos.ts, which imports each photo so
 // Bun copies it into the site and gives its address (specs/118).
 // `--check` only says whether they're current: packs:check runs it.
@@ -21,7 +22,10 @@ const HEADER =
 function wanted(): Map<string, unknown> {
   const packs = readPacks();
   const files = new Map<string, unknown>(
-    packs.map((pack) => [`${pack.id}.ts`, bundlePack(pack)]),
+    packs.flatMap((pack) => [
+      [`${pack.id}.ts`, bundlePack(pack)],
+      [`${pack.id}.steps.ts`, stepsOf(pack)],
+    ]),
   );
   files.set(
     "catalog.ts",

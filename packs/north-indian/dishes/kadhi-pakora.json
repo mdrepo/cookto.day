@@ -2,27 +2,7 @@
   "slots": ["lunch", "dinner"],
   "ingredients": {
     "yogurt": {
-      "amount": 75,
-      "unit": "g"
-    },
-    "chilli-powder": {
-      "amount": 0.4,
-      "unit": "g"
-    },
-    "turmeric": {
-      "amount": 0.2,
-      "unit": "g"
-    },
-    "garam-masala": {
-      "amount": 0.4,
-      "unit": "g"
-    },
-    "asafoetida": {
-      "amount": 0.1,
-      "unit": "g"
-    },
-    "salt": {
-      "amount": 2.5,
+      "amount": 80,
       "unit": "g"
     },
     "besan": {
@@ -38,7 +18,7 @@
       "unit": "g"
     },
     "garlic": {
-      "amount": 1.5,
+      "amount": 2,
       "unit": "g"
     },
     "green-chilli": {
@@ -49,14 +29,47 @@
       "amount": 0.4,
       "unit": "g"
     },
+    "asafoetida": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 2.2,
+      "unit": "g"
+    },
     "oil": {
-      "amount": 6,
+      "amount": 15,
       "unit": "ml"
     }
   },
   "servedWith": ["rice"],
-  "source": "https://www.vegrecipesofindia.com/punjabi-kadhi-recipe-punjabi-kadhi-pakora/",
-  "note": "Oil for frying the pakoras has no amount in the recipe, so it isn't counted.",
+  "sources": [
+    "https://www.vegrecipesofindia.com/punjabi-kadhi-recipe-punjabi-kadhi-pakora/",
+    "https://www.cookwithmanali.com/punjabi-kadhi-pakora/"
+  ],
+  "steps": [
+    "Whisk the curd with a third of the besan, the turmeric, half the chilli powder and some salt.",
+    "Whisk in plenty of water, about three cups for four people, until thin and free of lumps.",
+    "Mix the rest of the besan with most of the onion, the rest of the chilli powder, the garam masala and a little water into a thick batter.",
+    "Drop spoonfuls of batter into hot oil and fry on medium heat until crisp and golden, then drain.",
+    "In a deep pot, heat a spoon of oil and add the cumin and hing.",
+    "Add the remaining chopped onion with the ginger, garlic and green chilli and cook for 2 minutes.",
+    "Pour in the curd mix and keep stirring until it boils, then simmer on low for 20 to 25 minutes until it thickens.",
+    "Add the pakoras, cover and let them soak for 10 minutes before serving with rice."
+  ],
+  "note": "The oil includes about 10 ml a person that the pakoras soak up while frying; you need a deeper pan of oil to fry them in.",
   "photo": {
     "author": "Ams4wiki",
     "licence": "CC BY-SA 4.0",

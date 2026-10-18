@@ -2,7 +2,15 @@
   "slots": ["lunch", "dinner"],
   "ingredients": {
     "rajma": {
+      "amount": 50,
+      "unit": "g"
+    },
+    "onion": {
       "amount": 40,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 75,
       "unit": "g"
     },
     "garlic": {
@@ -14,68 +22,66 @@
       "unit": "g"
     },
     "green-chilli": {
-      "amount": 0.5,
+      "amount": 0.25,
       "unit": "pieces"
     },
-    "butter": {
-      "amount": 6,
-      "unit": "g"
-    },
     "oil": {
+      "amount": 7,
+      "unit": "ml"
+    },
+    "ghee": {
       "amount": 3,
       "unit": "ml"
     },
     "cumin": {
-      "amount": 0.2,
-      "unit": "g"
-    },
-    "onion": {
-      "amount": 30,
-      "unit": "g"
-    },
-    "tomato": {
-      "amount": 50,
-      "unit": "g"
-    },
-    "coriander-powder": {
       "amount": 0.4,
       "unit": "g"
     },
+    "coriander-powder": {
+      "amount": 0.8,
+      "unit": "g"
+    },
     "chilli-powder": {
-      "amount": 0.2,
+      "amount": 0.5,
       "unit": "g"
     },
     "turmeric": {
-      "amount": 0.1,
-      "unit": "g"
-    },
-    "asafoetida": {
-      "amount": 0.1,
-      "unit": "g"
-    },
-    "garam-masala": {
       "amount": 0.2,
       "unit": "g"
     },
-    "salt": {
-      "amount": 1.5,
+    "garam-masala": {
+      "amount": 0.5,
       "unit": "g"
     },
     "kasuri-methi": {
-      "amount": 0.1,
+      "amount": 0.3,
       "unit": "g"
     },
-    "cream": {
-      "amount": 7.5,
-      "unit": "ml"
+    "salt": {
+      "amount": 1.8,
+      "unit": "g"
     },
     "coriander-leaves": {
-      "amount": 0.3,
+      "amount": 0.5,
       "unit": "g"
     }
   },
   "servedWith": ["rice"],
-  "source": "https://www.vegrecipesofindia.com/rajma-masala-recipe-restaurant-style/",
+  "sources": [
+    "https://www.vegrecipesofindia.com/rajma-masala-recipe-restaurant-style/",
+    "https://www.indianhealthyrecipes.com/rajma-recipe/",
+    "https://www.cookwithmanali.com/rajma-masala/"
+  ],
+  "steps": [
+    "Drain and rinse the soaked rajma, then pressure cook it in fresh water with a little salt for 15 to 20 minutes, until a bean mashes easily.",
+    "Heat the oil in a pan and let the cumin seeds sizzle.",
+    "Add the onion and fry until golden brown.",
+    "Stir in the ginger, garlic and green chilli for a minute.",
+    "Add the tomatoes and the spice powders, and cook until the masala thickens and the oil separates.",
+    "Tip in the cooked rajma with its cooking water and the rest of the salt, and simmer for 15 to 20 minutes, mashing a few beans to thicken it.",
+    "Stir in the crushed kasuri methi, the ghee and the coriander leaves, then serve with rice."
+  ],
+  "note": "Sources used 40 to 60 g of dry rajma a serving, and 50 g is the middle. Cream is optional in every source and is left out; one source cooks in butter, so oil with a spoon of ghee is used instead.",
   "photo": {
     "author": "Gaurav Nemade",
     "licence": "CC BY-SA 2.0",

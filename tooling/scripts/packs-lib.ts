@@ -1,3 +1,5 @@
+import { dishProblems, photoProblems, UNITS } from "./packs-dishes.js";
+
 // Pure parts of packs:check (scripts/check-packs.ts), with unit tests. A pack
 // is a cuisine's food data (ADR 0015, 0027). Agents draft packs and people
 // check them; this check makes guessing fail: every dish has a source, every
@@ -5,14 +7,6 @@
 // USDA FoodKeeper entry it comes from. Both are stored in packs/sources/ so
 // the check runs offline; `bun run packs:refresh` updates them.
 
-const SLOTS = [
-  "breakfast",
-  "morning-snack",
-  "lunch",
-  "evening-snack",
-  "dinner",
-];
-const UNITS = ["g", "ml", "pieces"];
 export const STAPLE_GROUPS = ["grains-and-dals", "spices", "basics"] as const;
 
 export interface Keeps {
@@ -33,7 +27,15 @@ export interface Dish {
   slots: string[];
   ingredients: Record<string, { amount: number; unit: string }>;
   servedWith?: string[];
-  source: string;
+  /**
+   * The two or three full recipes it was checked against, the first linked
+   * from its page; or "cooked at home by <reviewer>" (specs/149).
+   */
+  sources: string[];
+  /** Six to eight short steps, in our own words (specs/149). */
+  steps: string[];
+  /** For whoever reviews the pack: what was decided, and why. */
+  note?: string;
   /** A free photo of the dish, credited (specs/118). */
   photo?: { author: string; licence: string; source: string };
 }
@@ -72,8 +74,6 @@ export interface Sources {
   /** The approved specs on main, by number; unchecked when absent. */
   specs?: number[];
 }
-
-const SOURCE = /^(https:\/\/\S+|cooked at home by \S.*)$/;
 
 function ingredientProblems(
   pack: Pack,
@@ -131,82 +131,6 @@ function keepsProblems(
   return [
     `${at}: keeps ${keeps.days} days in the ${where}, but FoodKeeper ${keeps.foodkeeper} (${entry.name}) ${says}`,
   ];
-}
-
-function dishProblems(pack: Pack): string[] {
-  return Object.entries(pack.dishes).flatMap(([slug, dish]) => {
-    const at = `${pack.id}/dishes/${slug}.json`;
-    const problems: string[] = [];
-    if (typeof dish.source !== "string" || !SOURCE.test(dish.source))
-      problems.push(
-        `${at}: no source. Add "source": a published recipe's https link, or "cooked at home by <reviewer>".`,
-      );
-    if (dish.slots.length === 0 || dish.slots.some((s) => !SLOTS.includes(s)))
-      problems.push(`${at}: slots must be some of ${SLOTS.join(", ")}.`);
-    for (const [ing, use] of Object.entries(dish.ingredients)) {
-      if (!(ing in pack.ingredients))
-        problems.push(
-          `${at}: uses ${ing}, which has no ingredients/${ing}.json.`,
-        );
-      else if (!(use.amount > 0) || !UNITS.includes(use.unit))
-        problems.push(
-          `${at}: ${ing} needs an amount per serving above 0, in g, ml or pieces.`,
-        );
-    }
-    for (const part of dish.servedWith ?? [])
-      if (!pack.parts.includes(part))
-        problems.push(
-          `${at}: served with ${part}, which pack.json's parts don't list.`,
-        );
-    return problems;
-  });
-}
-
-/** Photo licences we can use (specs/118): free, with credit at most. */
-const LICENCE = /^(Public domain|CC0( 1\.0)?|CC BY(-SA)? \d\.\d)$/;
-const COMMONS = /^https:\/\/commons\.wikimedia\.org\/wiki\/File:/;
-const MAX = { large: 40_000, small: 8_000 } as const;
-
-/** Every photo credited and small; every credit with its files (specs/118). */
-function photoProblems(pack: Pack): string[] {
-  const files = pack.photos ?? {};
-  const problems: string[] = [];
-  for (const [slug, dish] of Object.entries(pack.dishes)) {
-    const photo = dish.photo;
-    if (!photo) continue;
-    const at = `${pack.id}/dishes/${slug}.json`;
-    if (!photo.author.trim())
-      problems.push(
-        `${at}: its photo has no author. Copy "Author" from its Commons page.`,
-      );
-    if (!LICENCE.test(photo.licence))
-      problems.push(
-        `${at}: its photo's licence, ${photo.licence}, isn't one we can use. Pick a photo in the public domain, or under CC0, CC BY or CC BY-SA.`,
-      );
-    if (!COMMONS.test(photo.source))
-      problems.push(
-        `${at}: its photo's "source" must be its page on commons.wikimedia.org.`,
-      );
-    if (!(slug in files))
-      problems.push(
-        `${at}: its photo has no files. Add photos/${slug}.webp and photos/${slug}.small.webp.`,
-      );
-  }
-  for (const [slug, sizes] of Object.entries(files)) {
-    const at = `${pack.id}/photos/${slug}`;
-    if (!pack.dishes[slug]?.photo) {
-      problems.push(
-        `${at}.webp: no dish credits it. Add "photo" to its dish, or remove the files.`,
-      );
-      continue;
-    }
-    for (const size of ["large", "small"] as const)
-      if (sizes[size] > MAX[size])
-        problems.push(
-          `${at}${size === "small" ? ".small" : ""}.webp: ${String(Math.round(sizes[size] / 1000))} KB, over ${String(MAX[size] / 1000)} KB. Make it smaller.`,
-        );
-  }
-  return problems;
 }
 
 function sampleProblems(pack: Pack): string[] {

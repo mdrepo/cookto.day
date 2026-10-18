@@ -2,40 +2,65 @@
   "slots": ["breakfast"],
   "ingredients": {
     "atta": {
-      "amount": 25,
+      "amount": 65,
       "unit": "g"
     },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 3,
+      "unit": "ml"
+    },
     "potato": {
-      "amount": 55,
+      "amount": 105,
       "unit": "g"
     },
     "green-chilli": {
       "amount": 0.5,
       "unit": "pieces"
     },
+    "ginger": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.3,
+      "unit": "g"
+    },
     "chilli-powder": {
-      "amount": 0.1,
+      "amount": 0.3,
       "unit": "g"
     },
     "garam-masala": {
-      "amount": 0.1,
+      "amount": 0.2,
       "unit": "g"
     },
     "coriander-leaves": {
-      "amount": 0.1,
+      "amount": 1,
       "unit": "g"
     },
-    "salt": {
-      "amount": 2,
-      "unit": "g"
-    },
-    "oil": {
-      "amount": 1.5,
+    "ghee": {
+      "amount": 8,
       "unit": "ml"
     }
   },
-  "source": "https://www.vegrecipesofindia.com/aloo-paratha-indian-bread-stuffed-with-potato-filling/",
-  "note": "A serving is one paratha. Oil or ghee for roasting has no amount in the recipe, so it isn't counted.",
+  "sources": [
+    "https://www.cookwithmanali.com/aloo-paratha/",
+    "https://hebbarskitchen.com/wprm_print/aloo-paratha-recipe-aalu-ka-paratha-aloo-ka-paratha-potato-paratha"
+  ],
+  "steps": [
+    "Boil the potatoes until fully soft, then peel them and let them cool.",
+    "Mix the atta with half the salt and the oil, then add water bit by bit and knead a soft dough.",
+    "Cover the dough and let it rest for 15 to 20 minutes.",
+    "Mash the potatoes smooth and mix in the green chilli, ginger, cumin, chilli powder, garam masala, coriander leaves and the rest of the salt.",
+    "Roll a ball of dough into a small round, put a ball of filling in the middle and pinch the edges shut over it.",
+    "Dust with flour and gently roll it out into a thick round about the size of a side plate.",
+    "Cook on a hot griddle until spots appear underneath, then flip.",
+    "Spread ghee on both sides and press with a spatula until golden and crisp, then serve hot with curd or pickle."
+  ],
+  "note": "A serving is now two parathas, a normal adult breakfast; the old amounts were for one. Ghee for roasting is now counted at about a teaspoon and a half per paratha.",
   "photo": {
     "author": "AjayDas",
     "licence": "CC BY-SA 4.0",

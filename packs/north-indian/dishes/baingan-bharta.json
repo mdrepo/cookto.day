@@ -5,41 +5,71 @@
       "amount": 200,
       "unit": "g"
     },
-    "onion": {
-      "amount": 55,
-      "unit": "g"
+    "oil": {
+      "amount": 10,
+      "unit": "ml"
     },
-    "tomato": {
-      "amount": 100,
+    "cumin": {
+      "amount": 0.5,
       "unit": "g"
     },
     "garlic": {
-      "amount": 8.5,
+      "amount": 5,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 2,
       "unit": "g"
     },
     "green-chilli": {
       "amount": 0.5,
       "unit": "pieces"
     },
-    "chilli-powder": {
-      "amount": 0.3,
+    "onion": {
+      "amount": 50,
       "unit": "g"
     },
-    "oil": {
-      "amount": 15,
-      "unit": "ml"
+    "chilli-powder": {
+      "amount": 0.4,
+      "unit": "g"
     },
-    "coriander-leaves": {
-      "amount": 0.5,
+    "coriander-powder": {
+      "amount": 0.7,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 70,
       "unit": "g"
     },
     "salt": {
       "amount": 1.5,
       "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.2,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 1.5,
+      "unit": "g"
     }
   },
   "servedWith": ["roti"],
-  "source": "https://www.vegrecipesofindia.com/baingan-bharta-recipe/",
+  "sources": [
+    "https://hebbarskitchen.com/wprm_print/baingan-bharta-recipe-baingan-ka-bharta-smoky-eggplant-stir-fry-mash",
+    "https://www.cookwithmanali.com/baingan-bharta/"
+  ],
+  "steps": [
+    "Cut a few slits in the brinjal, push a clove of garlic into them and rub it with a little oil.",
+    "Roast it straight over a gas flame, turning often, until the skin is black and the inside is soft.",
+    "Let it cool a little, peel off the skin and mash the flesh with the roasted garlic.",
+    "Heat the oil in a pan and fry the cumin, then the chopped ginger, garlic and green chilli.",
+    "Add the onion and cook until soft, then stir in the chilli powder and coriander powder.",
+    "Add the tomato and cook until it turns mushy.",
+    "Mix in the mashed brinjal and salt and cook on low for 5 to 10 minutes, stirring often.",
+    "Finish with garam masala and coriander leaves and serve with roti."
+  ],
+  "note": "The sources disagree a lot on eggplant: one uses 100 g a person, the other about 275 g. 200 g of raw eggplant was kept as a fair middle, since it shrinks a lot once roasted and peeled; garlic comes down from 8.5 g to 5 g.",
   "photo": {
     "author": "Dheerajk88",
     "licence": "CC BY-SA 4.0",

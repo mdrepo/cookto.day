@@ -1,8 +1,8 @@
 {
   "slots": ["lunch", "dinner"],
   "ingredients": {
-    "coriander-powder": {
-      "amount": 2.5,
+    "paneer": {
+      "amount": 65,
       "unit": "g"
     },
     "oil": {
@@ -10,15 +10,15 @@
       "unit": "ml"
     },
     "onion": {
-      "amount": 25,
+      "amount": 30,
       "unit": "g"
     },
     "ginger": {
-      "amount": 2.5,
+      "amount": 3,
       "unit": "g"
     },
     "garlic": {
-      "amount": 0.5,
+      "amount": 1.5,
       "unit": "g"
     },
     "tomato": {
@@ -26,23 +26,27 @@
       "unit": "g"
     },
     "capsicum": {
-      "amount": 30,
+      "amount": 40,
       "unit": "g"
     },
     "green-chilli": {
-      "amount": 0.5,
+      "amount": 0.3,
       "unit": "pieces"
+    },
+    "coriander-powder": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.4,
+      "unit": "g"
     },
     "garam-masala": {
       "amount": 0.3,
       "unit": "g"
     },
-    "paneer": {
-      "amount": 65,
-      "unit": "g"
-    },
     "kasuri-methi": {
-      "amount": 0.1,
+      "amount": 0.15,
       "unit": "g"
     },
     "coriander-leaves": {
@@ -50,13 +54,26 @@
       "unit": "g"
     },
     "salt": {
-      "amount": 1.5,
+      "amount": 1.2,
       "unit": "g"
     }
   },
   "servedWith": ["roti"],
-  "source": "https://www.vegrecipesofindia.com/kadai-paneer-recipe/",
-  "note": "Whole dried Kashmiri chillies left out, so no chilli powder.",
+  "sources": [
+    "https://www.vegrecipesofindia.com/kadai-paneer-recipe/",
+    "https://www.cookwithmanali.com/kadai-paneer/",
+    "https://www.indianhealthyrecipes.com/kadai-egg-masala-egg-capsicum-curry/"
+  ],
+  "steps": [
+    "Heat the oil in a kadai and fry the chopped onion until soft and see-through.",
+    "Add the garlic and most of the ginger, keeping a few ginger strips aside, and cook for a minute.",
+    "Add the chopped tomato and cook until it turns into a thick, glossy paste, about 8 minutes.",
+    "Stir in the coriander powder, chilli powder and salt and cook for a minute.",
+    "Add the capsicum, green chilli and a splash of water and cook for 3 minutes so the capsicum keeps some crunch.",
+    "Add the paneer cubes and garam masala and stir gently for 2 minutes.",
+    "Crush the kasuri methi over the top, add the ginger strips and coriander leaves, and serve."
+  ],
+  "note": "All three recipes grind whole coriander seeds and dried red chillies into a kadai masala; here coriander powder and chilli powder stand in for it.",
   "photo": {
     "author": "Koynadalmia",
     "licence": "CC BY-SA 4.0",

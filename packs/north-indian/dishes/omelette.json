@@ -6,19 +6,15 @@
       "unit": "pieces"
     },
     "onion": {
-      "amount": 7.5,
-      "unit": "g"
-    },
-    "capsicum": {
-      "amount": 7.5,
+      "amount": 20,
       "unit": "g"
     },
     "tomato": {
-      "amount": 7.5,
+      "amount": 10,
       "unit": "g"
     },
-    "salt": {
-      "amount": 0.8,
+    "capsicum": {
+      "amount": 8,
       "unit": "g"
     },
     "green-chilli": {
@@ -26,11 +22,19 @@
       "unit": "pieces"
     },
     "turmeric": {
-      "amount": 0.2,
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1,
       "unit": "g"
     },
     "oil": {
-      "amount": 15,
+      "amount": 10,
       "unit": "ml"
     },
     "coriander-leaves": {
@@ -38,7 +42,22 @@
       "unit": "g"
     }
   },
-  "source": "https://www.indianhealthyrecipes.com/omelette/",
+  "sources": [
+    "https://www.indianhealthyrecipes.com/omelette/",
+    "https://www.whiskaffair.com/indian-masala-omelette/",
+    "https://www.tarladalal.com/masala-omelette-40756r"
+  ],
+  "steps": [
+    "Chop the onion, tomato, capsicum, green chilli and coriander very fine.",
+    "Crack the eggs into a bowl and pick out any bits of shell.",
+    "Add the salt, turmeric and chilli powder, and beat with a fork until frothy.",
+    "Stir the chopped vegetables into the eggs.",
+    "Heat the oil in a frying pan on medium heat. Keep it moderate so the outside does not brown before the middle sets.",
+    "Pour in the eggs and tilt the pan so they spread into an even round.",
+    "Cook for about 2 minutes, until the bottom is set and lightly golden.",
+    "Flip it, cook the other side for a minute, then fold it over and serve hot."
+  ],
+  "note": "Sources used 5 to 15 ml of fat for two eggs, so 10 ml of oil sits in the middle. Onion is raised to 20 g because two of the three sources use more than a spoonful.",
   "photo": {
     "author": "SwingingUvula",
     "licence": "CC BY-SA 4.0",

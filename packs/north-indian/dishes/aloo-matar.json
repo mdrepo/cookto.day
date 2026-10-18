@@ -1,69 +1,91 @@
 {
   "slots": ["lunch", "dinner"],
   "ingredients": {
-    "onion": {
-      "amount": 25,
-      "unit": "g"
-    },
-    "tomato": {
-      "amount": 50,
-      "unit": "g"
-    },
-    "ginger": {
-      "amount": 2.5,
-      "unit": "g"
-    },
-    "garlic": {
-      "amount": 3.5,
-      "unit": "g"
-    },
     "oil": {
-      "amount": 10,
+      "amount": 8,
       "unit": "ml"
     },
     "cumin": {
-      "amount": 0.3,
-      "unit": "g"
-    },
-    "cream": {
-      "amount": 7.5,
-      "unit": "ml"
-    },
-    "potato": {
-      "amount": 85,
-      "unit": "g"
-    },
-    "peas": {
-      "amount": 50,
+      "amount": 0.5,
       "unit": "g"
     },
     "asafoetida": {
-      "amount": 0.1,
+      "amount": 0.05,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 40,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.25,
+      "unit": "pieces"
+    },
+    "ginger": {
+      "amount": 1.5,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 1.5,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 70,
+      "unit": "g"
+    },
+    "coriander-powder": {
+      "amount": 0.8,
       "unit": "g"
     },
     "chilli-powder": {
-      "amount": 0.3,
+      "amount": 0.5,
       "unit": "g"
     },
     "turmeric": {
-      "amount": 0.2,
+      "amount": 0.3,
       "unit": "g"
     },
     "garam-masala": {
       "amount": 0.3,
       "unit": "g"
     },
-    "coriander-leaves": {
-      "amount": 0.7,
+    "salt": {
+      "amount": 1.2,
       "unit": "g"
     },
-    "salt": {
+    "potato": {
+      "amount": 85,
+      "unit": "g"
+    },
+    "peas": {
+      "amount": 35,
+      "unit": "g"
+    },
+    "kasuri-methi": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "coriander-leaves": {
       "amount": 1.5,
       "unit": "g"
     }
   },
   "servedWith": ["roti", "rice"],
-  "source": "https://www.vegrecipesofindia.com/aloo-matar-curry-aloo-matar-gravy/",
+  "sources": [
+    "https://www.indianhealthyrecipes.com/aloo-matar/",
+    "https://www.cookwithmanali.com/aloo-matar/"
+  ],
+  "steps": [
+    "Heat the oil in a pot and let the cumin seeds sizzle, then add a pinch of asafoetida.",
+    "Fry the onion and green chilli until light golden.",
+    "Stir in the ginger and garlic until they stop smelling raw.",
+    "Add the chopped or blended tomato and cook until it turns soft and pulpy.",
+    "Mix in the coriander powder, chilli powder, turmeric, garam masala and salt, and fry until oil shows at the edges.",
+    "Add the potato and peas and stir for 2 minutes.",
+    "Pour in about a cup of hot water for two people, cover, and simmer until the potato is soft.",
+    "Crush in the kasuri methi, top with coriander leaves and serve with roti or rice."
+  ],
+  "note": "Both sources make a homely gravy without cream, so the cream is gone. Amounts are the middle of the two; peas come down a little to about a quarter cup a person.",
   "photo": {
     "author": "Quadell",
     "licence": "CC BY-SA 3.0",

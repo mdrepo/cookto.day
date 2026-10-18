@@ -2,19 +2,15 @@
   "slots": ["lunch", "dinner"],
   "ingredients": {
     "urad-dal": {
-      "amount": 35,
+      "amount": 40,
       "unit": "g"
     },
     "rajma": {
-      "amount": 10,
+      "amount": 12,
       "unit": "g"
     },
-    "butter": {
-      "amount": 10,
-      "unit": "g"
-    },
-    "cumin": {
-      "amount": 0.3,
+    "ghee": {
+      "amount": 4,
       "unit": "g"
     },
     "bay-leaf": {
@@ -22,52 +18,62 @@
       "unit": "pieces"
     },
     "onion": {
-      "amount": 15,
+      "amount": 18,
       "unit": "g"
     },
-    "green-chilli": {
-      "amount": 0.5,
-      "unit": "pieces"
-    },
     "ginger": {
-      "amount": 2.5,
+      "amount": 1.5,
       "unit": "g"
     },
     "garlic": {
-      "amount": 0.5,
+      "amount": 1.5,
       "unit": "g"
     },
     "tomato": {
-      "amount": 50,
+      "amount": 45,
       "unit": "g"
     },
     "chilli-powder": {
-      "amount": 0.3,
+      "amount": 0.4,
       "unit": "g"
     },
-    "cream": {
-      "amount": 20,
-      "unit": "ml"
-    },
-    "kasuri-methi": {
-      "amount": 0.1,
+    "garam-masala": {
+      "amount": 0.3,
       "unit": "g"
     },
     "salt": {
       "amount": 1.5,
       "unit": "g"
     },
-    "oil": {
-      "amount": 0.7,
+    "kasuri-methi": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "cream": {
+      "amount": 15,
       "unit": "ml"
     },
-    "coriander-leaves": {
-      "amount": 0.4,
+    "butter": {
+      "amount": 9,
       "unit": "g"
     }
   },
   "servedWith": ["roti", "rice"],
-  "source": "https://www.vegrecipesofindia.com/dal-makhani-restaurant-style-recipe/",
+  "sources": [
+    "https://www.indianhealthyrecipes.com/dal-makhani/",
+    "https://www.cookwithmanali.com/dal-makhani/"
+  ],
+  "steps": [
+    "Drain the soaked urad dal and rajma and pressure cook them in fresh water until very soft.",
+    "Mash some of the dal lightly with a spoon.",
+    "Heat the ghee with the bay leaf and fry the onion until golden.",
+    "Add the ginger and garlic and cook for a minute.",
+    "Add the tomato, chilli powder, garam masala and salt and cook until the fat shows at the edges.",
+    "Add the dal with its water and simmer on low for 45 to 90 minutes, stirring often and adding hot water as it thickens.",
+    "Stir in the crushed kasuri methi and the cream.",
+    "Turn off the heat and mix in the butter."
+  ],
+  "note": "Both sources agree closely, at about 52 g of dry dal and beans a person. Cumin, green chilli, oil and coriander leaves are gone because neither source uses them.",
   "photo": {
     "author": "Radhikamprabhu82",
     "licence": "CC BY-SA 4.0",

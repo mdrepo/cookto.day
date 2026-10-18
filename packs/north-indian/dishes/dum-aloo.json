@@ -2,15 +2,15 @@
   "slots": ["lunch", "dinner"],
   "ingredients": {
     "potato": {
-      "amount": 65,
+      "amount": 125,
       "unit": "g"
     },
     "onion": {
-      "amount": 25,
+      "amount": 55,
       "unit": "g"
     },
     "ginger": {
-      "amount": 2,
+      "amount": 3,
       "unit": "g"
     },
     "garlic": {
@@ -18,35 +18,47 @@
       "unit": "g"
     },
     "yogurt": {
-      "amount": 15,
+      "amount": 40,
       "unit": "g"
     },
     "ghee": {
-      "amount": 7.5,
+      "amount": 10,
       "unit": "ml"
     },
     "bay-leaf": {
-      "amount": 0.5,
+      "amount": 0.25,
+      "unit": "pieces"
+    },
+    "green-chilli": {
+      "amount": 0.25,
       "unit": "pieces"
     },
     "turmeric": {
-      "amount": 0.1,
+      "amount": 0.2,
       "unit": "g"
     },
     "chilli-powder": {
-      "amount": 0.3,
+      "amount": 0.6,
       "unit": "g"
     },
     "coriander-powder": {
-      "amount": 0.3,
+      "amount": 0.5,
       "unit": "g"
     },
     "garam-masala": {
       "amount": 0.3,
       "unit": "g"
     },
+    "sugar": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "kasuri-methi": {
+      "amount": 0.2,
+      "unit": "g"
+    },
     "coriander-leaves": {
-      "amount": 0.4,
+      "amount": 0.5,
       "unit": "g"
     },
     "salt": {
@@ -55,8 +67,22 @@
     }
   },
   "servedWith": ["roti"],
-  "source": "https://www.vegrecipesofindia.com/dum-aloo-recipe/",
-  "note": "Baby potatoes.",
+  "sources": [
+    "https://www.vegrecipesofindia.com/dum-aloo-recipe/",
+    "https://www.indianhealthyrecipes.com/dum-aloo-recipe/",
+    "https://www.cookwithmanali.com/punjabi-dum-aloo/"
+  ],
+  "steps": [
+    "Boil the baby potatoes for about 12 minutes until almost soft, then drain.",
+    "Peel them once cool enough to hold and prick each one all over with a fork.",
+    "Blend the onion, ginger and garlic to a smooth paste, then blend in the yogurt for a few seconds.",
+    "Heat the ghee, add the bay leaf, then add the paste and cook on low, stirring, until it thickens and the ghee shows, about 10 minutes.",
+    "Stir in the turmeric, chilli powder, coriander powder, garam masala, sugar, salt and green chilli.",
+    "Add the potatoes with a little water to make a thick gravy.",
+    "Cover tightly and cook on the lowest heat for 10 minutes.",
+    "Crush in the kasuri methi, add the coriander leaves and let it rest 5 minutes before serving."
+  ],
+  "note": "One source used about 60 g of potatoes a person and two used 125 g; this goes with 125 g, a fair share when dum aloo is the main dish. Tomato was left out because two of the three recipes use none.",
   "photo": {
     "author": "Maskaravivek",
     "licence": "CC BY 4.0",

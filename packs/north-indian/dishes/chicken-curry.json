@@ -2,15 +2,19 @@
   "slots": ["lunch", "dinner"],
   "ingredients": {
     "chicken": {
-      "amount": 165,
+      "amount": 200,
       "unit": "g"
     },
     "oil": {
-      "amount": 15,
+      "amount": 12,
       "unit": "ml"
     },
+    "bay-leaf": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
     "onion": {
-      "amount": 40,
+      "amount": 55,
       "unit": "g"
     },
     "green-chilli": {
@@ -18,7 +22,7 @@
       "unit": "pieces"
     },
     "ginger": {
-      "amount": 2,
+      "amount": 2.5,
       "unit": "g"
     },
     "garlic": {
@@ -26,7 +30,7 @@
       "unit": "g"
     },
     "tomato": {
-      "amount": 65,
+      "amount": 55,
       "unit": "g"
     },
     "yogurt": {
@@ -37,34 +41,48 @@
       "amount": 1.5,
       "unit": "g"
     },
-    "coriander-leaves": {
-      "amount": 0.7,
-      "unit": "g"
-    },
     "turmeric": {
-      "amount": 0.2,
+      "amount": 0.4,
       "unit": "g"
     },
     "chilli-powder": {
       "amount": 0.7,
       "unit": "g"
     },
+    "coriander-powder": {
+      "amount": 0.6,
+      "unit": "g"
+    },
     "garam-masala": {
       "amount": 0.7,
       "unit": "g"
     },
-    "coriander-powder": {
-      "amount": 0.7,
+    "kasuri-methi": {
+      "amount": 0.3,
       "unit": "g"
     },
-    "bay-leaf": {
-      "amount": 0.5,
-      "unit": "pieces"
+    "coriander-leaves": {
+      "amount": 1,
+      "unit": "g"
     }
   },
   "servedWith": ["roti", "rice"],
-  "source": "https://www.indianhealthyrecipes.com/chicken-curry/",
-  "note": "Read through a page summary, not the page itself. Onion: the recipe says '1 cup (3 medium)'; 1 cup was used, and 3 medium would be about 110 g a serving.",
+  "sources": [
+    "https://www.indianhealthyrecipes.com/chicken-curry/",
+    "https://www.funfoodfrolic.com/wprm_print/indian-chicken-curry-recipe",
+    "https://www.playfulcooking.com/wprm_print/boneless-chicken-curry"
+  ],
+  "steps": [
+    "Heat the oil and drop in the bay leaf for a few seconds.",
+    "Fry the onion and green chilli until deep golden.",
+    "Add the ginger and garlic and stir until the raw smell goes.",
+    "Add the tomato, turmeric and salt and cook until mushy.",
+    "Lower the heat and stir in the yogurt, chilli powder, coriander powder and garam masala until it smells good.",
+    "Add the chicken and fry until it turns pale on all sides.",
+    "Pour in hot water, cover and simmer on low until the chicken is tender.",
+    "Stir in the crushed kasuri methi and top with coriander leaves."
+  ],
+  "note": "Chicken is bone-in weight: the sources give 167 to 250 g a person, and 200 g is a normal adult share. One source writes onion as both 1 cup and 3 medium; about 55 g a person matches the other two.",
   "photo": {
     "author": "Deepti135",
     "licence": "CC BY-SA 4.0",

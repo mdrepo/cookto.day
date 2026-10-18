@@ -2,47 +2,63 @@
   "slots": ["lunch", "dinner"],
   "ingredients": {
     "egg": {
-      "amount": 1,
+      "amount": 2,
       "unit": "pieces"
     },
     "oil": {
       "amount": 10,
       "unit": "ml"
     },
+    "cumin": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "bay-leaf": {
+      "amount": 0.3,
+      "unit": "pieces"
+    },
     "onion": {
-      "amount": 50,
+      "amount": 75,
       "unit": "g"
     },
     "ginger": {
-      "amount": 4,
+      "amount": 3,
       "unit": "g"
     },
     "garlic": {
       "amount": 4,
       "unit": "g"
     },
-    "tomato": {
-      "amount": 30,
-      "unit": "g"
-    },
     "green-chilli": {
       "amount": 0.5,
       "unit": "pieces"
     },
-    "chilli-powder": {
-      "amount": 0.4,
-      "unit": "g"
-    },
-    "garam-masala": {
-      "amount": 0.6,
+    "tomato": {
+      "amount": 80,
       "unit": "g"
     },
     "turmeric": {
-      "amount": 0.1,
+      "amount": 0.2,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.6,
+      "unit": "g"
+    },
+    "coriander-powder": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "yogurt": {
+      "amount": 15,
       "unit": "g"
     },
     "salt": {
-      "amount": 1,
+      "amount": 1.5,
       "unit": "g"
     },
     "kasuri-methi": {
@@ -52,23 +68,25 @@
     "coriander-leaves": {
       "amount": 0.7,
       "unit": "g"
-    },
-    "yogurt": {
-      "amount": 15,
-      "unit": "g"
-    },
-    "bay-leaf": {
-      "amount": 0.5,
-      "unit": "pieces"
-    },
-    "cumin": {
-      "amount": 0.3,
-      "unit": "g"
     }
   },
   "servedWith": ["roti", "rice"],
-  "source": "https://www.indianhealthyrecipes.com/egg-masala-curry-for-biryanichapathipulao/",
-  "note": "Read through a page summary, not the page itself. One egg a serving looks low: check.",
+  "sources": [
+    "https://www.indianhealthyrecipes.com/egg-masala-curry-for-biryanichapathipulao/",
+    "https://www.cookwithmanali.com/egg-curry/",
+    "https://myfoodstory.com/dhaba-style-egg-curry/"
+  ],
+  "steps": [
+    "Boil the eggs for 10 minutes, then cool, peel and prick them with a fork.",
+    "Heat the oil, add the cumin and bay leaf, and let them sizzle.",
+    "Fry the chopped onion until golden brown, about 8 minutes.",
+    "Stir in the ginger, garlic and green chilli and cook for a minute.",
+    "Add the chopped tomato with the spice powders and salt and cook until soft.",
+    "Turn the heat down, stir in the whisked yogurt and cook until oil shows at the edges.",
+    "Add the eggs and enough water to half cover them, then simmer covered for 8 minutes.",
+    "Finish with crushed kasuri methi and coriander leaves."
+  ],
+  "note": "Two eggs a person, with the gravy scaled to match. The three sources used between 1 and 1.7 eggs a person, so the onion and tomato follow the two richer recipes.",
   "photo": {
     "author": "Yakshitha",
     "licence": "CC BY-SA 4.0",

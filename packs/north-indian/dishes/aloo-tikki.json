@@ -2,15 +2,23 @@
   "slots": ["evening-snack"],
   "ingredients": {
     "potato": {
-      "amount": 95,
+      "amount": 145,
+      "unit": "g"
+    },
+    "poha": {
+      "amount": 12,
       "unit": "g"
     },
     "ginger": {
-      "amount": 2,
+      "amount": 1.5,
       "unit": "g"
     },
+    "green-chilli": {
+      "amount": 0.25,
+      "unit": "pieces"
+    },
     "garam-masala": {
-      "amount": 0.3,
+      "amount": 0.4,
       "unit": "g"
     },
     "chaat-masala": {
@@ -18,40 +26,37 @@
       "unit": "g"
     },
     "chilli-powder": {
-      "amount": 0.3,
+      "amount": 0.4,
       "unit": "g"
-    },
-    "oil": {
-      "amount": 15,
-      "unit": "ml"
     },
     "coriander-leaves": {
-      "amount": 0.3,
-      "unit": "g"
-    },
-    "green-chilli": {
-      "amount": 0.5,
-      "unit": "pieces"
-    },
-    "salt": {
       "amount": 1,
       "unit": "g"
     },
-    "peas": {
-      "amount": 25,
+    "salt": {
+      "amount": 1.1,
       "unit": "g"
     },
-    "kasuri-methi": {
-      "amount": 0.1,
-      "unit": "g"
-    },
-    "paneer": {
-      "amount": 15,
-      "unit": "g"
+    "oil": {
+      "amount": 10,
+      "unit": "ml"
     }
   },
-  "source": "https://www.indianhealthyrecipes.com/aloo-tikki-recipe/",
-  "note": "A serving is one tikki, with the optional peas-and-paneer stuffing.",
+  "sources": [
+    "https://indianhealthyrecipes.com/aloo-tikki-recipe/",
+    "https://www.cookwithmanali.com/aloo-tikki/"
+  ],
+  "steps": [
+    "Boil the potatoes until just tender, not mushy, then cool, peel and mash them smooth.",
+    "Sprinkle a little water on the poha, leave it for 5 minutes, then crush it into the potato.",
+    "Mix in the ginger, green chilli, garam masala, chaat masala, chilli powder, coriander leaves and salt.",
+    "Knead lightly into a firm dough that does not stick to your hands.",
+    "Split it into balls, two per person, and press each into a flat round cake.",
+    "Heat the oil in a flat pan over medium heat and lay the tikkis in.",
+    "Leave them alone for about 3 minutes until a golden crust forms, then flip and crisp the other side.",
+    "Drain on paper and serve hot with chutney or yogurt."
+  ],
+  "note": "A serving is now two plain tikkis, as both sources make about seven from 500 to 600 g of potato. The peas and paneer stuffing is left out to keep it an everyday snack, and poha is the binder since both sources allow it.",
   "photo": {
     "author": "Raveesh Vyas from [Ahmedabad, Noida], India",
     "licence": "CC BY-SA 2.0",

@@ -2,7 +2,23 @@
   "slots": ["breakfast"],
   "ingredients": {
     "dalia": {
-      "amount": 85,
+      "amount": 50,
+      "unit": "g"
+    },
+    "moong-dal": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "ghee": {
+      "amount": 6,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.8,
+      "unit": "g"
+    },
+    "asafoetida": {
+      "amount": 0.1,
       "unit": "g"
     },
     "onion": {
@@ -10,7 +26,7 @@
       "unit": "g"
     },
     "ginger": {
-      "amount": 1,
+      "amount": 1.5,
       "unit": "g"
     },
     "green-chilli": {
@@ -18,36 +34,50 @@
       "unit": "pieces"
     },
     "tomato": {
-      "amount": 30,
+      "amount": 40,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 2,
       "unit": "g"
     },
     "carrot": {
-      "amount": 30,
+      "amount": 20,
       "unit": "g"
     },
     "potato": {
-      "amount": 30,
+      "amount": 20,
       "unit": "g"
     },
     "peas": {
-      "amount": 35,
+      "amount": 15,
       "unit": "g"
     },
-    "cumin": {
-      "amount": 1,
-      "unit": "g"
-    },
-    "oil": {
-      "amount": 7.5,
-      "unit": "ml"
-    },
-    "salt": {
-      "amount": 1.5,
+    "chilli-powder": {
+      "amount": 0.7,
       "unit": "g"
     }
   },
-  "source": "https://www.vegrecipesofindia.com/dalia-recipe/",
-  "note": "Savoury vegetable dalia.",
+  "sources": [
+    "https://www.indianhealthyrecipes.com/wprm_print/dalia-recipe-daliya",
+    "https://www.funfoodfrolic.com/vegetable-dalia-khichdi-recipe/",
+    "https://hebbarskitchen.com/?p=30450"
+  ],
+  "steps": [
+    "Rinse the dalia and moong dal together and leave them in water for 20 to 30 minutes.",
+    "Heat the ghee in a pressure cooker and let the cumin and asafoetida sizzle.",
+    "Fry the onion, ginger and green chilli until the onion is soft.",
+    "Add the tomato, turmeric and salt and cook until mushy.",
+    "Stir in the carrot, potato, peas and chilli powder for a minute.",
+    "Drain the dalia and dal and stir them in for two minutes.",
+    "Pour in about four times as much water and pressure cook for 2 to 3 whistles.",
+    "Let the pressure drop on its own, loosen with hot water if needed, and serve warm."
+  ],
+  "note": "All three sources cook the dalia with moong dal, so it is added. Sources use 27 to 80 g of dalia a person; 50 g plus the dal makes a full breakfast bowl. The vegetables are kept small because they bulk up the bowl.",
   "photo": {
     "author": "Vashisthapathak2015",
     "licence": "CC BY-SA 4.0",

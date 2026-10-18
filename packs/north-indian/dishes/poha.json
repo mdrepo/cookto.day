@@ -2,27 +2,27 @@
   "slots": ["breakfast", "morning-snack"],
   "ingredients": {
     "poha": {
-      "amount": 55,
+      "amount": 60,
       "unit": "g"
     },
     "onion": {
-      "amount": 55,
+      "amount": 45,
+      "unit": "g"
+    },
+    "potato": {
+      "amount": 60,
       "unit": "g"
     },
     "green-chilli": {
       "amount": 1,
       "unit": "pieces"
     },
-    "potato": {
-      "amount": 75,
-      "unit": "g"
-    },
     "oil": {
       "amount": 10,
       "unit": "ml"
     },
     "mustard-seeds": {
-      "amount": 0.8,
+      "amount": 0.9,
       "unit": "g"
     },
     "cumin": {
@@ -46,7 +46,7 @@
       "unit": "g"
     },
     "lemon": {
-      "amount": 0.5,
+      "amount": 0.25,
       "unit": "pieces"
     },
     "coriander-leaves": {
@@ -54,8 +54,21 @@
       "unit": "g"
     }
   },
-  "source": "https://www.indianhealthyrecipes.com/poha-recipe/",
-  "note": "Potato is optional in the recipe; curry leaves and peanuts left out.",
+  "sources": [
+    "https://www.indianhealthyrecipes.com/poha-recipe/",
+    "https://www.vegrecipesofindia.com/kanda-poha-or-onion-poha/"
+  ],
+  "steps": [
+    "Rinse the poha in a strainer two or three times, drain, and leave it for 5 minutes to soften.",
+    "Sprinkle the salt, sugar and turmeric over it and mix lightly with your fingers.",
+    "Heat the oil in a pan, let the mustard seeds pop, then add the cumin and a pinch of asafoetida.",
+    "Fry the onion and green chilli until the onion turns soft and see-through.",
+    "Add the small potato cubes, cover, and cook on low heat until tender.",
+    "Add the poha and toss gently so it mixes without breaking.",
+    "Cover and steam on very low heat for 2 to 3 minutes.",
+    "Squeeze lemon over it, scatter coriander leaves and serve hot."
+  ],
+  "note": "The sources used 47 to 71 g of dry poha a serving, and 60 g makes a full breakfast plate. Potato is optional in one source and fried in the other; it is kept as it makes the dish more filling.",
   "photo": {
     "author": "Pranit pawar",
     "licence": "CC BY-SA 4.0",

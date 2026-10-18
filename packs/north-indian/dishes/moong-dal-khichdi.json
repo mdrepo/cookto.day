@@ -10,11 +10,15 @@
       "unit": "g"
     },
     "ghee": {
-      "amount": 15,
+      "amount": 12,
       "unit": "ml"
     },
     "cumin": {
-      "amount": 1,
+      "amount": 0.8,
+      "unit": "g"
+    },
+    "asafoetida": {
+      "amount": 0.1,
       "unit": "g"
     },
     "onion": {
@@ -22,23 +26,19 @@
       "unit": "g"
     },
     "tomato": {
-      "amount": 25,
+      "amount": 40,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 3,
       "unit": "g"
     },
     "green-chilli": {
       "amount": 0.5,
       "unit": "pieces"
     },
-    "ginger": {
-      "amount": 4,
-      "unit": "g"
-    },
     "turmeric": {
-      "amount": 0.3,
-      "unit": "g"
-    },
-    "asafoetida": {
-      "amount": 0.1,
+      "amount": 0.4,
       "unit": "g"
     },
     "salt": {
@@ -46,8 +46,22 @@
       "unit": "g"
     }
   },
-  "source": "https://www.vegrecipesofindia.com/moong-dal-khichdi-recipe/",
-  "note": "The recipe says any rice; basmati used.",
+  "sources": [
+    "https://www.vegrecipesofindia.com/moong-dal-khichdi-recipe/",
+    "https://www.indianhealthyrecipes.com/dal-khichdi-recipe/",
+    "https://www.cookwithmanali.com/moong-dal-khichdi/"
+  ],
+  "steps": [
+    "Rinse the rice and moong dal together three times, soak them for 20 minutes, then drain.",
+    "Heat the ghee in a pressure cooker, add the cumin, and when it sizzles add the asafoetida.",
+    "Add the chopped onion and cook until soft and see-through.",
+    "Add the tomato, ginger, green chilli and turmeric and cook until the tomato softens.",
+    "Add the drained rice and dal and stir for a minute.",
+    "Pour in water, about three and a half cups for two people, and add the salt.",
+    "Pressure cook for 4 whistles, then let the pressure drop on its own.",
+    "Stir well, loosen with hot water if it is too thick, and serve with a little ghee on top."
+  ],
+  "note": "Two recipes used half a cup each of rice and dal for two people and one stretched it to three; this keeps 50 g of each a person, since khichdi is the whole meal. Ghee includes a spoon to drizzle on top.",
   "photo": {
     "author": "Rpande",
     "licence": "CC BY-SA 4.0",

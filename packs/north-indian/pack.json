@@ -1,4 +1,4 @@
 {
-  "languages": ["en", "hi"],
+  "languages": ["en", "hi", "mr"],
   "parts": ["roti", "rice", "bhature", "pita"]
 }

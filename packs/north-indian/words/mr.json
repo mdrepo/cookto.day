@@ -1,0 +1,38 @@
+{
+  "dishes": {
+    "palak-paneer": "पालक पनीर",
+    "dal-tadka": "दाल तडका",
+    "dal-makhani": "दाल मखनी",
+    "chole": "छोले",
+    "rajma": "राजमा",
+    "aloo-gobi": "आलू गोबी",
+    "aloo-matar": "आलू मटार",
+    "matar-paneer": "मटार पनीर",
+    "paneer-butter-masala": "पनीर बटर मसाला",
+    "kadai-paneer": "कढई पनीर",
+    "bhindi-masala": "भेंडी मसाला",
+    "baingan-bharta": "वांग्याचे भरीत",
+    "kadhi-pakora": "कढी पकोडा",
+    "aloo-palak": "आलू पालक",
+    "mix-veg": "मिक्स भाजी",
+    "chicken-curry": "चिकन करी",
+    "butter-chicken": "बटर चिकन",
+    "egg-curry": "अंडा करी",
+    "veg-pulao": "व्हेज पुलाव",
+    "moong-dal-khichdi": "मूग डाळ खिचडी",
+    "dum-aloo": "दम आलू",
+    "aloo-paratha": "आलू पराठा",
+    "besan-chilla": "बेसन धिरडे",
+    "dalia": "दलिया",
+    "omelette": "ऑम्लेट",
+    "chana-chaat": "चणा चाट",
+    "aloo-tikki": "आलू टिक्की",
+    "paneer-tikka": "पनीर टिक्का"
+  },
+  "parts": {
+    "roti": "पोळी",
+    "rice": "भात",
+    "bhature": "भटुरे",
+    "pita": "पिटा"
+  }
+}

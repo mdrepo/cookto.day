@@ -51,6 +51,10 @@ export interface AppPack {
     /** A free photo of it, credited, and the addresses of its files (specs/118). */
     photo?: DishPhoto;
   }[];
+  /** Every name of its foods, tidied, to its Wikidata id (specs/148). */
+  names?: Record<string, string>;
+  /** Words that could be several foods: their Wikidata ids. */
+  ask?: Record<string, string[]>;
   /** Fresh food: Wikidata id to the days it keeps. */
   fresh: Record<string, number>;
   /** Food also bought frozen: Wikidata id to its days frozen (specs/149). */

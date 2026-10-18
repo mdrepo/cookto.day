@@ -14,6 +14,32 @@
     {
       "text": "हरा धनिया",
       "lang": "hi"
+    },
+    {
+      "text": "कोथिंबीर",
+      "lang": "mr"
+    },
+    {
+      "text": "dhania",
+      "script": "Latin"
+    },
+    {
+      "text": "kothimbir",
+      "script": "Latin"
+    },
+    {
+      "text": "cilantro",
+      "script": "Latin"
+    },
+    {
+      "text": "CORIANDER",
+      "region": "SG",
+      "source": "receipt"
+    },
+    {
+      "text": "CORIANDER LEAF",
+      "region": "SG",
+      "source": "receipt"
     }
   ]
 }

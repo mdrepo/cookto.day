@@ -18,6 +18,19 @@
     {
       "text": "लाल भोपळा",
       "lang": "mr"
+    },
+    {
+      "text": "kaddu",
+      "script": "Latin"
+    },
+    {
+      "text": "lal bhopla",
+      "script": "Latin"
+    },
+    {
+      "text": "PUMPKIN",
+      "region": "SG",
+      "source": "receipt"
     }
   ]
 }

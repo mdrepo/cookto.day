@@ -4,7 +4,7 @@
 // words. A word that could be two foods asks instead of guessing.
 
 /** Words a shop adds to a food's name that say nothing about the food. */
-const SHOP_WORDS = new Set([
+const SHOP_WORDS: readonly string[] = [
   "big",
   "small",
   "fresh",
@@ -17,7 +17,7 @@ const SHOP_WORDS = new Set([
   "pc",
   "pcs",
   "loose",
-]);
+];
 
 /** A size or a count: 500g, 1.5kg, 200 ml, 6pcs, x2. */
 const SIZE = /^(x?\d+([.,]\d+)?(g|gm|kg|ml|l|ltr|pcs?|s|x)?|x\d+)$/;
@@ -29,7 +29,7 @@ export function tidy(text: string): string {
     .toLocaleLowerCase()
     .replace(/[^\p{L}\p{M}\p{N}\s]/gu, " ")
     .split(/\s+/)
-    .filter((w) => w !== "" && !SHOP_WORDS.has(w) && !SIZE.test(w))
+    .filter((w) => w !== "" && !SHOP_WORDS.includes(w) && !SIZE.test(w))
     .join(" ");
 }
 

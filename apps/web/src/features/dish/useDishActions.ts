@@ -1,3 +1,4 @@
+import { cookedOn } from "@cookto/engine";
 import { addToList, cookedIt, notCooked } from "@cookto/usecases";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -22,7 +23,7 @@ export function useDishActions(dish: string | undefined, need: string[]) {
   const [added, setAdded] = useState<number | null>(null);
   return {
     weCookedThis: t.weCookedThis,
-    cookedToday: history.some((c) => c.dish === dish && c.on === today())
+    cookedToday: cookedOn(history, today()).has(dish ?? "")
       ? t.cookedToday
       : null,
     onCooked: () => {

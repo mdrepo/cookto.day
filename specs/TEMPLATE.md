@@ -2,6 +2,7 @@
 
 - **Issue:** #<issue>
 - **Approval:** a code owner merging the PR that adds this file. Write no tests or code until it's merged.
+- **Where it lives:** <the package and function each rule goes in, e.g. `packages/engine`: `cookToday()`. The owner checks this line when approving (ADR 0029).>
 
 ## Why
 

@@ -1,11 +1,13 @@
 import {
   createChanges,
   createCooked,
+  createSaveProblems,
   createHousehold,
   createPacks,
   createPantry,
   createSettings,
   createShopping,
+  watchSaves,
 } from "@cookto/data";
 import { browserKeyValue, browserRecordStore } from "@cookto/data-web";
 import { openCountries } from "@cookto/engine";
@@ -38,7 +40,13 @@ export const settings = createSettings(browserKeyValue(), {
 const changes = createChanges();
 export const queries = createQueries(changes);
 
-const records = browserRecordStore("cookto.day");
+/** The last failed save, for the note on any screen (specs/138). */
+export const saveProblems = createSaveProblems();
+
+const records = watchSaves(
+  browserRecordStore("cookto.day"),
+  saveProblems.report,
+);
 
 export const household = createHousehold(records, { changes });
 
@@ -89,6 +97,13 @@ export const packQuery = (id: string) =>
 export function now(): Date {
   return new Date();
 }
+
+/** A pack's steps, by dish: loaded when a dish opens, read once (#149). */
+export const stepsQuery = (id: string) =>
+  queryOptions({
+    queryKey: ["packs", id, "steps"],
+    queryFn: () => packs.steps(id),
+  });
 
 /** Today in the household's own calendar, "YYYY-MM-DD". */
 export function today(): string {

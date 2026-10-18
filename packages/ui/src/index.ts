@@ -19,6 +19,7 @@ export { Input } from "./components/Input/Input.js";
 export { LinkOut } from "./components/LinkOut/LinkOut.js";
 export { Logo } from "./components/Logo/Logo.js";
 export { ItemList } from "./components/ItemList/ItemList.js";
+export { Method } from "./components/Method/Method.js";
 export { NextSteps } from "./components/NextSteps/NextSteps.js";
 export { Note, type NoteProps } from "./components/Note/Note.js";
 export { Photo } from "./components/Photo/Photo.js";

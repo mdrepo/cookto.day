@@ -1,0 +1,19 @@
+{
+  "wikidata": "Q1093742",
+  "label": "lemon",
+  "keeps": {
+    "days": 14,
+    "in": "fridge",
+    "foodkeeper": 256
+  },
+  "names": [
+    {
+      "text": "Lemon",
+      "lang": "en"
+    },
+    {
+      "text": "नींबू",
+      "lang": "hi"
+    }
+  ]
+}

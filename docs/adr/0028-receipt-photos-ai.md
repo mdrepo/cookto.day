@@ -69,9 +69,11 @@ An AI call costs us money each time, so the endpoint is a target. People could r
 
 ## Notes (2026-10-17)
 
+These notes update two numbers in the Decision without changing it: the AI now answers in rows with at most 2,560 output tokens, not 4,096, and the lines are compared with the printed subtotal, not the total.
+
 How far prompt injection can reach, and three changes that shrink it (spec #129, rules 6 and 8). Text printed in a photo can always steer the AI; the design keeps what it can do small: it sees only our instruction and that one photo, has no tools, and only checked item lines reach the person, who reviews them before anything is added.
 
-- **The AI answers in rows, with at most 2,560 output tokens.** Each item is one string, `name|quantity|unit price|amount`, instead of a JSON object; Gemini pretty-prints objects, and the spaces were half the bill. Measured: the GK receipt took 297 output tokens instead of 607, and a made-up 80-line receipt 1,928, which the cap clears by a third. An answer run up to the cap now costs about $0.0011, not $0.0017.
+- **The AI answers in rows, with at most 2,560 output tokens.** Each item is one string, `name|quantity|unit price|amount`, instead of a JSON object; Gemini pretty-prints objects, and the spaces were half the bill. Measured: a real 11-line receipt took 297 output tokens instead of 607, and a made-up 80-line receipt 1,928, which the cap clears by a third. An answer run up to the cap now costs about $0.0011, not $0.0017.
 - **Signs of abuse end the household's day:** an answer cut off at the cap, not JSON, a line over 120 characters, or a name with a link, an email address or a long number (a phone or card number). The answer is refused whole and the log line names the sign. The household's daily count is set to its limit, so a clumsy abuser gets one costly read a day instead of three.
 - **Not every odd line is a sign.** On a made-up but honest receipt, the AI left quantities empty, wrote "0.912kg" and kept a bag charge. Such lines are read leniently or dropped one by one; refusing the whole answer for them, and ending the family's day, would punish honest receipts.
 - **The worst case, again.** An abuser who keeps each answer just under the cap, with clean rows, isn't struck. So every limit reached that way is about 2,000 × $0.0011 ≈ $2.10 a day, from about 667 signed-in households; Google's $10 cap stops it within about five days. One household costs at most about a third of a cent a day.

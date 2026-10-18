@@ -2,8 +2,9 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { en } from "../../apps/web/src/i18n/en.js";
 import { type Entry, wordProblems } from "./words-lib.js";
 
-// The words check (ADR 0027): the app's English words, and every pack's,
-// hold no AI-tell words and no emoji. The list is tooling/banned-words.json.
+// The words check (ADR 0027): the app's English words, every pack's, and
+// every food's English names hold no AI-tell words and no emoji. The list
+// is tooling/banned-words.json.
 
 function entries(file: string, value: unknown, key = ""): Entry[] {
   if (typeof value === "string") return [{ file, key, text: value }];
@@ -20,6 +21,19 @@ for (const pack of packs) {
   const file = `packs/${pack}/words/en.json`;
   if (existsSync(file))
     all.push(...entries(file, JSON.parse(readFileSync(file, "utf8"))));
+}
+// Food's English names live with the food (specs/148).
+const foods = existsSync("packs/ingredients")
+  ? readdirSync("packs/ingredients").filter((f) => f.endsWith(".json"))
+  : [];
+for (const food of foods) {
+  const file = `packs/ingredients/${food}`;
+  const { names } = JSON.parse(readFileSync(file, "utf8")) as {
+    names: { text: string; lang: string }[];
+  };
+  for (const [i, name] of names.entries())
+    if (name.lang === "en")
+      all.push({ file, key: `names.${String(i)}`, text: name.text });
 }
 
 const { words } = JSON.parse(

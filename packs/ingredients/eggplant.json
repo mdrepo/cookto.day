@@ -1,0 +1,19 @@
+{
+  "wikidata": "Q12533094",
+  "label": "eggplant",
+  "keeps": {
+    "days": 5,
+    "in": "fridge",
+    "foodkeeper": 284
+  },
+  "names": [
+    {
+      "text": "Brinjal",
+      "lang": "en"
+    },
+    {
+      "text": "बैंगन",
+      "lang": "hi"
+    }
+  ]
+}

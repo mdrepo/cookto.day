@@ -51,6 +51,11 @@ test.describe("A dish's page", () => {
     for (const food of ["Potato", "Green chilli", "Coriander leaves"])
       await k.add(food);
     await k.openDish("Aloo paratha");
+    // The reviewed recipe (#149) takes ginger.
+    await expect(k.dishList("You need")).toContainText("Ginger");
+    await k.tabs().getByRole("button", { name: "Fridge", exact: true }).click();
+    await k.add("Ginger");
+    await k.openDish("Aloo paratha");
     await expect(page.getByRole("main")).toContainText("Has everything");
     await expect(k.dishList("You need")).toHaveCount(0);
   });
@@ -65,10 +70,8 @@ test.describe("A dish's page", () => {
     await k.loadNorthIndianWithStaples();
     await k.openDish("Palak paneer");
     await expect(page.getByRole("main")).toContainText("For 2 people");
-    const amount = (food: string) =>
-      page.getByRole("main").getByRole("listitem").filter({ hasText: food });
-    await expect(amount("Spinach")).toContainText("130 g");
-    await expect(amount("Cumin")).toContainText("0.6 g");
+    await expect(k.ingredient("Spinach")).toContainText("150 g");
+    await expect(k.ingredient("Cumin")).toContainText("0.6 g");
   });
 
   test("what to serve it with", async ({ page }) => {
@@ -89,13 +92,12 @@ test.describe("A dish's page", () => {
     await k.start();
     await k.loadNorthIndianWithStaples();
     await k.openDish("Palak paneer");
-    const link = page.getByRole("link", { name: /See the recipe/ });
+    const link = page.getByRole("link", { name: /See a full version/ });
     await expect(link).toHaveAttribute(
       "href",
       "https://www.vegrecipesofindia.com/palak-paneer/",
     );
     await expect(link).toHaveAttribute("target", "_blank");
     await expect(link).toContainText("vegrecipesofindia.com");
-    await expect(page.getByRole("main").locator("ol")).toHaveCount(0);
   });
 });

@@ -22,6 +22,15 @@ describe("the cuisine packs", () => {
     expect(pack.words.en?.dishes["palak-paneer"]).toBe("Palak paneer");
   });
 
+  test("a pack's steps load on their own: each dish has six to eight (#149)", async () => {
+    const steps = await createPacks().steps("north-indian");
+    const pack = await createPacks().load("north-indian");
+    for (const dish of pack.dishes) {
+      expect(steps[dish.id]?.length).toBeGreaterThanOrEqual(6);
+      expect(steps[dish.id]?.length).toBeLessThanOrEqual(8);
+    }
+  });
+
   test("a pack that's coming soon, or unknown, can't be loaded", () => {
     const packs = createPacks();
     expect(packs.load("south-indian")).rejects.toThrow(

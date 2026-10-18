@@ -22,6 +22,7 @@ test.describe("Cook now", () => {
       "Potato",
       "Green chilli",
       "Coriander leaves",
+      "Ginger",
     ])
       await k.add(food);
     await k.tabs().getByRole("button", { name: "Dishes", exact: true }).click();
@@ -30,7 +31,9 @@ test.describe("Cook now", () => {
     const ready = await k.dishGroup("You can cook now").allTextContents();
     expect(ready.length).toBeGreaterThan(0);
     for (const row of ready) expect(row).toContain("Has everything");
+    // The reviewed recipes (#149): both take ginger, and nothing else fresh.
     expect(names(ready)).toContain("Aloo paratha");
+    expect(names(ready)).toContain("Aloo tikki");
     expect(names(ready)).toEqual([...names(ready)].sort());
 
     const rest = await k.dishGroup("Need a few things").allTextContents();
@@ -52,7 +55,7 @@ test.describe("Cook now", () => {
     ).toHaveCount(0);
 
     await k.tabs().getByRole("button", { name: "Fridge", exact: true }).click();
-    for (const food of ["Potato", "Green chilli", "Coriander leaves"])
+    for (const food of ["Potato", "Green chilli", "Coriander leaves", "Ginger"])
       await k.add(food);
     await k.home();
     const cookNow = page.getByRole("button", {
@@ -62,6 +65,7 @@ test.describe("Cook now", () => {
     const shown = Number(
       /(\d+)/.exec((await cookNow.textContent()) ?? "")?.[1],
     );
+    expect(shown).toBe(2); // aloo paratha and aloo tikki (#149)
     await cookNow.click();
     await expect(k.title()).toHaveText("Dishes");
     await expect(k.dishGroup("You can cook now")).toHaveCount(shown);

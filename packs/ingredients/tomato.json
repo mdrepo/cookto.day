@@ -2,9 +2,10 @@
   "wikidata": "Q20638126",
   "label": "tomato",
   "keeps": {
-    "days": 10,
-    "in": "pantry",
-    "foodkeeper": 600
+    "days": 7,
+    "in": "fridge",
+    "foodkeeper": 306,
+    "spec": 149
   },
   "names": [
     {

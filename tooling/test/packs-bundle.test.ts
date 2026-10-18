@@ -162,6 +162,21 @@ describe("a pack, as the app loads it", () => {
     });
   });
 
+  test("a pack carries its foods' names, tidied, and the words to ask about, by Wikidata id (#148)", () => {
+    const named: Pack = {
+      ...pack,
+      names: { spinach: ["Spinach", "palak", "FRESH PALAK"], rice: ["Rice"] },
+      ask: { chawal: ["rice", "spinach"] },
+    };
+    const bundled = bundlePack(named);
+    expect(bundled.names).toEqual({
+      spinach: "Q36814998",
+      palak: "Q36814998",
+      rice: "Q5090",
+    });
+    expect(bundled.ask).toEqual({ chawal: ["Q5090", "Q36814998"] });
+  });
+
   test("a sample item must be one of the pack's ingredients, with a real unit", () => {
     const bad: Pack = {
       ...pack,

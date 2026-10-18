@@ -18,9 +18,42 @@ export const PACKS = "packs";
 export const SOURCES = join(PACKS, "sources");
 export const INGREDIENTS = join(PACKS, "ingredients");
 
+/**
+ * One of a food's names (specs/148): in a language; or a region's, from a
+ * shop's receipt; or in another script, as families type it ("palak").
+ */
+interface Name {
+  text: string;
+  lang?: string;
+  region?: string;
+  script?: string;
+  source?: string;
+}
+
 /** A food, once for every pack, with what people call it (specs/148). */
 interface Food extends Ingredient {
-  names: { text: string; lang: string }[];
+  names: Name[];
+}
+
+/** The name the app shows in a language: its own, in its own script. */
+const shown = (name: Name, lang: string) =>
+  name.lang === lang && !name.region && !name.script;
+
+/** Every food's names, by its slug: for the names check. */
+export function readFoods(): Record<string, string[]> {
+  const foods = folder(INGREDIENTS) as Record<string, Food>;
+  return Object.fromEntries(
+    Object.entries(foods).map(([slug, f]) => [
+      slug,
+      f.names.map((n) => n.text),
+    ]),
+  );
+}
+
+/** Words that could be several foods, and which (packs/ask.json). */
+export function readAsk(): Record<string, string[]> {
+  const path = join(PACKS, "ask.json");
+  return existsSync(path) ? (json(path) as Record<string, string[]>) : {};
 }
 
 const json = (path: string): unknown => JSON.parse(readFileSync(path, "utf8"));
@@ -89,14 +122,23 @@ function withFoods(
   const words = Object.fromEntries(
     Object.entries(pack.words).map(([lang, w]) => {
       const names = used.flatMap((slug): [string, string][] => {
-        const name = foods[slug]?.names.find((n) => n.lang === lang);
+        const name = foods[slug]?.names.find((n) => shown(n, lang));
         return name ? [[slug, name.text]] : [];
       });
       const own = w as Omit<Words, "ingredients">;
       return [lang, { ...own, ingredients: Object.fromEntries(names) }];
     }),
   );
-  return { ...pack, ingredients, words };
+  const has = new Set(used);
+  const names = Object.fromEntries(
+    used.map((slug) => [slug, (foods[slug] as Food).names.map((n) => n.text)]),
+  );
+  const ask = Object.fromEntries(
+    Object.entries(readAsk()).filter(([, ids]) =>
+      ids.some((id) => has.has(id)),
+    ),
+  );
+  return { ...pack, ingredients, words, names, ask };
 }
 
 export function readPacks(): Pack[] {

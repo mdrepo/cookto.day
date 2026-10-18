@@ -69,6 +69,10 @@ export interface Pack {
   ingredients: Record<string, Ingredient>;
   dishes: Record<string, Dish>;
   words: Record<string, Words>;
+  /** Every name of each food it uses, for matching (specs/148). */
+  names?: Record<string, string[]>;
+  /** Words that could be several of its foods: the app asks which. */
+  ask?: Record<string, string[]>;
   /** A sample pantry, for trying the app (sample.json, optional). */
   sample?: SampleItem[];
   /** photos/<dish>.webp and .small.webp: each file's size in bytes. */

@@ -4,6 +4,7 @@
 // the pantry keys them. A dish keeps its amounts for one person and a
 // link to a full recipe, for its page (specs/95, 149); its steps load in a
 // file of their own when a dish opens (stepsOf). Labels stay in the pack.
+import { tidy } from "../../packages/engine/src/names.js";
 import { type Pack, STAPLE_GROUPS } from "./packs-lib.js";
 
 type Group = (typeof STAPLE_GROUPS)[number];
@@ -30,6 +31,10 @@ export interface AppPack {
     photo?: { author: string; licence: string; source: string };
   }[];
   /** Fresh food: Wikidata id to the days it keeps. */
+  /** Every name of its foods, tidied, to its Wikidata id (specs/148). */
+  names?: Record<string, string>;
+  /** Words that could be several foods: their Wikidata ids. */
+  ask?: Record<string, string[]>;
   fresh: Record<string, number>;
   /** Food also bought frozen: Wikidata id to the days it keeps frozen. */
   frozen?: Record<string, number>;
@@ -57,6 +62,23 @@ function frozenOf(pack: Pack): { frozen?: Record<string, number> } {
     i.freezes ? [[i.wikidata, i.freezes.days] as const] : [],
   );
   return frozen.length > 0 ? { frozen: Object.fromEntries(frozen) } : {};
+}
+
+/** A pack's names and words to ask about, tidied, by Wikidata id (#148). */
+function namesOf(
+  pack: Pack,
+  q: (slug: string) => string,
+): Pick<AppPack, "names" | "ask"> {
+  if (!pack.names) return {};
+  const names = Object.fromEntries(
+    Object.entries(pack.names).flatMap(([slug, all]) =>
+      all.map((n) => [tidy(n), q(slug)] as const),
+    ),
+  );
+  const ask = Object.fromEntries(
+    Object.entries(pack.ask ?? {}).map(([w, ids]) => [tidy(w), ids.map(q)]),
+  );
+  return Object.keys(ask).length > 0 ? { names, ask } : { names };
 }
 
 export function bundlePack(pack: Pack): AppPack {
@@ -93,6 +115,7 @@ export function bundlePack(pack: Pack): AppPack {
       ...linkOf(dish.sources),
       ...(dish.photo ? { photo: dish.photo } : {}),
     })),
+    ...namesOf(pack, q),
     fresh: Object.fromEntries(
       Object.values(pack.ingredients).flatMap((i) =>
         i.keeps ? [[i.wikidata, i.keeps.days]] : [],

@@ -68,8 +68,25 @@ export interface Food {
 const loaded = (k: Kitchen) =>
   Promise.all(k.settings.kitchen().cuisines.map((id) => k.packs.load(id)));
 
-/** The id a loaded pack calls `name`, in the app's language or English. */
-function idOf(packs: readonly AppPack[], name: string, language: string) {
+/**
+ * The id a loaded pack calls `name`: by any of its foods' names (specs/148),
+ * or by its words in the app's language or English. Matching loads only
+ * when food is added, so it isn't part of the first visit (ADR 0013).
+ */
+async function idOf(packs: readonly AppPack[], name: string, language: string) {
+  const { matchFood } = await import("@cookto/engine/names");
+  for (const pack of packs) {
+    const match = matchFood(name, {
+      foods: new Map(Object.entries(pack.names ?? {})),
+      ask: new Map(Object.entries(pack.ask ?? {})),
+    });
+    if (match && "food" in match)
+      return {
+        id: match.food,
+        days: pack.fresh[match.food],
+        frozen: pack.frozen?.[match.food],
+      };
+  }
   const wanted = name.trim().toLocaleLowerCase();
   for (const pack of packs)
     for (const lang of [language, "en"]) {
@@ -93,7 +110,7 @@ export async function addFood(
   food: Food,
   language: string,
 ): Promise<void> {
-  const known = idOf(await loaded(k), food.name, language);
+  const known = await idOf(await loaded(k), food.name, language);
   const item: NewItem = {
     ingredient: known?.id ?? food.name.trim(),
     boughtOn: food.boughtOn,

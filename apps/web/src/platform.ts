@@ -80,14 +80,6 @@ export const cookedQuery = queryOptions({
   queryFn: ({ signal }) => cooked.reader.all(signal),
 });
 
-/** The day `days` before `day`, both "YYYY-MM-DD". */
-export function daysBefore(day: string, days: number): string {
-  const d = new Date(`${day}T12:00:00`);
-  d.setDate(d.getDate() - days);
-  const two = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`;
-}
-
 /** Everything in the pantry. Hooks narrow it with `select`. */
 export const pantryQuery = queryOptions({
   queryKey: ["pantry", "items"],
@@ -100,6 +92,11 @@ export const packQuery = (id: string) =>
     queryKey: ["packs", id],
     queryFn: () => packs.load(id),
   });
+
+/** This moment, for showing the date: the app's one clock. */
+export function now(): Date {
+  return new Date();
+}
 
 /** Today in the household's own calendar, "YYYY-MM-DD". */
 export function today(): string {

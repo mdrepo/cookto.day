@@ -2,65 +2,91 @@
   "slots": ["lunch", "dinner"],
   "ingredients": {
     "chickpeas": {
-      "amount": 50,
+      "amount": 60,
       "unit": "g"
     },
     "bay-leaf": {
       "amount": 0.5,
       "unit": "pieces"
     },
-    "onion": {
-      "amount": 45,
-      "unit": "g"
+    "oil": {
+      "amount": 7,
+      "unit": "ml"
     },
-    "tomato": {
+    "onion": {
       "amount": 55,
       "unit": "g"
     },
     "green-chilli": {
-      "amount": 1,
+      "amount": 0.5,
       "unit": "pieces"
     },
     "ginger": {
-      "amount": 2,
+      "amount": 2.5,
       "unit": "g"
     },
     "garlic": {
-      "amount": 5,
+      "amount": 1.5,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 65,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1.5,
       "unit": "g"
     },
     "turmeric": {
-      "amount": 0.3,
+      "amount": 0.2,
       "unit": "g"
     },
     "chilli-powder": {
-      "amount": 0.5,
+      "amount": 0.6,
+      "unit": "g"
+    },
+    "coriander-powder": {
+      "amount": 0.6,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.3,
       "unit": "g"
     },
     "garam-masala": {
       "amount": 0.5,
       "unit": "g"
     },
-    "oil": {
-      "amount": 8.5,
-      "unit": "ml"
+    "kasuri-methi": {
+      "amount": 0.1,
+      "unit": "g"
     },
-    "salt": {
-      "amount": 1.5,
+    "ghee": {
+      "amount": 3,
       "unit": "g"
     },
     "coriander-leaves": {
-      "amount": 0.6,
+      "amount": 1,
       "unit": "g"
-    },
-    "lemon": {
-      "amount": 0.5,
-      "unit": "pieces"
     }
   },
   "servedWith": ["roti", "rice"],
-  "source": "https://www.vegrecipesofindia.com/chana-masala-recipe/",
-  "note": "Amchur and ajwain left out (not in the pack).",
+  "sources": [
+    "https://www.indianhealthyrecipes.com/chole/",
+    "https://www.indianhealthyrecipes.com/chana-masala/",
+    "https://www.cookwithmanali.com/punjabi-chole-chickpeas-curry/"
+  ],
+  "steps": [
+    "Pressure cook the soaked chickpeas with the bay leaf in fresh water until they mash easily.",
+    "Heat the oil and fry the onion until golden.",
+    "Add most of the ginger, the garlic and the green chilli and stir for a minute.",
+    "Add the tomato and salt and cook until it breaks down.",
+    "Stir in the turmeric, chilli powder, coriander powder, cumin and garam masala until fragrant.",
+    "Pour in the chickpeas with their cooking water, mash a few, and simmer for 15 to 20 minutes until thick.",
+    "Take out the bay leaf and crush in the kasuri methi.",
+    "Fry the last of the ginger in hot ghee, pour it over the chole and add the coriander leaves."
+  ],
+  "note": "Sources use 50 to 80 g of dry chickpeas a person; 60 g makes a good bowl next to roti or rice. Lemon is gone because none of the sources use it; they get their sourness from amchur.",
   "photo": {
     "author": "Simon Law (sfllaw) from Montréal, QC, Canada",
     "licence": "CC BY-SA 2.0",

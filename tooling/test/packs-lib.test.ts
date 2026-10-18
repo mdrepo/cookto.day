@@ -12,6 +12,16 @@ const sources: Sources = {
   },
 };
 
+/** Six short steps in our own words (specs/149). */
+const STEPS = [
+  "Wash the rice.",
+  "Boil it in twice its water.",
+  "Wash the spinach.",
+  "Chop it fine.",
+  "Stir it into the rice.",
+  "Cover and rest for five minutes.",
+];
+
 function goodPack(): Pack {
   return {
     id: "test-kitchen",
@@ -34,7 +44,11 @@ function goodPack(): Pack {
           rice: { amount: 80, unit: "g" },
         },
         servedWith: ["rice"],
-        source: "https://example.com/spinach-rice",
+        sources: [
+          "https://example.com/spinach-rice",
+          "https://example.org/palak-rice",
+        ],
+        steps: STEPS,
       },
     },
     words: {
@@ -66,13 +80,63 @@ describe("packs:check", () => {
 
   test("a dish without a source fails, saying how to fix it", () => {
     const pack = goodPack();
-    delete (pack.dishes["spinach-rice"] as { source?: string }).source;
+    delete (pack.dishes["spinach-rice"] as { sources?: string[] }).sources;
     expect(packProblems(pack, sources)).toEqual([
-      'test-kitchen/dishes/spinach-rice.json: no source. Add "source": a published recipe\'s https link, or "cooked at home by <reviewer>".',
+      'test-kitchen/dishes/spinach-rice.json: no sources. Add "sources": the https links of two or three full recipes you read, or "cooked at home by <reviewer>".',
     ]);
     const pack2 = goodPack();
-    (pack2.dishes["spinach-rice"] as { source: string }).source = "my memory";
-    expect(packProblems(pack2, sources)[0]).toContain("no source");
+    (pack2.dishes["spinach-rice"] as { sources: string[] }).sources = [
+      "my memory",
+    ];
+    expect(packProblems(pack2, sources)[0]).toContain("no sources");
+  });
+
+  test("a dish is checked against two full recipes, or cooked at home (#149)", () => {
+    const pack = goodPack();
+    const dish = pack.dishes["spinach-rice"] as { sources: string[] };
+    dish.sources = ["https://example.com/spinach-rice"];
+    expect(packProblems(pack, sources)).toEqual([
+      "test-kitchen/dishes/spinach-rice.json: one source. Check it against a second full recipe, and add that link too.",
+    ]);
+    dish.sources = ["cooked at home by A. Cook"];
+    expect(packProblems(pack, sources)).toEqual([]);
+  });
+
+  test("a dish has six to eight short steps, in our own words (#149)", () => {
+    const pack = goodPack();
+    const dish = pack.dishes["spinach-rice"] as { steps?: string[] };
+    const at = "test-kitchen/dishes/spinach-rice.json";
+    delete dish.steps;
+    expect(packProblems(pack, sources)).toEqual([
+      `${at}: has 0 steps. Write six to eight short steps, one action each.`,
+    ]);
+    dish.steps = [...STEPS, "Add salt.", "Stir.", "Serve."];
+    expect(packProblems(pack, sources)).toEqual([
+      `${at}: has 9 steps. Write six to eight short steps, one action each.`,
+    ]);
+    dish.steps = [...STEPS.slice(1), `Wash ${"the rice and ".repeat(12)}stop.`];
+    expect(packProblems(pack, sources)).toEqual([
+      `${at}: step 6 is long. Keep each step to one action, under 140 characters.`,
+    ]);
+  });
+
+  test("a note that still asks for a check fails, naming the dish (#149)", () => {
+    const at = "test-kitchen/dishes/spinach-rice.json";
+    for (const note of [
+      "One egg a serving looks low: check.",
+      "Read through a page summary, not the page itself.",
+      "Check the onions.",
+    ]) {
+      const pack = goodPack();
+      (pack.dishes["spinach-rice"] as { note?: string }).note = note;
+      expect(packProblems(pack, sources)).toEqual([
+        `${at}: its note still asks for a check ("${note}"). A note ships as it is: settle it, then say what was decided.`,
+      ]);
+    }
+    const settled = goodPack();
+    (settled.dishes["spinach-rice"] as { note?: string }).note =
+      "Two eggs a person, as the owner cooks it.";
+    expect(packProblems(settled, sources)).toEqual([]);
   });
 
   test("an id whose Wikidata label names something else fails", () => {
@@ -82,7 +146,7 @@ describe("packs:check", () => {
       label: "spinach",
     } as Pack["ingredients"][string];
     expect(packProblems(pack, sources)).toEqual([
-      'test-kitchen/ingredients/spinach.json: Wikidata calls Q81464 "Spinacia oleracea", not "spinach". Check the id on wikidata.org, then copy its English label exactly.',
+      'ingredients/spinach.json: Wikidata calls Q81464 "Spinacia oleracea", not "spinach". Check the id on wikidata.org, then copy its English label exactly.',
     ]);
   });
 
@@ -93,7 +157,7 @@ describe("packs:check", () => {
       wikidata: "Q999999999",
     } as Pack["ingredients"][string];
     expect(packProblems(pack, sources)).toEqual([
-      "test-kitchen/ingredients/spinach.json: Q999999999 isn't in packs/sources/wikidata.json. Run `bun run packs:refresh`; if it still isn't there, the id doesn't exist.",
+      "ingredients/spinach.json: Q999999999 isn't in packs/sources/wikidata.json. Run `bun run packs:refresh`; if it still isn't there, the id doesn't exist.",
     ]);
   });
 
@@ -105,7 +169,7 @@ describe("packs:check", () => {
       keeps: { days: 3, in: "fridge" },
     } as unknown as Pack["ingredients"][string];
     expect(packProblems(uncited, sources)).toEqual([
-      'test-kitchen/ingredients/spinach.json: its shelf life cites no FoodKeeper entry. Add "foodkeeper": the entry\'s ID from packs/sources/foodkeeper.json.',
+      'ingredients/spinach.json: its shelf life cites no FoodKeeper entry. Add "foodkeeper": the entry\'s ID from packs/sources/foodkeeper.json.',
     ]);
 
     const tooLong = goodPack();
@@ -115,7 +179,7 @@ describe("packs:check", () => {
       keeps: { days: 10, in: "fridge", foodkeeper: 291 },
     };
     expect(packProblems(tooLong, sources)).toEqual([
-      "test-kitchen/ingredients/spinach.json: keeps 10 days in the fridge, but FoodKeeper 291 (Lettuce, leaf, spinach) says 3 to 7. Use a number in that range.",
+      "ingredients/spinach.json: keeps 10 days in the fridge, but FoodKeeper 291 (Lettuce, leaf, spinach) says 3 to 7. Use a number in that range.",
     ]);
   });
 
@@ -128,7 +192,7 @@ describe("packs:check", () => {
     const en = pack.words["en"];
     if (en) en.ingredients["paneer"] = "Paneer";
     expect(packProblems(pack, sources)).toEqual([
-      'test-kitchen/ingredients/paneer.json: neither a staple nor fresh. List it in staples.json, or add "keeps" with its FoodKeeper entry.',
+      'ingredients/paneer.json: neither a staple nor fresh. List it in staples.json, or add "keeps" with its FoodKeeper entry.',
       "test-kitchen/dishes/spinach-rice.json: uses ghee, which has no ingredients/ghee.json.",
     ]);
   });

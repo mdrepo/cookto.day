@@ -2,73 +2,86 @@
   "slots": ["lunch", "dinner"],
   "ingredients": {
     "oil": {
-      "amount": 7.5,
+      "amount": 12,
       "unit": "ml"
     },
-    "butter": {
-      "amount": 4,
-      "unit": "g"
-    },
-    "onion": {
-      "amount": 15,
-      "unit": "g"
-    },
-    "ginger": {
-      "amount": 0.3,
-      "unit": "g"
-    },
-    "garlic": {
-      "amount": 0.3,
-      "unit": "g"
-    },
-    "tomato": {
-      "amount": 70,
-      "unit": "g"
-    },
-    "turmeric": {
-      "amount": 0.1,
-      "unit": "g"
-    },
-    "chilli-powder": {
-      "amount": 0.3,
-      "unit": "g"
-    },
-    "coriander-powder": {
+    "cumin": {
       "amount": 0.5,
       "unit": "g"
     },
-    "cauliflower": {
-      "amount": 85,
+    "ginger": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 50,
       "unit": "g"
     },
     "potato": {
-      "amount": 75,
+      "amount": 100,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "cauliflower": {
+      "amount": 100,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.4,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "coriander-powder": {
+      "amount": 0.8,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 0.4,
       "unit": "g"
     },
     "salt": {
       "amount": 1.5,
       "unit": "g"
     },
-    "kasuri-methi": {
-      "amount": 0.1,
+    "tomato": {
+      "amount": 60,
       "unit": "g"
     },
-    "garam-masala": {
+    "kasuri-methi": {
       "amount": 0.2,
       "unit": "g"
     },
-    "cream": {
-      "amount": 7.5,
-      "unit": "ml"
-    },
-    "bay-leaf": {
-      "amount": 0.5,
-      "unit": "pieces"
+    "coriander-leaves": {
+      "amount": 1.5,
+      "unit": "g"
     }
   },
   "servedWith": ["roti"],
-  "source": "https://www.vegrecipesofindia.com/aloo-gobi-recipe/",
-  "note": "The linked recipe is a rich restaurant-style aloo gobi (cashews, cream), not a dry home one.",
+  "sources": [
+    "https://www.indianhealthyrecipes.com/aloo-gobi/",
+    "https://www.cookwithmanali.com/aloo-gobi/"
+  ],
+  "steps": [
+    "Heat the oil in a wide pan and let the cumin seeds sizzle.",
+    "Stir in the ginger and garlic for half a minute.",
+    "Add the onion and cook until it turns soft and see-through.",
+    "Add the potato and green chilli, cover, and cook on low for about 5 minutes.",
+    "Add the cauliflower with the turmeric, chilli powder, coriander powder and garam masala, and toss well.",
+    "Sprinkle in 2 to 3 spoons of water, cover, and cook on low until both are nearly soft, stirring now and then.",
+    "Add the salt, tomato and crushed kasuri methi, and fry uncovered for 3 to 4 minutes until the tomato breaks down.",
+    "Scatter the coriander leaves on top and serve with roti."
+  ],
+  "note": "This is the dry everyday version both sources cook; the cream, butter and bay leaf from the old restaurant-style recipe are gone. One source is far more generous with vegetables than the other, so the amounts sit between them at about 200 g of vegetables a person.",
   "photo": {
     "author": "Sapanabehl",
     "licence": "CC BY-SA 4.0",

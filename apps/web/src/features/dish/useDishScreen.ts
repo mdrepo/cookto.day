@@ -12,7 +12,12 @@ import {
   useKitchenSettings,
   useLoadedPacks,
 } from "../../food.js";
-import { membersQuery, pantryQuery, queries } from "../../platform.js";
+import {
+  membersQuery,
+  pantryQuery,
+  queries,
+  stepsQuery,
+} from "../../platform.js";
 import { goBack, useDish } from "../../routes.js";
 import { useDishActions } from "./useDishActions.js";
 
@@ -27,10 +32,19 @@ function photoOf(photo: DishPhoto | undefined, words: string) {
   };
 }
 
+/** The dish's steps, once its pack's steps have loaded (specs/149). */
+function useSteps(at: { pack: string; dish: string } | null): string[] {
+  const { data } = useQuery(
+    { ...stepsQuery(at?.pack ?? ""), enabled: at !== null },
+    queries,
+  );
+  return (at && data?.[at.dish]) ?? [];
+}
+
 /**
  * A dish's page (specs/95): what it needs, for everyone at home, split into
  * what the kitchen has and what it doesn't, what to serve it with, and where
- * its recipe is. Nothing until its cuisine has loaded.
+ * its recipe is, and its steps (specs/149). Nothing until its cuisine has loaded.
  */
 export function useDishScreen() {
   const { locale, t } = useWords();
@@ -41,6 +55,7 @@ export function useDishScreen() {
   const { skip } = useKitchenSettings();
   const { data: items = [] } = useQuery(pantryQuery, queries);
   const { data: members = [] } = useQuery(membersQuery, queries);
+  const steps = useSteps(at);
   const dish = packs
     .find((p) => p.id === at?.pack)
     ?.dishes.find((d) => d.id === at?.dish);
@@ -103,7 +118,9 @@ export function useDishScreen() {
           ]
         : []),
     ],
-    seeRecipe: t.seeRecipe,
+    stepsTitle: t.steps,
+    steps,
+    seeFullVersion: t.seeFullVersion,
     ...actions,
     source: dish.source,
     photo: photoOf(dish.photo, t.photoBy),

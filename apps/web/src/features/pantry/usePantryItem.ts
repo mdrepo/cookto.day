@@ -9,16 +9,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useWords } from "../../i18n/useWords.js";
 import { fill } from "../../i18n/format.js";
-import { useItemWords, useLoadedPacks } from "../../food.js";
+import { CONDITION_WORDS, useItemWords, useLoadedPacks } from "../../food.js";
 import { kitchen, pantryQuery, queries, today } from "../../platform.js";
 import { openDishesWith } from "../../routes.js";
 import { toGramsOrMl, UNIT_CHOICES } from "./units.js";
-
-const CONDITION_WORDS = {
-  good: "good",
-  "use-soon": "useSoon",
-  "past-its-best": "pastItsBest",
-} as const;
 
 /**
  * One item, for its sheet. It selects only that item, so a change to another

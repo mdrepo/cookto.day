@@ -4,7 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fill } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
 import { household, membersQuery, queries, settings } from "../../platform.js";
-import { numberOf, SLOT_WORDS, titleOf } from "./names.js";
+import { SLOT_WORDS } from "../../food.js";
+import { numberOf, titleOf } from "./names.js";
 
 const deps = { household, settings: settings.writer };
 

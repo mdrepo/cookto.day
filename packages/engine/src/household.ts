@@ -67,3 +67,29 @@ export function memberProblems(value: unknown): string[] {
   }
   return problems;
 }
+
+const isChild = (m: Member) => m.kind !== "adult";
+
+/** A meal only children eat: their snacks, say. Theirs is the child's list (specs/145). */
+export function childrenOnly(
+  slot: MealSlot,
+  members: readonly Member[],
+): boolean {
+  const eaters = eatersOf(slot, members);
+  return eaters.length > 0 && eaters.every(isChild);
+}
+
+/**
+ * How many a dish serves at a meal (specs/145): everyone who eats it; the
+ * adults only, when the children have a dish of their own (`true`); or,
+ * for that dish ("child"), the children.
+ */
+export function servings(
+  slot: MealSlot,
+  members: readonly Member[],
+  childHasOwn: boolean | "child",
+): number {
+  const eaters = eatersOf(slot, members);
+  if (childHasOwn === "child") return eaters.filter(isChild).length;
+  return childHasOwn ? eaters.filter((m) => !isChild(m)).length : eaters.length;
+}

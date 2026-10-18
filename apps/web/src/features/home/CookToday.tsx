@@ -8,6 +8,7 @@ import {
   Tiles,
 } from "@cookto/ui";
 import { useState } from "react";
+import { ChildDish } from "./ChildDish.js";
 import { useCookToday } from "./useCookToday.js";
 
 /** Cook today: a pick per meal, and why (specs/72, 80); each dish opens (#95). */
@@ -45,6 +46,7 @@ export function CookToday() {
                 </Button>
               </div>
             )}
+            <ChildDish slot={meal.slot} />
             {meal.others.length > 0 &&
               (more.has(meal.slot) ? (
                 <div>

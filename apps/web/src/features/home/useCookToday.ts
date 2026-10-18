@@ -1,4 +1,4 @@
-import { cookedOn, type Suggestion } from "@cookto/engine";
+import { cookedOn, type MealSlot, type Suggestion } from "@cookto/engine";
 import { useQuery } from "@tanstack/react-query";
 import { fill } from "../../i18n/format.js";
 import type { Messages } from "../../i18n/en.js";
@@ -75,12 +75,25 @@ export function useCookToday() {
   const packOf = new Map(
     packs.flatMap((p) => p.dishes.map((d) => [d.id, p.id] as const)),
   );
-  const idea = (s: Suggestion) => ({
-    ...ideaOf(s, name, t, locale),
-    onOpen: () => {
-      openDish(packOf.get(s.dish.id) ?? "", s.dish.id);
-    },
-  });
+  // Small round fruit, for a toddler: cut in half (specs/145).
+  const toddler = plans.members.some((x) => x.kind === "toddler");
+  const cut = new Set(plans.dishes.filter((d) => d.cut).map((d) => d.id));
+  const idea = (s: Suggestion, slot: MealSlot) => {
+    const words = ideaOf(s, name, t, locale);
+    return {
+      ...words,
+      reasons:
+        toddler && cut.has(s.dish.id)
+          ? [
+              ...words.reasons,
+              { key: "cut", text: t.cutInHalf, tone: "warm" as const },
+            ]
+          : words.reasons,
+      onOpen: () => {
+        openDish(packOf.get(s.dish.id) ?? "", s.dish.id, { slot });
+      },
+    };
+  };
   return {
     title: t.cookToday,
     otherIdeas: t.otherIdeas,
@@ -88,7 +101,9 @@ export function useCookToday() {
     cookedTodayWords: t.cookedToday,
     undo: t.undo,
     meals: plans.today.flatMap(({ slot, suggestions }) => {
-      const [best, ...rest] = suggestions.slice(0, SHOWN).map(idea);
+      const [best, ...rest] = suggestions
+        .slice(0, SHOWN)
+        .map((s) => idea(s, slot));
       if (!best) return [];
       return [
         {

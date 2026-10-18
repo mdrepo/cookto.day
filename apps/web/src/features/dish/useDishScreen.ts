@@ -1,6 +1,7 @@
 import type { DishPhoto } from "@cookto/data";
-import { MEAL_SLOTS, missing } from "@cookto/engine";
+import { MEAL_SLOTS, missing, type Prep, prepFor } from "@cookto/engine";
 import { useQuery } from "@tanstack/react-query";
+import { useStore } from "zustand";
 import { count, fill } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
 import {
@@ -16,8 +17,10 @@ import {
   membersQuery,
   pantryQuery,
   queries,
+  settings,
   stepsQuery,
 } from "../../platform.js";
+import { prepWords } from "../../prep.js";
 import { goBack, useDish } from "../../routes.js";
 import { useDishActions } from "./useDishActions.js";
 
@@ -29,6 +32,28 @@ function photoOf(photo: DishPhoto | undefined, words: string) {
     src: photo.large,
     credit: fill(words, { author, licence }),
     source: photo.source,
+  };
+}
+
+/**
+ * How to cook it: its prep, for the household's beans, above the
+ * ingredients (specs/144), and its steps under them (specs/149).
+ */
+function useRecipe(
+  at: { pack: string; dish: string } | null,
+  dish: { prep?: readonly Prep[] } | undefined,
+  name: ReturnType<typeof namer>,
+) {
+  const { locale, t } = useWords();
+  const beans = useStore(settings.store, (s) => s.beans);
+  return {
+    prepTitle: t.prep,
+    prep: dish
+      ? prepWords(name, t, locale).lines(prepFor(dish, beans), true)
+      : [],
+    stepsTitle: t.steps,
+    steps: useSteps(at),
+    seeFullVersion: t.seeFullVersion,
   };
 }
 
@@ -55,7 +80,6 @@ export function useDishScreen() {
   const { skip } = useKitchenSettings();
   const { data: items = [] } = useQuery(pantryQuery, queries);
   const { data: members = [] } = useQuery(membersQuery, queries);
-  const steps = useSteps(at);
   const dish = packs
     .find((p) => p.id === at?.pack)
     ?.dishes.find((d) => d.id === at?.dish);
@@ -63,6 +87,7 @@ export function useDishScreen() {
   const staples = staplesToAssume(packs, items);
   const needs = missing(dish?.ingredients ?? [], have, staples);
   const actions = useDishActions(dish?.id, needs);
+  const recipe = useRecipe(at, dish, name);
   if (!dish) return null;
 
   // Nobody saved yet (a sample, or setup skipped): one person.
@@ -118,9 +143,7 @@ export function useDishScreen() {
           ]
         : []),
     ],
-    stepsTitle: t.steps,
-    steps,
-    seeFullVersion: t.seeFullVersion,
+    ...recipe,
     ...actions,
     source: dish.source,
     photo: photoOf(dish.photo, t.photoBy),

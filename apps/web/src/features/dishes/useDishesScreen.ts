@@ -1,5 +1,6 @@
-import { MEAL_SLOTS } from "@cookto/engine";
+import { MEAL_SLOTS, prepFor } from "@cookto/engine";
 import { useQuery } from "@tanstack/react-query";
+import { useStore } from "zustand";
 import { count, fill } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
 import {
@@ -10,7 +11,8 @@ import {
   useKitchenSettings,
   useLoadedPacks,
 } from "../../food.js";
-import { pantryQuery, queries } from "../../platform.js";
+import { pantryQuery, queries, settings } from "../../platform.js";
+import { prepWords } from "../../prep.js";
 import { open, openDish, useDishesWith } from "../../routes.js";
 
 /**
@@ -23,6 +25,8 @@ export function useDishesScreen() {
   const packs = useLoadedPacks();
   const { cuisines } = useKitchenSettings();
   const name = namer(packs, locale);
+  const prep = prepWords(name, t, locale);
+  const beans = useStore(settings.store, (s) => s.beans);
   const { data: items = [] } = useQuery(pantryQuery, queries);
   // Narrowed to one food (#105): only the dishes that use it.
   const food = useDishesWith();
@@ -33,12 +37,16 @@ export function useDishesScreen() {
       item: {
         key: `${pack}/${dish.id}`,
         name: name("dishes", dish.id),
-        line: listOf(
-          locale,
-          MEAL_SLOTS.filter((s) => dish.slots.includes(s)).map(
-            (s) => t[SLOT_WORDS[s]],
+        // Its meals, and its prep (specs/144): "Soak the chickpeas 8 hours before".
+        line: [
+          listOf(
+            locale,
+            MEAL_SLOTS.filter((s) => dish.slots.includes(s)).map(
+              (s) => t[SLOT_WORDS[s]],
+            ),
           ),
-        ),
+          ...prep.lines(prepFor(dish, beans)),
+        ].join(" · "),
         end: needs === 0 ? t.hasEverything : count(locale, t.needsCount, needs),
         /** Its small photo's address, if it has one (specs/118). */
         photo: dish.photo?.small,

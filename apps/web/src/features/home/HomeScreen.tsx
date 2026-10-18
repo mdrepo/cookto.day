@@ -1,10 +1,20 @@
 import type { ReactNode } from "react";
-import { Button, Cluster, Note, Panes, Screen, UndoBar } from "@cookto/ui";
+import {
+  Button,
+  Cluster,
+  Note,
+  Panes,
+  Screen,
+  Stack,
+  UndoBar,
+} from "@cookto/ui";
 import { openSettings } from "../../routes.js";
 import { CookNow } from "./CookNow.js";
 import { CookToday } from "./CookToday.js";
 import { useHomeScreen } from "./useHomeScreen.js";
 import { KitchenCards, KitchenMore } from "./KitchenStart.js";
+import { PrepNotes } from "./PrepNotes.js";
+import { Tomorrow } from "./Tomorrow.js";
 import { type ItemSheetFor, UseSoon } from "./UseSoon.js";
 
 /** Today: the household, the kitchen, and what to cook (specs/72, 80; #84). */
@@ -47,9 +57,15 @@ export function HomeScreen({
         </Cluster>
       )}
       <KitchenCards />
+      <PrepNotes />
       <CookNow />
       <Panes
-        primary={<CookToday />}
+        primary={
+          <Stack gap={6}>
+            <CookToday />
+            <Tomorrow />
+          </Stack>
+        }
         secondary={
           <UseSoon
             sheet={itemSheet}

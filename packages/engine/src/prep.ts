@@ -64,7 +64,7 @@ export function prepFor(
 }
 
 /** Whether a dish's prep has to start the day before. */
-function overnight(prep: readonly Prep[]): boolean {
+export function overnight(prep: readonly Prep[]): boolean {
   return prep.some((p) => p.hours >= OVERNIGHT_HOURS);
 }
 

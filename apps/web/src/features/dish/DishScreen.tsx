@@ -94,6 +94,18 @@ export function DishScreen({ bar }: { bar: ReactNode }) {
       <Panes
         primary={
           <Stack gap={6}>
+            {s.prep.length > 0 && (
+              <Section title={s.prepTitle}>
+                <Rows
+                  label={s.prepTitle}
+                  rows={s.prep.map((line) => ({
+                    key: line,
+                    label: line,
+                    value: "",
+                  }))}
+                />
+              </Section>
+            )}
             {s.need.length > 0 && (
               <Section title={s.youNeed}>
                 <Rows label={s.youNeed} rows={s.need} />

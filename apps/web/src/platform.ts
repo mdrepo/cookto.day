@@ -4,6 +4,7 @@ import {
   createHousehold,
   createPacks,
   createPantry,
+  createPlans,
   createSettings,
   createShopping,
 } from "@cookto/data";
@@ -72,6 +73,15 @@ export const cookedQuery = queryOptions({
   queryFn: ({ signal }) => cooked.reader.all(signal),
 });
 
+/** Meals planned the evening before, and their prep (specs/144). */
+export const plans = createPlans(records, { changes });
+
+/** Every planned meal. Hooks narrow it with `select`. */
+export const plansQuery = queryOptions({
+  queryKey: ["plans", "all"],
+  queryFn: ({ signal }) => plans.reader.all(signal),
+});
+
 /** Everything in the pantry. Hooks narrow it with `select`. */
 export const pantryQuery = queryOptions({
   queryKey: ["pantry", "items"],
@@ -85,6 +95,15 @@ export const packQuery = (id: string) =>
     queryFn: () => packs.load(id),
   });
 
+/** "21:00" as people say it: "9 pm" (specs/144). */
+export function timeOfDay(hhmm: string, locale: string): string {
+  const [h = 0, m = 0] = hhmm.split(":").map(Number);
+  return new Intl.DateTimeFormat(locale, {
+    hour: "numeric",
+    ...(m === 0 ? {} : { minute: "2-digit" }),
+  }).format(new Date(2000, 0, 1, h, m));
+}
+
 /** This moment, for showing the date: the app's one clock. */
 export function now(): Date {
   return new Date();
@@ -97,11 +116,18 @@ export const stepsQuery = (id: string) =>
     queryFn: () => packs.steps(id),
   });
 
+const two = (n: number) => String(n).padStart(2, "0");
+
 /** Today in the household's own calendar, "YYYY-MM-DD". */
 export function today(): string {
   const now = new Date();
-  const two = (n: number) => String(n).padStart(2, "0");
   return `${now.getFullYear()}-${two(now.getMonth() + 1)}-${two(now.getDate())}`;
+}
+
+/** The household's time now, "YYYY-MM-DDTHH:MM" (specs/144). */
+export function clock(): string {
+  const now = new Date();
+  return `${today()}T${two(now.getHours())}:${two(now.getMinutes())}`;
 }
 
 /** Whether the address asks for a sample kitchen: "?sample". */

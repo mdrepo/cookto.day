@@ -143,6 +143,52 @@ export const en = {
   otherIdeas: "Other ideas",
   pages: "Pages",
   close: "Close",
+  prep: "Prep",
+  tomorrow: "Tomorrow",
+  yes: "Yes",
+  no: "No",
+  prepSoakBefore: {
+    one: "Soak the {food} {n} hour before",
+    other: "Soak the {food} {n} hours before",
+  },
+  prepMarinateBefore: {
+    one: "Marinate the {food} {n} hour before",
+    other: "Marinate the {food} {n} hours before",
+  },
+  prepFermentBefore: {
+    one: "Let the {food} ferment {n} hour before",
+    other: "Let the {food} ferment {n} hours before",
+  },
+  prepThawBefore: {
+    one: "Thaw the {food} {n} hour before",
+    other: "Thaw the {food} {n} hours before",
+  },
+  prepSoakOvernight: {
+    one: "Soak the {food} overnight, at least {n} hour",
+    other: "Soak the {food} overnight, at least {n} hours",
+  },
+  prepMarinateOvernight: {
+    one: "Marinate the {food} overnight, at least {n} hour",
+    other: "Marinate the {food} overnight, at least {n} hours",
+  },
+  prepFermentOvernight: { other: "Let the {food} ferment overnight" },
+  prepThawOvernight: { other: "Thaw the {food} overnight" },
+  doSoak: "soak the {food}",
+  doMarinate: "marinate the {food}",
+  doFerment: "let the {food} ferment",
+  doThaw: "thaw the {food}",
+  sinceSoak: "Soaking since {time}",
+  sinceMarinate: "Marinating since {time}",
+  sinceFerment: "Fermenting since {time}",
+  sinceThaw: "Thawing since {time}",
+  prepDoneLastNight: "Done last night",
+  prepTonight: "Tonight: {do}, for tomorrow's {meal}",
+  prepAsk: "Did you {do} last night?",
+  beans: "Beans",
+  driedBeans: "Dried beans",
+  driedBeansLine: "Soaked the night before",
+  tinnedBeans: "Tinned beans",
+  tinnedBeansLine: "Ready to cook, no soaking",
 };
 
 /** Words that change with a number: CLDR's plural forms, "other" always. */

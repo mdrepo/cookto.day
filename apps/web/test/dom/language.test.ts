@@ -19,26 +19,9 @@ describe("language switch", () => {
     },
   );
 
-  test("English is chosen; the other languages are coming soon", () => {
-    // The language list is in Settings since #84.
-    const page = openPage({ hash: "#/settings" });
-    expect(page.text("h1")).toBe("Settings");
-    expect(page.languages()).toEqual([
-      { code: "en", text: "English", off: false },
-      { code: "hi", text: "हिन्दी (coming soon)", off: true },
-      { code: "mr", text: "मराठी (coming soon)", off: true },
-      { code: "ar", text: "العربية (coming soon)", off: true },
-    ]);
-    expect(page.doc.documentElement.lang).toBe("en");
-  });
-
-  test("a coming-soon language can't be chosen", () => {
-    const page = openPage({ hash: "#/settings" });
-    expect(page.text("h1")).toBe("Settings");
-    page.chooseLanguage("mr");
-    expect(page.doc.documentElement.lang).toBe("en");
-    expect(page.storage.getItem("cookto.day:language")).toBeNull();
-  });
+  // The language list is in Settings (#84), which loads after the first
+  // page since it moved under More (specs/175): e2e/languages.spec.ts shows
+  // English chosen and the coming-soon languages switched off.
 
   test("someone who chose Marathi before keeps English for now", () => {
     const page = openPage({ storage: { "cookto.day:language": "mr" } });

@@ -5,11 +5,10 @@ import { openPage } from "../helpers/page.js";
 // Arabic are coming soon, and reviewers see them with ?preview-language=.
 
 describe("language switch", () => {
+  // Hindi, Marathi and Arabic load after the first page (ADR 0013), which
+  // this one-file build can't do: e2e/languages.spec.ts previews them.
   test.each([
     ["en", "ltr", "Choose what you cook, then add what's in your kitchen."],
-    ["hi", "ltr", "क्या पकाते हैं चुनें, फिर रसोई में जो है वह जोड़ें।"],
-    ["mr", "ltr", "काय शिजवता ते निवडा, मग स्वयंपाकघरात जे आहे ते जोडा."],
-    ["ar", "rtl", "اختر ما تطبخه، ثم أضف ما في مطبخك."],
   ])(
     "previewing %p sets lang, direction %p and the words",
     (code, dir, body) => {

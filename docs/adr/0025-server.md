@@ -90,3 +90,8 @@ Deleting an account deletes its data within 30 days, and export works at any tim
 ## Notes (2026-10-16)
 
 - **AI providers:** [0028](0028-receipt-photos-ai.md) refines the sentence on AI: a provider may keep what we send for a limited time only to detect abuse, and must never train on it. The app says so before the person agrees.
+
+## Notes (2026-10-18)
+
+- **Sign in with Google, not an emailed code** (spec #150). The owner chose one tap over codes on 17 Oct 2026. What changes: no email provider; the session cookie is `SameSite=Lax`, so the return from Google carries it. What stays: the page talks only to our API, loads nothing from Google, and never sees a token; Supabase checks the sign-in; our own `account_id` is what data refers to; signing in is optional. `Auth` takes one provider per way in, so a WhatsApp code can follow as another.
+- **Bill forwarding** keeps its rule that only a member's verified email is accepted: a Google account's email is verified by Google.

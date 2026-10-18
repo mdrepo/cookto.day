@@ -36,6 +36,10 @@
 # them, so an agent can't redefine success to match its code (ADR 0002).
 /specs/                     @mdrepo
 
+# What people cook and eat: amounts, shelf lives, steps, prep and photos.
+# Agents propose; the owner merges (ADR 0029).
+/packs/                     @mdrepo
+
 # Each workspace's manifest, config, build scripts and tests (ADR 0016).
 # agents:check fails if a workspace has one of these that isn't listed.
 /apps/web/package.json              @mdrepo

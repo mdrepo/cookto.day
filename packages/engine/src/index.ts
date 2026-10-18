@@ -35,3 +35,15 @@ export {
   type MealSuggestions,
   type Suggestion,
 } from "./cook-today.js";
+export {
+  type Beans,
+  overnight,
+  type Plan,
+  type Prep,
+  type PrepEvent,
+  prepEvents,
+  prepFor,
+  type PrepKind,
+  PREP_KINDS,
+  waitingForPrep,
+} from "./prep.js";

@@ -6,6 +6,7 @@
 import type { MealSlot } from "./household.js";
 import { missing } from "./needs.js";
 import { compareUrgency, type PantryItem, urgency } from "./pantry.js";
+import type { Prep } from "./prep.js";
 
 export interface Dish {
   id: string;
@@ -14,6 +15,8 @@ export interface Dish {
   ingredients: readonly string[];
   /** Parts served with it, any one of them ("roti", "rice"). */
   servedWith?: readonly string[];
+  /** What to do hours before: soak, marinate, ferment (specs/144). */
+  prep?: readonly Prep[];
 }
 
 export interface Suggestion {
@@ -101,21 +104,27 @@ export interface MealSuggestions {
  * What to cook today for each meal, in the day's order (specs/94). A dish
  * picked for an earlier meal moves to the end of a later meal's list, so
  * lunch and dinner differ when the kitchen offers more than one dish. Dishes
- * to avoid, cooked lately, move to the end the same way (specs/104).
+ * to avoid, cooked lately, move to the end the same way (specs/104). A dish
+ * planned the evening before is its meal's pick (specs/144).
  */
 export function cookTodayForMeals(
   input: Omit<CookTodayInput, "slot"> & {
     slots: readonly MealSlot[];
     /** Dishes cooked lately (specs/104): no meal's pick, but still ideas. */
     avoid?: ReadonlySet<string>;
+    /** Dishes planned the evening before (specs/144): their meal's pick. */
+    planned?: Partial<Record<MealSlot, string>>;
   },
 ): MealSuggestions[] {
   const picked = new Set<string>(input.avoid);
   return input.slots.map((slot) => {
     const ranked = cookToday({ ...input, slot });
+    const plan = input.planned?.[slot];
+    const first = (s: Suggestion) => s.dish.id === plan;
     const suggestions = [
-      ...ranked.filter((s) => !picked.has(s.dish.id)),
-      ...ranked.filter((s) => picked.has(s.dish.id)),
+      ...ranked.filter(first),
+      ...ranked.filter((s) => !first(s) && !picked.has(s.dish.id)),
+      ...ranked.filter((s) => !first(s) && picked.has(s.dish.id)),
     ];
     const best = suggestions[0];
     if (best) picked.add(best.dish.id);

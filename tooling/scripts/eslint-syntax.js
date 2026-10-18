@@ -48,6 +48,16 @@ const inReact = [
   },
 ];
 
+const ROLE =
+  "A role on the app's own markup is a hand-made part (ADR 0019). Use the kit's part (Reminders, Reasons, Choice, ...), or add the part to @cookto/ui with its design row, kit page and tests.";
+
+// Screens written before this rule: each file leaves the list when it moves
+// to a kit part, and none joins it. Keep it shrinking.
+const SCREENS_WITH_ROLES = [
+  "apps/web/src/features/onboarding/PersonCard.tsx",
+  "apps/web/src/features/pantry/TapBought.tsx",
+];
+
 /** @type {import("eslint").Linter.Config[]} */
 export const syntax = [
   {
@@ -67,6 +77,18 @@ export const syntax = [
     rules: {
       ...reactHooks.configs.recommended.rules,
       "no-restricted-syntax": ["error", ...inReact],
+    },
+  },
+  {
+    // The app's screens compose the kit's parts; they don't make their own.
+    files: ["apps/web/src/**/*.tsx"],
+    ignores: SCREENS_WITH_ROLES,
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        ...inReact,
+        { selector: "JSXAttribute[name.name='role']", message: ROLE },
+      ],
     },
   },
 ];

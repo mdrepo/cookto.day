@@ -1,4 +1,4 @@
-import type { MealSlot } from "@cookto/engine";
+import type { MealSlot, Prep } from "@cookto/engine";
 import catalog from "./packs/catalog.js";
 
 // Cuisine packs, as the app loads them (ADR 0015, 0027): written from packs/
@@ -38,6 +38,8 @@ export interface AppPack {
      */
     amounts?: [number, "g" | "ml" | "pieces"][];
     servedWith?: string[];
+    /** What to do hours before, its food by Wikidata id (specs/144). */
+    prep?: Prep[];
     /** Where the recipe is: the app links to it, it doesn't copy it. */
     source?: string;
     /** A free photo of it, credited, and the addresses of its files (specs/118). */

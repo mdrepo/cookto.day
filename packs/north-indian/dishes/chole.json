@@ -71,6 +71,14 @@
     }
   },
   "servedWith": ["roti", "rice"],
+  "prep": [
+    {
+      "do": "soak",
+      "what": "chickpeas",
+      "hours": 8,
+      "tinned": true
+    }
+  ],
   "sources": [
     "https://www.indianhealthyrecipes.com/chole/",
     "https://www.indianhealthyrecipes.com/chana-masala/",

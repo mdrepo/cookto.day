@@ -16,6 +16,7 @@ export {
   type StapleGroup,
 } from "./packs.js";
 export { createPantry, type KitchenItem, type NewItem } from "./pantry.js";
+export { createPlans, type PlannedMeal } from "./plans.js";
 export { createShopping, type ListItem } from "./shopping.js";
 export { memoryRecordStore, type RecordStore } from "./record-store.js";
 export {
@@ -25,4 +26,10 @@ export {
   watchSaves,
 } from "./saves.js";
 export { type SyncRecord } from "./records.js";
-export { createSettings, THEMES, type Theme } from "./settings.js";
+export {
+  BEANS,
+  type Beans,
+  createSettings,
+  THEMES,
+  type Theme,
+} from "./settings.js";

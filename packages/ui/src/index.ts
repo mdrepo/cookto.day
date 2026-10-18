@@ -25,6 +25,7 @@ export { Note, type NoteProps } from "./components/Note/Note.js";
 export { Photo } from "./components/Photo/Photo.js";
 export { Pick } from "./components/Pick/Pick.js";
 export { Reasons } from "./components/Reasons/Reasons.js";
+export { Reminders } from "./components/Reminders/Reminders.js";
 export { Rows } from "./components/Rows/Rows.js";
 export { Select, type SelectProps } from "./components/Select/Select.js";
 export { Sheet } from "./components/Sheet/Sheet.js";

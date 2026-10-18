@@ -33,3 +33,4 @@ export {
   bought,
 } from "./shopping.js";
 export { chooseCountry, chooseLanguage, chooseTheme } from "./settings.js";
+export { chooseBeans, keepTomorrow, prepDone, prepNotDone } from "./prep.js";

@@ -1,41 +1,18 @@
-import type { AppPack } from "@cookto/data";
-import {
-  cookedLately,
-  cookedOn,
-  cookTodayForMeals,
-  defaultMeals,
-  plannedSlots,
-  type Suggestion,
-} from "@cookto/engine";
+import { cookedOn, type Suggestion } from "@cookto/engine";
 import { useQuery } from "@tanstack/react-query";
 import { fill } from "../../i18n/format.js";
 import type { Messages } from "../../i18n/en.js";
 import { useWords } from "../../i18n/useWords.js";
-import {
-  staplesToAssume,
-  listOf,
-  namer,
-  SLOT_WORDS,
-  useKitchenSettings,
-  useLoadedPacks,
-} from "../../food.js";
-import { cookedIt, notCooked, KEEP_DIFFERENT_DAYS } from "@cookto/usecases";
-import {
-  cooked,
-  cookedQuery,
-  membersQuery,
-  pantryQuery,
-  queries,
-  today,
-} from "../../platform.js";
+import { listOf, namer, SLOT_WORDS } from "../../food.js";
+import { cookedIt, notCooked } from "@cookto/usecases";
+import { cooked, cookedQuery, queries } from "../../platform.js";
 import { openDish } from "../../routes.js";
+import { useMealPlans } from "./useMealPlans.js";
 
 /** How many dishes each meal suggests. */
 const SHOWN = 5;
 /** How much of the pantry a suggestion names: what needs using most. */
 const USES_SHOWN = 2;
-
-const dishesOf = (packs: readonly AppPack[]) => packs.flatMap((p) => p.dishes);
 
 /** One suggestion in words: the dish, what it's served with, and why. */
 function ideaOf(
@@ -84,28 +61,17 @@ function ideaOf(
 
 /**
  * What to cook today, for each meal someone eats (specs/72, criteria 6 to 8),
- * a different dish for each when there's more than one (specs/94).
+ * a different dish for each when there's more than one (specs/94); a meal
+ * planned the evening before keeps its dish (specs/144).
  */
 export function useCookToday() {
   const { locale, t } = useWords();
-  const packs = useLoadedPacks();
-  const name = namer(packs, locale);
-  const { skip } = useKitchenSettings();
-  const { data: items = [] } = useQuery(pantryQuery, queries);
-  const { data: planned = [] } = useQuery(
-    { ...membersQuery, select: plannedSlots },
-    queries,
-  );
-  // Nobody saved yet (a sample, or onboarding skipped): one adult's meals.
-  const slots = planned.length > 0 ? planned : defaultMeals("adult");
+  const plans = useMealPlans();
   const { data: history = [] } = useQuery(cookedQuery, queries);
-  const day = today();
-  // Cooked in the last days, not today: no meal's pick (specs/104).
-  const avoid = cookedLately(history, day, KEEP_DIFFERENT_DAYS);
+  if (!plans) return null;
+  const { packs, day } = plans;
+  const name = namer(packs, locale);
   const cookedToday = cookedOn(history, day);
-  const dishes = dishesOf(packs);
-  if (dishes.length === 0) return null;
-  const staples = staplesToAssume(packs, items);
   const packOf = new Map(
     packs.flatMap((p) => p.dishes.map((d) => [d.id, p.id] as const)),
   );
@@ -121,15 +87,7 @@ export function useCookToday() {
     weCookedThis: t.weCookedThis,
     cookedTodayWords: t.cookedToday,
     undo: t.undo,
-    meals: cookTodayForMeals({
-      slots,
-      dishes,
-      pantry: items,
-      staples,
-      today: day,
-      skip: new Set(skip),
-      avoid,
-    }).flatMap(({ slot, suggestions }) => {
+    meals: plans.today.flatMap(({ slot, suggestions }) => {
       const [best, ...rest] = suggestions.slice(0, SHOWN).map(idea);
       if (!best) return [];
       return [

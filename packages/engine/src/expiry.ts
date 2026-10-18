@@ -22,3 +22,8 @@ export function daysLeft(
 ): number {
   return dayNumber(boughtOn) + shelfLifeDays - dayNumber(today);
 }
+
+/** The day `n` days after `day` (before, when `n` is negative). */
+export function addDays(day: string, n: number): string {
+  return new Date((dayNumber(day) + n) * DAY_MS).toISOString().slice(0, 10);
+}

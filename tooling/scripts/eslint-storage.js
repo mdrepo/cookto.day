@@ -7,10 +7,10 @@ import { RAW_HTML } from "./eslint-syntax.js";
 // A file gets one setting per rule (a later block replaces an earlier one),
 // so this block repeats the general raw-HTML property bans.
 
-const MESSAGE =
+export const MESSAGE =
   "Only packages/data and packages/data-web touch storage or the network (ADR 0024). Read or write through a repository; the app hands the browser's storage to it in apps/web/src/platform.ts.";
 
-const GLOBALS = [
+export const GLOBALS = [
   "localStorage",
   "sessionStorage",
   "indexedDB",

@@ -16,3 +16,29 @@
 .text {
   font-weight: 600;
 }
+
+/* A problem (#138): the warm warning colour's border and words. It sits
+   just above the tab bar, in the screen's dock; on a wide screen, where the
+   bar is a rail, it floats at the bottom of the column beside it. */
+.problem {
+  margin-block-end: var(--space-3);
+  margin-inline: max(var(--space-4), calc((100% - 40rem) / 2));
+  border-color: var(--color-warn);
+  background: var(--color-surface);
+}
+
+@container (min-width: 840px) {
+  .problem {
+    position: fixed;
+    inset-block-end: var(--space-4);
+    /* The rail and the column's padding at the start; the column's
+       padding at the end; as wide as the column's content at most. */
+    inset-inline: calc(var(--space-8) * 4) var(--space-8);
+    max-inline-size: calc(64rem - var(--space-8) * 2);
+    margin: 0 auto;
+  }
+}
+
+.problem .text {
+  color: var(--color-warn);
+}

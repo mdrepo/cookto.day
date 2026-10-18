@@ -62,7 +62,9 @@ test.describe("The shopping list", () => {
     await k.openDish("Palak paneer");
     await k.press("Add to my list");
     await openList(k, page, 3);
-    await page.getByRole("checkbox", { name: "Onion" }).check();
+    // Ticking takes the row away, so click: check() would wait to see it
+    // ticked, and under load the row is already gone.
+    await page.getByRole("checkbox", { name: "Onion" }).click();
     await expect(onList(page)).toHaveText(["Tomato", "Cream"]);
     await page.reload();
     await expect(onList(page)).toHaveText(["Tomato", "Cream"]);

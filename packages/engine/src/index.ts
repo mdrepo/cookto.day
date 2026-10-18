@@ -4,6 +4,7 @@ export { addDays, daysLeft } from "./expiry.js";
 export { assumedStaples, missing } from "./needs.js";
 export { type Cooked, cookedLately, cookedOn } from "./cooked.js";
 export {
+  childrenOnly,
   defaultMeals,
   eatersOf,
   MEAL_SLOTS,
@@ -13,6 +14,7 @@ export {
   type MemberKind,
   memberProblems,
   plannedSlots,
+  servings,
 } from "./household.js";
 export { COUNTRIES, type Country, openCountries } from "./places.js";
 export {

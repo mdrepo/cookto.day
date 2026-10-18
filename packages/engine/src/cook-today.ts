@@ -17,6 +17,8 @@ export interface Dish {
   servedWith?: readonly string[];
   /** What to do hours before: soak, marinate, ferment (specs/144). */
   prep?: readonly Prep[];
+  /** Who it's for: "child", a dish of the child's own (specs/145). */
+  for?: readonly "child"[];
 }
 
 export interface Suggestion {
@@ -105,7 +107,8 @@ export interface MealSuggestions {
  * picked for an earlier meal moves to the end of a later meal's list, so
  * lunch and dinner differ when the kitchen offers more than one dish. Dishes
  * to avoid, cooked lately, move to the end the same way (specs/104). A dish
- * planned the evening before is its meal's pick (specs/144).
+ * planned the evening before is its meal's pick (specs/144). A meal only
+ * children eat picks from the child's list; the others never do (specs/145).
  */
 export function cookTodayForMeals(
   input: Omit<CookTodayInput, "slot"> & {
@@ -114,11 +117,20 @@ export function cookTodayForMeals(
     avoid?: ReadonlySet<string>;
     /** Dishes planned the evening before (specs/144): their meal's pick. */
     planned?: Partial<Record<MealSlot, string>>;
+    /** Meals only children eat: they pick from the child's list (specs/145). */
+    childSlots?: ReadonlySet<MealSlot>;
   },
 ): MealSuggestions[] {
   const picked = new Set<string>(input.avoid);
   return input.slots.map((slot) => {
-    const ranked = cookToday({ ...input, slot });
+    const forChild = input.childSlots?.has(slot) ?? false;
+    const ranked = cookToday({
+      ...input,
+      slot,
+      dishes: input.dishes.filter(
+        (d) => (d.for?.includes("child") ?? false) === forChild,
+      ),
+    });
     const plan = input.planned?.[slot];
     const first = (s: Suggestion) => s.dish.id === plan;
     const suggestions = [

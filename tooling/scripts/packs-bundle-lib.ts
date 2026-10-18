@@ -19,6 +19,11 @@ export interface AppPack {
     servedWith?: string[];
     /** Prep hours before, its food keyed by Wikidata id (specs/144). */
     prep?: { do: string; what: string; hours: number; tinned?: boolean }[];
+    /** A dish of the child's own, its add-ins and whether to cut it (#145). */
+    for?: string[];
+    /** Each add-in: its Wikidata id and its amount for one child. */
+    addIns?: [string, number, string][];
+    cut?: boolean;
     /** A full version of the recipe, to link to; none when cooked at home. */
     source?: string;
     /** Its photo's credit (specs/118); the files come in their own module. */
@@ -62,6 +67,19 @@ export function bundlePack(pack: Pack): AppPack {
       ...(dish.prep
         ? { prep: dish.prep.map((p) => ({ ...p, what: q(p.what) })) }
         : {}),
+      ...(dish.for ? { for: dish.for } : {}),
+      ...(dish.addIns
+        ? {
+            addIns: Object.entries(dish.addIns).map(
+              ([food, use]): [string, number, string] => [
+                q(food),
+                use.amount,
+                use.unit,
+              ],
+            ),
+          }
+        : {}),
+      ...(dish.cut ? { cut: true } : {}),
       ...linkOf(dish.sources),
       ...(dish.photo ? { photo: dish.photo } : {}),
     })),

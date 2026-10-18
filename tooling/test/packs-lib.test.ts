@@ -145,6 +145,24 @@ describe("packs:check", () => {
     expect(packProblems(noTime, sources)).toEqual([]);
   });
 
+  test("food bought frozen keeps up to FoodKeeper's freezer time (#149)", () => {
+    const frozen = { ...sources };
+    frozen.foodkeeper = {
+      "291": {
+        ...(sources.foodkeeper["291"] as Sources["foodkeeper"][string]),
+        freezer: [240, 240],
+      },
+    };
+    const pack = goodPack();
+    const spinach = pack.ingredients.spinach as { freezes?: object };
+    spinach.freezes = { days: 90, foodkeeper: 291 };
+    expect(packProblems(pack, frozen)).toEqual([]);
+    spinach.freezes = { days: 300, foodkeeper: 291 };
+    expect(packProblems(pack, frozen)).toEqual([
+      "ingredients/spinach.json: keeps 300 days frozen, but FoodKeeper 291 (Lettuce, leaf, spinach) says 240 to 240. Use 240 or fewer: shorter only warns early.",
+    ]);
+  });
+
   test("an ingredient is a staple or has a shelf life, and a dish uses only defined ones", () => {
     const pack = goodPack();
     pack.ingredients["paneer"] = { wikidata: "Q5090", label: "rice" };

@@ -49,3 +49,11 @@ export {
   PREP_KINDS,
   waitingForPrep,
 } from "./prep.js";
+export {
+  clashes,
+  type FoodMatch,
+  matchFood,
+  nameIndex,
+  type NameIndex,
+  tidy,
+} from "./names.js";

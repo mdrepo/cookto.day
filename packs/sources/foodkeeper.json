@@ -2,106 +2,127 @@
   "1": {
     "name": "Butter",
     "fridge": [30, 60],
-    "pantry": null
+    "pantry": null,
+    "freezer": [180, 270]
   },
   "14": {
     "name": "Cream, heavy",
     "fridge": [10, 10],
-    "pantry": null
+    "pantry": null,
+    "freezer": [90, 120]
   },
   "21": {
     "name": "Eggs, in shell",
     "fridge": [21, 35],
-    "pantry": null
+    "pantry": null,
+    "freezer": null
   },
   "33": {
     "name": "Yogurt",
     "fridge": [7, 14],
-    "pantry": null
+    "pantry": null,
+    "freezer": [30, 60]
   },
   "118": {
     "name": "Chicken parts, legs or thighs",
     "fridge": [1, 2],
-    "pantry": null
+    "pantry": null,
+    "freezer": [270, 270]
   },
   "256": {
     "name": "Citrus fruit, lemon, lime, orange, grapefruit, tangerines, clementines",
     "fridge": [10, 21],
-    "pantry": [10, 10]
+    "pantry": [10, 10],
+    "freezer": null
   },
   "273": {
     "name": "Beans and peas, green, fava, lima, soybean, wax, snow, sugar snap",
     "fridge": [3, 5],
-    "pantry": null
+    "pantry": null,
+    "freezer": [240, 240]
   },
   "279": {
     "name": "Carrots, parsnips",
     "fridge": [14, 21],
-    "pantry": null
+    "pantry": null,
+    "freezer": [300, 360]
   },
   "280": {
     "name": "Cauliflower",
     "fridge": [3, 5],
-    "pantry": null
+    "pantry": null,
+    "freezer": [300, 360]
   },
   "284": {
     "name": "Eggplant",
     "fridge": [4, 7],
-    "pantry": [1, 1]
+    "pantry": [1, 1],
+    "freezer": [180, 240]
   },
   "285": {
     "name": "Garlic",
     "fridge": [3, 14],
-    "pantry": [30, 30]
+    "pantry": [30, 30],
+    "freezer": [30, 30]
   },
   "286": {
     "name": "Ginger root",
     "fridge": [14, 21],
-    "pantry": [2, 5]
+    "pantry": [2, 5],
+    "freezer": [180, 180]
   },
   "291": {
     "name": "Lettuce, leaf, spinach",
     "fridge": [3, 7],
-    "pantry": null
+    "pantry": null,
+    "freezer": null
   },
   "293": {
     "name": "Okra",
     "fridge": [2, 3],
-    "pantry": [1, 1]
+    "pantry": [1, 1],
+    "freezer": [300, 360]
   },
   "294": {
     "name": "Onions, yellow, white, red, etc.",
     "fridge": [60, 60],
-    "pantry": [30, 30]
+    "pantry": [30, 30],
+    "freezer": [300, 360]
   },
   "296": {
     "name": "Peppers",
     "fridge": [4, 14],
-    "pantry": null
+    "pantry": null,
+    "freezer": [180, 240]
   },
   "297": {
     "name": "Potatoes",
     "fridge": [7, 14],
-    "pantry": [30, 60]
+    "pantry": [30, 60],
+    "freezer": [300, 360]
   },
   "306": {
     "name": "Tomatoes",
     "fridge": null,
-    "pantry": null
+    "pantry": null,
+    "freezer": [60, 60]
   },
   "506": {
     "name": "Cilantro",
     "fridge": [14, 21],
-    "pantry": [7, 14]
+    "pantry": [7, 14],
+    "freezer": null
   },
   "546": {
     "name": "Quark, fresh cheese",
     "fridge": [7, 10],
-    "pantry": null
+    "pantry": null,
+    "freezer": null
   },
   "548": {
     "name": "Hot peppers",
     "fridge": [7, 7],
-    "pantry": null
+    "pantry": null,
+    "freezer": [270, 270]
   }
 }

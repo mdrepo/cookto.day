@@ -41,6 +41,8 @@ export async function addStaples(
 
 export interface Food {
   name: string;
+  /** Bought frozen (specs/149). */
+  frozen?: boolean;
   amount?: number;
   unit?: Unit;
   boughtOn: string;
@@ -58,7 +60,12 @@ function idOf(packs: readonly AppPack[], name: string, language: string) {
       const found = Object.entries(words).find(
         ([, word]) => word.toLocaleLowerCase() === wanted,
       );
-      if (found) return { id: found[0], days: pack.fresh[found[0]] };
+      if (found)
+        return {
+          id: found[0],
+          days: pack.fresh[found[0]],
+          frozen: pack.frozen?.[found[0]],
+        };
     }
   return undefined;
 }
@@ -74,7 +81,9 @@ export async function addFood(
     ingredient: known?.id ?? food.name.trim(),
     boughtOn: food.boughtOn,
   };
-  if (known?.days !== undefined) item.shelfLifeDays = known.days;
+  const days = food.frozen ? known?.frozen : known?.days;
+  if (days !== undefined) item.shelfLifeDays = days;
+  if (food.frozen) item.frozen = true;
   if (food.amount !== undefined && food.unit !== undefined) {
     item.amount = food.amount;
     item.unit = food.unit;

@@ -33,9 +33,9 @@ An AI call costs us money each time, so the endpoint is a target. People could r
    - everyone together: 2,000 a day.
 
    Days and months are UTC. Over a limit answers 429, saying which limit and when it resets. If the AI fails, the call is given back; "not a receipt" is not.
-5. **The AI call.** Our fixed instruction and the photo; an answer forced into a schema of item rows, one string each (`name|quantity|unit price|amount`); temperature 0, no thinking, at most 2,560 output tokens (see the notes of 2026-10-17), a 20-second timeout, no retries. The key travels only in a header, and only the adapter holds it.
+5. **The AI call.** Our fixed instruction and the photo; an answer forced into a schema of item lines; temperature 0, no thinking, at most 4,096 output tokens, a 20-second timeout, no retries. The key travels only in a header, and only the adapter holds it.
 
-**We check the answer ourselves.** Its shape, lengths and numbers are validated again; at most 80 lines; a line whose quantity × price isn't its amount is marked "check"; the lines are compared with the printed subtotal. Only the shop, the date and the lines go back, never the AI's raw text. No lines answers 422, "not a receipt".
+**We check the answer ourselves.** Its shape, lengths and numbers are validated again; at most 80 lines; a line whose quantity × price isn't its amount is marked "check"; the lines are compared with the printed total. Only the shop, the date and the lines go back, never the AI's raw text. No lines answers 422, "not a receipt".
 
 **A money backstop.** The Google project gets a spend cap of $10 a month and an alert at $5. Our counter is the real limit: Google applies its cap up to about 10 minutes late. Worst case, every limit reached every day: 2,000 × $0.0003 = $0.60 a day.
 
@@ -68,6 +68,8 @@ An AI call costs us money each time, so the endpoint is a target. People could r
 - **A read is given back whenever Google refuses or fails** (any HTTP error), not only when it's busy or down: Google doesn't bill a failed request ("If your request fails with a 400 or 500 error, you won't be charged", its billing page). Only a billed answer that we can't use still counts.
 
 ## Notes (2026-10-17)
+
+These notes update two numbers in the Decision without changing it: the AI now answers in rows with at most 2,560 output tokens, not 4,096, and the lines are compared with the printed subtotal, not the total.
 
 How far prompt injection can reach, and three changes that shrink it (spec #129, rules 6 and 8). Text printed in a photo can always steer the AI; the design keeps what it can do small: it sees only our instruction and that one photo, has no tools, and only checked item lines reach the person, who reviews them before anything is added.
 

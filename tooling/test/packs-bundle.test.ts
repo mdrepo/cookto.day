@@ -129,6 +129,25 @@ describe("a pack, as the app loads it", () => {
     ]);
   });
 
+  test("a child's dish goes with who it's for, its add-ins and whether to cut it (#145)", () => {
+    const child: Pack = {
+      ...pack,
+      dishes: {
+        "spinach-rice": {
+          ...(pack.dishes["spinach-rice"] as Pack["dishes"][string]),
+          for: ["child"],
+          addIns: { spinach: { amount: 20, unit: "g" } },
+          cut: true,
+        },
+      },
+    };
+    expect(bundlePack(child).dishes[0]).toMatchObject({
+      for: ["child"],
+      addIns: [["Q36814998", 20, "g"]],
+      cut: true,
+    });
+  });
+
   test("a sample item must be one of the pack's ingredients, with a real unit", () => {
     const bad: Pack = {
       ...pack,

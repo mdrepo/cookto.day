@@ -1,4 +1,4 @@
-import { Button, Cluster, ItemList, Reasons, Sheet } from "@cookto/ui";
+import { Button, ItemList, Reminders, Sheet } from "@cookto/ui";
 import type { MealSlot } from "@cookto/engine";
 import { useState } from "react";
 import { useChildDishes } from "./useChildDishes.js";
@@ -12,24 +12,24 @@ export function ChildDish({ slot }: { slot: MealSlot }) {
   const [choosing, setChoosing] = useState(false);
   const meal = c?.forSlot(slot);
   if (!c || !meal) return null;
-  if (meal.planned)
+  if (meal.planned) {
+    const { label, text, open, actions } = meal.planned;
     return (
-      <div role="group" aria-label={meal.planned.label}>
-        <Reasons
-          items={[{ key: "child", text: meal.planned.text, tone: "quiet" }]}
-        />
-        <Cluster gap={2}>
-          <Button kind="plain" onClick={meal.planned.open.run}>
-            {meal.planned.open.label}
-          </Button>
-          {meal.planned.actions.map((a) => (
-            <Button key={a.label} kind="plain" onClick={a.run}>
-              {a.label}
-            </Button>
-          ))}
-        </Cluster>
-      </div>
+      <Reminders
+        label={label}
+        items={[
+          {
+            key: "child",
+            text,
+            actions: [open, ...actions].map((a) => ({
+              label: a.label,
+              onPress: a.run,
+            })),
+          },
+        ]}
+      />
     );
+  }
   return (
     <div>
       <Button

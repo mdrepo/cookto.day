@@ -1,0 +1,56 @@
+{
+  "slots": ["lunch", "dinner"],
+  "ingredients": {
+    "toor-dal": {
+      "amount": 45,
+      "unit": "g"
+    },
+    "basmati-rice": {
+      "amount": 60,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "asafoetida": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.7,
+      "unit": "g"
+    },
+    "ghee": {
+      "amount": 8,
+      "unit": "g"
+    },
+    "jaggery": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    },
+    "lemon": {
+      "amount": 0.25,
+      "unit": "pieces"
+    }
+  },
+  "sources": [
+    "https://www.vegrecipesofindia.com/varan-bhaat-ganesh-chaturthi-recipes/",
+    "https://www.spiceupthecurry.com/maharashtrian-varan-bhaat-recipe/",
+    "https://shwetainthekitchen.com/varan-bhaat-varan-recipe/"
+  ],
+  "steps": [
+    "Rinse the toor dal well and pressure cook it with the turmeric and plenty of water until very soft.",
+    "Rinse the rice until the water runs clear and let it soak for 20 minutes.",
+    "Cook the rice covered in about twice its water on low heat until soft, then fluff it.",
+    "Whisk the dal smooth but not quite a paste, adding hot water for a pouring thickness.",
+    "Stir in the salt and jaggery and simmer for 5 minutes.",
+    "Heat half the ghee, let the cumin sizzle, add the hing and pour it over the dal.",
+    "Serve the varan over hot rice with the rest of the ghee and a squeeze of lemon."
+  ],
+  "note": "This is plain everyday varan with only cumin and hing in the tempering, and a pinch of jaggery as Pune homes like it. Two sources used basmati, so the pack's rice is used rather than adding a new short-grain rice."
+}

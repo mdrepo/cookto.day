@@ -6,9 +6,19 @@ import { kitchen, packs } from "../../platform.js";
 import { goHome, open } from "../../routes.js";
 
 const NAMES: Partial<
-  Record<string, "northIndian" | "southIndian" | "european" | "sriLankan">
+  Record<
+    string,
+    | "northIndian"
+    | "maharashtrian"
+    | "ourKitchen"
+    | "southIndian"
+    | "european"
+    | "sriLankan"
+  >
 > = {
   "north-indian": "northIndian",
+  maharashtrian: "maharashtrian",
+  "our-kitchen": "ourKitchen",
   "south-indian": "southIndian",
   european: "european",
   "sri-lankan": "sriLankan",

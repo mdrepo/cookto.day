@@ -1,0 +1,23 @@
+{
+  "wikidata": "Q23004",
+  "label": "bread roll",
+  "keeps": {
+    "days": 3,
+    "in": "pantry",
+    "foodkeeper": 574
+  },
+  "names": [
+    {
+      "text": "Pav",
+      "lang": "en"
+    },
+    {
+      "text": "पाव",
+      "lang": "hi"
+    },
+    {
+      "text": "पाव",
+      "lang": "mr"
+    }
+  ]
+}

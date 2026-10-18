@@ -63,6 +63,9 @@ export interface BeansWriter {
 export interface KitchenSettingsWriter {
   kitchen(): KitchenSettings;
   setKitchen(kitchen: KitchenSettings): void;
+  /** Pack moves this household has had, done once each (specs/147). */
+  moves(): string[];
+  setMoves(moves: string[]): void;
 }
 
 /** The key is today's, so people keep the language they chose. */
@@ -72,6 +75,7 @@ const THEME = "cookto.day:theme";
 const BEANS_KEY = "cookto.day:beans";
 const ONBOARDED = "cookto.day:onboarded";
 const KITCHEN = "cookto.day:kitchen";
+const MOVES = "cookto.day:moves";
 
 const strings = (v: unknown): v is string[] =>
   Array.isArray(v) && v.every((s) => typeof s === "string");
@@ -92,6 +96,16 @@ function readKitchen(text: string | null): KitchenSettings {
     // not JSON
   }
   return NO_KITCHEN;
+}
+
+/** The pack moves saved, or none when missing or not what we saved. */
+function readMoves(text: string | null): string[] {
+  try {
+    const v: unknown = JSON.parse(text ?? "[]");
+    return strings(v) ? v : [];
+  } catch {
+    return [];
+  }
 }
 
 /** Reads `key`, or null when storage is off (some private modes throw). */
@@ -179,6 +193,10 @@ export function createSettings(
         write(kv, ONBOARDED, "yes");
       },
       kitchen: () => store.getState().kitchen,
+      moves: () => readMoves(read(kv, MOVES)),
+      setMoves(moves) {
+        write(kv, MOVES, JSON.stringify(moves));
+      },
       setKitchen(kitchen) {
         store.setState({ kitchen });
         write(kv, KITCHEN, JSON.stringify(kitchen));

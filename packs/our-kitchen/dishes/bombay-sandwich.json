@@ -1,0 +1,81 @@
+{
+  "slots": ["breakfast", "evening-snack", "dinner"],
+  "ingredients": {
+    "bread": {
+      "amount": 2,
+      "unit": "pieces"
+    },
+    "butter": {
+      "amount": 12,
+      "unit": "g"
+    },
+    "potato": {
+      "amount": 60,
+      "unit": "g"
+    },
+    "beetroot": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "cucumber": {
+      "amount": 40,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 35,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 10,
+      "unit": "g"
+    },
+    "mint": {
+      "amount": 5,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 3,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "lemon": {
+      "amount": 10,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "chaat-masala": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1,
+      "unit": "g"
+    }
+  },
+  "sources": [
+    "https://www.indianhealthyrecipes.com/wprm_print/bombay-sandwich-recipe",
+    "https://www.mygingergarlickitchen.com/PRINT-RECIPES/RECIPE-PRINT-bombay-veg-sandwich-video-recipe.html",
+    "https://www.cookclickndevour.com/wprm_print/bombay-veg-sandwich-recipe-how-to-make-bombay-sandwich-recipe"
+  ],
+  "steps": [
+    "Boil the potato and beetroot until a knife slides in easily, then peel them.",
+    "Blend coriander, mint, green chilli, garlic, a pinch of cumin, salt and lemon juice into a thick chutney.",
+    "Slice the potato, beetroot, cucumber, tomato and onion into thin rounds.",
+    "Spread soft butter on the bread, then a layer of green chutney on top.",
+    "Lay potato slices on one slice and dust them with chaat masala and roasted cumin.",
+    "Add beetroot, cucumber, tomato and onion, with a little more masala between the layers.",
+    "Close with the second slice, chutney side down, and press gently.",
+    "Eat it fresh as it is, or toast it on a tawa or in a sandwich maker until golden."
+  ],
+  "note": "I used chaat masala with roasted cumin in place of a separate sandwich masala, and made the chutney part of the dish so one sandwich is two slices of bread. Toasting is optional, as it is on the street."
+}

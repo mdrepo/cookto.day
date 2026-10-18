@@ -1,0 +1,16 @@
+{
+  "dishes": {
+    "bhel-puri": "Bhel puri",
+    "matki-usal": "Matki usal",
+    "misal-pav": "Misal pav",
+    "pav-bhaji": "Pav bhaji",
+    "poha": "Poha",
+    "sabudana-khichdi": "Sabudana khichdi",
+    "thalipeeth": "Thalipeeth",
+    "varan-bhaat": "Varan bhaat"
+  },
+  "parts": {
+    "roti": "Roti",
+    "rice": "Rice"
+  }
+}

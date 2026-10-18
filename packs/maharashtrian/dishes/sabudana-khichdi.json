@@ -1,0 +1,76 @@
+{
+  "slots": ["breakfast", "lunch"],
+  "ingredients": {
+    "sabudana": {
+      "amount": 65,
+      "unit": "g"
+    },
+    "peanuts": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "potato": {
+      "amount": 60,
+      "unit": "g"
+    },
+    "ghee": {
+      "amount": 10,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "curry-leaves": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 1,
+      "unit": "pieces"
+    },
+    "ginger": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1.5,
+      "unit": "g"
+    },
+    "sugar": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "lemon": {
+      "amount": 0.25,
+      "unit": "pieces"
+    },
+    "coriander-leaves": {
+      "amount": 3,
+      "unit": "g"
+    }
+  },
+  "prep": [
+    {
+      "do": "soak",
+      "what": "sabudana",
+      "hours": 5
+    }
+  ],
+  "sources": [
+    "https://www.vegrecipesofindia.com/sabudana-khichdi-recipe-maharashtrian-style/",
+    "https://www.indianhealthyrecipes.com/sabudana-khichdi/",
+    "https://hebbarskitchen.com/sabudana-khichdi-recipe-sabakki-khichdi-recipe/"
+  ],
+  "steps": [
+    "Rinse the sabudana three times, cover with just enough water and soak until a pearl squashes easily between your fingers.",
+    "Tip it into a sieve and drain very well so no water is left at the bottom.",
+    "Dry roast the peanuts until crunchy, cool them and crush coarsely.",
+    "Mix the crushed peanuts, salt and sugar into the sabudana.",
+    "Boil the potato, peel it and cut into small cubes.",
+    "Heat the ghee, add the cumin, then the curry leaves, green chilli and grated ginger, and fry the potato for a minute.",
+    "Add the sabudana and stir on low heat for 4 to 5 minutes, until the pearls turn see-through.",
+    "Turn off the heat, add lemon juice and coriander, mix lightly and serve."
+  ],
+  "note": "Sabudana is 65 g a plate, between the sources' 50 and 100 g, and the crushed peanuts keep the pearls from sticking. On a fasting day use rock salt and leave out the curry leaves if your family does."
+}

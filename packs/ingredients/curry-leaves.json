@@ -1,0 +1,23 @@
+{
+  "wikidata": "Q244731",
+  "label": "Murraya koenigii",
+  "keeps": {
+    "days": 7,
+    "in": "fridge",
+    "foodkeeper": 288
+  },
+  "names": [
+    {
+      "text": "Curry leaves",
+      "lang": "en"
+    },
+    {
+      "text": "कड़ी पत्ता",
+      "lang": "hi"
+    },
+    {
+      "text": "कढीपत्ता",
+      "lang": "mr"
+    }
+  ]
+}

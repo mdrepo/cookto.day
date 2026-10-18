@@ -1,0 +1,23 @@
+{
+  "wikidata": "Q2776121",
+  "label": "sev",
+  "keeps": {
+    "days": 60,
+    "in": "pantry",
+    "foodkeeper": 392
+  },
+  "names": [
+    {
+      "text": "Sev",
+      "lang": "en"
+    },
+    {
+      "text": "सेव",
+      "lang": "hi"
+    },
+    {
+      "text": "शेव",
+      "lang": "mr"
+    }
+  ]
+}

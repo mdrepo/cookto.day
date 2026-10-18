@@ -1,0 +1,32 @@
+{
+  "slots": ["breakfast"],
+  "ingredients": {
+    "oats": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "apple": {
+      "amount": 50,
+      "unit": "g"
+    },
+    "milk": {
+      "amount": 60,
+      "unit": "ml"
+    }
+  },
+  "for": ["child"],
+  "sources": [
+    "https://www.mylittlemoppet.com/wprm_print/apple-oats-porridge-recipe",
+    "https://tarladalal.com/yummy-oats-and-apple-porridge---baby-and-toddler-recipe-3067r"
+  ],
+  "steps": [
+    "Peel the apple, take out the core and grate it or chop it very small.",
+    "Bring about 120 ml water to a boil in a small pan.",
+    "Stir in the oats and the apple.",
+    "Cook on low heat for 5 to 6 minutes, stirring, until the oats and apple are soft.",
+    "Pour in the milk and let it bubble for a minute.",
+    "Mash with a spoon if your child likes it smoother.",
+    "Let it cool until just warm before serving."
+  ],
+  "note": "No sugar or jaggery: a sweet, ripe apple is enough. Milk goes in at the end, as the toddler version suggests; water alone also works."
+}

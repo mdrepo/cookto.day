@@ -1,0 +1,23 @@
+{
+  "wikidata": "Q99548274",
+  "label": "beet",
+  "keeps": {
+    "days": 7,
+    "in": "fridge",
+    "foodkeeper": 274
+  },
+  "names": [
+    {
+      "text": "Beetroot",
+      "lang": "en"
+    },
+    {
+      "text": "चुकंदर",
+      "lang": "hi"
+    },
+    {
+      "text": "बीट",
+      "lang": "mr"
+    }
+  ]
+}

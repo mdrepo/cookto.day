@@ -6,6 +6,7 @@ import { SettingsScreen } from "./features/settings/SettingsScreen.js";
 import { useDocumentLanguage } from "./features/settings/useDocumentLanguage.js";
 import { useDocumentTheme } from "./features/settings/useDocumentTheme.js";
 import { Tabs } from "./features/tabs/Tabs.js";
+import { useMovedDishes } from "./moves.js";
 import { useRoute } from "./routes.js";
 import { SaveProblem } from "./features/saving/SaveProblem.js";
 
@@ -57,6 +58,7 @@ const StaplesScreen = lazy(() =>
 export function App() {
   useDocumentLanguage();
   useDocumentTheme();
+  useMovedDishes();
   return (
     <Suspense fallback={null}>
       <Page />

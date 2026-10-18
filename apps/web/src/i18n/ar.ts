@@ -62,6 +62,8 @@ export const ar: Messages = {
   edit: "تعديل",
   chooseCuisines: "اختر ما تطبخه",
   northIndian: "شمال هندي",
+  maharashtrian: "ماهاراشترية",
+  ourKitchen: "مطبخنا",
   southIndian: "جنوب هندي",
   european: "أوروبي",
   sriLankan: "سريلانكي",

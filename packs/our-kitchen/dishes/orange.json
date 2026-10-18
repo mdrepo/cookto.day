@@ -1,0 +1,21 @@
+{
+  "slots": ["morning-snack", "evening-snack"],
+  "ingredients": {
+    "orange": {
+      "amount": 60,
+      "unit": "g"
+    }
+  },
+  "for": ["child"],
+  "simple": true,
+  "sources": [
+    "https://solidstarts.com/foods/orange/",
+    "https://www.nhs.uk/baby/weaning-and-feeding/babys-first-solid-foods/"
+  ],
+  "steps": [
+    "Peel the orange and pull it into segments.",
+    "Take out any seeds and peel off the tough skin around each segment.",
+    "Cut the flesh into small bite-sized pieces."
+  ],
+  "note": "About half a small orange. Taking the skin off each segment matters more than the cut for a young child."
+}

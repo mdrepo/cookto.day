@@ -1,0 +1,93 @@
+{
+  "slots": ["evening-snack"],
+  "ingredients": {
+    "puffed-rice": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "papdi": {
+      "amount": 3,
+      "unit": "pieces"
+    },
+    "sev": {
+      "amount": 10,
+      "unit": "g"
+    },
+    "peanuts": {
+      "amount": 8,
+      "unit": "g"
+    },
+    "potato": {
+      "amount": 40,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "coriander-leaves": {
+      "amount": 7,
+      "unit": "g"
+    },
+    "mint": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "tamarind": {
+      "amount": 3,
+      "unit": "g"
+    },
+    "jaggery": {
+      "amount": 6,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "chaat-masala": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 0.6,
+      "unit": "g"
+    },
+    "lemon": {
+      "amount": 0.25,
+      "unit": "pieces"
+    }
+  },
+  "sources": [
+    "https://www.indianhealthyrecipes.com/wprm_print/bhel-puri-recipe",
+    "https://hebbarskitchen.com/wprm_print/bhel-puri-recipe-bhel-poori-bhel-puri-chaat-2-ways"
+  ],
+  "steps": [
+    "Boil the potato until just tender, then cool, peel and cut into small cubes.",
+    "Simmer the tamarind and jaggery in a little water with the cumin, chilli powder and a pinch of salt until thick; let it cool and strain.",
+    "Blend most of the coriander with the mint, the green chilli, a squeeze of lemon and a spoon of water into a thick green chutney.",
+    "Chop the onion and tomato finely, and toast the puffed rice in a dry pan if it has gone soft.",
+    "Put the puffed rice, potato, onion, tomato and peanuts in a big bowl and sprinkle over the chaat masala.",
+    "Add both chutneys a little at a time, tossing gently so the puffed rice stays crisp.",
+    "Crush in the papdi, squeeze over the rest of the lemon and toss once more.",
+    "Top with the sev and the last of the coriander and eat straight away."
+  ],
+  "note": "Now that sev, papdi and peanuts are in the pack, puffed rice goes back down to 20 g a bowl. Both chutneys are made from scratch at roughly one spoon each a serving; the hot red garlic chutney is left out, as chilli powder covers it.",
+  "photo": {
+    "author": "Barry Pousman from New York, NY",
+    "licence": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Behael_Puri_(6105489342).jpg"
+  }
+}

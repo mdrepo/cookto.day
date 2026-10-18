@@ -24,15 +24,40 @@
     "fridge": [1, 2],
     "pantry": null
   },
+  "248": {
+    "name": "Apples",
+    "fridge": [28, 42],
+    "pantry": [21, 21]
+  },
+  "251": {
+    "name": "Bananas",
+    "fridge": [3, 3],
+    "pantry": null
+  },
+  "254": {
+    "name": "Blueberries",
+    "fridge": [7, 14],
+    "pantry": null
+  },
   "256": {
     "name": "Citrus fruit, lemon, lime, orange, grapefruit, tangerines, clementines",
     "fridge": [10, 21],
     "pantry": [10, 10]
   },
+  "266": {
+    "name": "Peaches, nectarines, plums, pears, sapote",
+    "fridge": [3, 5],
+    "pantry": null
+  },
   "273": {
     "name": "Beans and peas, green, fava, lima, soybean, wax, snow, sugar snap",
     "fridge": [3, 5],
     "pantry": null
+  },
+  "274": {
+    "name": "Beets",
+    "fridge": [7, 14],
+    "pantry": [1, 1]
   },
   "279": {
     "name": "Carrots, parsnips",
@@ -42,6 +67,11 @@
   "280": {
     "name": "Cauliflower",
     "fridge": [3, 5],
+    "pantry": null
+  },
+  "283": {
+    "name": "Cucumbers",
+    "fridge": [4, 6],
     "pantry": null
   },
   "284": {
@@ -58,6 +88,11 @@
     "name": "Ginger root",
     "fridge": [14, 21],
     "pantry": [2, 5]
+  },
+  "288": {
+    "name": "Herbs",
+    "fridge": [7, 10],
+    "pantry": null
   },
   "291": {
     "name": "Lettuce, leaf, spinach",
@@ -84,8 +119,28 @@
     "fridge": [7, 14],
     "pantry": [30, 60]
   },
+  "298": {
+    "name": "Pumpkins",
+    "fridge": [90, 150],
+    "pantry": [60, 90]
+  },
+  "392": {
+    "name": "Potato chips",
+    "fridge": null,
+    "pantry": [60, 60]
+  },
+  "461": {
+    "name": "Whole wheat bread, commercially baked & pre-sliced",
+    "fridge": null,
+    "pantry": [3, 5]
+  },
   "506": {
     "name": "Cilantro",
+    "fridge": [14, 21],
+    "pantry": [7, 14]
+  },
+  "507": {
+    "name": "Mint",
     "fridge": [14, 21],
     "pantry": [7, 14]
   },
@@ -98,6 +153,11 @@
     "name": "Hot peppers",
     "fridge": [7, 7],
     "pantry": null
+  },
+  "574": {
+    "name": "Bread, homemade",
+    "fridge": [60, 90],
+    "pantry": [3, 5]
   },
   "600": {
     "name": "Cherry tomatoes",

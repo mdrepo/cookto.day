@@ -1,0 +1,72 @@
+{
+  "slots": ["breakfast", "dinner"],
+  "ingredients": {
+    "jowar-flour": {
+      "amount": 35,
+      "unit": "g"
+    },
+    "besan": {
+      "amount": 12,
+      "unit": "g"
+    },
+    "atta": {
+      "amount": 12,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 35,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 3,
+      "unit": "g"
+    },
+    "green-chilli": {
+      "amount": 0.5,
+      "unit": "pieces"
+    },
+    "turmeric": {
+      "amount": 0.2,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "coriander-powder": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.4,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 8,
+      "unit": "ml"
+    },
+    "butter": {
+      "amount": 5,
+      "unit": "g"
+    }
+  },
+  "sources": [
+    "https://www.vegrecipesofindia.com/thalipeeth-recipe/",
+    "https://hebbarskitchen.com/thalipeeth-recipe-maharashtrian-thalipit/"
+  ],
+  "steps": [
+    "Mix the jowar flour, besan and atta in a bowl.",
+    "Add the chopped onion, coriander, green chilli, the spices and salt, and rub them through the flour.",
+    "Add water a little at a time and knead into a soft, moist dough.",
+    "Heat a tawa and brush it with a little oil.",
+    "Pat a ball of dough flat on a wet cloth or oiled sheet and poke three or four holes in it.",
+    "Flip it onto the tawa, peel off the cloth, and drop a little oil into the holes and round the edge.",
+    "Cover and cook until the base is golden and crisp, then turn and cook the other side.",
+    "Serve hot with a little butter on top."
+  ],
+  "note": "This is the quick weeknight version with three flours instead of a roasted bhajani mix; bajra, rice flour and sesame are left out to keep the shopping short. 60 g of flour makes about three small thalipeeth a plate."
+}

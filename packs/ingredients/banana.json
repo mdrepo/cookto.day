@@ -1,0 +1,23 @@
+{
+  "wikidata": "Q503",
+  "label": "banana",
+  "keeps": {
+    "days": 3,
+    "in": "fridge",
+    "foodkeeper": 251
+  },
+  "names": [
+    {
+      "text": "Banana",
+      "lang": "en"
+    },
+    {
+      "text": "केला",
+      "lang": "hi"
+    },
+    {
+      "text": "केळी",
+      "lang": "mr"
+    }
+  ]
+}

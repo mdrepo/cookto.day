@@ -1,0 +1,36 @@
+{
+  "slots": ["breakfast"],
+  "ingredients": {
+    "oats": {
+      "amount": 20,
+      "unit": "g"
+    },
+    "pear": {
+      "amount": 60,
+      "unit": "g"
+    },
+    "milk": {
+      "amount": 60,
+      "unit": "ml"
+    },
+    "cinnamon": {
+      "amount": 0.3,
+      "unit": "g"
+    }
+  },
+  "for": ["child"],
+  "sources": [
+    "https://www.mylittlemoppet.com/?p=47017",
+    "https://babyfoode.com/wprm_print/spiced-pear-oat-baby-food-puree"
+  ],
+  "steps": [
+    "Dry roast the oats in a small pan for a minute or two.",
+    "Peel and core the pear and chop it into small pieces.",
+    "Add the pear and about 100 ml water to the oats.",
+    "Cook on low heat for 5 to 7 minutes until the pear is soft.",
+    "Pour in the milk and simmer for one more minute.",
+    "Mash the pear pieces with the back of the spoon and stir in a pinch of cinnamon.",
+    "Let it cool until just warm before serving."
+  ],
+  "note": "A pinch of cinnamon stands in for the cloves and dates one source uses, so there is no added sweetness. Pears ripen fast, so use a soft one."
+}

@@ -25,14 +25,14 @@
     "besan-chilla": "Besan chilla",
     "dalia": "Vegetable dalia",
     "omelette": "Masala omelette",
-    "poha": "Poha",
     "chana-chaat": "Chana chaat",
-    "bhel-puri": "Bhel puri",
     "aloo-tikki": "Aloo tikki",
     "paneer-tikka": "Paneer tikka"
   },
   "parts": {
     "roti": "Roti",
-    "rice": "Rice"
+    "rice": "Rice",
+    "bhature": "Bhature",
+    "pita": "Pita"
   }
 }

@@ -1,0 +1,92 @@
+{
+  "slots": ["lunch", "dinner"],
+  "ingredients": {
+    "matki": {
+      "amount": 30,
+      "unit": "g"
+    },
+    "onion": {
+      "amount": 35,
+      "unit": "g"
+    },
+    "tomato": {
+      "amount": 25,
+      "unit": "g"
+    },
+    "garlic": {
+      "amount": 3,
+      "unit": "g"
+    },
+    "ginger": {
+      "amount": 2,
+      "unit": "g"
+    },
+    "oil": {
+      "amount": 7,
+      "unit": "ml"
+    },
+    "mustard-seeds": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "cumin": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "asafoetida": {
+      "amount": 0.1,
+      "unit": "g"
+    },
+    "curry-leaves": {
+      "amount": 0.5,
+      "unit": "g"
+    },
+    "turmeric": {
+      "amount": 0.3,
+      "unit": "g"
+    },
+    "chilli-powder": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "garam-masala": {
+      "amount": 1.5,
+      "unit": "g"
+    },
+    "jaggery": {
+      "amount": 1.5,
+      "unit": "g"
+    },
+    "salt": {
+      "amount": 1,
+      "unit": "g"
+    },
+    "coriander-leaves": {
+      "amount": 2,
+      "unit": "g"
+    }
+  },
+  "servedWith": ["roti", "rice"],
+  "prep": [
+    {
+      "do": "soak",
+      "what": "matki",
+      "hours": 8
+    }
+  ],
+  "sources": [
+    "https://www.vegrecipesofindia.com/matki-amti-recipe-amti-recipes/",
+    "https://www.spiceupthecurry.com/matki-usal-recipe/",
+    "https://www.madhurasrecipe.com/matki-usal/"
+  ],
+  "steps": [
+    "Rinse the sprouted matki and pressure cook it with a little water for one whistle; keep the water.",
+    "Chop the onion and tomato finely and crush the ginger and garlic.",
+    "Heat the oil, let the mustard seeds pop, then add the cumin, curry leaves and hing.",
+    "Fry the onion until soft and pink, then add the ginger and garlic for a minute.",
+    "Add the tomato, turmeric, chilli powder and garam masala and cook until oil shows at the edges.",
+    "Add the matki with a little of its water, the salt and jaggery, and simmer covered for 5 minutes.",
+    "Scatter over the coriander and serve hot."
+  ],
+  "note": "After the 8-hour soak the matki needs about a day more wrapped in a damp cloth to sprout, so start two days ahead. Garam masala stands in for goda masala, which one source also allows; this is the semi-dry usal, not the thin misal curry."
+}

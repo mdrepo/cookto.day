@@ -1,3 +1,4 @@
+import { PREP_KINDS } from "../../packages/engine/src/prep.js";
 import type { Dish, Pack } from "./packs-lib.js";
 
 // packs:check's rules for a pack's dishes (packs-lib.ts runs them all): each
@@ -53,6 +54,18 @@ function stepProblems(at: string, dish: Dish): string[] {
   );
 }
 
+/** Each prep is a known kind, done to one of the dish's ingredients (#144). */
+function prepProblems(at: string, dish: Dish): string[] {
+  const kinds: readonly string[] = PREP_KINDS;
+  return (dish.prep ?? []).flatMap((p, i) =>
+    kinds.includes(p.do) && p.what in dish.ingredients && p.hours > 0
+      ? []
+      : [
+          `${at}: prep ${String(i + 1)} must be one of ${PREP_KINDS.join(", ")}, done to one of its ingredients, some hours before.`,
+        ],
+  );
+}
+
 export function dishProblems(pack: Pack): string[] {
   return Object.entries(pack.dishes).flatMap(([slug, dish]) => {
     const at = `${pack.id}/dishes/${slug}.json`;
@@ -61,6 +74,7 @@ export function dishProblems(pack: Pack): string[] {
       problems.push(
         `${at}: its note still asks for a check ("${dish.note}"). A note ships as it is: settle it, then say what was decided.`,
       );
+    problems.push(...prepProblems(at, dish));
     if (dish.slots.length === 0 || dish.slots.some((s) => !SLOTS.includes(s)))
       problems.push(`${at}: slots must be some of ${SLOTS.join(", ")}.`);
     for (const [ing, use] of Object.entries(dish.ingredients)) {

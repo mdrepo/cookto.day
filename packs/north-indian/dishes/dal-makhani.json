@@ -59,6 +59,19 @@
     }
   },
   "servedWith": ["roti", "rice"],
+  "prep": [
+    {
+      "do": "soak",
+      "what": "urad-dal",
+      "hours": 8
+    },
+    {
+      "do": "soak",
+      "what": "rajma",
+      "hours": 8,
+      "tinned": true
+    }
+  ],
   "sources": [
     "https://www.indianhealthyrecipes.com/dal-makhani/",
     "https://www.cookwithmanali.com/dal-makhani/"

@@ -67,6 +67,14 @@
     }
   },
   "servedWith": ["rice"],
+  "prep": [
+    {
+      "do": "soak",
+      "what": "rajma",
+      "hours": 8,
+      "tinned": true
+    }
+  ],
   "sources": [
     "https://www.vegrecipesofindia.com/rajma-masala-recipe-restaurant-style/",
     "https://www.indianhealthyrecipes.com/rajma-recipe/",

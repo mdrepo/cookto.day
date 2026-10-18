@@ -34,6 +34,8 @@ export interface Dish {
   steps: string[];
   /** For whoever reviews the pack: what was decided, and why. */
   note?: string;
+  /** What to do hours before: soak, marinate, ferment, thaw (specs/144). */
+  prep?: { do: string; what: string; hours: number; tinned?: boolean }[];
   /** A free photo of the dish, credited (specs/118). */
   photo?: { author: string; licence: string; source: string };
 }

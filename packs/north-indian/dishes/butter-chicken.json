@@ -83,6 +83,13 @@
     }
   },
   "servedWith": ["roti", "rice"],
+  "prep": [
+    {
+      "do": "marinate",
+      "what": "chicken",
+      "hours": 4
+    }
+  ],
   "sources": [
     "https://www.indianhealthyrecipes.com/butter-chicken/",
     "https://www.teaforturmeric.com/butter-chicken/"

@@ -92,13 +92,12 @@ test.describe("A dish's page", () => {
     await k.start();
     await k.loadNorthIndianWithStaples();
     await k.openDish("Palak paneer");
-    const link = page.getByRole("link", { name: /See the recipe/ });
+    const link = page.getByRole("link", { name: /See a full version/ });
     await expect(link).toHaveAttribute(
       "href",
       "https://www.vegrecipesofindia.com/palak-paneer/",
     );
     await expect(link).toHaveAttribute("target", "_blank");
     await expect(link).toContainText("vegrecipesofindia.com");
-    await expect(page.getByRole("main").locator("ol")).toHaveCount(0);
   });
 });

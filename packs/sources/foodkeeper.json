@@ -84,6 +84,11 @@
     "fridge": [7, 14],
     "pantry": [30, 60]
   },
+  "306": {
+    "name": "Tomatoes",
+    "fridge": null,
+    "pantry": null
+  },
   "506": {
     "name": "Cilantro",
     "fridge": [14, 21],
@@ -98,10 +103,5 @@
     "name": "Hot peppers",
     "fridge": [7, 7],
     "pantry": null
-  },
-  "600": {
-    "name": "Cherry tomatoes",
-    "fridge": [5, 5],
-    "pantry": [10, 10]
   }
 }

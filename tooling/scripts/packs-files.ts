@@ -51,10 +51,13 @@ function photos(dir: string): NonNullable<Pack["photos"]> {
   );
 }
 
-/** Every food a pack's dishes, staples and sample use. */
+/** Every food a pack's dishes (and their add-ins), staples and sample use. */
 function usedBy(pack: Omit<Pack, "ingredients">): Set<string> {
   return new Set([
-    ...Object.values(pack.dishes).flatMap((d) => Object.keys(d.ingredients)),
+    ...Object.values(pack.dishes).flatMap((d) => [
+      ...Object.keys(d.ingredients),
+      ...Object.keys(d.addIns ?? {}),
+    ]),
     ...Object.values(pack.staples).flat(),
     ...(pack.sample ?? []).map((s) => s.ingredient),
   ]);

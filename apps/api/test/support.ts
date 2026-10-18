@@ -94,22 +94,25 @@ export function post(
   });
 }
 
-/** What the AI said about the GK Minimart receipt, in rows, on 17 Oct. */
+/**
+ * A made-up receipt, in the rows the AI answers with. Never a real one:
+ * receipts carry names, phone numbers and card digits.
+ */
 export const MINIMART = {
-  shop: "GK MINIMART",
-  date: "2026-10-07",
-  subtotal: 38.72,
+  shop: "SUNRISE MINIMART",
+  date: "2026-10-02",
+  subtotal: 38.35,
   lines: [
-    "VAIGAI DOSABATTER|1||3.90",
-    "FRESH PANEER 200GM|2||8.80",
-    "PALAK|0.41|9.50|3.90",
-    "GREEN CHILLI PADI|0.14|9.80|1.37",
-    "CORIANDER|0.12|18.00|2.16",
-    "BIG ONION|1.42|2.30|3.27",
-    "REDCARROT|0.75|2.40|1.80",
-    "LADIES FINGER|0.67|6.80|4.56",
-    "BLACK BRINJAL|0.58|5.60|3.25",
-    "CUCUMBER|0.83|2.70|2.24",
-    "TOMATO|2.17|1.60|3.47",
+    "IDLI DOSA BATTER 1KG|1||4.20",
+    "FRESH PANEER 200GM|2||8.40",
+    "PALAK|0.45|9.00|4.05",
+    "GREEN CHILLI|0.10|12.00|1.20",
+    "CORIANDER|0.15|16.00|2.40",
+    "BIG ONION|1.50|2.20|3.30",
+    "CARROT|0.80|2.50|2.00",
+    "LADIES FINGER|0.50|7.00|3.50",
+    "BRINJAL|0.60|5.00|3.00",
+    "CUCUMBER|0.90|3.00|2.70",
+    "TOMATO|2.00|1.80|3.60",
   ],
 };

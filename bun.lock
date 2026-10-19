@@ -31,6 +31,10 @@
     "apps/api": {
       "name": "@cookto/api",
       "version": "0.0.0",
+      "dependencies": {
+        "@cookto/db": "workspace:*",
+        "@cookto/messenger": "workspace:*",
+      },
     },
     "apps/kit": {
       "name": "@cookto/kit",

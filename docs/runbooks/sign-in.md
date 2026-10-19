@@ -25,11 +25,10 @@ Use the same billed Google Cloud project as the Gemini key ([receipt-photos.md](
 
 ## 4. Give the API what it needs (once)
 
-Two secrets, from the project's **Project Settings → API** page: `SUPABASE_URL`, the project's URL, and `SUPABASE_ANON_KEY`, the `anon` (or "publishable") key. Save each with the script, which asks for the value with the screen echo off and checks it looks right (`bunx wrangler@4.147.0 login` once first):
+Two secrets, from the project's **Project Settings → API** page: `SUPABASE_URL`, the project's URL, and `SUPABASE_ANON_KEY`, the `anon` (or "publishable") key. Put them on their lines in `~/.config/cookto.day/secrets.env` and run the script, which checks each looks right, saves it, and blanks the file again (`bunx wrangler@4.147.0 login` once first; [telegram.md](telegram.md) explains the file):
 
 ```sh
-sh apps/api/scripts/secret.sh SUPABASE_URL
-sh apps/api/scripts/secret.sh SUPABASE_ANON_KEY
+sh apps/api/scripts/secret.sh
 ```
 
 The dashboard works too: **Workers & Pages → cookto-day → Settings → Variables and Secrets**, type **Secret**.

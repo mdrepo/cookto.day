@@ -23,21 +23,20 @@ Two settings worth doing now, also in BotFather:
 
 Once on this laptop, log Wrangler in: `bunx wrangler@4.147.0 login` opens Cloudflare in the browser.
 
-Then:
+Then run the script once; the first run only makes the file to fill in:
 
 ```sh
-sh apps/api/scripts/secret.sh TELEGRAM_BOT_TOKEN
+sh apps/api/scripts/secret.sh
 ```
 
-It asks for the token with the screen echo off, checks that it looks like one, saves it as the Worker secret `TELEGRAM_BOT_TOKEN`, and checks that cookto.day still answers. The token is now only in Cloudflare and in BotFather (`/token` shows it again).
+Open `~/.config/cookto.day/secrets.env`. It has one line per secret, all blank. The file is outside the repo, so it can't be committed by mistake. Fill in two lines:
 
-Then make the secret Telegram will use to prove its calls are really from Telegram:
-
-```sh
-sh apps/api/scripts/secret.sh TELEGRAM_WEBHOOK_SECRET --random
+```
+TELEGRAM_BOT_TOKEN=123456789:AAH...the token from BotFather
+TELEGRAM_WEBHOOK_SECRET=random
 ```
 
-The API refuses any update that doesn't carry it.
+`random` tells the script to make a 64-character secret itself; Telegram will send it with every update, and the API refuses any update that doesn't carry it. Save the file and run the script again. It checks each value looks right, saves it as a Worker secret, blanks the file so the laptop keeps no copy, and checks that cookto.day still answers. The token is now only in Cloudflare and in BotFather (`/token` shows it again).
 
 ## 3. Point Telegram at the API (after the bot PR deploys)
 

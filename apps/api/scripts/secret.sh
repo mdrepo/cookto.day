@@ -42,7 +42,8 @@ looks_right() {
     TELEGRAM_WEBHOOK_SECRET) printf '%s' "$2" | grep -Eq '^[A-Za-z0-9_-]{32,256}$' ;;
     SUPABASE_URL) printf '%s' "$2" | grep -Eq '^https://[a-z0-9]{15,25}\.supabase\.co$' ;;
     SUPABASE_ANON_KEY) printf '%s' "$2" | grep -Eq '^(eyJ[A-Za-z0-9_.-]{40,}|sb_publishable_[A-Za-z0-9_-]{10,})$' ;;
-    GEMINI_API_KEY) printf '%s' "$2" | grep -Eq '^AIza[A-Za-z0-9_-]{30,}$' ;;
+    # Since mid-2026 AI Studio makes "AQ." keys; the older ones start "AIza".
+    GEMINI_API_KEY) printf '%s' "$2" | grep -Eq '^(AQ\.[A-Za-z0-9_.-]{20,}|AIza[A-Za-z0-9_-]{30,})$' ;;
     *) false ;;
   esac
 }

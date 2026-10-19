@@ -100,19 +100,23 @@ function planText(
 }
 
 /**
- * Tomorrow, on the planner's phone from 4 pm (specs/144, 195): each meal's
- * pick, with other ideas to swap in, "Looks good" and "Share tomorrow". Once
- * approved, or from 9 pm, it's sorted; "Change" opens it again. The picks are
- * kept as tonight's plan either way, so their prep can start and the cook's
- * morning shows the same.
+ * Tomorrow, on the planner's phone from 4 pm (specs/144, 195, 207): each
+ * meal's pick, with other ideas to swap in, "Looks good" and "Share
+ * tomorrow". Once approved, or from 9 pm, it's sorted; "Change" opens it
+ * again. With the cook connected, "Looks good" sends her the plan, and an
+ * evening nobody touched still reaches her at 9 pm (SendToCook). The picks
+ * are kept as tonight's plan either way, so their prep can start and the
+ * cook's morning shows the same.
  */
 export function useTomorrow() {
   const { locale, t } = useWords();
   const role = useRole();
   const m = useMealPlans();
   const sortedOn = useStore(settings.store, (s) => s.sorted);
+  const cook = useStore(settings.store, (s) => s.cook);
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [approved, setApproved] = useState(0);
   const picks: [MealSlot, string][] = (m?.tomorrow ?? []).flatMap((meal) => {
     const best = meal.suggestions[0];
     return best ? [[meal.slot, best.dish.id]] : [];
@@ -133,6 +137,7 @@ export function useTomorrow() {
   if (!m?.tomorrow || role !== "plan") return null;
   const name = namer(m.packs, locale);
   const meals = mealsOf(m, name, t);
+  const text = planText(m, meals, name, t, locale);
   return {
     title: t.tomorrow,
     otherIdeas: t.otherIdeas,
@@ -144,11 +149,14 @@ export function useTomorrow() {
       value: meal.dish,
     })),
     meals,
+    /** What SendToCook needs, once a cook is connected (specs/207). */
+    cook: { cook, now: m.now, on: next, text, approved },
     looksGood: {
       label: t.looksGood,
       run: () => {
         sortTomorrow({ settings: settings.writer }, next);
         setEditing(false);
+        setApproved((n) => n + 1);
       },
     },
     change: {
@@ -161,7 +169,7 @@ export function useTomorrow() {
       label: t.shareTomorrow,
       copied: copied ? t.copied : null,
       run: () => {
-        void send(planText(m, meals, name, t, locale)).then((how) => {
+        void send(text).then((how) => {
           setCopied(how === "copied");
         });
       },

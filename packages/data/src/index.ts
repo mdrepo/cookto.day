@@ -6,6 +6,17 @@ export { createCooked, type Cooked } from "./cooked.js";
 export { createMyDishes } from "./my-dishes.js";
 export { createHousehold } from "./household.js";
 export { memoryKeyValue, type KeyValue } from "./kv.js";
+// The network adapter's code is "@cookto/data/network", its own entry, so
+// the app loads it only when it first calls our API (specs/207). Its types
+// are here for everyone.
+export type {
+  Api,
+  ApiOptions,
+  LinkMade,
+  LinkState,
+  Send,
+  SendRequest,
+} from "./network.js";
 export {
   type AppPack,
   type DishPhoto,
@@ -29,6 +40,8 @@ export {
 export { type SyncRecord } from "./records.js";
 export {
   BEANS,
+  type Cook,
+  type PlanSent,
   ROLES,
   type Role,
   type Beans,

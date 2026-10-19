@@ -9,7 +9,8 @@
     "test": "bun test ./test"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./cook": "./src/cook.ts"
   },
   "dependencies": {
     "@cookto/data": "workspace:*",

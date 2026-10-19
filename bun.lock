@@ -53,6 +53,13 @@
         "@cookto/testing": "workspace:*",
       },
     },
+    "db": {
+      "name": "@cookto/db",
+      "version": "0.0.0",
+      "dependencies": {
+        "@cookto/messenger": "workspace:*",
+      },
+    },
     "packages/data": {
       "name": "@cookto/data",
       "version": "0.0.0",
@@ -146,6 +153,8 @@
     "@cookto/data": ["@cookto/data@workspace:packages/data"],
 
     "@cookto/data-web": ["@cookto/data-web@workspace:packages/data-web"],
+
+    "@cookto/db": ["@cookto/db@workspace:db"],
 
     "@cookto/engine": ["@cookto/engine@workspace:packages/engine"],
 

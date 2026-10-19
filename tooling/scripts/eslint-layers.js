@@ -60,6 +60,7 @@ export const layers = [
       "packages/engine/**",
       "packages/messenger/**",
       "apps/api/**",
+      "db/**",
       `${FEATURES}/**`,
     ],
     rules: rules([
@@ -68,8 +69,9 @@ export const layers = [
     ]),
   },
   {
-    // The API: the one place that sends messages (ADR 0031).
-    files: ["apps/api/**"],
+    // The API, the one place that sends messages, and the database, which
+    // keeps the messenger's store (ADR 0031, 0032).
+    files: ["apps/api/**", "db/**"],
     rules: rules([ban("^@cookto/data/write$", WRITE)]),
   },
   ...DEPTHS.flatMap((depth) => {

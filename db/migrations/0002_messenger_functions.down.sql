@@ -1,0 +1,22 @@
+-- Undoes 0002: every msg_* function.
+drop function if exists msg_outbox_dequeue(text, uuid);
+drop function if exists msg_outbox_retry(text, uuid, timestamptz, int);
+drop function if exists msg_outbox_claim(text, timestamptz, timestamptz);
+drop function if exists msg_outbox_enqueue(text, uuid, timestamptz);
+drop function if exists msg_messages_purge(text, timestamptz);
+drop function if exists msg_messages_waiting(text, uuid, jsonb);
+drop function if exists msg_message_advance(text, uuid, text, text, text);
+drop function if exists msg_may_advance(text, text);
+drop function if exists msg_message_by_channel_id(text, uuid, text);
+drop function if exists msg_messages(text, uuid);
+drop function if exists msg_message_get(text, uuid);
+drop function if exists msg_message_add(text, jsonb);
+drop function if exists msg_update_seen(text, text, text, timestamptz);
+drop function if exists msg_conversation_remove(text, uuid);
+drop function if exists msg_conversation_open(text, text, text, text, text, timestamptz);
+drop function if exists msg_conversation_get(text, uuid);
+drop function if exists msg_conversation_find(text, text, text);
+drop function if exists msg_message_json(messages);
+drop function if exists msg_conversation_json(conversations);
+drop function if exists msg_iso(timestamptz);
+drop function if exists msg_check(text);

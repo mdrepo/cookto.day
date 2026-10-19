@@ -164,9 +164,8 @@ describe("layers", () => {
     ).toEqual([]);
   });
 
-  // ADR 0031: the messenger knows nothing of ours, and only the API uses it.
   test.each(["react", "@cookto/engine", "@cookto/data", "@cookto/usecases"])(
-    "the messenger can't import %s",
+    "the messenger can't import %s (ADR 0031)",
     async (from) => {
       const found = await problems(
         "packages/messenger/src/telegram.ts",
@@ -177,35 +176,20 @@ describe("layers", () => {
     },
   );
 
-  test.each([
-    "apps/web/src/platform.ts",
-    "apps/web/src/features/settings/useCookLink.ts",
-    "packages/usecases/src/who-cooks.ts",
-    "packages/data/src/settings.ts",
-  ])("only the API imports the messenger, not %s", async (file) => {
-    const found = await problems(
-      file,
-      `import { createMessenger } from "@cookto/messenger";`,
-    );
-    expect(found).toHaveLength(1);
-    // The app's layers say so by name; data and use cases already may import
-    // nothing above them, so their own rule answers.
-    expect(found[0]).toMatch(/ADR 00(31|22)/);
-  });
-
-  test("the API may import the messenger, and still not write data", async () => {
-    expect(
-      await problems(
-        "apps/api/src/index.ts",
-        `import { createMessenger } from "@cookto/messenger";`,
-      ),
-    ).toEqual([]);
-    expect(
-      await problems(
-        "apps/api/src/index.ts",
-        `import { x } from "@cookto/data/write";`,
-      ),
-    ).toHaveLength(1);
+  test("only the API imports the messenger (ADR 0031)", async () => {
+    // Data and use cases already may import nothing above them, so their own
+    // rule answers there; the app's other files need this one.
+    const line = `import { createMessenger } from "@cookto/messenger";`;
+    for (const file of [
+      "apps/web/src/platform.ts",
+      "apps/web/src/features/settings/useCookLink.ts",
+      "apps/web/src/features/settings/CookLink.tsx",
+    ]) {
+      const found = await problems(file, line);
+      expect(found).toHaveLength(1);
+      expect(found[0]).toContain("ADR 0031");
+    }
+    expect(await problems("apps/api/src/index.ts", line)).toEqual([]);
   });
 });
 

@@ -199,8 +199,8 @@ describe("the new packages exist", () => {
     JSON.parse(readFileSync(join(ROOT, path), "utf8"));
 
   test.each([
-    ["packages/usecases", "@cookto/usecases", ["."]],
-    ["packages/data", "@cookto/data", [".", "./read", "./write"]],
+    ["packages/usecases", "@cookto/usecases", [".", "./cook"]],
+    ["packages/data", "@cookto/data", [".", "./read", "./write", "./network"]],
     ["packages/messenger", "@cookto/messenger", [".", "./contract"]],
   ])("%s is %s, without the browser's own types", (dir, name, entries) => {
     const pkg = read(`${dir}/package.json`) as {

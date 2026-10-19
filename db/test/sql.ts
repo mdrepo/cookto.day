@@ -34,11 +34,9 @@ export function sqlCall(sql: SQL): Call {
     const params = names.map(
       (name, i) => `${name} => $${String(i + 1)}::${types[name] ?? "text"}`,
     );
-    const values = names.map((name) => {
-      const v = args[name];
-      if (v === undefined || v === null) return null;
-      return types[name] === "jsonb" ? JSON.stringify(v) : v;
-    });
+    // A jsonb argument goes as the value itself: the client encodes it, and
+    // would encode a pre-encoded string once more.
+    const values = names.map((name) => args[name] ?? null);
     const rows: { r: unknown }[] = await sql.unsafe(
       `select ${fn}(${params.join(", ")}) as r`,
       values,

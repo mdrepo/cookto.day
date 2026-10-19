@@ -38,8 +38,8 @@ returns jsonb language plpgsql security definer set search_path = public, extens
 declare
   today date := (p_now at time zone 'UTC')::date;
   asked int;
-  code text;
-  token text;
+  new_code text;
+  new_token text;
 begin
   perform msg_check(p_secret);
   insert into link_requests (address_hash, day, n) values (p_address_hash, today, 1)
@@ -48,15 +48,16 @@ begin
   if asked > 10 then
     return jsonb_build_object('ok', false, 'reason', 'limit');
   end if;
-  token := encode(gen_random_bytes(32), 'hex');
+  new_token := encode(gen_random_bytes(32), 'hex');
   loop
-    code := msg_link_code();
-    exit when not exists (select 1 from links where links.code = msg_link_make.code);
+    new_code := msg_link_code();
+    exit when not exists (select 1 from links where code = new_code);
   end loop;
   insert into links (code, token_hash, created_at, expires_at)
-  values (code, encode(digest(token, 'sha256'), 'hex'), p_now, p_now + interval '10 minutes');
+  values (new_code, encode(digest(new_token, 'sha256'), 'hex'), p_now,
+          p_now + interval '10 minutes');
   return jsonb_build_object(
-    'ok', true, 'code', code, 'token', token,
+    'ok', true, 'code', new_code, 'token', new_token,
     'expiresAt', msg_iso(p_now + interval '10 minutes')
   );
 end $$;

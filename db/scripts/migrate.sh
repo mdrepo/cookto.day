@@ -30,7 +30,9 @@ else
   fi
 fi
 
-run() { "$PSQL" "$URL" -X -q -v ON_ERROR_STOP=1 "$@"; }
+run() {
+  PGOPTIONS="-c client_min_messages=warning" "$PSQL" "$URL" -X -q -v ON_ERROR_STOP=1 "$@"
+}
 
 ensure() {
   run -c "create table if not exists schema_migrations (

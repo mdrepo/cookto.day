@@ -5,7 +5,7 @@ How to set up, check, turn on and stop the AI that reads receipt photos ([ADR 00
 ## 1. Set up Google (once)
 
 1. In [Google AI Studio](https://aistudio.google.com), create a project for cookto.day and **turn on billing**. The free tier lets Google train on what we send, so it's never used (ADR 0028).
-2. Create an API key in that project. In the Google Cloud console, under **APIs & Services → Credentials**, restrict the key to the **Generative Language API** only.
+2. Create an API key in that project. Keys made since mid-2026 start with `AQ.` and are managed in AI Studio; older ones start with `AIza`. If the key appears in the Google Cloud console under **APIs & Services → Credentials**, restrict it to the **Generative Language API** only.
 3. In AI Studio, set the project's **spend cap to $10 a month**.
 4. In the Cloud console, under **Billing → Budgets & alerts**, add a **$5 budget** that emails you.
 

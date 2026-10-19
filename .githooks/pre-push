@@ -7,11 +7,10 @@ zero=0000000000000000000000000000000000000000
 changed=""
 while read -r _local_ref local_sha _remote_ref remote_sha; do
   [ "$local_sha" = "$zero" ] && continue # deleting a branch
-  if [ "$remote_sha" = "$zero" ]; then
-    base=$(git merge-base "$local_sha" origin/main 2>/dev/null || echo "")
-  else
-    base=$remote_sha
-  fi
+  # What this branch changes against main, whether or not it was pushed
+  # before: after a rebase the old remote tip would count everything main
+  # gained, and a docs branch would run the browser suite.
+  base=$(git merge-base "$local_sha" origin/main 2>/dev/null || echo "")
   if [ -n "$base" ]; then
     changed="$changed$(git diff --name-only "$base" "$local_sha")
 "
@@ -22,6 +21,13 @@ while read -r _local_ref local_sha _remote_ref remote_sha; do
 done
 
 [ -z "$changed" ] && exit 0
+
+# Only words changed: nothing that ships, nothing a test checks. CI still
+# runs every check on the PR (ADR 0017).
+if ! printf '%s' "$changed" | grep -Ev '^(docs/|specs/|.*\.md$)' | grep -q .; then
+  echo "pre-push: only docs changed, nothing to run"
+  exit 0
+fi
 
 echo "pre-push: unit tests, in every workspace"
 bun run --silent test

@@ -11,7 +11,13 @@ How to set up, check, turn on and stop the AI that reads receipt photos ([ADR 00
 
 ## 2. Give the key to the API (once)
 
-In the Cloudflare dashboard, open **Workers & Pages → cookto-day → Settings → Variables and Secrets**, and add a **secret** named `GEMINI_API_KEY`. Paste the key there and nowhere else: not in the repo, not in GitHub, not in a chat.
+Save it as the Worker secret `GEMINI_API_KEY` with the script, which asks for the key with the screen echo off (`bunx wrangler@4.147.0 login` once first):
+
+```sh
+sh apps/api/scripts/secret.sh GEMINI_API_KEY
+```
+
+Or in the Cloudflare dashboard: **Workers & Pages → cookto-day → Settings → Variables and Secrets**, add a **secret** named `GEMINI_API_KEY`. Either way, paste the key there and nowhere else: not in the repo, not in GitHub, not in a chat.
 
 A deploy keeps secrets, so this survives every merge.
 

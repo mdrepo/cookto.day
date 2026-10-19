@@ -25,10 +25,14 @@ Use the same billed Google Cloud project as the Gemini key ([receipt-photos.md](
 
 ## 4. Give the API what it needs (once)
 
-In Cloudflare, **Workers & Pages → cookto-day → Settings → Variables and Secrets**, add two **secrets**:
+Two secrets, from the project's **Project Settings → API** page: `SUPABASE_URL`, the project's URL, and `SUPABASE_ANON_KEY`, the `anon` (or "publishable") key. Save each with the script, which asks for the value with the screen echo off and checks it looks right (`bunx wrangler@4.147.0 login` once first):
 
-- `SUPABASE_URL`: the project's URL, from **Project Settings → API**
-- `SUPABASE_ANON_KEY`: the `anon` key from the same page
+```sh
+sh apps/api/scripts/secret.sh SUPABASE_URL
+sh apps/api/scripts/secret.sh SUPABASE_ANON_KEY
+```
+
+The dashboard works too: **Workers & Pages → cookto-day → Settings → Variables and Secrets**, type **Secret**.
 
 Never the `service_role` key: the API acts with each person's own session, so row-level security applies (ADR 0025).
 

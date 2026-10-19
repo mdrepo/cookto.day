@@ -10,6 +10,7 @@ const ADR = "(ADR 0022)";
 const SCREEN = `A screen draws what its hook gives it ${ADR}. Read data, or call a use case, in a use*.ts hook beside it.`;
 const WRITE = `Writes go through a use case ${ADR}. Call one from @cookto/usecases; only packages/usecases imports @cookto/data/write.`;
 const FEATURE = `Features don't import each other ${ADR}: what two features share moves down a layer, to a use case, the engine, data or the kit.`;
+const MESSENGER = `Only the API sends messages (ADR 0031): the app talks to our API, never to a messaging service.`;
 /** @param {string} layer */
 const noReact = (layer) =>
   `${layer} runs without React, so it's tested without a browser and reused by another app ${ADR}. Move this into a screen hook.`;
@@ -57,8 +58,18 @@ export const layers = [
       "packages/usecases/**",
       "packages/data/**",
       "packages/engine/**",
+      "packages/messenger/**",
+      "apps/api/**",
       `${FEATURES}/**`,
     ],
+    rules: rules([
+      ban("^@cookto/data/write$", WRITE),
+      ban("^@cookto/messenger(/.*)?$", MESSENGER),
+    ]),
+  },
+  {
+    // The API: the one place that sends messages (ADR 0031).
+    files: ["apps/api/**"],
     rules: rules([ban("^@cookto/data/write$", WRITE)]),
   },
   ...DEPTHS.flatMap((depth) => {
@@ -71,12 +82,17 @@ export const layers = [
             "^(@cookto/(data|usecases)(/.*)?|zustand(/.*)?|@tanstack/.*)$",
             SCREEN,
           ),
+          ban("^@cookto/messenger(/.*)?$", MESSENGER),
           otherFeature(depth),
         ]),
       },
       {
         files: [`${inside}*.ts`],
-        rules: rules([ban("^@cookto/data/write$", WRITE), otherFeature(depth)]),
+        rules: rules([
+          ban("^@cookto/data/write$", WRITE),
+          ban("^@cookto/messenger(/.*)?$", MESSENGER),
+          otherFeature(depth),
+        ]),
       },
     ];
   }),
@@ -102,6 +118,14 @@ export const layers = [
     rules: rules([
       ban(REACT, noReact("The engine")),
       ban("^@cookto/(?!ui($|/))", below("The engine", "nothing else of ours")),
+    ]),
+  },
+  {
+    // The messenger knows no plan, cook or household (ADR 0031).
+    files: ["packages/messenger/src/**"],
+    rules: rules([
+      ban(REACT, noReact("The messenger")),
+      ban("^@cookto/", below("The messenger", "nothing of ours")),
     ]),
   },
 ];

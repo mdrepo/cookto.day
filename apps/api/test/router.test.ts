@@ -34,6 +34,7 @@ function deps() {
         supabase: { state: "missing" as const },
         gemini: { state: "rejected" as const },
       }),
+    messenger: null,
   };
 }
 
@@ -83,5 +84,32 @@ describe("the API's routes", () => {
       deps(),
     );
     expect(health.headers.get("allow")).toBe("GET");
+  });
+
+  test("the messenger's routes answer 503 until its secrets are saved (#207)", async () => {
+    const off = await route(
+      new Request(`${ORIGIN}/api/messenger/links`, { method: "POST" }),
+      deps(),
+    );
+    expect(off.status).toBe(503);
+    expect(await off.json()).toEqual({ error: "off" });
+    // A path with a code or an id, and one segment only.
+    const status = await route(
+      new Request(`${ORIGIN}/api/messenger/links/KM7Q4HTX`),
+      deps(),
+    );
+    expect(status.status).toBe(503);
+    const deep = await route(
+      new Request(`${ORIGIN}/api/messenger/links/KM7Q4HTX/more`),
+      deps(),
+    );
+    expect(deep.status).toBe(404);
+    // Two methods on one path: both are allowed.
+    const wrong = await route(
+      new Request(`${ORIGIN}/api/messenger/links`, { method: "PUT" }),
+      deps(),
+    );
+    expect(wrong.status).toBe(405);
+    expect(wrong.headers.get("allow")).toBe("POST, DELETE");
   });
 });

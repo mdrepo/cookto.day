@@ -6,9 +6,11 @@ package-lock.json
 yarn.lock
 pnpm-lock.yaml
 
-# Environment files (the app has no secrets; keep it that way)
+# Environment files: secrets live only in Cloudflare (ADR 0030)
 .env
 .env.*
+.dev.vars
+.dev.vars.*
 
 # Build output, and Turborepo's local cache
 dist/

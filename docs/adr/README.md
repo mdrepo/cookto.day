@@ -43,3 +43,4 @@ Each file records one decision: the context, what we chose, what we rejected and
 | [0027](0027-pantry-and-cuisine-packs.md) | Keep amounts and condition in the pantry, and let a household load cuisine packs | Proposed |
 | [0028](0028-receipt-photos-ai.md) | Read receipt photos with Gemini Flash-Lite, only through our API, within hard limits | Accepted |
 | [0029](0029-owner-is-product-manager.md) | The owner is the product manager; agents build and merge inside gates that check judgment, not only form | Proposed |
+| [0030](0030-secrets-only-in-cloudflare.md) | Keep every secret only in Cloudflare, saved from the owner's laptop, never read back | Accepted |

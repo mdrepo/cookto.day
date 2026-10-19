@@ -38,6 +38,10 @@ TELEGRAM_WEBHOOK_SECRET=random
 
 `random` tells the script to make a 64-character secret itself; Telegram will send it with every update, and the API refuses any update that doesn't carry it. Save the file and run the script again. It checks each value looks right, saves it as a Worker secret, blanks the file so the laptop keeps no copy, and checks that cookto.day still answers. The token is now only in Cloudflare and in BotFather (`/token` shows it again).
 
+## Check the saved keys
+
+Secrets are write-only, so the Worker is the only thing that can tell whether a value works. Open <https://cookto.day/api/health/keys>. For the Telegram token, Supabase and Gemini it answers one of `ok`, `rejected` (the service refused the value), `missing` (not saved yet) or `unreachable` (the service didn't answer), and the bot's username when the token is good. Never the values. The answer is kept a minute, so a second look right after a fix shows the old one.
+
 ## 3. Point Telegram at the API (after the bot PR deploys)
 
 The bot PR adds a script that tells Telegram where to send updates (`setWebhook` with the secret above). Run it once after that PR is live; the PR's runbook change says how.

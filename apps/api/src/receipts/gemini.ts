@@ -42,7 +42,14 @@ const MAX_OUTPUT_TOKENS = 2_560;
 const API = "https://generativelanguage.googleapis.com/v1beta/models";
 
 /** All of `fetch` the adapter uses. */
-type Send = (url: string, init: RequestInit) => Promise<Response>;
+export type Send = (url: string, init: RequestInit) => Promise<Response>;
+
+/**
+ * The network itself: a wrapper, not `fetch`, since Workers refuse a detached
+ * fetch. This file is the API's only way out (eslint-server.js); the keys
+ * health check (keys.ts) borrows it rather than opening a second one.
+ */
+export const network: Send = (url, init) => fetch(url, init);
 
 export interface GeminiOptions {
   key: string;
@@ -118,8 +125,7 @@ function result(answer: Answer): ReaderResult {
 }
 
 export function gemini(options: GeminiOptions): Reader {
-  // A wrapper, not `fetch` itself: Workers refuse a detached fetch.
-  const send: Send = options.send ?? ((url, init) => fetch(url, init));
+  const send: Send = options.send ?? network;
   const timeoutMs = options.timeoutMs ?? 20_000;
   return {
     async read(photo) {

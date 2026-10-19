@@ -28,6 +28,12 @@ function deps() {
     strikes,
     log: () => undefined,
     now: () => 0,
+    keys: () =>
+      Promise.resolve({
+        telegram: { state: "ok" as const, bot: "cooktoday_bot" },
+        supabase: { state: "missing" as const },
+        gemini: { state: "rejected" as const },
+      }),
   };
 }
 
@@ -41,6 +47,20 @@ describe("the API's routes", () => {
       "application/json; charset=utf-8",
     );
     expect(response.headers.get("x-content-type-options")).toBe("nosniff");
+  });
+
+  test("GET /api/health/keys says which saved keys work (#202)", async () => {
+    const response = await route(
+      new Request(`${ORIGIN}/api/health/keys`),
+      deps(),
+    );
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({
+      telegram: { state: "ok", bot: "cooktoday_bot" },
+      supabase: { state: "missing" },
+      gemini: { state: "rejected" },
+    });
+    expect(response.headers.get("cache-control")).toBe("no-store");
   });
 
   test("POST /api/receipts/read reads a receipt", async () => {

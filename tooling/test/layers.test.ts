@@ -164,18 +164,6 @@ describe("layers", () => {
     ).toEqual([]);
   });
 
-  test.each(["react", "@cookto/engine", "@cookto/data", "@cookto/usecases"])(
-    "the messenger can't import %s (ADR 0031)",
-    async (from) => {
-      const found = await problems(
-        "packages/messenger/src/telegram.ts",
-        `import { x } from "${from}";`,
-      );
-      expect(found).toHaveLength(1);
-      expect(found[0]).toContain("ADR 0022");
-    },
-  );
-
   test("only the API imports the messenger (ADR 0031)", async () => {
     // Data and use cases already may import nothing above them, so their own
     // rule answers there; the app's other files need this one.
@@ -191,6 +179,18 @@ describe("layers", () => {
     }
     expect(await problems("apps/api/src/index.ts", line)).toEqual([]);
   });
+
+  test.each(["react", "@cookto/engine", "@cookto/data", "@cookto/usecases"])(
+    "the messenger can't import %s (ADR 0031)",
+    async (from) => {
+      const found = await problems(
+        "packages/messenger/src/telegram.ts",
+        `import { x } from "${from}";`,
+      );
+      expect(found).toHaveLength(1);
+      expect(found[0]).toContain("ADR 0022");
+    },
+  );
 });
 
 describe("the new packages exist", () => {

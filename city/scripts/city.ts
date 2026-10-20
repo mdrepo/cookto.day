@@ -43,11 +43,17 @@ const graph = buildGraph({
   history,
 });
 
-const notices = board(graph, {
-  files,
-  read: (p) => readFileSync(p, "utf8"),
-  history,
-});
+// The English words, for what each screen shows (city-screens-lib).
+const { en } = (await import(
+  join(process.cwd(), "apps/web/src/i18n/en.ts")
+)) as {
+  en: Record<string, unknown>;
+};
+const notices = board(
+  graph,
+  { files, read: (p) => readFileSync(p, "utf8"), history },
+  en,
+);
 
 const head = history.commits[history.commits.length - 1];
 const data = {

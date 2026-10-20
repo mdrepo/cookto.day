@@ -1,0 +1,189 @@
+<script>
+  // ---------- Blocks that need attention, topics, decisions ----------
+  // Each block counts the gap and copy notices pinned to its buildings; its
+  // plate tints with them, and the district list says how many.
+  const ALARM_C = new THREE.Color("#ff6b57");
+  for (const b of blocks) b.notices = 0;
+  for (const g of todo)
+    for (const it of g.items)
+      for (const i of new Set(idsOf(it.ids))) blockOf[i].notices++;
+  for (const p of plates) {
+    const k = Math.min(0.55, p.b.notices * 0.07);
+    if (!k) continue;
+    p.g.children[0].material.color.lerp(ALARM_C, k);
+    p.edge.material.color.lerp(ALARM_C, k);
+    p.edge.material.opacity = 0.35 + k * 0.6;
+  }
+
+  // Topics: one name through the layers. Click one to light the column.
+  function renderTopics() {
+    const box = $("topics");
+    box.replaceChildren();
+    for (const t of G.topics.slice(0, 28)) {
+      const c = el("button", {
+        type: "button",
+        className: "chip",
+        title: `${t.ids.length} buildings in ${t.layers.map((L) => KIND[L].name).join(", ")}`,
+      });
+      c.append(t.name, el("em", { textContent: t.layers.length }));
+      c.onclick = () =>
+        showNotice({
+          title: `Topic: ${t.name}`,
+          why: `${t.ids.length} buildings share this name through ${t.layers.length} layers: ${t.layers.map((L) => KIND[L].name).join(", ")}. One idea, followed from rule to screen.`,
+          items: [{ ids: t.ids }],
+        });
+      box.append(c);
+    }
+  }
+
+  // The statute book's decisions: every ADR, and the planning applications.
+  function adrChips(ns) {
+    const ch = el("div", { className: "chips adrs" });
+    for (const n of ns) {
+      const a = G.adrs.find((x) => x.n === n);
+      ch.append(
+        el("a", {
+          className: "chip",
+          href: G.github + (a?.file ?? `docs/adr/`),
+          target: "_blank",
+          rel: "noopener",
+          textContent: `ADR ${n}`,
+          title: a ? `${a.title} · ${a.status}` : "",
+        }),
+      );
+    }
+    return ch;
+  }
+  function renderDecisions(box) {
+    const wrap = el("div", {});
+    const by = {};
+    for (const a of G.adrs) (by[a.status] ??= []).push(a);
+    const order = Object.keys(by).sort(
+      (a, b) => by[b].length - by[a].length || a.localeCompare(b),
+    );
+    wrap.append(
+      el("h2", { textContent: "Decisions" }),
+      el("p", {
+        className: "why",
+        textContent: `${G.adrs.length} ADRs in docs/adr: ${order.map((s) => `${by[s].length} ${s.toLowerCase()}`).join(", ")}. Accepted ones are binding. Each row says which other decisions it rests on.`,
+      }),
+    );
+    for (const a of G.adrs) {
+      const row = el("div", { className: "law adr " + a.status.toLowerCase() });
+      const link = el("a", {
+        href: G.github + a.file,
+        target: "_blank",
+        rel: "noopener",
+        textContent: `${a.n} · ${a.title}`,
+      });
+      row.append(
+        el(
+          "b",
+          {},
+          link,
+          el("span", { className: "k", textContent: a.status }),
+        ),
+      );
+      if (a.cites.length)
+        row.append(
+          el("small", {
+            textContent: `Rests on ${a.cites.map((n) => `ADR ${n}`).join(", ")}`,
+          }),
+        );
+      wrap.append(row);
+    }
+    if (G.proposals.length) {
+      wrap.append(
+        el("h2", { textContent: "Planning applications" }),
+        el("p", {
+          className: "why",
+          textContent:
+            "Proposals in docs/proposals: ideas not yet law, for the owner to decide.",
+        }),
+      );
+      for (const p of G.proposals) {
+        const row = el("div", { className: "law adr proposed" });
+        row.append(
+          el(
+            "b",
+            {},
+            el("a", {
+              href: G.github + p.file,
+              target: "_blank",
+              rel: "noopener",
+              textContent: p.title,
+            }),
+          ),
+          el("small", { textContent: p.status }),
+        );
+        wrap.append(row);
+      }
+    }
+    box.append(wrap);
+  }
+
+  // The way in: what a person sees on a screen, where it leads, who walks it.
+  function renderWayIn(box, n) {
+    const words = n.info?.words || [];
+    const h = el("h3", { textContent: "What a person sees" });
+    if (words.length) {
+      const ul = el("ul", { className: "ways" });
+      const show = (list) =>
+        list.forEach((w) =>
+          ul.append(el("li", { textContent: w.text, title: w.k })),
+        );
+      show(words.slice(0, 10));
+      if (words.length > 10) {
+        const more = el("button", {
+          type: "button",
+          className: "chip more",
+          textContent: `${words.length - 10} more`,
+        });
+        more.onclick = () => {
+          more.remove();
+          show(words.slice(10));
+        };
+        ul.append(el("li", { className: "more-li" }, more));
+      }
+      box.append(h, ul);
+    } else
+      box.append(
+        h,
+        el("p", {
+          className: "note",
+          textContent:
+            "No words of its own: it shows what its parts and data give it.",
+        }),
+      );
+    const leads = idsOf(n.info?.leads);
+    if (leads.length)
+      box.append(el("h3", { textContent: "Where it leads" }), chipList(leads));
+    if (n.info?.walks?.length) {
+      const ch = el("div", { className: "chips" });
+      for (const name of n.info.walks) {
+        const w = G.walks.find((x) => x.name === name);
+        ch.append(
+          el("a", {
+            className: "chip",
+            href: G.github + (w?.file ?? ""),
+            target: "_blank",
+            rel: "noopener",
+            textContent: name,
+            title: w ? `${w.tests} tests · ${w.file}` : "",
+          }),
+        );
+      }
+      box.append(el("h3", { textContent: "Walked by" }), ch);
+    } else
+      box.append(
+        el("h3", { textContent: "Walked by" }),
+        el("p", {
+          className: "note",
+          textContent: "No walk reaches this screen.",
+        }),
+      );
+    box.append(
+      el("h3", { className: "then", textContent: "And the code behind it" }),
+    );
+  }
+</script>

@@ -192,6 +192,7 @@
             (r.guarded ? "Enforced by " : "Only you watch this: ") + r.enforced,
         }),
       );
+      if (r.adrs?.length) row.append(adrChips(r.adrs));
       wrap.append(row);
     }
     box.append(wrap);
@@ -239,9 +240,10 @@
     renderWhatNow(box);
     renderGroups(box);
     renderLaws(box);
+    renderDecisions(box);
     renderWalks(box);
   }
   $("legend-btn").onclick = () => panel("districts");
   $("notices-btn").onclick = () => panel("notices");
-  renderNotices();
+  // renderNotices() runs once every part is loaded, at the end of 42-script.
 </script>

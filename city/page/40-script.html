@@ -10,7 +10,17 @@
             "Listed building: a change here needs the owner's seal (CODEOWNERS).",
         }),
       );
-    if (n.info?.walks?.length) {
+    if (n.info?.door)
+      box.append(
+        el("p", {
+          className: "plaque door",
+          textContent: `A door onto the street: ${n.info.door.join(", ")}. Other packages enter here, by the package's exports.`,
+        }),
+      );
+    const isScreen = n.layer === "screens" && n.group !== "app shell";
+    if (isScreen) {
+      // Walked by is on the way in, above.
+    } else if (n.info?.walks?.length) {
       const ch = el("div", { className: "chips" });
       for (const name of n.info.walks) {
         const w = G.walks.find((x) => x.name === name);
@@ -26,14 +36,7 @@
         );
       }
       box.append(el("h3", { textContent: "Walked by" }), ch);
-    } else if (n.layer === "screens" && n.group !== "app shell")
-      box.append(
-        el("h3", { textContent: "Walked by" }),
-        el("p", {
-          className: "note",
-          textContent: "No walk reaches this screen.",
-        }),
-      );
+    }
     if (n.info?.abroad?.length) {
       const p = el("p", { className: "passes" });
       n.info.abroad.forEach((pk, k) => {

@@ -76,8 +76,8 @@ export interface Repo {
   history: History;
 }
 
-/** "@cookto/x" and its subpaths, from each package's exports, as repo paths. */
-function packageExports(repo: Repo): Record<string, string> {
+/** "@cookto/x" and its subpaths, from each package's exports, as repo paths: the doors. */
+export function packageExports(repo: Repo): Record<string, string> {
   const map: Record<string, string> = {};
   for (const file of repo.files) {
     const m = /^packages\/([^/]+)\/package\.json$/.exec(file);

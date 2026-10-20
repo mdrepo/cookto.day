@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { evening, fakeShare, planner, shared } from "./support/cook.js";
+import {
+  cookConnected,
+  evening,
+  fakeShare,
+  planner,
+  shared,
+} from "./support/cook.js";
 import { Cooking } from "./support/cooking.js";
 import {
   fakeHouseholdApi,
@@ -15,19 +21,43 @@ import {
 // faked in each page (ADR 0025).
 
 test.describe("The household", () => {
-  test("signing in starts the household", async ({ page }) => {
+  test("signing in starts the household, and the cook's link moves into it", async ({
+    page,
+  }) => {
     const s = householdServer();
     await fakeHouseholdApi(page, s);
-    await planner(page);
+    await cookConnected(page);
     const k = await evening(page);
     await k.settings();
     await signIn(page, s, "Mayur");
     await expect(household(page)).toBeVisible();
     await expect(household(page).getByText("Mayur, plans")).toBeVisible();
+    await expect(
+      household(page).getByText("The cook, on Telegram"),
+    ).toBeVisible();
     const [made] = s.created;
     expect(made?.records.map((r) => r.collection)).toContain("plans");
     expect(made?.records.map((r) => r.collection)).toContain("members");
+    expect(made?.cookToken).toBe("tok-for-the-test");
     expect(s.recordsOf("plans").length).toBeGreaterThan(0);
+    // The phone forgot the token, and keeps her through the household.
+    const cook = await page.evaluate(() =>
+      localStorage.getItem("cookto.day:cook"),
+    );
+    expect(JSON.parse(cook ?? "null")).toMatchObject({ token: null });
+    await expect(
+      page.getByRole("button", { name: "Connect the cook's Telegram" }),
+    ).toHaveCount(0);
+    // "Looks good" sends through the session.
+    await k.home();
+    await k.press("Looks good");
+    await expect(page.getByText("Sent to the cook")).toBeVisible({
+      timeout: 10_000,
+    });
+    // The evening scheduled the plan for 9 pm; "Looks good" sent it now.
+    const now = s.sends.filter((x) => x.at === undefined);
+    expect(now).toHaveLength(1);
+    expect(now[0]?.text).toContain("Dinner");
   });
 
   test("invite a planner, and the cook", async ({ page }) => {
@@ -35,8 +65,7 @@ test.describe("The household", () => {
     await fakeShare(page);
     await fakeHouseholdApi(page, s);
     await planner(page);
-    const k = new Cooking(page);
-    await k.start();
+    const k = await evening(page);
     await k.settings();
     await signIn(page, s, "Mayur");
     await household(page).getByRole("button", { name: "Invite" }).click();
@@ -60,6 +89,14 @@ test.describe("The household", () => {
     await expect(
       household(page).getByText("The cook, on Telegram"),
     ).toBeVisible({ timeout: 10_000 });
+    // Invited through the household, she gets "Looks good" from this phone.
+    await k.home();
+    await expect(k.button("Looks good")).toBeVisible();
+    await k.press("Looks good");
+    await expect(page.getByText("Sent to the cook")).toBeVisible({
+      timeout: 10_000,
+    });
+    expect(s.sends.filter((x) => x.at === undefined)).toHaveLength(1);
   });
 
   test("joining replaces this phone's kitchen; an untouched sample isn't asked", async ({

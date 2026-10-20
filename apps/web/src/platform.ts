@@ -92,6 +92,7 @@ export const householdSync = async () => ({
   sync: await sync(),
   settings: settings.writer,
   changes,
+  now: () => now().toISOString(),
 });
 
 export const household = createHousehold(records, { changes });

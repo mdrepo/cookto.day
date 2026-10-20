@@ -14,6 +14,7 @@ export type {
   ApiOptions,
   Change,
   HouseholdApi,
+  HouseholdSendApi,
   HouseholdView,
   LinkMade,
   MemberRow,

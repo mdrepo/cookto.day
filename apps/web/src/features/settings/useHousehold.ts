@@ -4,6 +4,7 @@ import {
   deleteAccount,
   joinOrStart,
   leaveHousehold,
+  reflectCook,
 } from "@cookto/usecases/household-sync";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -22,7 +23,14 @@ const POLL_MS = 3_000;
 /** The household as the API answers it, or null when the account has none. */
 export const householdQuery = {
   queryKey: ["account", "household"],
-  queryFn: () => householdSync().then(currentHousehold),
+  queryFn: () =>
+    householdSync().then(async (d) => {
+      const view = await currentHousehold(d);
+      // The household's cook is this phone's cook (specs/217).
+      if (view)
+        reflectCook(d.settings, d.settings.cook(), view.members, d.now());
+      return view;
+    }),
 };
 
 function useMembers(signedIn: boolean, polling: boolean) {

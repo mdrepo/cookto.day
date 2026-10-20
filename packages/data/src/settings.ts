@@ -246,6 +246,7 @@ export function createSettings(
         store.setState({ sorted: on });
         write(kv, SORTED_KEY, on);
       },
+      cook: () => store.getState().cook,
       setCook(cook) {
         store.setState({ cook });
         write(kv, COOK_KEY, JSON.stringify(cook));

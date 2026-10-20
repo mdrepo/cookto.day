@@ -14,8 +14,11 @@ export interface PlanSent {
 
 /** The cook's Telegram, connected from this phone (specs/207). */
 export interface Cook {
-  /** The link's token: the only thing that lets this phone send. */
-  token: string;
+  /**
+   * The link's token, the only thing that lets a phone send on its own;
+   * null once she belongs to the household (specs/217): the session sends.
+   */
+  token: string | null;
   connectedAt: string;
   /** The plan last sent to her. */
   sent: PlanSent | null;
@@ -31,6 +34,8 @@ export interface SignedIn {
 
 /** The cook's Telegram and what went to her (specs/207), for its use cases. */
 export interface CookWriter {
+  /** The cook as this phone has her now. */
+  cook(): Cook | null;
   setCook(cook: Cook | null): void;
 }
 
@@ -44,10 +49,14 @@ const isString = (v: unknown): v is string => typeof v === "string";
 /** The saved cook, or none when missing or not what we saved. */
 export function readCook(text: string | null): Cook | null {
   try {
-    const v = JSON.parse(text ?? "null") as Cook | null;
-    if (!v || !isString(v.token) || !isString(v.connectedAt)) return null;
+    const v = JSON.parse(text ?? "null") as
+      (Omit<Cook, "token"> & { token: unknown }) | null;
+    if (!v || !isString(v.connectedAt)) return null;
+    // A token, or null once she belongs to the household (specs/217).
+    const token = v.token;
+    if (token !== null && !isString(token)) return null;
     const plan = (p: PlanSent | null) => (isString(p?.text) ? p : null);
-    return { ...v, sent: plan(v.sent), scheduled: plan(v.scheduled) };
+    return { ...v, token, sent: plan(v.sent), scheduled: plan(v.scheduled) };
   } catch {
     return null;
   }

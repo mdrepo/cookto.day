@@ -48,6 +48,14 @@ export interface Api {
   cancel(token: string, id: string): Promise<void>;
 }
 
+/** To the household's cooks, with the session (spec #217): its own
+ * interface, so a fake of the cook's `Api` needn't know it. */
+export interface HouseholdSendApi {
+  sendThroughHousehold(
+    request: SendRequest,
+  ): Promise<{ id: string; ids?: string[] }>;
+}
+
 /** Sign in with Telegram (spec #216): its own interface, so a fake of the
  * cook's `Api` needn't know it. */
 export interface SignInApi {
@@ -188,6 +196,14 @@ const cookApi = (call: Call): Api => ({
   },
 });
 
+const householdSendApi = (call: Call): HouseholdSendApi => ({
+  sendThroughHousehold: (request) =>
+    call("POST", "/api/messenger/send", undefined, request) as Promise<{
+      id: string;
+      ids?: string[];
+    }>,
+});
+
 const signInApi = (call: Call): SignInApi => ({
   startSignIn: () => call("POST", "/api/auth/links") as Promise<LinkMade>,
   signInStatus: (token, code) =>
@@ -236,10 +252,11 @@ const householdApi = (call: Call): HouseholdApi => ({
 
 export function createApi(
   options: ApiOptions = {},
-): Api & SignInApi & SyncApi & HouseholdApi {
+): Api & SignInApi & SyncApi & HouseholdApi & HouseholdSendApi {
   const call = callerOf(options);
   return {
     ...cookApi(call),
+    ...householdSendApi(call),
     ...signInApi(call),
     ...syncApi(call),
     ...householdApi(call),

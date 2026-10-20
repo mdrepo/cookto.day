@@ -7,6 +7,7 @@ import { useDocumentTheme } from "./features/settings/useDocumentTheme.js";
 import { Tabs } from "./features/tabs/Tabs.js";
 import { useMovedDishes } from "./moves.js";
 import { useRoute } from "./routes.js";
+import { useSync } from "./sync.js";
 import { SaveProblem } from "./features/saving/SaveProblem.js";
 
 // The app: features put together (ADR 0022). Features don't import each
@@ -74,6 +75,7 @@ export function App() {
   useDocumentLanguage();
   useDocumentTheme();
   useMovedDishes();
+  useSync();
   return (
     <Suspense fallback={null}>
       <Page />

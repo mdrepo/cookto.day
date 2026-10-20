@@ -38,6 +38,9 @@ function inPage(page: Page) {
     put: async (collection: string, records: readonly { id: string }[]) => {
       await call("put", [collection, records]);
     },
+    clear: async (collection: string) => {
+      await call("clear", [collection]);
+    },
   };
 }
 

@@ -16,8 +16,14 @@ export interface RecordStore {
   put(collection: string, records: readonly { id: string }[]): Promise<void>;
 }
 
+/** A store that can also empty a collection (specs/217: joining a household). */
+export interface Clearable {
+  /** Every record of the collection, gone. */
+  clear(collection: string): Promise<void>;
+}
+
 /** A record store in memory. */
-export function memoryRecordStore(): RecordStore {
+export function memoryRecordStore(): RecordStore & Clearable {
   const collections = new Map<string, Map<string, unknown>>();
   const of = (name: string) => {
     let records = collections.get(name);
@@ -48,6 +54,10 @@ export function memoryRecordStore(): RecordStore {
       const into = of(collection);
       for (const record of records)
         into.set(record.id, structuredClone(record));
+      return Promise.resolve();
+    },
+    clear(collection) {
+      collections.delete(collection);
       return Promise.resolve();
     },
   };

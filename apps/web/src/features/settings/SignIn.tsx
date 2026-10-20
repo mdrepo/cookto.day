@@ -4,6 +4,7 @@ import {
   LinkOut,
   Note,
   Section,
+  Sheet,
   Stack,
   Tag,
 } from "@cookto/ui";
@@ -60,6 +61,27 @@ export function SignIn() {
           </>
         )}
       </Stack>
+      <Sheet
+        open={s.question !== null}
+        title={s.title}
+        closeLabel={s.closeLabel}
+        onClose={s.question?.notNow.run ?? (() => undefined)}
+      >
+        <Stack gap={3}>
+          <p>{s.question?.text}</p>
+          <Cluster>
+            <Button onClick={s.question?.replace.run ?? (() => undefined)}>
+              {s.question?.replace.label}
+            </Button>
+            <Button
+              kind="plain"
+              onClick={s.question?.notNow.run ?? (() => undefined)}
+            >
+              {s.question?.notNow.label}
+            </Button>
+          </Cluster>
+        </Stack>
+      </Sheet>
     </Section>
   );
 }

@@ -11,6 +11,7 @@ import { fill } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
 import { api, now, settings } from "../../platform.js";
 import { BOT, spaced } from "./useCookLink.js";
+import { useJoin } from "./useJoin.js";
 
 // Sign in with Telegram (specs/216), on any phone: one line about what's
 // kept, then a code and the bot's link, polled every 3 seconds until Start
@@ -41,7 +42,16 @@ function useSessionCheck(signedIn: boolean, onSignedOut: () => void) {
 }
 
 /** While the code shows, ask every few seconds whether Start happened. */
-function useStartPoll(made: LinkMade | null, setStep: (step: Step) => void) {
+function useStartPoll(
+  made: LinkMade | null,
+  setStep: (step: Step) => void,
+  onSignedIn: () => void,
+) {
+  // The latest callback, without restarting the poll on every render.
+  const signedIn = useRef(onSignedIn);
+  useEffect(() => {
+    signedIn.current = onSignedIn;
+  });
   useEffect(() => {
     if (made === null) return;
     let stop = false;
@@ -50,8 +60,10 @@ function useStartPoll(made: LinkMade | null, setStep: (step: Step) => void) {
         .then((d) => signInConnected(d, made, now().toISOString()))
         .catch(() => "waiting" as const);
       if (stop) return;
-      if (state === "signed-in") setStep({ kind: "idle" });
-      else if (state === "expired") setStep({ kind: "expired" });
+      if (state === "signed-in") {
+        setStep({ kind: "idle" });
+        signedIn.current();
+      } else if (state === "expired") setStep({ kind: "expired" });
     };
     void tick();
     const timer = setInterval(() => void tick(), POLL_MS);
@@ -73,7 +85,8 @@ export function useSignIn() {
   useSessionCheck(signedIn !== null, () => {
     setSignedOutElsewhere(true);
   });
-  useStartPoll(made, setStep);
+  const join = useJoin();
+  useStartPoll(made, setStep, join.onSignedIn);
 
   const ask = () => {
     setBusy(true);
@@ -93,6 +106,15 @@ export function useSignIn() {
 
   return {
     title: t.account,
+    question:
+      join.question === null
+        ? null
+        : {
+            text: fill(t.replaceKitchenQuestion, { name: join.question }),
+            replace: { label: t.replace, run: join.replace },
+            notNow: { label: t.notNow, run: join.notNow },
+          },
+    closeLabel: t.close,
     signedIn,
     signedInWords:
       signedIn === null ? "" : fill(t.signedInAs, { name: signedIn.name }),

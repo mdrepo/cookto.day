@@ -95,3 +95,7 @@ Deleting an account deletes its data within 30 days, and export works at any tim
 
 - **Sign in with Google, not an emailed code** (spec #150). The owner chose one tap over codes on 17 Oct 2026. What changes: no email provider; the session cookie is `SameSite=Lax`, so the return from Google carries it. What stays: the page talks only to our API, loads nothing from Google, and never sees a token; Supabase checks the sign-in; our own `account_id` is what data refers to; signing in is optional. `Auth` takes one provider per way in, so a WhatsApp code can follow as another.
 - **Bill forwarding** keeps its rule that only a member's verified email is accepted: a Google account's email is verified by Google.
+
+## Notes (2026-10-20)
+
+- **Telegram first, not Google** ([0033](0033-telegram-sign-in-and-households.md), specs #216 and #217). The owner chose on 20 Oct 2026 to put the plan on the server behind sign-in, and to sign in through the bot that already connects the cook: a code and Start, no redirect, no Google client, no Supabase Auth. What stays: our own `account_id`, the `HttpOnly` cookie, signing in optional, the phone's copy first. The sync's shape and what the server holds are in 0033; pantry amounts sync as whole records until "used 1" is needed. Google remains a later provider (spec #150).

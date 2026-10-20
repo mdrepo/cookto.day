@@ -1,5 +1,5 @@
 import { createStore, type StoreApi } from "zustand/vanilla";
-import type { RecordStore } from "./record-store.js";
+import type { Clearable, RecordStore } from "./record-store.js";
 
 // A failed save is a value with a kind (ADR 0024, specs/138): the app says
 // so instead of losing the change without a word.
@@ -19,9 +19,18 @@ export function problemOf(error: unknown): SaveProblem {
  * still fails), or null when it works, which clears an earlier problem.
  */
 export function watchSaves(
+  store: RecordStore & Clearable,
+  report: (problem: SaveProblem | null) => void,
+): RecordStore & Clearable;
+export function watchSaves(
   store: RecordStore,
   report: (problem: SaveProblem | null) => void,
-): RecordStore {
+): RecordStore;
+export function watchSaves(
+  store: RecordStore & Partial<Clearable>,
+  report: (problem: SaveProblem | null) => void,
+): RecordStore & Partial<Clearable> {
+  const clear = store.clear?.bind(store);
   return {
     get: (collection, id, signal) => store.get(collection, id, signal),
     all: (collection, signal) => store.all(collection, signal),
@@ -34,6 +43,7 @@ export function watchSaves(
       }
       report(null);
     },
+    ...(clear && { clear }),
   };
 }
 

@@ -1,8 +1,11 @@
 import type { Changes } from "./changes.js";
 import type { KeyValue } from "./kv.js";
 import { ApiError, type PushedRecord, type SyncApi } from "./network.js";
-import type { RecordStore } from "./record-store.js";
+import type { Clearable, RecordStore } from "./record-store.js";
 import type { SyncRecord } from "./records.js";
+import { SYNC_TOPICS } from "./sync-topics.js";
+
+export { SYNC_TOPICS };
 
 // Sync, local first (ADR 0033, spec #217): the phone's copy stays what
 // screens show. Every write through the repositories is pending until
@@ -15,22 +18,12 @@ export const SYNC_KEY = "cookto.day:sync";
 export const PUSH_PAGE = 500;
 const PAUSE_MS = 2_000;
 
-/** What each collection's change announces, as its repository does. */
-export const SYNC_TOPICS: Record<string, string> = {
-  cooked: "cooked",
-  members: "household",
-  "my-dishes-out": "my-dishes",
-  pantry: "pantry",
-  plans: "plans",
-  shopping: "shopping",
-};
-
 export type SyncOutcome =
   "synced" | "offline" | "signed-out" | "no-household" | "cancelled" | "failed";
 
 export interface Sync {
   /** The store the repositories write through: every save is pending. */
-  store: RecordStore;
+  store: RecordStore & Clearable;
   /** Push what's pending, then pull. A sync in flight is cancelled first. */
   run(): Promise<SyncOutcome>;
   /** After a write: one sync after a short pause, however many writes. */
@@ -44,7 +37,7 @@ export interface Sync {
 }
 
 export interface SyncOptions {
-  store: RecordStore;
+  store: RecordStore & Clearable;
   api: SyncApi;
   kv: KeyValue;
   changes: Changes;
@@ -105,7 +98,7 @@ function readState(kv: KeyValue): { cursor: number; pending: Pending[] } {
 }
 
 class Syncer implements Sync {
-  readonly store: RecordStore;
+  readonly store: RecordStore & Clearable;
   private at: number;
   private readonly queue = new Map<string, Pending>();
   private current: AbortController | null = null;
@@ -126,6 +119,7 @@ class Syncer implements Sync {
           this.queue.set(key(collection, r.id), { collection, id: r.id });
         this.persist();
       },
+      clear: (collection) => raw.clear(collection),
     };
   }
 

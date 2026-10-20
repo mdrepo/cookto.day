@@ -1,4 +1,4 @@
-import type { RecordStore } from "@cookto/data";
+import type { Clearable, RecordStore } from "@cookto/data";
 
 // The record store in the browser (ADR 0024): one IndexedDB object store,
 // keyed by [collection, id], so a collection reads back in id order. It
@@ -57,7 +57,7 @@ const inCollection = (c: string) => IDBKeyRange.bound([c, ""], [c, []]);
 
 export function indexedDbRecordStore(
   name: string,
-): RecordStore & { close(): Promise<void> } {
+): RecordStore & Clearable & { close(): Promise<void> } {
   let database: Promise<IDBDatabase> | null = null;
   const db = () => (database ??= open(name));
 
@@ -95,6 +95,11 @@ export function indexedDbRecordStore(
       for (const record of records)
         into.put({ c: collection, id: record.id, record } satisfies Row);
       // One transaction: every record is saved, or none is.
+      await finished(transaction);
+    },
+    async clear(collection) {
+      const transaction = (await db()).transaction(RECORDS, "readwrite");
+      transaction.objectStore(RECORDS).delete(inCollection(collection));
       await finished(transaction);
     },
     async close() {

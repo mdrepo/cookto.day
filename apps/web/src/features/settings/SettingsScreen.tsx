@@ -3,6 +3,7 @@ import { Button, Cluster, Screen, Stack } from "@cookto/ui";
 import { useWords } from "../../i18n/useWords.js";
 import { goHome } from "../../routes.js";
 import { BeansPicker } from "./BeansPicker.js";
+import { Household } from "./Household.js";
 import { CookLink } from "./CookLink.js";
 import { LanguagePicker } from "./LanguagePicker.js";
 import { RolePicker } from "./RolePicker.js";
@@ -30,6 +31,7 @@ export function SettingsScreen({ bar }: { bar: ReactNode }) {
     >
       <Stack gap={4}>
         <SignIn />
+        <Household />
         <LanguagePicker />
         <RolePicker />
         <CookLink />

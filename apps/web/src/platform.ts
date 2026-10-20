@@ -9,6 +9,7 @@ import {
   createPlans,
   createSettings,
   createShopping,
+  type Sync,
   watchSaves,
 } from "@cookto/data";
 import { browserKeyValue, browserRecordStore } from "@cookto/data-web";
@@ -52,10 +53,46 @@ export const queries = createQueries(changes);
 /** The last failed save, for the note on any screen (specs/138). */
 export const saveProblems = createSaveProblems();
 
-const records = watchSaves(
-  browserRecordStore("cookto.day"),
-  saveProblems.report,
-);
+const saved = watchSaves(browserRecordStore("cookto.day"), saveProblems.report);
+
+/**
+ * Sync (specs/217): signed in, every save through `records` is pending
+ * until pushed, and a push follows after a short pause. The engine and the
+ * API's code load when first needed, so a phone that never signs in never
+ * fetches them.
+ */
+let engine: Promise<Sync> | null = null;
+export const sync = () =>
+  (engine ??= import("@cookto/data/sync").then((m) =>
+    m.createSync({
+      store: saved,
+      api: {
+        push: (pushed) => api().then((a) => a.push(pushed)),
+        changes: (after) => api().then((a) => a.changes(after)),
+      },
+      kv: browserKeyValue(),
+      changes,
+    }),
+  ));
+const signedIn = () => settings.store.getState().signedIn !== null;
+const records = {
+  ...saved,
+  put: async (collection: string, list: readonly { id: string }[]) => {
+    if (!signedIn()) return saved.put(collection, list);
+    const s = await sync();
+    await s.store.put(collection, list);
+    s.soon();
+  },
+};
+
+/** What the household's use cases need (specs/217). */
+export const householdSync = async () => ({
+  api: await api(),
+  store: saved,
+  sync: await sync(),
+  settings: settings.writer,
+  changes,
+});
 
 export const household = createHousehold(records, { changes });
 

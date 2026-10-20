@@ -8,9 +8,15 @@ interface Chat {
   id: number;
 }
 
+interface From {
+  id: number;
+  first_name: string;
+}
+
 interface IncomingMessage {
   message_id: number;
   chat: Chat;
+  from?: From;
   text?: string;
   caption?: string;
   photo?: { file_id: string }[];
@@ -68,11 +74,14 @@ export function parseUpdate(body: string): Parsed | null {
       ack: q.id,
     };
   }
-  if (u.message)
+  if (u.message) {
+    const { from } = u.message;
     return {
       updateId,
       chat: String(u.message.chat.id),
       event: ofMessage(u.message),
+      ...(from && { from: { id: String(from.id), name: from.first_name } }),
     };
+  }
   return null;
 }

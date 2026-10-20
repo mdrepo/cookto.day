@@ -5,9 +5,10 @@ import { WORDS } from "./words.js";
 
 // POST /api/messenger/telegram (spec #207): what the cook sends. The
 // messenger verifies and records; this decides. Four cases: Start with a
-// code connects her; /stop deletes everything; anything else is kept and
-// answered with the one line we have. A chat without a conversation gets a
-// plain reply through the channel, with nothing kept.
+// code connects her, or signs the planner in when the code is a sign-in's
+// (spec #216); /stop deletes everything; anything else is kept and answered
+// with the one line we have. A chat without a conversation gets a plain
+// reply through the channel, with nothing kept.
 
 const text = (t: string): Message => ({ kind: "text", text: t });
 
@@ -26,6 +27,18 @@ async function handle(d: MessengerDeps, got: Received): Promise<string> {
   const { event, chat, conversation } = got;
   const now = iso(d.now());
   if (event.kind === "started") {
+    if (got.from !== undefined) {
+      const name = d.messenger.channel.name;
+      const signIn = await d.auth.start(event.code, name, got.from, now);
+      if (signIn.ok) {
+        await tell(d, chat, WORDS.signedIn);
+        return "signed-in";
+      }
+      if (signIn.reason === "bad") {
+        await tell(d, chat, WORDS.badCode);
+        return "bad-code";
+      }
+    }
     const connected = await d.links.connect(
       event.code,
       d.messenger.channel.name,

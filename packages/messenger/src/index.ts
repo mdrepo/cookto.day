@@ -6,6 +6,7 @@ export {
   ChannelError,
   type Parsed,
   type Send,
+  type Sender,
 } from "./channel.js";
 export { BACKOFF_MINUTES, drain, type Drained, LOCK_MS } from "./drain.js";
 export {

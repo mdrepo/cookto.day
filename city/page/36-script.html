@@ -207,6 +207,16 @@
         el("em", { textContent: count }),
         el("small", { textContent: meta.note }),
       );
+      const nn = blocks
+        .filter((bb) => bb.district === d)
+        .reduce((s, bb) => s + (bb.notices || 0), 0);
+      if (nn)
+        b.append(
+          el("i", {
+            className: "nn",
+            textContent: `${nn} notice${nn === 1 ? "" : "s"}`,
+          }),
+        );
       b.onclick = () => {
         state.hidden.has(d) ? state.hidden.delete(d) : state.hidden.add(d);
         refresh();

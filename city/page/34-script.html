@@ -178,6 +178,13 @@
         b.name,
         Object.assign(document.createElement("small"), { textContent: count }),
       );
+      if (b.notices)
+        d.append(
+          Object.assign(document.createElement("i"), {
+            className: "nn",
+            textContent: b.notices,
+          }),
+        );
       d.style.transform = `translate(${at[0]}px, ${at[1] - 18}px)`;
       d.hidden = false;
     }

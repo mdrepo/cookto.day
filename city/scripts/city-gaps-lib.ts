@@ -1,4 +1,5 @@
 import { basename } from "node:path";
+import { citedAdrs } from "./city-book-lib.js";
 import type { CityNode, Repo } from "./city-graph-lib.js";
 import { limitFor } from "../../tooling/scripts/file-size-lib.js";
 
@@ -28,6 +29,8 @@ export interface Rule {
   enforced: string;
   /** False when the only enforcement is "the owner reads it". */
   guarded: boolean;
+  /** The ADRs the rule cites, by number. */
+  adrs: string[];
 }
 /** An e2e test file: a walk through the streets in a person's words. */
 export interface Walk {
@@ -53,6 +56,7 @@ export function rules(agents: string): Rule[] {
         title: title.replace(/[:.]$/, ""),
         enforced,
         guarded: !/owner reads it/.test(enforced),
+        adrs: citedAdrs(line),
       };
     });
 }

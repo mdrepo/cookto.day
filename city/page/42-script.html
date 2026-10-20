@@ -1,0 +1,99 @@
+<script>
+  // ---------- The facade ----------
+  // The street side of a building carries a lit window per function it
+  // offers to other buildings; the back, a dim one per function used only
+  // inside. A package's doors (its exports) glow at street level.
+  const WIN_COLS = 3,
+    WIN_MAX = 12;
+  const winOf = [];
+  for (let i = 0; i < N; i++) {
+    const fns = (nodes[i].info?.fns || []).filter(
+      (f) => f.kind !== "re-export",
+    );
+    const front = Math.min(WIN_MAX, fns.filter((f) => f.exported).length),
+      back = Math.min(WIN_MAX, fns.filter((f) => !f.exported).length);
+    for (let k = 0; k < front; k++) winOf.push([i, k, 1]);
+    for (let k = 0; k < back; k++) winOf.push([i, k, -1]);
+  }
+  const wPos = new Float32Array(winOf.length * 3),
+    wCol = new Float32Array(winOf.length * 3);
+  const FRONT_C = new THREE.Color("#ffd98a"),
+    BACK_C = new THREE.Color("#36495e");
+  winOf.forEach(([i, k, side], j) => {
+    const c = side > 0 ? FRONT_C : BACK_C;
+    wCol.set([c.r, c.g, c.b], j * 3);
+  });
+  const wGeo = new THREE.BufferGeometry();
+  wGeo.setAttribute(
+    "position",
+    new THREE.BufferAttribute(wPos, 3).setUsage(THREE.DynamicDrawUsage),
+  );
+  wGeo.setAttribute("color", new THREE.BufferAttribute(wCol, 3));
+  const windows = new THREE.Points(
+    wGeo,
+    new THREE.PointsMaterial({
+      size: 0.55,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.95,
+      depthWrite: false,
+    }),
+  );
+  windows.frustumCulled = false;
+  scene.add(windows);
+
+  const doorIds = [];
+  for (let i = 0; i < N; i++) if (nodes[i].info?.door) doorIds.push(i);
+  const dPos = new Float32Array(doorIds.length * 3);
+  const dGeo = new THREE.BufferGeometry();
+  dGeo.setAttribute(
+    "position",
+    new THREE.BufferAttribute(dPos, 3).setUsage(THREE.DynamicDrawUsage),
+  );
+  const doors = new THREE.Points(
+    dGeo,
+    new THREE.PointsMaterial({
+      size: 2.6,
+      map: spark,
+      color: "#ffb547",
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    }),
+  );
+  doors.frustumCulled = false;
+  scene.add(doors);
+
+  // Windows sit on the face: columns across, rows up, scaled with the rise.
+  function updateFacade() {
+    winOf.forEach(([i, k, side], j) => {
+      const s = rise[i];
+      if (s < 0.5) {
+        wPos[j * 3 + 1] = -1e4;
+        return;
+      }
+      const col = k % WIN_COLS,
+        row = Math.floor(k / WIN_COLS),
+        rows = Math.ceil(WIN_MAX / WIN_COLS);
+      const w = W[i] * s,
+        h = H[i] * s;
+      wPos[j * 3] = X[i] + ((col + 0.5) / WIN_COLS - 0.5) * w * 0.8;
+      wPos[j * 3 + 1] = 0.3 + h * (0.12 + (row / rows) * 0.8);
+      wPos[j * 3 + 2] = Z[i] + side * (w / 2 + 0.03);
+    });
+    wGeo.attributes.position.needsUpdate = true;
+    doorIds.forEach((i, j) => {
+      const s = rise[i];
+      dPos[j * 3] = X[i];
+      dPos[j * 3 + 1] = s < 0.5 ? -1e4 : 0.3 + 0.5;
+      dPos[j * 3 + 2] = Z[i] + (W[i] * s) / 2 + 0.05;
+    });
+    dGeo.attributes.position.needsUpdate = true;
+  }
+  updateFacade();
+
+  // Every part is loaded: fill the board and the district list.
+  renderTopics();
+  renderNotices();
+  renderDistricts();
+</script>

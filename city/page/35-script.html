@@ -210,6 +210,8 @@
       ),
     );
     box.append(el("p", { className: "what", textContent: kind.what(n) }));
+    // A screen is the way in: what a person sees comes before the code.
+    if (n.layer === "screens" && n.group !== "app shell") renderWayIn(box, n);
     const repoPath = n.info?.file ?? (n.id.includes("/") ? n.id : null);
     if (repoPath)
       box.append(

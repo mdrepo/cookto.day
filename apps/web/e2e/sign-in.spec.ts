@@ -5,7 +5,9 @@ import { fakeSignInApi, signedIn } from "./support/sign-in.js";
 
 // specs/216-sign-in-telegram.md: "Continue with Telegram" in Settings, a
 // code, Start in the bot, signed in; sign out; signed out elsewhere. The
-// API is faked in the browser (ADR 0025): the test is the server.
+// API is faked in the browser (ADR 0025): the test is the server. The steps
+// sit in a sheet (the owner's design, 20 Oct): a dialog on a wide screen, a
+// bottom sheet on a phone; on a wide screen the link is a QR code too.
 
 const BOT_LINK = "https://t.me/cookto_day_bot?start=KM7Q4HTX";
 
@@ -21,17 +23,30 @@ test.describe("Sign in with Telegram", () => {
       page.getByText("We keep your Telegram name and id, and your kitchen"),
     ).toBeVisible();
     await k.press("Continue");
-    await expect(page.getByRole("status", { name: "Account" })).toHaveText(
+    const sheet = page.getByRole("dialog");
+    await expect(sheet.getByRole("status", { name: "Account" })).toHaveText(
       "KM7Q-4HTX",
     );
-    const open = page.getByRole("link", { name: "Open Telegram" });
-    await expect(open).toHaveAttribute("href", BOT_LINK);
-    await expect(page.getByText("Waiting for Telegram")).toBeVisible();
+    await expect(
+      sheet.getByText("Or send /start KM7Q4HTX to @cookto_day_bot"),
+    ).toBeVisible();
+    const wide = (page.viewportSize()?.width ?? 0) >= 840;
+    await expect(
+      sheet.getByRole("img", { name: "QR code of the link" }),
+    ).toHaveCount(wide ? 1 : 0);
+    // Offline, the new tab lands on an error page: what it asked for counts.
+    const asked = page
+      .context()
+      .waitForEvent("request", (r) => r.url().startsWith("https://t.me/"));
+    await sheet.getByRole("button", { name: "Open Telegram" }).click();
+    expect((await asked).url()).toBe(BOT_LINK);
+    await expect(sheet.getByText("Waiting for Telegram")).toBeVisible();
     api.started = true;
     await expect(page.getByText("Signed in as Mayur")).toBeVisible({
       timeout: 10_000,
     });
     await expect(k.button("Sign out")).toBeVisible();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
     await expect(page.getByText("KM7Q-4HTX")).toHaveCount(0);
     // The kitchen on the phone is as it was.
     await k.home();

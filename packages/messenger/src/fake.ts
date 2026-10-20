@@ -1,4 +1,9 @@
-import { type Channel, ChannelError, type Parsed } from "./channel.js";
+import {
+  type Channel,
+  ChannelError,
+  type Parsed,
+  type Sender,
+} from "./channel.js";
 import type { Event, Kind, Message } from "./message.js";
 
 // A channel that records what it was asked to send and takes incoming
@@ -19,6 +24,7 @@ export interface FakeUpdate {
   chat: string;
   event: Event;
   ack?: string;
+  from?: Sender;
 }
 
 export interface FakeChannel extends Channel {
@@ -58,6 +64,7 @@ export function fakeChannel(
           chat: u.chat,
           event: u.event,
           ...(u.ack !== undefined && { ack: u.ack }),
+          ...(u.from !== undefined && { from: u.from }),
         };
       } catch {
         return null;

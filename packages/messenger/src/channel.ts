@@ -7,6 +7,12 @@ import type { Event, Kind, Message } from "./message.js";
 /** All of `fetch` a channel uses. */
 export type Send = (url: string, init: RequestInit) => Promise<Response>;
 
+/** Who sent it: the channel's own id for the person, and their first name. */
+export interface Sender {
+  id: string;
+  name: string;
+}
+
 /** One webhook call, understood. */
 export interface Parsed {
   /** The channel's own id for the update, to drop one seen twice. */
@@ -15,6 +21,11 @@ export interface Parsed {
   event: Event;
   /** Something to acknowledge once handled, when the channel wants that. */
   ack?: string;
+  /**
+   * Who sent it, when the channel says (spec #216). Handed to the handler
+   * beside the event and never written into a message row.
+   */
+  from?: Sender;
 }
 
 /** The channel said no, or didn't answer. `retry` says whether to try again. */

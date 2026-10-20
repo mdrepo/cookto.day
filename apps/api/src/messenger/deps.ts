@@ -1,13 +1,16 @@
-import type { Links } from "@cookto/db";
+import type { AuthStore, Links } from "@cookto/db";
 import type { Messenger } from "@cookto/messenger";
 import type { LogEntry } from "../log.js";
 
 // What the messenger's routes need (spec #207): the messenger itself, the
-// links, and a way to hash a network address before it reaches the database.
+// links, sign-in (spec #216), and a way to hash a network address before it
+// reaches the database.
 
 export interface MessengerDeps {
   messenger: Messenger;
   links: Links;
+  /** Accounts, identities and sessions (spec #216). */
+  auth: AuthStore;
   /** Keys the address hash (ADR 0028); never stored, never the address. */
   addressSecret: string;
   /** Work to finish after the answer is sent (the drain). */

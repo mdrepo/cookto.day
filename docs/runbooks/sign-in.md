@@ -1,5 +1,7 @@
 # Runbook: sign-in with Google
 
+> **Not needed yet (20 Oct 2026).** The first way to sign in is Telegram ([ADR 0033](../adr/0033-telegram-sign-in-and-households.md), [spec #216](../../specs/216-sign-in-telegram.md)): it uses the bot and the secrets of [telegram.md](telegram.md), and needs nothing from Google. The steps below are for the day Google is added as a second provider ([spec #150](../../specs/150-sign-in-google.md)). What the owner runs for #216 is one migration, `0004_accounts`, with [database.md](database.md).
+
 How to set up sign-in ([ADR 0025](../adr/0025-server.md), [spec #150](../../specs/150-sign-in-google.md)). A code owner does these steps; an agent never holds a key or a secret, and none goes in the repo, GitHub or a chat.
 
 ## 1. A Supabase project (once)

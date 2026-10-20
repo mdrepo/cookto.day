@@ -1,4 +1,4 @@
-// The functions the Worker calls (db/migrations/0002, 0003), with each
+// The functions the Worker calls (db/migrations/0002 to 0004), with each
 // argument's SQL type. The API calls them over HTTPS; the tests call them
 // through a Postgres client, which needs the types to cast its arguments.
 
@@ -70,6 +70,19 @@ export const FUNCTIONS = {
     p_now: "timestamptz",
   },
   msg_housekeeping: { ...SECRET, p_now: "timestamptz" },
+  auth_link_make: { ...SECRET, p_address_hash: "text", p_now: "timestamptz" },
+  auth_start: {
+    ...SECRET,
+    p_code: "text",
+    p_channel: "text",
+    p_user_id: "text",
+    p_name: "text",
+    p_now: "timestamptz",
+  },
+  auth_claim: { ...SECRET, p_token_hash: "text", p_now: "timestamptz" },
+  auth_session: { ...SECRET, p_hash: "text", p_now: "timestamptz" },
+  auth_session_end: { ...SECRET, p_hash: "text" },
+  auth_housekeeping: { ...SECRET, p_now: "timestamptz" },
 } as const satisfies Record<string, Record<string, SqlType>>;
 
 export type FunctionName = keyof typeof FUNCTIONS;

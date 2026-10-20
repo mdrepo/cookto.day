@@ -46,3 +46,4 @@ Each file records one decision: the context, what we chose, what we rejected and
 | [0030](0030-secrets-only-in-cloudflare.md) | Keep every secret only in Cloudflare, saved from the owner's laptop, never read back | Accepted |
 | [0031](0031-messenger.md) | One messenger package sends, receives and records every message, in Postgres, through an outbox; Telegram first | Proposed |
 | [0032](0032-sql-migrations.md) | Change the database only by numbered SQL migrations, each with a rollback, run by a script from the owner's laptop | Proposed |
+| [0033](0033-telegram-sign-in-and-households.md) | Sign in with Telegram, and a household's plan lives on the server, with every phone keeping a copy | Proposed |

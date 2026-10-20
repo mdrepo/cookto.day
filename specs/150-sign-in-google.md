@@ -3,6 +3,7 @@
 - **Issue:** #150
 - **Approval:** a code owner merging the PR that adds this file. Write no tests or code until it's merged.
 - **Changes:** [ADR 0025](../docs/adr/0025-server.md) chose an emailed 6-digit code and turned Google down. The owner chose Google on 17 Oct 2026; the ADR's new note says what changes and what stays.
+- **Later:** the owner chose Telegram as the first provider on 20 Oct 2026 ([ADR 0033](../docs/adr/0033-telegram-sign-in-and-households.md), [spec #216](216-sign-in-telegram.md)). Google stays approved as a second way in, built when a family without Telegram needs it.
 
 ## Why
 

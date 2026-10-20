@@ -7,6 +7,7 @@ export type { PlansWriter } from "./plans.js";
 export type { ShoppingWriter } from "./shopping.js";
 export type {
   BeansWriter,
+  CookWriter,
   KitchenSettingsWriter,
   SettingsWriter,
   ThemeWriter,

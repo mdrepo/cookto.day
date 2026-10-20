@@ -21,6 +21,13 @@ import { createQueries } from "./queries.js";
 // address to the data layer (ADR 0024). Everything else reads and writes
 // through @cookto/data.
 
+/**
+ * Our own API, on this page's origin (ADR 0025): the cook's link (#207).
+ * Loaded when first needed, so a phone without a cook never fetches it.
+ */
+export const api = () =>
+  import("@cookto/data/network").then((m) => m.createApi());
+
 /** ?preview-language=ar: a reviewer's look at a language that's coming soon. */
 function previewLanguage(): string | null {
   if (typeof location === "undefined") return null; // the prerender

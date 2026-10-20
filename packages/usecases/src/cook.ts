@@ -1,13 +1,22 @@
-import type { Api, Cook, LinkMade, PlanSent } from "@cookto/data";
+import type {
+  Api,
+  Cook,
+  HouseholdSendApi,
+  LinkMade,
+  PlanSent,
+} from "@cookto/data";
 import { ApiError } from "@cookto/data/network";
 import type { CookWriter } from "@cookto/data/write";
 
 // The cook's Telegram (specs/207): connect her from this phone, send her
 // tomorrow's plan now or at 9 pm, disconnect. The phone keeps only the
-// link's token and what last went to her; the API keeps the rest.
+// link's token and what last went to her; the API keeps the rest. Once she
+// belongs to the household (specs/217) the token is null: the session sends,
+// and a plan still waiting is replaced by the send itself.
 
 interface Deps {
-  api: Api;
+  /** The household's way to send is there once a phone has signed in. */
+  api: Api & Partial<HouseholdSendApi>;
   settings: CookWriter;
 }
 
@@ -39,7 +48,7 @@ export async function disconnectCook(
   { api, settings }: Deps,
   cook: Cook,
 ): Promise<void> {
-  await api.unlink(cook.token).catch(() => undefined);
+  if (cook.token !== null) await api.unlink(cook.token).catch(() => undefined);
   settings.setCook(null);
 }
 
@@ -49,7 +58,7 @@ export type Sent = "sent" | "gone" | "failed";
 /** The context a day's plan carries, so a newer one replaces it. */
 const contextOf = (on: string) => `plan:${on}`;
 
-/** The cook has gone: her link with her, so this phone forgets her too. */
+/** The cook has gone, or the household has none: this phone forgets her. */
 function gone({ settings }: Deps): "gone" {
   settings.setCook(null);
   return "gone";
@@ -68,14 +77,19 @@ export async function sendTomorrow(
   const { api, settings } = deps;
   const waiting = cook.scheduled?.on === plan.on ? cook.scheduled.id : null;
   try {
-    if (waiting !== null)
-      await api.cancel(cook.token, waiting).catch(() => undefined);
-    await api.send(cook.token, {
-      text: plan.text,
-      context: contextOf(plan.on),
-    });
+    const request = { text: plan.text, context: contextOf(plan.on) };
+    if (cook.token === null) {
+      if (!api.sendThroughHousehold) return "failed";
+      await api.sendThroughHousehold(request);
+    } else {
+      if (waiting !== null)
+        await api.cancel(cook.token, waiting).catch(() => undefined);
+      await api.send(cook.token, request);
+    }
   } catch (e) {
-    return e instanceof ApiError && e.status === 404 ? gone(deps) : "failed";
+    return e instanceof ApiError && (e.status === 404 || e.status === 409)
+      ? gone(deps)
+      : "failed";
   }
   const sent: PlanSent = { ...plan, at: now, id: null };
   settings.setCook({ ...cook, sent, scheduled: null });
@@ -94,14 +108,17 @@ export async function scheduleTomorrow(
 ): Promise<Sent> {
   const { api, settings } = deps;
   try {
-    const { id } = await api.send(cook.token, {
-      text: plan.text,
-      at,
-      context: contextOf(plan.on),
-    });
+    const request = { text: plan.text, at, context: contextOf(plan.on) };
+    if (cook.token === null && !api.sendThroughHousehold) return "failed";
+    const { id } =
+      cook.token === null && api.sendThroughHousehold
+        ? await api.sendThroughHousehold(request)
+        : await api.send(cook.token ?? "", request);
     settings.setCook({ ...cook, scheduled: { ...plan, at, id } });
     return "sent";
   } catch (e) {
-    return e instanceof ApiError && e.status === 404 ? gone(deps) : "failed";
+    return e instanceof ApiError && (e.status === 404 || e.status === 409)
+      ? gone(deps)
+      : "failed";
   }
 }

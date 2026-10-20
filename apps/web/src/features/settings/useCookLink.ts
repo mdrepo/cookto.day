@@ -61,6 +61,8 @@ export function useCookLink() {
   const { t } = useWords();
   const role = useRole();
   const cook = useStore(settings.store, (s) => s.cook);
+  // Signed in, the cook is invited from the Household section (specs/217).
+  const signedIn = useStore(settings.store, (s) => s.signedIn !== null);
   const [step, setStep] = useState<Step>({ kind: "idle" });
   const [busy, setBusy] = useState(false);
   const made = step.kind === "code" ? step.made : null;
@@ -83,7 +85,7 @@ export function useCookLink() {
       });
   };
 
-  if (role !== "plan") return null;
+  if (role !== "plan" || signedIn) return null;
   return {
     title: t.cookTelegram,
     connected: cook !== null,

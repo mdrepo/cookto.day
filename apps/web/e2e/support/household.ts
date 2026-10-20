@@ -28,6 +28,8 @@ export interface HouseholdServer {
   /** Accounts in the household, by name. */
   inHousehold: Set<string>;
   created: { records: Stored[]; cookToken?: string }[];
+  /** What went to the cook through the session: now, or at a time. */
+  sends: { text: string; at?: string }[];
   asked: string[];
   codes: Map<string, { kind: "sign-in" | "plan" | "cook"; by: string | null }>;
   /** Start pressed in the bot for a code, by this person. */
@@ -49,6 +51,7 @@ export function householdServer(): HouseholdServer {
     sessions: new Map(),
     inHousehold: new Set(),
     created: [],
+    sends: [],
     asked: [],
     codes: new Map(),
     start: (code, name) => {
@@ -166,6 +169,15 @@ export async function fakeHouseholdApi(page: Page, s: HouseholdServer) {
         account,
       });
       for (const r of body.records) s.put(r.collection, r.record);
+      if (body.cookToken !== undefined)
+        s.members.push({
+          id: s.next(),
+          role: "cook",
+          kind: "telegram",
+          name: null,
+          stopped: false,
+          account: null,
+        });
       await json(201, { id: "home-1" });
       return;
     }
@@ -201,6 +213,20 @@ export async function fakeHouseholdApi(page: Page, s: HouseholdServer) {
       s.members = s.members.filter((m) => m.id !== id);
       if (gone?.account) s.inHousehold.delete(gone.account);
       await route.fulfill({ status: 204 });
+      return;
+    }
+    if (method === "POST" && path === "/api/messenger/send") {
+      const cook = s.members.some((m) => m.role === "cook" && !m.stopped);
+      if (!cook) {
+        await json(409, { error: "no-cook" });
+        return;
+      }
+      const { text, at } = request.postDataJSON() as {
+        text: string;
+        at?: string;
+      };
+      s.sends.push(at === undefined ? { text } : { text, at });
+      await json(202, { id: `m-${String(s.sends.length)}` });
       return;
     }
     if (method === "DELETE" && path === "/api/account") {

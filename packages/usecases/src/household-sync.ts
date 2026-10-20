@@ -1,8 +1,10 @@
 import {
   type Changes,
   type Clearable,
+  type Cook,
   type HouseholdApi,
   type HouseholdView,
+  type MemberRow,
   type PushedRecord,
   type RecordStore,
   type Sync,
@@ -12,7 +14,11 @@ import {
   type SyncRecord,
 } from "@cookto/data";
 import { ApiError } from "@cookto/data/network";
-import type { KitchenSettingsWriter, SignInWriter } from "@cookto/data/write";
+import type {
+  CookWriter,
+  KitchenSettingsWriter,
+  SignInWriter,
+} from "@cookto/data/write";
 
 // The household on the server (specs/217, ADR 0033): signing in starts one
 // from this phone's records, or joins the one the account has, replacing
@@ -24,8 +30,10 @@ export interface HouseholdSync {
   /** The store itself, to read every record and to clear a collection. */
   store: RecordStore & Clearable;
   sync: Sync;
-  settings: SignInWriter & KitchenSettingsWriter;
+  settings: SignInWriter & KitchenSettingsWriter & CookWriter;
   changes: Changes;
+  /** This moment, ISO, for when the cook joined this phone; the app passes it. */
+  now?: () => string;
 }
 
 /** The collections a household shares, and what each announces. */
@@ -59,6 +67,13 @@ export async function phoneHasOwnKitchen(d: HouseholdSync): Promise<boolean> {
   return kitchen.cuisines.length > 0;
 }
 
+/** The household's cook, reflected on this phone. */
+async function followCook(d: HouseholdSync): Promise<void> {
+  const view = await currentHousehold(d).catch(() => null);
+  if (view)
+    reflectCook(d.settings, d.settings.cook(), view.members, d.now?.() ?? "");
+}
+
 /** This phone's copy goes, and the household's comes: screens see both. */
 export async function replaceWithHousehold(d: HouseholdSync): Promise<void> {
   for (const collection of SYNCED) {
@@ -79,6 +94,28 @@ export async function currentHousehold(
     if (error instanceof ApiError && error.status === 404) return null;
     throw error;
   }
+}
+
+/**
+ * The cook as the household has her: connected through it when it has a
+ * cook and this phone has none; forgotten when it has none and this phone
+ * had her through it. A phone's own link (a token) is left alone.
+ */
+export function reflectCook(
+  settings: CookWriter,
+  cook: Cook | null,
+  members: readonly MemberRow[],
+  now: string,
+): void {
+  const there = members.some((m) => m.role === "cook" && !m.stopped);
+  if (there && cook === null)
+    settings.setCook({
+      token: null,
+      connectedAt: now,
+      sent: null,
+      scheduled: null,
+    });
+  else if (!there && cook?.token === null) settings.setCook(null);
 }
 
 /** What a failed call comes to, by the API's answer. */
@@ -103,17 +140,24 @@ export async function joinOrStart(d: HouseholdSync): Promise<Joined> {
   } catch (error) {
     if (!(error instanceof ApiError) || error.status !== 404)
       return outcomeOf(d, error);
+    const held = d.settings.cook();
     try {
-      await d.api.createHousehold(await everything(d));
+      await d.api.createHousehold(
+        await everything(d),
+        held?.token ?? undefined,
+      );
     } catch (again) {
       return outcomeOf(d, again);
     }
+    // Her link went with the household: this phone sends through it now.
+    if (held?.token) d.settings.setCook({ ...held, token: null });
     d.sync.reset();
     await d.sync.run();
     return "started";
   }
   if (await phoneHasOwnKitchen(d)) return "ask";
   await replaceWithHousehold(d);
+  await followCook(d);
   return "joined";
 }
 

@@ -163,6 +163,34 @@ describe("layers", () => {
       ),
     ).toEqual([]);
   });
+
+  test("only the API imports the messenger (ADR 0031)", async () => {
+    // Data and use cases already may import nothing above them, so their own
+    // rule answers there; the app's other files need this one.
+    const line = `import { createMessenger } from "@cookto/messenger";`;
+    for (const file of [
+      "apps/web/src/platform.ts",
+      "apps/web/src/features/settings/useCookLink.ts",
+      "apps/web/src/features/settings/CookLink.tsx",
+    ]) {
+      const found = await problems(file, line);
+      expect(found).toHaveLength(1);
+      expect(found[0]).toContain("ADR 0031");
+    }
+    expect(await problems("apps/api/src/index.ts", line)).toEqual([]);
+  });
+
+  test.each(["react", "@cookto/engine", "@cookto/data", "@cookto/usecases"])(
+    "the messenger can't import %s (ADR 0031)",
+    async (from) => {
+      const found = await problems(
+        "packages/messenger/src/telegram.ts",
+        `import { x } from "${from}";`,
+      );
+      expect(found).toHaveLength(1);
+      expect(found[0]).toContain("ADR 0022");
+    },
+  );
 });
 
 describe("the new packages exist", () => {
@@ -172,6 +200,7 @@ describe("the new packages exist", () => {
   test.each([
     ["packages/usecases", "@cookto/usecases", ["."]],
     ["packages/data", "@cookto/data", [".", "./read", "./write"]],
+    ["packages/messenger", "@cookto/messenger", [".", "./contract"]],
   ])("%s is %s, without the browser's own types", (dir, name, entries) => {
     const pkg = read(`${dir}/package.json`) as {
       name: string;

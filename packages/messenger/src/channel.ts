@@ -1,0 +1,49 @@
+import type { Event, Kind, Message } from "./message.js";
+
+// A channel is one messaging service (ADR 0031): Telegram first. The package
+// reaches it only through this interface, and only with the network function
+// it was handed, so it has no `fetch` of its own.
+
+/** All of `fetch` a channel uses. */
+export type Send = (url: string, init: RequestInit) => Promise<Response>;
+
+/** One webhook call, understood. */
+export interface Parsed {
+  /** The channel's own id for the update, to drop one seen twice. */
+  updateId: string;
+  chat: string;
+  event: Event;
+  /** Something to acknowledge once handled, when the channel wants that. */
+  ack?: string;
+}
+
+/** The channel said no, or didn't answer. `retry` says whether to try again. */
+export class ChannelError extends Error {
+  constructor(
+    message: string,
+    readonly retry: boolean,
+    /** Seconds the channel asked us to wait, if it said. */
+    readonly after?: number,
+  ) {
+    super(message);
+    this.name = "ChannelError";
+  }
+}
+
+export interface Channel {
+  readonly name: string;
+  supports(kind: Kind): boolean;
+  /**
+   * Sends one message to one chat and returns the channel's id for it.
+   * `edits` is the channel's id of the message an edit changes.
+   */
+  deliver(
+    chat: string,
+    message: Message,
+    edits?: string,
+  ): Promise<{ id: string }>;
+  /** Understands a webhook body, or refuses it (wrong secret, not an update). */
+  parse(body: string, headers: Headers): Parsed | null;
+  /** Tells the channel a button press was handled, if it wants to know. */
+  acknowledge?(ack: string): Promise<void>;
+}

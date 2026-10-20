@@ -77,6 +77,10 @@
       "name": "@cookto/engine",
       "version": "0.0.0",
     },
+    "packages/messenger": {
+      "name": "@cookto/messenger",
+      "version": "0.0.0",
+    },
     "packages/testing": {
       "name": "@cookto/testing",
       "version": "0.0.0",
@@ -146,6 +150,8 @@
     "@cookto/engine": ["@cookto/engine@workspace:packages/engine"],
 
     "@cookto/kit": ["@cookto/kit@workspace:apps/kit"],
+
+    "@cookto/messenger": ["@cookto/messenger@workspace:packages/messenger"],
 
     "@cookto/testing": ["@cookto/testing@workspace:packages/testing"],
 

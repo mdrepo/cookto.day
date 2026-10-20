@@ -24,6 +24,8 @@ dist/
 .DS_Store
 .vscode/
 .idea/
+# Claude Code's isolated worktrees: nested checkouts, not files of this repo
+.claude/worktrees/
 
 # Playwright output
 test-results/

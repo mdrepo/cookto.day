@@ -1,0 +1,206 @@
+<script>
+  const G = JSON.parse(document.getElementById("graph").textContent);
+  const $ = (id) => document.getElementById(id);
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const nodes = G.nodes;
+  nodes.forEach((n) => {
+    if (n.layer === "screens" && n.group === "app shell") n.layer = "app";
+    // Several files are called index: say whose.
+    if ((n.label === "index" || n.label === "main") && n.info?.path)
+      n.label = n.info.path.split("/").slice(-2).join("/");
+  });
+  const N = nodes.length;
+  const index = new Map(nodes.map((n, i) => [n.id, i]));
+  const E = G.edges
+    .map((e) => ({ s: index.get(e.s), t: index.get(e.t), k: e.k }))
+    .filter((e) => e.s != null && e.t != null);
+  const out = nodes.map(() => []),
+    inn = nodes.map(() => []);
+  E.forEach((e, i) => {
+    out[e.s].push(i);
+    inn[e.t].push(i);
+  });
+  const lastCommit = G.commits.length - 1;
+  const byName = (a, b) =>
+    nodes[a].label
+      .replace(/^use/, "")
+      .localeCompare(nodes[b].label.replace(/^use/, ""));
+
+  // What each kind of building is, in plain words.
+  const KIND = {
+    screens: {
+      name: "Screen",
+      color: "#fff1d6",
+      what: (n) =>
+        `A screen: something a person sees and taps. Part of ${the(featureName(n.group))}.`,
+    },
+    hooks: {
+      name: "Behind a screen",
+      color: "#ec8aa0",
+      what: (n) =>
+        `Works behind the ${the(featureName(n.group)).replace(/^the /, "")} screens: picks what to show and what each tap does.`,
+    },
+    app: {
+      name: "App shell",
+      color: "#b9c9d6",
+      what: () => "Starts the app and puts the screens together.",
+    },
+    ui: {
+      name: "Design kit",
+      color: "#d9c69a",
+      what: (n) =>
+        n.group === "kit page"
+          ? "The kit page at cookto.day/kit, where every part is shown."
+          : `A ${n.group === "layouts" ? "layout" : n.group === "components" ? "part" : "foundation file"} of the design kit: what screens are built from.`,
+    },
+    usecases: {
+      name: "Use case",
+      color: "#b39af0",
+      what: () =>
+        "A step the app takes when it writes something: checks the input, saves it, queues what follows.",
+    },
+    data: {
+      name: "Data",
+      color: "#4fc6bd",
+      what: (n) =>
+        n.group === "IndexedDB adapter"
+          ? "Stores data in the phone's IndexedDB."
+          : "A repository: how one kind of data is kept and fetched on the phone.",
+    },
+    engine: {
+      name: "Engine",
+      color: "#7fa9f0",
+      what: (n) =>
+        n.group === "testing"
+          ? "Shared test helpers."
+          : "A pure rule: dates, ranking, planning. No screen, no storage, no network.",
+    },
+    packs: {
+      name: "Pack bundle",
+      color: "#d08f5c",
+      what: () =>
+        "A cuisine pack as the app loads it, written by packs:bundle.",
+    },
+    dishes: {
+      name: "Dish",
+      color: "#ffb547",
+      what: (n) => `A dish in the ${packName(n.group)} pack.`,
+    },
+    ingredients: {
+      name: "Food",
+      color: "#8cc46f",
+      what: () => "A food the packs cook with, and how long it keeps.",
+    },
+    api: {
+      name: "API Worker",
+      color: "#ff7a55",
+      what: (n) => `Part of the API Worker at cookto.day/api: ${n.group}.`,
+    },
+  };
+  const FEATURES = {
+    onboarding: "Getting started",
+    home: "Today",
+    pantry: "The fridge",
+    dishes: "Dishes",
+    dish: "A dish",
+    cuisines: "Cuisines",
+    staples: "Staples",
+    shopping: "Shopping list",
+    saving: "Saving",
+    settings: "Settings",
+    more: "More",
+    tabs: "Tabs",
+    "app shell": "App shell",
+  };
+  const featureName = (g) => FEATURES[g] ?? g;
+  const the = (name) => name.replace(/^The /, "the ");
+  const packName = (p) =>
+    ({
+      "north-indian": "North Indian",
+      maharashtrian: "Maharashtrian",
+      "our-kitchen": "Our kitchen",
+    })[p] ?? p;
+
+  // ---------- Districts and blocks ----------
+  const CELL = 3.4,
+    GAP = 7;
+  const X = new Float32Array(N),
+    Z = new Float32Array(N),
+    H = new Float32Array(N),
+    W = new Float32Array(N);
+  const byLayer = {};
+  nodes.forEach((n, i) => (byLayer[n.layer] ??= []).push(i));
+  for (let i = 0; i < N; i++) {
+    const n = nodes[i];
+    if (n.layer === "dishes") {
+      H[i] = 0.8 + n.lines * 0.25;
+      W[i] = 2.1;
+    } else if (n.layer === "ingredients") {
+      H[i] = 0.6 + inn[i].length * 0.15;
+      W[i] = 1.4;
+    } else {
+      H[i] = 1 + n.lines / 12;
+      W[i] = 1.3 + Math.min(1, inn[i].length / 18) * 0.9;
+    }
+  }
+  // A block is a rectangle of buildings. The front row faces the street.
+  const blocks = [];
+  function block(def, front, back) {
+    const total = front.length + back.length;
+    const cols = Math.max(
+      2,
+      Math.ceil(Math.sqrt(total * (def.wide ? 2.2 : 1.3))),
+    );
+    const rows = Math.ceil(front.length / cols) + Math.ceil(back.length / cols);
+    const put = (ids, r0) =>
+      ids.forEach((i, k) => {
+        X[i] = ((k % cols) + 0.5) * CELL;
+        Z[i] = (r0 + Math.floor(k / cols) + 0.5) * CELL;
+      });
+    put(front, 0);
+    put(back, Math.ceil(front.length / cols));
+    blocks.push({
+      ...def,
+      ids: [...front, ...back],
+      w: cols * CELL,
+      d: rows * CELL,
+    });
+    return blocks[blocks.length - 1];
+  }
+  const featIds = (L, f) =>
+    (byLayer[L] || []).filter((i) => nodes[i].group === f).sort(byName);
+  const feats = Object.keys(FEATURES).filter(
+    (f) =>
+      f !== "app shell" &&
+      (featIds("screens", f).length || featIds("hooks", f).length),
+  );
+  for (const f of (byLayer.screens || []).map((i) => nodes[i].group))
+    if (!feats.includes(f) && f !== "app shell") feats.push(f);
+  const rowA = feats.map((f) =>
+    block(
+      {
+        id: "feat:" + f,
+        name: featureName(f),
+        district: "downtown",
+        color: KIND.screens.color,
+        note: "A feature. Screens on the street, their code behind.",
+      },
+      featIds("screens", f),
+      featIds("hooks", f),
+    ),
+  );
+  rowA.push(
+    block(
+      {
+        id: "shell",
+        name: "App shell",
+        district: "downtown",
+        color: KIND.app.color,
+        note: "Starts the app and puts the screens together.",
+      },
+      byLayer.app || [],
+      featIds("hooks", "app shell"),
+    ),
+  );
+  const sortedBy = (L, key = byName) => (byLayer[L] || []).slice().sort(key);
+</script>

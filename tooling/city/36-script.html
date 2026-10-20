@@ -1,0 +1,234 @@
+<script>
+  function renderInside(box, n, repoPath) {
+    if (n.info?.fns?.length) {
+      const own = n.info.fns.filter((f) => f.kind !== "re-export"),
+        passes = n.info.fns.filter((f) => f.kind === "re-export");
+      const pub = own.filter((f) => f.exported),
+        inner = own.filter((f) => !f.exported);
+      const KINDS = {
+        component: "screen part",
+        hook: "hook",
+        function: "function",
+        class: "class",
+        value: "value",
+      };
+      const row = (f, cls) => {
+        const li = el("li", { className: "fn " + cls });
+        li.append(
+          el("a", {
+            href: `${G.github}${repoPath}#L${f.line}`,
+            target: "_blank",
+            rel: "noopener",
+            textContent: f.name + (f.kind === "value" ? "" : "()"),
+            title: `Line ${f.line} on GitHub`,
+          }),
+          el("span", {
+            className: "kind",
+            textContent: KINDS[f.kind] ?? f.kind,
+          }),
+        );
+        if (f.doc)
+          li.append(el("span", { className: "doc", textContent: f.doc }));
+        return li;
+      };
+      if (pub.length) {
+        const ul = el("ul", { className: "fns" });
+        pub.forEach((f) => ul.append(row(f, "")));
+        box.append(
+          el("h3", { textContent: "What it offers to other buildings" }),
+          ul,
+        );
+      }
+      if (inner.length) {
+        const ul = el("ul", { className: "fns" });
+        inner.forEach((f) => ul.append(row(f, "inner")));
+        box.append(el("h3", { textContent: "Only used inside" }), ul);
+      }
+      if (passes.length) {
+        const pp = el("p", { className: "passes" });
+        pp.append("Passes on: ");
+        passes.forEach((f, k) => {
+          if (k) pp.append(", ");
+          pp.append(el("code", { textContent: f.name }));
+        });
+        box.append(
+          el("h3", {
+            textContent: `Passes on ${passes.length} names from other files`,
+          }),
+          pp,
+        );
+      }
+    }
+  }
+
+  // The route from another building, or the chains up to the screens and down to the foods.
+  function renderTrace(box, n) {
+    if (state.path) {
+      const p = state.path.found,
+        line = el("p", { className: "what" });
+      if (p)
+        line.append(
+          el("b", { textContent: nodes[state.path.a].label }),
+          ` reaches this in ${plural(p.edges.length, "step")}:`,
+        );
+      else
+        line.append(
+          "Nothing links ",
+          el("b", { textContent: nodes[state.path.a].label }),
+          " to this.",
+        );
+      box.append(line);
+      if (p) box.append(chipList(p.nodes, 40));
+    } else if (state.cone) {
+      const { up, down } = state.cone;
+      const screensUp = [...up.depth.keys()]
+        .filter((j) => nodes[j].layer === "screens")
+        .sort(byName);
+      const direct = (m) => [...m.values()].filter((d) => d === 1).length;
+      const line = el("p", { className: "what" });
+      if (n.layer === "screens")
+        line.append(
+          "Built directly from ",
+          el("b", { textContent: plural(direct(down.depth), "building") }),
+          `. Through them it rests on ${down.depth.size} across the city, down to the foods.`,
+        );
+      else if (screensUp.length)
+        line.append(
+          "Used directly by ",
+          el("b", { textContent: plural(direct(up.depth), "building") }),
+          `. A change here can reach ${plural(screensUp.length, "screen")}, through ${up.depth.size} buildings.`,
+        );
+      else
+        line.append(
+          `No screen uses this yet. Used directly by ${plural(direct(up.depth), "building")}; it depends on ${down.depth.size}.`,
+        );
+      box.append(line);
+      if (up.depth.size)
+        box.append(
+          el("h3", { textContent: "The way up to the screens" }),
+          chain(up.depth, n),
+        );
+      if (down.depth.size)
+        box.append(
+          el("h3", { textContent: "What it rests on, step by step" }),
+          chain(down.depth, n),
+        );
+    }
+  }
+
+  // Size, history, neighbours, and the route button.
+  function renderFacts(box, n, i) {
+    const facts = el("dl", { className: "facts" });
+    const add = (k, val) => {
+      if (val != null && val !== "")
+        facts.append(
+          el("dt", { textContent: k }),
+          el("dd", { textContent: val }),
+        );
+    };
+    if (n.layer === "dishes") {
+      add("Meals", (n.info.slots || []).join(", "));
+      add("Ingredients", n.info.ingredients);
+      add("Steps", n.info.steps);
+      add("Served with", (n.info.servedWith || []).join(", "));
+    } else if (n.layer === "ingredients") {
+      add("Keeps", n.info.keeps);
+      add("Hindi", n.info.hi);
+      add("In dishes", inn[i].length);
+    } else {
+      add("Height", `${n.lines.toLocaleString()} lines`);
+      add("Changed in", plural(n.churn, "commit"));
+      add("Last change", commitText(n.last));
+    }
+    add("Built", commitText(n.added));
+    box.append(facts);
+    if (n.info?.note)
+      box.append(el("p", { className: "note", textContent: n.info.note }));
+    const outs = out[i].map((k) => E[k].t).sort(byName),
+      ins = inn[i].map((k) => E[k].s).sort(byName);
+    const outTitle =
+        n.layer === "dishes" ? "Ingredients and sides" : "Depends on",
+      inTitle =
+        n.layer === "ingredients"
+          ? "Used in"
+          : n.layer === "dishes"
+            ? "Bundled into, served with"
+            : "Depended on by";
+    if (ins.length)
+      box.append(
+        el("h3", { textContent: `${inTitle} (${ins.length})` }),
+        chipList(ins),
+      );
+    if (outs.length)
+      box.append(
+        el("h3", { textContent: `${outTitle} (${outs.length})` }),
+        chipList(outs),
+      );
+    if (!state.path) {
+      const btn = el("button", {
+        type: "button",
+        className: "btn",
+        textContent:
+          state.pathFrom === i
+            ? "Now click the other building"
+            : "Route to another building",
+      });
+      btn.onclick = () => {
+        state.pathFrom = i;
+        btn.textContent = "Now click the other building";
+      };
+      box.append(el("div", {}, btn));
+    }
+  }
+
+  function showDistrict(d) {
+    if (state.hidden.delete(d)) {
+      refreshRise();
+      renderDistricts();
+    }
+  }
+  function renderDistricts() {
+    const box = $("districts");
+    box.replaceChildren();
+    for (const [d, meta] of Object.entries(DISTRICTS)) {
+      const count = blocks
+        .filter((b) => b.district === d)
+        .reduce((s, b) => s + b.ids.length, 0);
+      const b = el("button", {
+        type: "button",
+        className: "d-row",
+        title: "Click to show or hide",
+      });
+      b.setAttribute("aria-pressed", String(!state.hidden.has(d)));
+      b.style.setProperty("--c", meta.color);
+      b.append(
+        el("span", { className: "sw" }),
+        meta.name,
+        el("em", { textContent: count }),
+        el("small", { textContent: meta.note }),
+      );
+      b.onclick = () => {
+        state.hidden.has(d) ? state.hidden.delete(d) : state.hidden.add(d);
+        refresh();
+        renderDistricts();
+        fit();
+      };
+      box.append(b);
+    }
+  }
+  // ADR 0022: every road runs one way, from a feature down towards the engine; never between two features.
+  const RANK = {
+    app: 9,
+    screens: 8,
+    ui: 7,
+    hooks: 6,
+    usecases: 5,
+    data: 4,
+    engine: 3,
+    packs: 2,
+    dishes: 1,
+    ingredients: 0,
+    api: -1,
+  };
+  const breaks = [];
+</script>

@@ -1,0 +1,244 @@
+<script>
+  function measure() {
+    const wide = innerWidth > 820;
+    const lg = $("legend"),
+      ins = $("insp"),
+      hd = document.querySelector("header").getBoundingClientRect(),
+      bar = document.querySelector(".bar").getBoundingClientRect();
+    const lgr = lg.getBoundingClientRect();
+    insets.l = wide && lgr.width ? lgr.right : 0;
+    insets.r =
+      wide && !ins.hidden ? innerWidth - ins.getBoundingClientRect().left : 0;
+    insets.t = hd.bottom;
+    insets.b =
+      !ins.hidden && !wide
+        ? innerHeight - ins.getBoundingClientRect().top
+        : innerHeight - bar.top;
+  }
+  let flight = null,
+    started = false;
+  const VIEW = new THREE.Vector3(-0.45, 0.5, 1).normalize();
+  function frameBox(box, dir) {
+    measure();
+    const size = box.getSize(new THREE.Vector3()),
+      center = box.getCenter(new THREE.Vector3());
+    const freeW = Math.max(200, innerWidth - insets.l - insets.r),
+      freeH = Math.max(200, innerHeight - insets.t - insets.b);
+    const tv = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+    const el = Math.asin(dir.y),
+      yaw = Math.atan2(dir.x, dir.z);
+    const footW =
+        Math.abs(size.x * Math.cos(yaw)) + Math.abs(size.z * Math.sin(yaw)),
+      footD =
+        Math.abs(size.x * Math.sin(yaw)) + Math.abs(size.z * Math.cos(yaw));
+    const halfW = footW / 2 + 3,
+      halfH = (size.y / 2) * Math.cos(el) + (footD / 2) * Math.sin(el) + 3;
+    const dist =
+      Math.max(
+        halfW / (tv * (freeW / innerHeight)),
+        halfH / (tv * (freeH / innerHeight)),
+      ) +
+      footD / 2;
+    flight = {
+      t: 0,
+      fromT: controls.target.clone(),
+      toT: center,
+      fromP: camera.position.clone(),
+      toP: center.clone().add(dir.clone().multiplyScalar(dist)),
+    };
+  }
+  function fit() {
+    const box = new THREE.Box3();
+    const only = focusActive() ? (i) => lit[i] : () => true;
+    for (let i = 0; i < N; i++)
+      if (visible(i) && only(i)) {
+        box.expandByPoint(new THREE.Vector3(X[i] - W[i], 0, Z[i] - W[i]));
+        box.expandByPoint(new THREE.Vector3(X[i] + W[i], H[i], Z[i] + W[i]));
+      }
+    if (box.isEmpty()) {
+      box.expandByPoint(new THREE.Vector3(city.x0, 0, city.z0));
+      box.expandByPoint(new THREE.Vector3(city.x1, 10, city.z1));
+    }
+    if (!focusActive())
+      for (const b of blocks)
+        if (!state.hidden.has(b.district)) {
+          box.expandByPoint(new THREE.Vector3(b.x0 - 1, 0, b.z0 - 1));
+          box.expandByPoint(new THREE.Vector3(b.x1 + 1, 0, b.z1 + 1));
+        }
+    const dir = camera.position.clone().sub(controls.target).normalize();
+    frameBox(box, !started || dir.y < 0.25 ? VIEW : dir);
+  }
+  function flyTo(i) {
+    const d = camera.position.clone().sub(controls.target).normalize();
+    if (d.y < 0.3) d.copy(VIEW);
+    const dist = Math.max(
+      28,
+      Math.min(80, camera.position.distanceTo(controls.target) * 0.5),
+    );
+    measure();
+    const to = new THREE.Vector3(X[i], H[i] * 0.5, Z[i]);
+    flight = {
+      t: 0,
+      fromT: controls.target.clone(),
+      toT: to,
+      fromP: camera.position.clone(),
+      toP: to.clone().add(d.multiplyScalar(dist)),
+    };
+  }
+  function applyOffset(dt) {
+    const tx = (insets.r - insets.l) / 2,
+      ty = (insets.b - insets.t) / 2;
+    offset.x += (tx - offset.x) * Math.min(1, dt * 6);
+    offset.y += (ty - offset.y) * Math.min(1, dt * 6);
+    camera.setViewOffset(
+      innerWidth,
+      innerHeight,
+      offset.x,
+      offset.y,
+      innerWidth,
+      innerHeight,
+    );
+  }
+
+  // ---------- Labels ----------
+  const labelBox = $("labels"),
+    labelPool = [];
+  const labelEl = (k) => {
+    if (!labelPool[k]) {
+      const d = document.createElement("div");
+      labelBox.appendChild(d);
+      labelPool[k] = d;
+    }
+    return labelPool[k];
+  };
+  let ranked = [];
+  function rankLabels() {
+    const f = focusActive(),
+      pr = [];
+    for (let i = 0; i < N; i++) {
+      if (f && !lit[i]) continue;
+      const n = nodes[i];
+      let p =
+        n.layer === "screens"
+          ? 3
+          : n.layer === "app" || n.layer === "packs"
+            ? 4
+            : n.layer === "dishes"
+              ? 6
+              : 8 - Math.min(2, n.lines / 150);
+      if (f) {
+        const d = state.path
+          ? 0
+          : Math.min(
+              state.cone?.up.depth.get(i) ?? 99,
+              state.cone?.down.depth.get(i) ?? 99,
+            );
+        if (d <= 1 || state.path) p = 1.5;
+      }
+      if (i === state.sel) p = 0;
+      pr.push([i, p]);
+    }
+    ranked = pr.sort((a, b) => a[1] - b[1]).map(([i]) => i);
+  }
+  const v3 = new THREE.Vector3();
+  function drawLabels() {
+    const w = innerWidth,
+      h = innerHeight,
+      boxes = [];
+    let k = 0;
+    const put = (x, y, bw, bh) => {
+      for (const b of boxes)
+        if (x < b[2] && x + bw > b[0] && y < b[3] && y + bh > b[1])
+          return false;
+      boxes.push([x, y, x + bw, y + bh]);
+      return true;
+    };
+    const proj = (x, y, z) => {
+      v3.set(x, y, z).project(camera);
+      return v3.z < 1 && Math.abs(v3.x) < 1.05 && Math.abs(v3.y) < 1.05
+        ? [((v3.x + 1) / 2) * w, ((1 - v3.y) / 2) * h]
+        : null;
+    };
+    const camDist = camera.position.distanceTo(controls.target);
+    for (const b of blocks) {
+      if (
+        state.hidden.has(b.district) ||
+        !b.ids.some((i) => nodes[i].added <= state.time)
+      )
+        continue;
+      const at = proj(b.x0, 0.4, b.z1 + 0.6);
+      if (!at) continue;
+      const count = b.ids.filter(visible).length,
+        bw = b.name.length * 9.5 + 40;
+      if (!put(at[0], at[1] - 18, bw, 18)) continue;
+      const d = labelEl(k++);
+      d.className = "lbl district";
+      d.style.setProperty("--c", b.color);
+      d.replaceChildren(
+        b.name,
+        Object.assign(document.createElement("small"), { textContent: count }),
+      );
+      d.style.transform = `translate(${at[0]}px, ${at[1] - 18}px)`;
+      d.hidden = false;
+    }
+    const list =
+      state.hover >= 0
+        ? [state.hover, ...ranked.filter((i) => i !== state.hover)]
+        : ranked;
+    const budget = focusActive()
+      ? 80
+      : camDist > 220
+        ? 0
+        : camDist > 120
+          ? 14
+          : 60;
+    let shown = 0;
+    for (const i of list) {
+      if (shown >= budget && i !== state.hover) break;
+      if (!visible(i) || rise[i] < 0.5) continue;
+      const at = proj(X[i], H[i] * rise[i] + 0.6, Z[i]);
+      if (!at) continue;
+      const n = nodes[i],
+        sel = i === state.sel,
+        bw = n.label.length * (sel ? 8.2 : 6.3) + (sel ? 18 : 13),
+        bh = sel ? 23 : 17;
+      const x = at[0] - bw / 2,
+        y = at[1] - bh - 8;
+      if (!put(x, y, bw, bh)) continue;
+      const d = labelEl(k++);
+      d.className =
+        "lbl" +
+        (sel ? " sel" : "") +
+        (n.layer === "screens" ? " front" : "") +
+        (focusActive() && !sel ? " lit" : "");
+      d.style.setProperty("--c", KIND[n.layer].color);
+      if (d.textContent !== n.label || d.firstElementChild)
+        d.textContent = n.label;
+      d.style.transform = `translate(${x}px, ${y}px)`;
+      d.hidden = false;
+      shown++;
+    }
+    for (; k < labelPool.length; k++) labelPool[k].hidden = true;
+  }
+
+  // ---------- Pointer ----------
+  const ray = new THREE.Raycaster(),
+    mouse = new THREE.Vector2();
+  function pick(x, y) {
+    mouse.set((x / innerWidth) * 2 - 1, -(y / innerHeight) * 2 + 1);
+    ray.setFromCamera(mouse, camera);
+    const hit = ray
+      .intersectObject(bld, false)
+      .find((h) => rise[h.instanceId] > 0.5);
+    return hit ? hit.instanceId : -1;
+  }
+  const tip = $("tip");
+  let down = null,
+    pending = null;
+  const touched = () => {
+    if (!started) {
+      started = true;
+      $("hint").classList.add("gone");
+    }
+  };
+</script>

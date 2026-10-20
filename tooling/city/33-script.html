@@ -1,0 +1,244 @@
+<script>
+  function paint() {
+    const f = focusActive(),
+      tmp = new THREE.Color(),
+      roofPos = [],
+      roofCol = [];
+    for (let i = 0; i < N; i++) {
+      tmp.copy(baseCol[i]);
+      const on = active(i);
+      tmp.lerp(BG, on ? 0.08 : 0.48);
+      if (f && !lit[i]) tmp.lerp(BG, 0.82);
+      else if (f && lit[i] === 3) tmp.lerp(BG, 0.4);
+      if (i === state.sel) tmp.copy(WHITE);
+      bld.setColorAt(i, tmp);
+      const lc =
+        on && !(f && !lit[i])
+          ? baseCol[i].clone().lerp(WHITE, 0.5)
+          : tmp.clone().multiplyScalar(0);
+      lCol.set([lc.r, lc.g, lc.b], i * 3);
+    }
+    bld.instanceColor.needsUpdate = true;
+    lGeo.attributes.color.needsUpdate = true;
+    roadE.forEach((k, j) => {
+      const e = E[k],
+        on = visible(e.s) && visible(e.t);
+      const a = !on
+        ? 0
+        : f
+          ? litEdge[k] === 3
+            ? 0.07
+            : litEdge[k]
+              ? 0.5
+              : 0.012
+          : 0.12;
+      const c = litEdge[k] === 2 ? RED : baseCol[e.s];
+      rCol.set([c.r * a, c.g * a, c.b * a, c.r * a, c.g * a, c.b * a], j * 6);
+    });
+    rGeo.attributes.color.needsUpdate = true;
+    // Arcs for lit links.
+    let m = 0;
+    const litList = [];
+    E.forEach((e, k) => {
+      if (litEdge[k] && visible(e.s) && visible(e.t)) litList.push(k);
+    });
+    litList.sort((a, b) => litEdge[a] - litEdge[b]);
+    pool = litList.filter((k) => litEdge[k] !== 3);
+    for (const k of litList.slice(0, MAXARC)) {
+      const e = E[k],
+        c =
+          litEdge[k] === 2
+            ? RED
+            : baseCol[e.t].clone().lerp(baseCol[e.s], 0.5).lerp(WHITE, 0.25);
+      if (litEdge[k] === 3) c.multiplyScalar(0.16);
+      const ax = X[e.s],
+        az = Z[e.s],
+        bx = X[e.t],
+        bz = Z[e.t],
+        ay = H[e.s] * rise[e.s],
+        by = H[e.t] * rise[e.t];
+      const d = Math.hypot(bx - ax, bz - az),
+        peak = Math.max(ay, by) + 3 + d * 0.18;
+      let px = ax,
+        py = ay,
+        pz = az;
+      for (let s = 1; s <= SEG; s++) {
+        const t = s / SEG,
+          x = ax + (bx - ax) * t,
+          z = az + (bz - az) * t,
+          y = ay + (by - ay) * t + 4 * (peak - Math.max(ay, by)) * t * (1 - t);
+        aPos.set([px, py, pz, x, y, z], m * 6);
+        aCol.set([c.r, c.g, c.b, c.r, c.g, c.b], m * 6);
+        px = x;
+        py = y;
+        pz = z;
+        m++;
+      }
+    }
+    aGeo.setDrawRange(0, m * 2);
+    aGeo.attributes.position.needsUpdate = true;
+    aGeo.attributes.color.needsUpdate = true;
+    pEdge.fill(-1);
+    rankLabels();
+  }
+
+  // ---------- Tracing ----------
+  function walk(start, dir) {
+    const depth = new Map([[start, 0]]),
+      edges = [],
+      q = [start];
+    for (let h = 0; h < q.length; h++) {
+      const i = q[h];
+      for (const k of dir === "down" ? out[i] : inn[i]) {
+        const j = dir === "down" ? E[k].t : E[k].s;
+        if (!visible(j)) continue;
+        edges.push(k);
+        if (!depth.has(j)) {
+          depth.set(j, depth.get(i) + 1);
+          q.push(j);
+        }
+      }
+    }
+    depth.delete(start);
+    return { depth, edges };
+  }
+  function clearFocus() {
+    lit.fill(0);
+    litEdge.fill(0);
+    state.cone = null;
+    state.path = null;
+    state.alarm = false;
+  }
+  function select(i, fly = true) {
+    clearFocus();
+    state.sel = i;
+    if (i >= 0) {
+      const up = walk(i, "up"),
+        down = walk(i, "down");
+      state.cone = { up, down };
+      lit[i] = 1;
+      for (const [j, d] of up.depth) lit[j] = d === 1 ? 1 : 3;
+      for (const [j, d] of down.depth) lit[j] = d === 1 ? 1 : 3;
+      for (const k of up.edges) litEdge[k] = E[k].t === i ? 1 : 3;
+      for (const k of down.edges) litEdge[k] = E[k].s === i ? 1 : 3;
+    }
+    paint();
+    renderInspector();
+    if (i >= 0 && fly) flyTo(i);
+  }
+  function findPath(a, b) {
+    const prev = new Map([[a, -1]]),
+      q = [a];
+    for (let h = 0; h < q.length && !prev.has(b); h++) {
+      const i = q[h];
+      for (const k of [...out[i], ...inn[i]]) {
+        const j = E[k].s === i ? E[k].t : E[k].s;
+        if (!visible(j) || prev.has(j)) continue;
+        prev.set(j, k);
+        q.push(j);
+      }
+    }
+    if (!prev.has(b)) return null;
+    const ns = [b],
+      es = [];
+    for (let j = b; prev.get(j) !== -1;) {
+      const k = prev.get(j);
+      es.push(k);
+      j = E[k].s === j ? E[k].t : E[k].s;
+      ns.push(j);
+    }
+    return { nodes: ns.reverse(), edges: es };
+  }
+  function showPath(a, b) {
+    const p = findPath(a, b);
+    clearFocus();
+    state.sel = b;
+    state.path = { a, b, found: p };
+    if (p) {
+      p.nodes.forEach((j) => (lit[j] = 1));
+      p.edges.forEach((k) => (litEdge[k] = 1));
+    } else {
+      lit[a] = lit[b] = 1;
+    }
+    paint();
+    renderInspector();
+    fit();
+  }
+
+  // ---------- Per-frame ----------
+  const dummy = new THREE.Object3D();
+  function refreshRise() {
+    for (let i = 0; i < N; i++) riseTo[i] = visible(i) ? 1 : 0;
+  }
+  function update(dt) {
+    let moved = false;
+    for (let i = 0; i < N; i++) {
+      const before = rise[i];
+      rise[i] += (riseTo[i] - rise[i]) * Math.min(1, dt * 6);
+      if (Math.abs(rise[i] - riseTo[i]) < 0.002) rise[i] = riseTo[i];
+      if (rise[i] !== before) moved = true;
+      flash[i] = Math.max(0, flash[i] - dt * 0.7);
+      const s =
+        rise[i] * (i === state.sel ? 1.15 : i === state.hover ? 1.08 : 1);
+      dummy.position.set(X[i], 0.3, Z[i]);
+      dummy.scale.set(
+        W[i] * Math.max(1e-4, s),
+        H[i] * Math.max(1e-4, s) + flash[i] * 3,
+        W[i] * Math.max(1e-4, s),
+      );
+      dummy.updateMatrix();
+      bld.setMatrixAt(i, dummy.matrix);
+      lPos.set([X[i], 0.3 + H[i] * s + 0.4, Z[i]], i * 3);
+    }
+    bld.instanceMatrix.needsUpdate = true;
+    lGeo.attributes.position.needsUpdate = true;
+    if (moved && focusActive()) paint();
+    for (const p of plates)
+      p.g.visible =
+        !state.hidden.has(p.b.district) &&
+        p.b.ids.some((i) => nodes[i].added <= state.time);
+    const n = pool.length;
+    for (let p = 0; p < PN; p++) {
+      if (!n) {
+        pPos[p * 3 + 1] = -1e4;
+        continue;
+      }
+      if (pEdge[p] < 0 || pT[p] >= 1) {
+        const fresh = pEdge[p] < 0;
+        pEdge[p] = pool[(rnd() * n) | 0];
+        pT[p] = fresh ? rnd() : 0;
+        pV[p] = 0.35 + rnd() * 0.5;
+      }
+      pT[p] += dt * pV[p] * (reduced ? 0.3 : 1);
+      const e = E[pEdge[p]],
+        t = Math.min(1, pT[p]);
+      const ax = X[e.t],
+        az = Z[e.t],
+        bx = X[e.s],
+        bz = Z[e.s],
+        ay = H[e.t] * rise[e.t],
+        by = H[e.s] * rise[e.s];
+      const d = Math.hypot(bx - ax, bz - az),
+        peak = Math.max(ay, by) + 3 + d * 0.18;
+      pPos.set(
+        [
+          ax + (bx - ax) * t,
+          0.3 +
+            ay +
+            (by - ay) * t +
+            4 * (peak - Math.max(ay, by)) * t * (1 - t),
+          az + (bz - az) * t,
+        ],
+        p * 3,
+      );
+      const c = litEdge[pEdge[p]] === 2 ? RED : baseCol[e.t];
+      pCol.set([c.r, c.g, c.b], p * 3);
+    }
+    pGeo.attributes.position.needsUpdate = true;
+    pGeo.attributes.color.needsUpdate = true;
+  }
+
+  // ---------- Camera ----------
+  const insets = { l: 0, r: 0, t: 0, b: 0 },
+    offset = { x: 0, y: 0 };
+</script>

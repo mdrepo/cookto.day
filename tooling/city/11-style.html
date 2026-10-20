@@ -1,0 +1,234 @@
+<style>
+  .results p {
+    margin: 8px;
+    color: var(--muted);
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--c);
+    display: inline-block;
+    flex: none;
+  }
+  #legend-btn {
+    display: none;
+  }
+
+  .legend {
+    grid-area: legend;
+    align-self: start;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 100%;
+    overflow: auto;
+  }
+  .legend h2 {
+    margin: 0 0 4px;
+    padding: 0 6px;
+    font: 700 11px var(--display);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .districts {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .d-row {
+    display: grid;
+    grid-template-columns: 12px 1fr auto;
+    gap: 2px 8px;
+    align-items: center;
+    padding: 6px 6px;
+    border-radius: 7px;
+    background: none;
+    border: 0;
+    color: var(--ink);
+    text-align: start;
+    cursor: pointer;
+    font: 600 12.5px var(--display);
+  }
+  .d-row:hover {
+    background: rgba(255, 255, 255, 0.07);
+  }
+  .d-row .sw {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: var(--c);
+  }
+  .d-row em {
+    font: normal 11px var(--mono);
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .d-row small {
+    grid-column: 2 / 4;
+    font: 400 11px var(--body);
+    color: var(--muted);
+    line-height: 1.3;
+  }
+  .d-row[aria-pressed="false"] {
+    opacity: 0.4;
+  }
+  .key {
+    display: grid;
+    gap: 6px;
+    padding: 8px 6px 2px;
+    border-top: 1px solid var(--rule);
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.35;
+  }
+  .key b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .key label {
+    display: grid;
+    gap: 4px;
+  }
+  .key select {
+    width: 100%;
+    padding: 6px 8px;
+  }
+  .check {
+    font-size: 11.5px;
+    color: var(--muted);
+    padding: 2px 6px;
+    line-height: 1.35;
+  }
+  .check strong {
+    color: var(--ink);
+    font-weight: 600;
+    display: block;
+  }
+  .check.ok strong::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ok);
+    margin-inline-end: 6px;
+    vertical-align: 1px;
+  }
+  .check.bad strong {
+    color: var(--alarm);
+  }
+
+  .insp {
+    grid-area: inspect;
+    align-self: start;
+    max-height: 100%;
+    overflow: auto;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+  .insp-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: start;
+  }
+  .close {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    font-size: 16px;
+    line-height: 1;
+  }
+  .kicker {
+    font: 600 11px var(--mono);
+    color: var(--c);
+  }
+  .insp h2 {
+    margin: 3px 0 0;
+    font: 800 22px/1.05 var(--display);
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+  }
+  .insp h3 {
+    margin: 2px 0 0;
+    font: 700 11px var(--display);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .path {
+    font: 11px var(--mono);
+    color: var(--muted);
+    overflow-wrap: anywhere;
+    margin: 4px 0 0;
+  }
+  .what {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  .what b {
+    color: var(--amber);
+    font-weight: 600;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 3px 12px;
+    margin: 0;
+    font-size: 12px;
+  }
+  .facts dt {
+    color: var(--muted);
+  }
+  .facts dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+  .note {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 0;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: 500 11.5px var(--body);
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 4px 9px 4px 7px;
+    cursor: pointer;
+  }
+  .chip:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .chip .dot {
+    width: 8px;
+    height: 8px;
+  }
+  .more {
+    color: var(--muted);
+  }
+  a.link {
+    color: var(--amber);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  a.link:hover {
+    text-decoration: underline;
+  }
+</style>

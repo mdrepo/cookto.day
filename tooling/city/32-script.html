@@ -1,0 +1,237 @@
+<script>
+  for (const b of blocks) {
+    const c = new THREE.Color(b.color);
+    const g = new THREE.Group();
+    const geo = new THREE.BoxGeometry(b.w + 2, 0.3, b.d + 2);
+    const plate = new THREE.Mesh(
+      geo,
+      new THREE.MeshStandardMaterial({
+        color: c.clone().lerp(BG, 0.86),
+        roughness: 0.95,
+      }),
+    );
+    const edge = new THREE.LineSegments(
+      new THREE.EdgesGeometry(geo),
+      new THREE.LineBasicMaterial({
+        color: c,
+        transparent: true,
+        opacity: 0.35,
+      }),
+    );
+    g.add(plate, edge);
+    g.position.set(b.cx, 0.15, b.cz);
+    scene.add(g);
+    plates.push({ b, g, edge });
+  }
+  {
+    // Main street along the front of downtown, and a dashed centre line.
+    const w = city.x1 - city.x0;
+    const street = new THREE.Mesh(
+      new THREE.PlaneGeometry(w, STREET - 2),
+      new THREE.MeshStandardMaterial({ color: "#161d26", roughness: 1 }),
+    );
+    street.rotation.x = -Math.PI / 2;
+    street.position.set((city.x0 + city.x1) / 2, 0.02, STREET / 2 + 0.5);
+    scene.add(street);
+    const dash = [];
+    for (let x = city.x0; x < city.x1; x += 4)
+      dash.push(x, 0.05, STREET / 2 + 0.5, x + 2, 0.05, STREET / 2 + 0.5);
+    const dg = new THREE.BufferGeometry();
+    dg.setAttribute("position", new THREE.Float32BufferAttribute(dash, 3));
+    scene.add(
+      new THREE.LineSegments(
+        dg,
+        new THREE.LineBasicMaterial({ color: "#3a4756" }),
+      ),
+    );
+    // Water beyond the port.
+    const water = new THREE.Mesh(
+      new THREE.PlaneGeometry(260, 420),
+      new THREE.MeshStandardMaterial({
+        color: "#0b1a2b",
+        roughness: 0.3,
+        metalness: 0.4,
+      }),
+    );
+    water.rotation.x = -Math.PI / 2;
+    water.position.set(port.x1 + 8 + 130, 0.01, port.cz);
+    scene.add(water);
+  }
+
+  // Buildings: one instanced box, scaled per building.
+  const box = new THREE.BoxGeometry(1, 1, 1);
+  box.translate(0, 0.5, 0);
+  const bld = new THREE.InstancedMesh(
+    box,
+    new THREE.MeshStandardMaterial({ roughness: 0.6, metalness: 0.1 }),
+    N,
+  );
+  bld.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  bld.frustumCulled = false;
+  scene.add(bld);
+  const roofs = new THREE.LineSegments(
+    new THREE.BufferGeometry(),
+    new THREE.LineBasicMaterial({
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.9,
+    }),
+  );
+  roofs.frustumCulled = false;
+  scene.add(roofs);
+
+  // Roads on the ground: imports and bundle links, faint.
+  const roadE = E.map((e, k) => k).filter((k) => E[k].k !== "recipe");
+  const rPos = new Float32Array(roadE.length * 6),
+    rCol = new Float32Array(roadE.length * 6);
+  roadE.forEach((k, j) => {
+    const e = E[k];
+    rPos.set([X[e.s], 0.08, Z[e.s], X[e.t], 0.08, Z[e.t]], j * 6);
+  });
+  const rGeo = new THREE.BufferGeometry();
+  rGeo.setAttribute("position", new THREE.BufferAttribute(rPos, 3));
+  rGeo.setAttribute("color", new THREE.BufferAttribute(rCol, 3));
+  const roads = new THREE.LineSegments(
+    rGeo,
+    new THREE.LineBasicMaterial({
+      vertexColors: true,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    }),
+  );
+  roads.frustumCulled = false;
+  scene.add(roads);
+
+  // Lit routes: arcs from roof to roof when a building is picked.
+  const SEG = 14,
+    MAXARC = 700;
+  const aPos = new Float32Array(MAXARC * SEG * 6),
+    aCol = new Float32Array(MAXARC * SEG * 6);
+  const aGeo = new THREE.BufferGeometry();
+  aGeo.setAttribute(
+    "position",
+    new THREE.BufferAttribute(aPos, 3).setUsage(THREE.DynamicDrawUsage),
+  );
+  aGeo.setAttribute(
+    "color",
+    new THREE.BufferAttribute(aCol, 3).setUsage(THREE.DynamicDrawUsage),
+  );
+  const arcs = new THREE.LineSegments(
+    aGeo,
+    new THREE.LineBasicMaterial({
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.95,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    }),
+  );
+  arcs.frustumCulled = false;
+  scene.add(arcs);
+
+  // Roof lights and moving sparks.
+  const spark = (() => {
+    const c = document.createElement("canvas");
+    c.width = c.height = 64;
+    const x = c.getContext("2d"),
+      gr = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gr.addColorStop(0, "rgba(255,255,255,1)");
+    gr.addColorStop(0.25, "rgba(255,255,255,.6)");
+    gr.addColorStop(1, "rgba(255,255,255,0)");
+    x.fillStyle = gr;
+    x.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(c);
+  })();
+  const lPos = new Float32Array(N * 3),
+    lCol = new Float32Array(N * 3);
+  const lGeo = new THREE.BufferGeometry();
+  lGeo.setAttribute(
+    "position",
+    new THREE.BufferAttribute(lPos, 3).setUsage(THREE.DynamicDrawUsage),
+  );
+  lGeo.setAttribute(
+    "color",
+    new THREE.BufferAttribute(lCol, 3).setUsage(THREE.DynamicDrawUsage),
+  );
+  const lights = new THREE.Points(
+    lGeo,
+    new THREE.PointsMaterial({
+      size: 3.2,
+      map: spark,
+      vertexColors: true,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    }),
+  );
+  lights.frustumCulled = false;
+  scene.add(lights);
+  const PN = 500;
+  const pPos = new Float32Array(PN * 3),
+    pCol = new Float32Array(PN * 3),
+    pEdge = new Int32Array(PN).fill(-1),
+    pT = new Float32Array(PN),
+    pV = new Float32Array(PN);
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute(
+    "position",
+    new THREE.BufferAttribute(pPos, 3).setUsage(THREE.DynamicDrawUsage),
+  );
+  pGeo.setAttribute(
+    "color",
+    new THREE.BufferAttribute(pCol, 3).setUsage(THREE.DynamicDrawUsage),
+  );
+  const sparks = new THREE.Points(
+    pGeo,
+    new THREE.PointsMaterial({
+      size: 1.6,
+      map: spark,
+      vertexColors: true,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    }),
+  );
+  sparks.frustumCulled = false;
+  scene.add(sparks);
+  let seed = 7;
+  const rnd = () => {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+
+  // ---------- State ----------
+  const state = {
+    time: lastCommit,
+    window: 10,
+    hidden: new Set(),
+    sel: -1,
+    hover: -1,
+    cone: null,
+    path: null,
+    pathFrom: -1,
+    playing: null,
+    alarm: false,
+  };
+  const rise = new Float32Array(N),
+    riseTo = new Float32Array(N),
+    flash = new Float32Array(N);
+  const visible = (i) =>
+    !state.hidden.has(blockOf[i].district) && nodes[i].added <= state.time;
+  const active = (i) =>
+    (nodes[i].last > state.time - state.window &&
+      nodes[i].last <= state.time) ||
+    nodes[i].added > state.time - state.window;
+  const lit = new Uint8Array(N),
+    litEdge = new Uint8Array(E.length);
+  const focusActive = () => !!(state.cone || state.path || state.alarm);
+  const WHITE = new THREE.Color("#ffffff"),
+    RED = new THREE.Color("#ff6b57"),
+    AMBER = new THREE.Color("#ffb547");
+  const baseCol = nodes.map((n) => new THREE.Color(KIND[n.layer].color));
+  let pool = [];
+</script>

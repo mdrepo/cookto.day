@@ -1,0 +1,240 @@
+<script>
+  const rowB = [
+    block(
+      {
+        id: "ui",
+        name: "Design kit",
+        district: "kit",
+        color: KIND.ui.color,
+        note: "The hardware store: every part a screen is built from.",
+        wide: true,
+      },
+      [],
+      sortedBy(
+        "ui",
+        (a, b) => nodes[a].group.localeCompare(nodes[b].group) || byName(a, b),
+      ),
+    ),
+    block(
+      {
+        id: "usecases",
+        name: "Use cases",
+        district: "works",
+        color: KIND.usecases.color,
+        note: "Every write passes through here.",
+      },
+      [],
+      sortedBy("usecases"),
+    ),
+    block(
+      {
+        id: "data",
+        name: "Data",
+        district: "works",
+        color: KIND.data.color,
+        note: "Repositories, and the IndexedDB adapter.",
+      },
+      [],
+      sortedBy(
+        "data",
+        (a, b) => nodes[a].group.localeCompare(nodes[b].group) || byName(a, b),
+      ),
+    ),
+    block(
+      {
+        id: "engine",
+        name: "Engine",
+        district: "works",
+        color: KIND.engine.color,
+        note: "Pure rules: dates, ranking, plans.",
+      },
+      [],
+      sortedBy("engine"),
+    ),
+  ];
+  const byPack = (a, b) =>
+    nodes[a].group.localeCompare(nodes[b].group) || byName(a, b);
+  const rowC = [
+    block(
+      {
+        id: "packs",
+        name: "Pack bundles",
+        district: "warehouse",
+        color: KIND.packs.color,
+        note: "The cuisine packs as the app loads them.",
+      },
+      [],
+      sortedBy("packs"),
+    ),
+    block(
+      {
+        id: "dishes",
+        name: "Dishes",
+        district: "warehouse",
+        color: KIND.dishes.color,
+        note: "56 recipes in three cuisine packs, stacked by pack.",
+        wide: true,
+      },
+      [],
+      sortedBy("dishes", byPack),
+    ),
+    block(
+      {
+        id: "ingredients",
+        name: "Foods",
+        district: "warehouse",
+        color: KIND.ingredients.color,
+        note: "75 foods the packs cook with.",
+        wide: true,
+      },
+      [],
+      sortedBy("ingredients", (a, b) => inn[b].length - inn[a].length),
+    ),
+  ];
+  const port = block(
+    {
+      id: "api",
+      name: "API Worker",
+      district: "port",
+      color: KIND.api.color,
+      note: "The port: the one place goods come in from outside. cookto.day/api.",
+    },
+    [],
+    sortedBy("api", byPack),
+  );
+  // Lay rows out: downtown by the street at the front, then the works, then the warehouses at the back.
+  let z0 = 0;
+  const STREET = 9;
+  for (const row of [rowA, rowB, rowC]) {
+    const w = row.reduce((s, b) => s + b.w, 0) + GAP * (row.length - 1);
+    let x = -w / 2;
+    for (const b of row) {
+      b.x0 = x;
+      b.z0 = z0;
+      b.ids.forEach((i) => {
+        X[i] += x;
+        Z[i] += z0;
+      });
+      x += b.w + GAP;
+    }
+    z0 += Math.max(...row.map((b) => b.d)) + STREET;
+  }
+  {
+    const east = Math.max(
+      ...blocks.filter((b) => b !== port).map((b) => b.x0 + b.w),
+    );
+    port.x0 = east + GAP * 2.5;
+    port.z0 = 0;
+    port.ids.forEach((i) => {
+      X[i] += port.x0;
+      Z[i] += port.z0;
+    });
+  }
+  for (const b of blocks) {
+    b.x1 = b.x0 + b.w;
+    b.z1 = b.z0 + b.d;
+    b.cx = (b.x0 + b.x1) / 2;
+    b.cz = (b.z0 + b.z1) / 2;
+  }
+  // Flip so the street is nearest the viewer and west is on the left.
+  for (let i = 0; i < N; i++) Z[i] = -Z[i];
+  for (const b of blocks) {
+    const z0 = -b.z1,
+      z1 = -b.z0;
+    b.z0 = z0;
+    b.z1 = z1;
+    b.cz = -b.cz;
+  }
+  const blockOf = new Array(N);
+  blocks.forEach((b) => b.ids.forEach((i) => (blockOf[i] = b)));
+  const DISTRICTS = {
+    downtown: {
+      name: "Downtown",
+      color: KIND.screens.color,
+      note: "The 11 features. Screens face the street; their code sits behind.",
+    },
+    kit: {
+      name: "Design kit",
+      color: KIND.ui.color,
+      note: "The hardware store: parts every screen is built from.",
+    },
+    works: {
+      name: "The works",
+      color: KIND.data.color,
+      note: "Use cases, data and the engine. No shopfront: nothing here is seen directly.",
+    },
+    warehouse: {
+      name: "Warehouses",
+      color: KIND.dishes.color,
+      note: "The cuisine packs: dishes and foods, as data.",
+    },
+    port: {
+      name: "The port",
+      color: KIND.api.color,
+      note: "The API Worker. The only part that talks to the outside.",
+    },
+  };
+  const city = {
+    x0: Math.min(...blocks.map((b) => b.x0)) - 6,
+    x1: Math.max(...blocks.map((b) => b.x1)) + 6,
+    z0: Math.min(...blocks.map((b) => b.z0)) - 6,
+    z1: STREET + 4,
+  };
+
+  // ---------- Scene ----------
+  const canvas = $("scene");
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  const BG = new THREE.Color("#0a0e14");
+  renderer.setClearColor(BG);
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(BG, 220, 520);
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.5, 1500);
+  const controls = new THREE.OrbitControls(camera, canvas);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.09;
+  controls.maxPolarAngle = Math.PI / 2 - 0.05;
+  controls.minDistance = 6;
+  controls.maxDistance = 700;
+  // Drag slides the city under you; right-drag or two fingers turn it; scroll or pinch zooms.
+  controls.mouseButtons = {
+    LEFT: THREE.MOUSE.PAN,
+    MIDDLE: THREE.MOUSE.DOLLY,
+    RIGHT: THREE.MOUSE.ROTATE,
+  };
+  controls.touches = { ONE: THREE.TOUCH.PAN, TWO: THREE.TOUCH.DOLLY_ROTATE };
+  controls.screenSpacePanning = false;
+  controls.panSpeed = 1.2;
+  canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+  function panBy(dx, dz) {
+    const f = new THREE.Vector3().subVectors(controls.target, camera.position);
+    f.y = 0;
+    f.normalize();
+    const r = new THREE.Vector3(-f.z, 0, f.x);
+    const step = camera.position.distanceTo(controls.target) * 0.06;
+    const d = r.multiplyScalar(dx * step).add(f.multiplyScalar(dz * step));
+    controls.target.add(d);
+    camera.position.add(d);
+    flight = null;
+  }
+  scene.add(new THREE.HemisphereLight("#8fb0ff", "#0d0a08", 0.85));
+  const moon = new THREE.DirectionalLight("#cfe0ff", 0.5);
+  moon.position.set(-60, 120, -40);
+  scene.add(moon);
+  const warm = new THREE.DirectionalLight("#ffd9a8", 0.25);
+  warm.position.set(80, 40, 120);
+  scene.add(warm);
+
+  // Ground, plates, street, water.
+  const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(city.x1 - city.x0 + 400, city.z1 - city.z0 + 400),
+    new THREE.MeshStandardMaterial({ color: "#0d1219", roughness: 1 }),
+  );
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.set((city.x0 + city.x1) / 2, -0.02, (city.z0 + city.z1) / 2);
+  scene.add(ground);
+  const grid = new THREE.GridHelper(600, 120, "#17202a", "#121a22");
+  grid.position.set((city.x0 + city.x1) / 2, 0, (city.z0 + city.z1) / 2);
+  scene.add(grid);
+  const plates = [];
+</script>

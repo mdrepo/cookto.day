@@ -1,0 +1,239 @@
+<style>
+  /* Layout: a night city fills the window. A slim top bar, a district list on the left, a building card on the right when one is picked, history along the bottom. */
+  :root {
+    --night: #0a0e14;
+    --panel: rgba(16, 22, 30, 0.86);
+    --panel-solid: #121a23;
+    --rule: rgba(200, 220, 235, 0.14);
+    --ink: #edf1f4;
+    --muted: #92a2b0;
+    --amber: #ffb547;
+    --alarm: #ff6b57;
+    --ok: #7cc47a;
+    --display:
+      "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+    --body: "Instrument Sans", "Helvetica Neue", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    color-scheme: dark;
+  }
+  html,
+  body {
+    height: 100%;
+  }
+  body {
+    background: var(--night);
+    color: var(--ink);
+    font: 13px/1.45 var(--body);
+    overflow: hidden;
+  }
+  #scene {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+    cursor: grab;
+  }
+  #labels {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .lbl {
+    position: absolute;
+    left: 0;
+    top: 0;
+    white-space: nowrap;
+    font: 500 11px/1 var(--body);
+    color: var(--ink);
+    background: rgba(10, 14, 20, 0.8);
+    border-radius: 5px;
+    padding: 3px 6px;
+    will-change: transform;
+  }
+  .lbl.front {
+    font-weight: 600;
+    color: #fff6e6;
+  }
+  .lbl.sel {
+    font: 700 13px/1 var(--display);
+    background: var(--ink);
+    color: var(--night);
+    padding: 5px 8px;
+  }
+  .lbl.lit {
+    box-shadow: inset 0 0 0 1px var(--c);
+  }
+  .lbl.district {
+    background: none;
+    padding: 0;
+    font: 800 14px/1 var(--display);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c);
+    text-shadow:
+      0 1px 8px #000,
+      0 0 2px #000;
+    opacity: 0.92;
+  }
+  .lbl.district small {
+    font: 500 11px var(--mono);
+    letter-spacing: 0;
+    opacity: 0.75;
+    margin-inline-start: 6px;
+  }
+  .tip {
+    position: fixed;
+    z-index: 5;
+    pointer-events: none;
+    background: var(--panel-solid);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 7px 9px;
+    max-width: 280px;
+    font-size: 12px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+  }
+  .tip b {
+    font: 600 13px var(--display);
+    display: block;
+  }
+  .tip span {
+    color: var(--muted);
+    font: 11px var(--mono);
+    overflow-wrap: anywhere;
+  }
+
+  .hud {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 232px minmax(0, 1fr) 330px;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas: "head head head" "legend . inspect" "bar bar bar";
+    padding-block: max(12px, env(safe-area-inset-top, 0px))
+      max(12px, env(safe-area-inset-bottom, 0px));
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .hud > * {
+    pointer-events: auto;
+    min-width: 0;
+  }
+  .glass {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  header {
+    grid-area: head;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    pointer-events: none;
+  }
+  header > * {
+    pointer-events: auto;
+  }
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand h1 {
+    margin: 0;
+    font: 800 22px/1 var(--display);
+    letter-spacing: -0.01em;
+  }
+  .brand h1 span {
+    color: var(--amber);
+  }
+  .brand p {
+    margin: 0;
+    font: 11px var(--mono);
+    color: var(--muted);
+  }
+  .tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .btn {
+    font: 600 12px var(--body);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    background: var(--panel);
+    border-radius: 8px;
+    padding: 7px 11px;
+    cursor: pointer;
+  }
+  .btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+  }
+  select,
+  input[type="search"] {
+    font: 500 12px var(--body);
+    color: var(--ink);
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 8px 10px;
+  }
+  .search {
+    position: relative;
+  }
+  .search input {
+    width: 240px;
+  }
+  .results {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    width: 300px;
+    max-height: 340px;
+    overflow: auto;
+    z-index: 4;
+    padding: 4px;
+  }
+  .results button {
+    display: grid;
+    grid-template-columns: 10px 1fr;
+    gap: 3px 8px;
+    align-items: center;
+    width: 100%;
+    text-align: start;
+    background: none;
+    border: 0;
+    color: var(--ink);
+    padding: 7px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font: 500 12.5px var(--body);
+  }
+  .results button:hover,
+  .results button.on {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .results small {
+    grid-column: 2;
+    color: var(--muted);
+    font: 10.5px var(--mono);
+    overflow-wrap: anywhere;
+  }
+</style>

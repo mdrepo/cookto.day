@@ -1,0 +1,245 @@
+<script>
+  E.forEach((e, k) => {
+    if (e.k !== "import") return;
+    const a = nodes[e.s],
+      b = nodes[e.t];
+    if (a.layer === "api" || b.layer === "api") return;
+    const feat = (x) =>
+      (x.layer === "hooks" || x.layer === "screens") && x.group !== "app shell";
+    if (
+      RANK[b.layer] > RANK[a.layer] ||
+      (feat(a) && feat(b) && a.group !== b.group)
+    )
+      breaks.push(k);
+  });
+  function renderCheck() {
+    const c = $("check");
+    const imports = E.filter((e) => e.k === "import").length;
+    c.className = "check " + (breaks.length ? "bad" : "ok");
+    if (!breaks.length) {
+      c.replaceChildren(
+        el("strong", { textContent: "Every road runs one way" }),
+        `All ${imports} imports go from the street towards the engine, never between features (ADR 0022).`,
+      );
+      return;
+    }
+    const b = el("button", {
+      type: "button",
+      className: "btn",
+      textContent: "Show them",
+    });
+    b.onclick = () => {
+      clearFocus();
+      state.sel = -1;
+      state.alarm = true;
+      breaks.forEach((k) => {
+        litEdge[k] = 2;
+        lit[E[k].s] = lit[E[k].t] = 1;
+      });
+      paint();
+      renderInspector();
+      fit();
+    };
+    c.replaceChildren(
+      el("strong", { textContent: `${breaks.length} roads go the wrong way` }),
+      b,
+    );
+  }
+
+  // Search.
+  const q = $("q"),
+    results = $("results");
+  let hits = [],
+    hitAt = 0;
+  function search() {
+    const s = q.value.trim().toLowerCase();
+    results.replaceChildren();
+    if (!s) {
+      results.hidden = true;
+      return;
+    }
+    hits = nodes
+      .map((n, i) => {
+        const l = n.label.toLowerCase(),
+          p = (n.info?.path ?? n.id).toLowerCase();
+        const place =
+          `${blockOf[i].name} ${DISTRICTS[blockOf[i].district].name} ${KIND[n.layer].name}`.toLowerCase();
+        return {
+          i,
+          score:
+            l === s
+              ? 0
+              : l.startsWith(s)
+                ? 1
+                : l.includes(s)
+                  ? 2
+                  : p.includes(s)
+                    ? 3
+                    : place.includes(s)
+                      ? 4
+                      : 9,
+        };
+      })
+      .filter((h) => h.score < 9)
+      .sort(
+        (a, b) =>
+          a.score - b.score || RANK[nodes[b.i].layer] - RANK[nodes[a.i].layer],
+      )
+      .slice(0, 10)
+      .map((h) => h.i);
+    hitAt = 0;
+    if (!hits.length) {
+      results.append(
+        el("p", {
+          textContent:
+            "Nothing by that name. Try a screen, a dish, a food or a file.",
+        }),
+      );
+      results.hidden = false;
+      return;
+    }
+    hits.forEach((i, k) => {
+      const b = el("button", {
+        type: "button",
+        className: k === 0 ? "on" : "",
+      });
+      const d = el("span", { className: "dot" });
+      d.style.setProperty("--c", KIND[nodes[i].layer].color);
+      b.append(
+        d,
+        nodes[i].label,
+        el("small", {
+          textContent: `${KIND[nodes[i].layer].name} · ${blockOf[i].name}`,
+        }),
+      );
+      b.onclick = () => go(i);
+      results.append(b);
+    });
+    const total = nodes.filter((n, i) =>
+      `${blockOf[i].name} ${DISTRICTS[blockOf[i].district].name}`
+        .toLowerCase()
+        .includes(s),
+    ).length;
+    if (total > hits.length)
+      results.append(
+        el("p", {
+          textContent: `${total} buildings in places called "${q.value.trim()}". Showing the first ${hits.length}.`,
+        }),
+      );
+    results.hidden = false;
+  }
+  function go(i) {
+    results.hidden = true;
+    q.blur();
+    touched();
+    showDistrict(blockOf[i].district);
+    if (nodes[i].added > state.time) setTime(lastCommit);
+    select(i);
+  }
+  q.addEventListener("input", search);
+  q.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && hits.length) go(hits[hitAt]);
+    if ((e.key === "ArrowDown" || e.key === "ArrowUp") && hits.length) {
+      e.preventDefault();
+      hitAt =
+        (hitAt + (e.key === "ArrowDown" ? 1 : hits.length - 1)) % hits.length;
+      [...results.children].forEach((c, k) =>
+        c.classList.toggle("on", k === hitAt),
+      );
+    }
+    if (e.key === "Escape") {
+      q.value = "";
+      results.hidden = true;
+      q.blur();
+    }
+  });
+  addEventListener("pointerdown", (e) => {
+    if (!e.target.closest(".search")) results.hidden = true;
+  });
+
+  // Tours.
+  const byId = (id) => index.get(id);
+  const TOURS = [
+    [
+      "Downtown",
+      () => {
+        const b = rowA[1] || rowA[0];
+        state.pathFrom = -1;
+        select(-1, false);
+        const box = new THREE.Box3();
+        for (const bb of rowA) {
+          box.expandByPoint(new THREE.Vector3(bb.x0, 0, bb.z0));
+          box.expandByPoint(new THREE.Vector3(bb.x1, 12, bb.z1));
+        }
+        frameBox(box, new THREE.Vector3(-0.1, 0.42, 1).normalize());
+      },
+    ],
+    [
+      "What the Today screen rests on",
+      () => {
+        const i = byId("apps/web/src/features/home/HomeScreen.tsx");
+        if (i != null) {
+          select(i, false);
+          fit();
+        }
+      },
+    ],
+    [
+      "Paneer, up to the screens",
+      () => {
+        const i = byId("ing:paneer");
+        if (i != null) {
+          select(i, false);
+          fit();
+        }
+      },
+    ],
+    ["Watch it being built", () => play(true)],
+  ];
+  for (const [name, go] of TOURS) {
+    const b = el("button", {
+      type: "button",
+      className: "tour",
+      textContent: name,
+    });
+    b.onclick = () => {
+      touched();
+      go();
+    };
+    $("tours").append(b);
+  }
+
+  $("fit").onclick = () => {
+    state.pathFrom = -1;
+    select(-1, false);
+    fit();
+  };
+  $("legend-btn").onclick = (e) => {
+    const open = $("legend").classList.toggle("open");
+    e.currentTarget.setAttribute("aria-expanded", String(open));
+  };
+  $("window").onchange = (e) => {
+    state.window = +e.target.value;
+    paint();
+  };
+
+  // History.
+  const time = $("time");
+  time.max = lastCommit;
+  time.value = lastCommit;
+  function setTime(t) {
+    const prev = state.time;
+    state.time = t;
+    time.value = t;
+    if (t !== prev && t < lastCommit)
+      for (let i = 0; i < N; i++) if (nodes[i].added === t) flash[i] = 1;
+    const present = nodes.filter(
+      (n, i) => n.added <= t && !state.hidden.has(blockOf[i].district),
+    ).length;
+    $("commit").replaceChildren(
+      el("b", { textContent: `${present} buildings` }),
+      el("span", { textContent: commitText(t) }),
+    );
+    refresh();
+  }
+</script>

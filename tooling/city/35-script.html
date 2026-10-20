@@ -1,0 +1,233 @@
+<script>
+  canvas.addEventListener("pointerdown", (e) => {
+    down = { x: e.clientX, y: e.clientY };
+    flight = null;
+    touched();
+    canvas.style.cursor = "grabbing";
+  });
+  canvas.addEventListener("pointermove", (e) => {
+    pending = e;
+  });
+  canvas.addEventListener("pointerleave", () => {
+    pending = null;
+    state.hover = -1;
+    tip.hidden = true;
+  });
+  canvas.addEventListener("pointerup", (e) => {
+    canvas.style.cursor = "grab";
+    if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) return;
+    const i = pick(e.clientX, e.clientY);
+    if (i < 0) return;
+    if (e.shiftKey && state.sel >= 0 && i !== state.sel) showPath(state.sel, i);
+    else if (state.pathFrom >= 0 && i !== state.pathFrom) {
+      const a = state.pathFrom;
+      state.pathFrom = -1;
+      showPath(a, i);
+    } else select(i);
+  });
+  canvas.addEventListener("dblclick", (e) => {
+    if (pick(e.clientX, e.clientY) < 0) {
+      state.pathFrom = -1;
+      select(-1, false);
+      fit();
+    }
+  });
+  function hover() {
+    if (!pending) return;
+    const e = pending;
+    pending = null;
+    if (e.pointerType === "touch" || e.buttons) {
+      tip.hidden = true;
+      return;
+    }
+    const i = pick(e.clientX, e.clientY);
+    state.hover = i;
+    canvas.style.cursor = i >= 0 ? "pointer" : "grab";
+    if (i < 0) {
+      tip.hidden = true;
+      return;
+    }
+    const n = nodes[i];
+    const b = document.createElement("b");
+    b.textContent = n.label;
+    const s = document.createElement("span");
+    s.textContent = `${KIND[n.layer].name} · ${blockOf[i].name}`;
+    tip.replaceChildren(b, s);
+    tip.hidden = false;
+    tip.style.left = Math.min(e.clientX + 14, innerWidth - 290) + "px";
+    tip.style.top = e.clientY + 16 + "px";
+  }
+
+  // ---------- Panels ----------
+  const el = (tag, props = {}, ...kids) => {
+    const d = document.createElement(tag);
+    Object.assign(d, props);
+    d.append(...kids);
+    return d;
+  };
+  function nodeChip(j) {
+    const c = el("button", {
+      type: "button",
+      className: "chip",
+      title: `${KIND[nodes[j].layer].name} · ${nodes[j].info?.path ?? blockOf[j].name}`,
+    });
+    const dot = el("span", { className: "dot" });
+    dot.style.setProperty("--c", KIND[nodes[j].layer].color);
+    c.append(dot, nodes[j].label);
+    c.onclick = () => {
+      showDistrict(blockOf[j].district);
+      select(j);
+    };
+    return c;
+  }
+  function chipList(ids, max = 20) {
+    const box = el("div", { className: "chips" });
+    ids.slice(0, max).forEach((j) => box.append(nodeChip(j)));
+    if (ids.length > max) {
+      const more = el("button", {
+        type: "button",
+        className: "chip more",
+        textContent: `${ids.length - max} more`,
+      });
+      more.onclick = () => more.replaceWith(...ids.slice(max).map(nodeChip));
+      box.append(more);
+    }
+    return box;
+  }
+  // The buildings a trace reaches, grouped by kind, in the order the trace meets them.
+  function chain(depthMap, start) {
+    const byL = new Map();
+    for (const [j, d] of depthMap) {
+      const L = nodes[j].layer,
+        e = byL.get(L) ?? { n: 0, d: 99, ids: [] };
+      e.n++;
+      e.d = Math.min(e.d, d);
+      e.ids.push(j);
+      byL.set(L, e);
+    }
+    const box = el("div", { className: "chain" });
+    const me = el("span", { className: "step me", textContent: start.label });
+    box.append(me);
+    for (const [L, e] of [...byL.entries()].sort((a, b) => a[1].d - b[1].d)) {
+      const step = el("button", {
+        type: "button",
+        className: "step",
+        title: `${e.n} ${KIND[L].name.toLowerCase()} buildings, ${e.d === 1 ? "directly connected" : e.d + " steps away"}`,
+      });
+      step.style.setProperty("--c", KIND[L].color);
+      step.append(el("b", { textContent: e.n }), ` ${KIND[L].name}`);
+      step.onclick = () => {
+        const list = step.nextElementSibling;
+        if (list && list.classList.contains("chips")) {
+          list.remove();
+          return;
+        }
+        step.after(chipList(e.ids.sort(byName), 16));
+      };
+      box.append(el("span", { className: "arrow", textContent: "→" }), step);
+    }
+    return box;
+  }
+  const commitText = (c) =>
+    `#${c + 1} · ${G.commits[c][0]} · ${G.commits[c][1]}`;
+  const plural = (n, one, many = one + "s") => `${n} ${n === 1 ? one : many}`;
+
+  function renderInspector() {
+    const box = $("insp"),
+      i = state.sel,
+      wasHidden = box.hidden;
+    box.replaceChildren();
+    box.hidden = i < 0 && !state.alarm;
+    if (wasHidden !== box.hidden) requestAnimationFrame(measure);
+    if (box.hidden) return;
+    const close = el("button", {
+      type: "button",
+      className: "btn close",
+      textContent: "×",
+      ariaLabel: "Close",
+    });
+    close.onclick = () => {
+      state.pathFrom = -1;
+      select(-1);
+    };
+    if (state.alarm) {
+      box.append(
+        el(
+          "div",
+          { className: "insp-head" },
+          el("h2", { textContent: "Roads that go the wrong way" }),
+          close,
+        ),
+        chipList([...new Set(breaks.flatMap((k) => [E[k].s, E[k].t]))]),
+      );
+      return;
+    }
+    const n = nodes[i],
+      kind = KIND[n.layer],
+      b = blockOf[i];
+    const kick = el("div", {
+      className: "kicker",
+      textContent: `${kind.name} · ${b.name}`,
+    });
+    kick.style.setProperty("--c", kind.color);
+    box.append(
+      el(
+        "div",
+        { className: "insp-head" },
+        el(
+          "div",
+          {},
+          kick,
+          el("h2", { textContent: n.label }),
+          el("p", {
+            className: "path",
+            textContent:
+              n.info?.path ??
+              n.id
+                .replace(/^dish:/, "packs/")
+                .replace(/^ing:/, "packs/ingredients/"),
+          }),
+        ),
+        close,
+      ),
+    );
+    box.append(el("p", { className: "what", textContent: kind.what(n) }));
+    const repoPath = n.info?.file ?? (n.id.includes("/") ? n.id : null);
+    if (repoPath)
+      box.append(
+        el(
+          "div",
+          {},
+          el("a", {
+            className: "open",
+            href: G.github + repoPath,
+            target: "_blank",
+            rel: "noopener",
+            textContent: "Open the file on GitHub ↗",
+          }),
+        ),
+      );
+    if (n.info?.specs?.length) {
+      const sp = el("div", { className: "specs" });
+      for (const s of n.info.specs)
+        sp.append(
+          el("a", {
+            className: "spec",
+            href: G.github + s.file,
+            target: "_blank",
+            rel: "noopener",
+            textContent: `Spec ${s.n}: ${s.file
+              .replace(/^specs\/\d+-/, "")
+              .replace(/\.md$/, "")
+              .replace(/-/g, " ")}`,
+          }),
+        );
+      box.append(el("h3", { textContent: "The specs it follows" }), sp);
+    }
+    renderInside(box, n, repoPath);
+    renderTrace(box, n);
+    renderFacts(box, n, i);
+  }
+
+  // The functions a file declares, with their comments, and what it passes on.
+</script>

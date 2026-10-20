@@ -1,8 +1,9 @@
-// The functions the Worker calls (db/migrations/0002 to 0004), with each
+// The functions the Worker calls (db/migrations/0002 to 0005), with each
 // argument's SQL type. The API calls them over HTTPS; the tests call them
 // through a Postgres client, which needs the types to cast its arguments.
 
-export type SqlType = "text" | "uuid" | "timestamptz" | "jsonb" | "int";
+export type SqlType =
+  "text" | "uuid" | "timestamptz" | "jsonb" | "int" | "bigint";
 
 const SECRET = { p_secret: "text" } as const;
 
@@ -83,6 +84,51 @@ export const FUNCTIONS = {
   auth_session: { ...SECRET, p_hash: "text", p_now: "timestamptz" },
   auth_session_end: { ...SECRET, p_hash: "text" },
   auth_housekeeping: { ...SECRET, p_now: "timestamptz" },
+  hh_create: {
+    ...SECRET,
+    p_account: "uuid",
+    p_records: "jsonb",
+    p_now: "timestamptz",
+  },
+  hh_claim_cook: {
+    ...SECRET,
+    p_account: "uuid",
+    p_token_hash: "text",
+    p_now: "timestamptz",
+  },
+  hh_get: { ...SECRET, p_account: "uuid" },
+  hh_invite: {
+    ...SECRET,
+    p_account: "uuid",
+    p_role: "text",
+    p_address_hash: "text",
+    p_now: "timestamptz",
+  },
+  hh_invite_start: {
+    ...SECRET,
+    p_code: "text",
+    p_channel: "text",
+    p_chat: "text",
+    p_user_id: "text",
+    p_name: "text",
+    p_now: "timestamptz",
+  },
+  hh_member_remove: { ...SECRET, p_account: "uuid", p_member: "uuid" },
+  hh_cooks: { ...SECRET, p_account: "uuid", p_now: "timestamptz" },
+  hh_account_delete: { ...SECRET, p_account: "uuid" },
+  sync_push: {
+    ...SECRET,
+    p_account: "uuid",
+    p_records: "jsonb",
+    p_now: "timestamptz",
+  },
+  sync_changes: {
+    ...SECRET,
+    p_account: "uuid",
+    p_after: "bigint",
+    p_limit: "int",
+  },
+  hh_housekeeping: { ...SECRET, p_now: "timestamptz" },
 } as const satisfies Record<string, Record<string, SqlType>>;
 
 export type FunctionName = keyof typeof FUNCTIONS;

@@ -10,7 +10,8 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./cook": "./src/cook.ts"
+    "./cook": "./src/cook.ts",
+    "./signin": "./src/signin.ts"
   },
   "dependencies": {
     "@cookto/data": "workspace:*",

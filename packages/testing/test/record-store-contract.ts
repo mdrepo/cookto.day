@@ -18,6 +18,8 @@ interface RecordStore {
   ): Promise<T | null>;
   all<T>(collection: string, signal?: AbortSignal): Promise<T[]>;
   put(collection: string, records: readonly Note[]): Promise<void>;
+  /** Every record of the collection, gone (specs/217: joining a household). */
+  clear(collection: string): Promise<void>;
 }
 
 type Make = () => RecordStore | Promise<RecordStore>;
@@ -96,6 +98,19 @@ export const RECORD_STORE_CONTRACT: {
       }
       assert.equal(failed, true);
       assert.equal(await store.get("notes", "a"), null);
+    },
+  },
+  {
+    name: "clearing a collection empties it, and leaves the others",
+    async check(make) {
+      const store = await make();
+      await store.put("notes", [note("a", "first"), note("b", "second")]);
+      await store.put("lists", [note("x", "kept")]);
+      await store.clear("notes");
+      assert.deepEqual(await store.all<Note>("notes"), []);
+      assert.equal(await store.get<Note>("notes", "a"), null);
+      assert.equal((await store.all<Note>("lists")).length, 1);
+      await store.clear("never-there");
     },
   },
   {

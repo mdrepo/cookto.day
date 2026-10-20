@@ -1,0 +1,27 @@
+/* JoinCode's styles: tokens only (DESIGN.md). No outer margin: the space
+   between parts belongs to the screen. */
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+/* Large and spaced, to read out to a phone across the room. */
+.code {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+
+/* The image: dark modules on light paper in both themes, so a camera reads
+   it; the action colour on its paper are the two tokens that stay that way. */
+.qr {
+  inline-size: min(100%, 12rem);
+  block-size: auto;
+  background: var(--color-on-action);
+  fill: var(--color-action);
+  border-radius: var(--radius-md);
+}

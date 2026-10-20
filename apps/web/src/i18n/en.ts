@@ -208,6 +208,8 @@ export const en = {
   notNow: "Not now",
   stopped: "Stopped",
   waitingForThem: "Waiting for them to press Start",
+  orSendStart: "Or send /start {code} to @cookto_day_bot on your phone",
+  qrCode: "QR code of the link",
   tryAgain: "Try again",
   sentToCook: "Sent to the cook, {time}",
   goesToCook: "Goes to the cook at 9 pm",

@@ -212,6 +212,8 @@ export const hi: Messages = {
   notNow: "अभी नहीं",
   stopped: "रुका हुआ",
   waitingForThem: "उनके Start दबाने का इंतज़ार है",
+  orSendStart: "या अपने फ़ोन पर @cookto_day_bot को /start {code} भेजें",
+  qrCode: "लिंक का QR कोड",
   tryAgain: "फिर से कोशिश करें",
   sentToCook: "रसोइए को भेजा, {time}",
   goesToCook: "रात 9 बजे रसोइए को जाएगा",

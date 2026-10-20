@@ -11,6 +11,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./names": "./src/names.ts",
-    "./time": "./src/time.ts"
+    "./time": "./src/time.ts",
+    "./qr": "./src/qr.ts"
   }
 }

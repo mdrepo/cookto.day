@@ -1,0 +1,69 @@
+import { execFileSync } from "node:child_process";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { buildGraph, parseHistory } from "./city-graph-lib.js";
+
+// bun run city: draws the repo as a night city, every file a building, into
+// .build/city/index.html (open it in a browser), with graph.json beside it.
+// Downtown is one block per feature with its screens on the street; the
+// design kit, the works (use cases, data, engine), the pack warehouses and
+// the API Worker's port stand behind. Click a building for what it is, in
+// plain words, with its functions, specs and a link to the file on GitHub.
+// The page's parts live in tooling/city/, stitched in name order, with the
+// graph put in at __GRAPH__. Pass --out <dir> to write somewhere else.
+
+const PARTS = "tooling/city";
+const GITHUB = "https://github.com/mdrepo/cookto.day/blob/main/";
+
+const outAt = process.argv.indexOf("--out");
+const out =
+  outAt > 0 ? (process.argv[outAt + 1] ?? ".build/city") : ".build/city";
+
+const git = (...args: string[]) =>
+  execFileSync("git", args, { encoding: "utf8", maxBuffer: 64 << 20 });
+const files = git("ls-files").trim().split("\n");
+const history = parseHistory(
+  git(
+    "log",
+    "--reverse",
+    "--format=@@%h|%ad|%s",
+    "--date=short",
+    "--name-status",
+  ),
+);
+const graph = buildGraph({
+  files,
+  read: (path) => readFileSync(path, "utf8"),
+  history,
+});
+
+const head = history.commits[history.commits.length - 1];
+const data = {
+  repo: "cookto.day",
+  github: GITHUB,
+  scanned: new Date().toISOString().slice(0, 10),
+  head,
+  commits: history.commits.map((c) => [c.d, c.m.slice(0, 90)]),
+  ...graph,
+};
+const page = readdirSync(PARTS)
+  .filter((f) => f.endsWith(".html"))
+  .sort()
+  .map((f) => readFileSync(join(PARTS, f), "utf8"))
+  .join("\n")
+  // Inside a <script>, "</" would end it early.
+  .replace("__GRAPH__", JSON.stringify(data).replace(/<\//g, "<\\/"));
+
+mkdirSync(out, { recursive: true });
+writeFileSync(join(out, "graph.json"), JSON.stringify(data));
+writeFileSync(join(out, "index.html"), page);
+
+const by: Record<string, number> = {};
+for (const n of graph.nodes) by[n.layer] = (by[n.layer] ?? 0) + 1;
+console.log(
+  `City: ${graph.nodes.length} buildings (${Object.entries(by)
+    .map(([k, v]) => `${k} ${v}`)
+    .join(
+      ", ",
+    )}), ${graph.edges.length} roads, ${history.commits.length} commits at ${head?.h ?? "?"}. Open ${join(out, "index.html")}`,
+);

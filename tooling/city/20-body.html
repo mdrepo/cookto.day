@@ -1,0 +1,105 @@
+<canvas
+  id="scene"
+  aria-label="cookto.day drawn as a night city: each file is a building, features are blocks downtown, packs are warehouses, the API Worker is the port"
+></canvas>
+<div id="labels"></div>
+<div class="tip" id="tip" hidden></div>
+<div class="hint" id="hint">
+  Tap a building to see what it is · drag to move · right-drag or two fingers to
+  turn · scroll or pinch to zoom
+</div>
+
+<div class="hud">
+  <header>
+    <div class="brand">
+      <h1>cookto<span>.</span>day City</h1>
+      <p id="stats"></p>
+    </div>
+    <div class="tools">
+      <button type="button" class="btn" id="legend-btn" aria-expanded="false">
+        Districts
+      </button>
+      <button
+        type="button"
+        class="btn"
+        id="fit"
+        title="See the whole city (or double-click empty ground)"
+      >
+        Whole city
+      </button>
+      <div class="search">
+        <input
+          type="search"
+          id="q"
+          placeholder="Find a screen, dish or file"
+          autocomplete="off"
+          aria-label="Find a screen, dish or file"
+        />
+        <div class="results glass" id="results" hidden></div>
+      </div>
+    </div>
+  </header>
+
+  <aside class="legend glass" id="legend" aria-label="Districts">
+    <div>
+      <h2>Districts</h2>
+      <div class="districts" id="districts"></div>
+    </div>
+    <div class="key">
+      <div>
+        <b>Height</b> is the file's length. The zoning law: a screen stops at
+        150 lines, anything else at 300.
+      </div>
+      <div>
+        <b>Lights on</b> means it changed recently. Dark means it has been left
+        alone.
+      </div>
+      <div>
+        <b>Roads</b> lead from a building to what it depends on. Click one:
+        bright roads are what it touches directly, faint ones everything further
+        along.
+      </div>
+      <label
+        >Lights on if changed in the last
+        <select id="window" aria-label="Lights window">
+          <option value="5">5 commits</option>
+          <option value="10" selected>10 commits</option>
+          <option value="25">25 commits</option>
+          <option value="60">60 commits</option>
+        </select>
+      </label>
+      <div class="check" id="check"></div>
+    </div>
+  </aside>
+
+  <section class="insp glass" id="insp" hidden aria-live="polite"></section>
+
+  <div class="bar glass">
+    <div class="tours" id="tours"><span>Try</span></div>
+    <div class="history">
+      <button
+        type="button"
+        class="btn"
+        id="play"
+        aria-label="Watch the city being built"
+      >
+        ▶
+      </button>
+      <input
+        type="range"
+        id="time"
+        min="0"
+        max="1"
+        value="1"
+        aria-label="Commit"
+      />
+      <div class="commit" id="commit"></div>
+    </div>
+  </div>
+</div>
+
+<script type="application/json" id="graph">
+  __GRAPH__
+</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>

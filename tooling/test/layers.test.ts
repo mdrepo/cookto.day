@@ -164,7 +164,7 @@ describe("layers", () => {
     ).toEqual([]);
   });
 
-  test("only the API imports the messenger (ADR 0031)", async () => {
+  test("only the API and the database import the messenger (ADR 0031)", async () => {
     // Data and use cases already may import nothing above them, so their own
     // rule answers there; the app's other files need this one.
     const line = `import { createMessenger } from "@cookto/messenger";`;
@@ -178,6 +178,7 @@ describe("layers", () => {
       expect(found[0]).toContain("ADR 0031");
     }
     expect(await problems("apps/api/src/index.ts", line)).toEqual([]);
+    expect(await problems("db/src/store.ts", line)).toEqual([]);
   });
 
   test.each(["react", "@cookto/engine", "@cookto/data", "@cookto/usecases"])(

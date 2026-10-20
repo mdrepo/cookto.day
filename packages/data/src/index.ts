@@ -16,6 +16,8 @@ export type {
   LinkState,
   Send,
   SendRequest,
+  SignInApi,
+  SignInStatus,
 } from "./network.js";
 export {
   type AppPack,
@@ -31,6 +33,7 @@ export { createPantry, type KitchenItem, type NewItem } from "./pantry.js";
 export { createPlans, type PlannedMeal } from "./plans.js";
 export { createShopping, type ListItem } from "./shopping.js";
 export { memoryRecordStore, type RecordStore } from "./record-store.js";
+export { type Cook, type PlanSent, type SignedIn } from "./settings-cook.js";
 export {
   createSaveProblems,
   type SaveProblem,
@@ -40,8 +43,6 @@ export {
 export { type SyncRecord } from "./records.js";
 export {
   BEANS,
-  type Cook,
-  type PlanSent,
   ROLES,
   type Role,
   type Beans,

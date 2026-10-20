@@ -203,7 +203,7 @@ describe("the new packages exist", () => {
     // reads a test from its declaration to the next, so a line above the
     // name would count for the test above.
     const packages: [string, string, string[]][] = [
-      ["packages/usecases", "@cookto/usecases", [".", "./cook"]],
+      ["packages/usecases", "@cookto/usecases", [".", "./cook", "./signin"]],
       [
         "packages/data",
         "@cookto/data",

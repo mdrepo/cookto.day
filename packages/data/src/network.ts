@@ -1,7 +1,8 @@
 // The app's network adapter (ADR 0024, 0025): our own API, nothing else.
 // The one file in the app that may call `fetch` (eslint.config.js). Every
 // call has a 15-second limit, and an error is a status and a short code,
-// never the body. The first routes are the cook's link (spec #207).
+// never the body. The first routes are the cook's link (spec #207) and
+// sign-in (spec #216); the session is a cookie the browser sends by itself.
 
 /** All of `fetch` the adapter uses. */
 export type Send = (url: string, init: RequestInit) => Promise<Response>;
@@ -15,6 +16,10 @@ export interface LinkMade {
 }
 
 export type LinkState = "waiting" | "connected" | "expired" | "gone";
+
+/** The phone's poll while a sign-in code shows (spec #216). */
+export type SignInStatus =
+  { used: false; state: "waiting" | "expired" } | { used: true; name: string };
 
 export interface SendRequest {
   text: string;
@@ -43,6 +48,17 @@ export interface Api {
   cancel(token: string, id: string): Promise<void>;
 }
 
+/** Sign in with Telegram (spec #216): its own interface, so a fake of the
+ * cook's `Api` needn't know it. */
+export interface SignInApi {
+  /** A sign-in code and the token this phone polls with. */
+  startSignIn(): Promise<LinkMade>;
+  signInStatus(token: string, code: string): Promise<SignInStatus>;
+  /** Who this phone is signed in as; 401 when it isn't. */
+  me(): Promise<{ name: string }>;
+  signOut(): Promise<void>;
+}
+
 export interface ApiOptions {
   /** Where the API is; the page's own origin when left out. */
   base?: string;
@@ -50,7 +66,7 @@ export interface ApiOptions {
   timeoutMs?: number;
 }
 
-export function createApi(options: ApiOptions = {}): Api {
+export function createApi(options: ApiOptions = {}): Api & SignInApi {
   const base = options.base ?? "";
   const send: Send = options.send ?? ((url, init) => fetch(url, init));
   const timeout = options.timeoutMs ?? TIMEOUT_MS;
@@ -110,6 +126,17 @@ export function createApi(options: ApiOptions = {}): Api {
         `/api/messenger/send/${encodeURIComponent(id)}`,
         token,
       );
+    },
+    startSignIn: () => call("POST", "/api/auth/links") as Promise<LinkMade>,
+    signInStatus: (token, code) =>
+      call(
+        "GET",
+        `/api/auth/links/${encodeURIComponent(code)}`,
+        token,
+      ) as Promise<SignInStatus>,
+    me: () => call("GET", "/api/auth/me") as Promise<{ name: string }>,
+    signOut: async () => {
+      await call("DELETE", "/api/auth/session");
     },
   };
 }

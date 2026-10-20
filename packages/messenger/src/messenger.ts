@@ -1,4 +1,4 @@
-import type { Channel } from "./channel.js";
+import type { Channel, Sender } from "./channel.js";
 import { drain, type Drained } from "./drain.js";
 import type { Event, Message } from "./message.js";
 import type { Conversation, Row, Store } from "./store.js";
@@ -26,6 +26,8 @@ export interface Received {
   message: Row | null;
   /** Seen before: nothing was recorded, nothing should be done. */
   duplicate: boolean;
+  /** Who sent it, when the channel says (spec #216); never recorded. */
+  from?: Sender;
 }
 
 export interface Messenger {
@@ -89,8 +91,14 @@ export function createMessenger(o: MessengerOptions): Messenger {
     const { chat, event } = parsed;
     const now = o.now();
     const conversation = await store.find(channel.name, chat);
+    const base = {
+      chat,
+      event,
+      conversation,
+      ...(parsed.from && { from: parsed.from }),
+    };
     if (await store.seen(channel.name, parsed.updateId, now))
-      return { chat, event, conversation, message: null, duplicate: true };
+      return { ...base, message: null, duplicate: true };
     let message: Row | null = null;
     if (conversation) {
       const answered =
@@ -113,7 +121,7 @@ export function createMessenger(o: MessengerOptions): Messenger {
     }
     if (parsed.ack !== undefined && channel.acknowledge)
       await channel.acknowledge(parsed.ack);
-    return { chat, event, conversation, message, duplicate: false };
+    return { ...base, message, duplicate: false };
   }
 
   return {

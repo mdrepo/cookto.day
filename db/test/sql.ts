@@ -23,7 +23,8 @@ export async function allow(sql: SQL): Promise<void> {
 
 /** Every row of every table, gone, for a fresh test. */
 export async function wipe(sql: SQL): Promise<void> {
-  await sql`truncate conversations, messages, outbox, seen_updates, links, link_requests`;
+  await sql`truncate conversations, messages, outbox, seen_updates, links, link_requests,
+    accounts, identities, sessions`;
 }
 
 /** A Call that runs `select fn(p_a => $1::type, ...)`. */

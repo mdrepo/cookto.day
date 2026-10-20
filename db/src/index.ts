@@ -1,7 +1,15 @@
 // The database, as the API sees it (ADR 0032): the functions the migrations
-// define, and the messenger's Store and the links built on them. How a
+// define, and the messenger's Store, the links and sign-in built on them. How a
 // function is reached, HTTPS from the Worker or a client in tests, is the
 // caller's `Call`.
+export {
+  type AuthStore,
+  type Claimed,
+  functionAuth,
+  type Sender,
+  type Session,
+  type Started,
+} from "./auth.js";
 export {
   type Call,
   type FunctionName,

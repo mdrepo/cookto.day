@@ -194,7 +194,8 @@ $$;
 
 -- Due rows, at most one per conversation, none for a conversation whose row
 -- someone still holds. The update re-checks its row after a lock, so two
--- claims at once never both take one (ADR 0031).
+-- claims at once never both take one (ADR 0031). Rows due at the same time
+-- go in the order their messages were added (seq), never by id.
 create function msg_outbox_claim(p_secret text, p_now timestamptz, p_until timestamptz)
 returns jsonb language sql security definer set search_path = public as $$
   select msg_check(p_secret);
@@ -202,18 +203,19 @@ returns jsonb language sql security definer set search_path = public as $$
     select conversation from outbox
     where locked_until is not null and locked_until > p_now
   ), picked as (
-    select distinct on (conversation) message from outbox
-    where next_try <= p_now and conversation not in (select conversation from held)
-    order by conversation, at, message
+    select distinct on (o.conversation) o.message, m.seq from outbox o
+    join messages m on m.id = o.message
+    where o.next_try <= p_now and o.conversation not in (select conversation from held)
+    order by o.conversation, o.at, m.seq
   ), taken as (
     update outbox o set locked_until = p_until
     from picked p
     where o.message = p.message and (o.locked_until is null or o.locked_until <= p_now)
-    returning o.message, o.conversation, o.attempts, o.at
+    returning o.message, o.conversation, o.attempts, o.at, p.seq
   )
   select coalesce(jsonb_agg(jsonb_build_object(
     'message', message, 'conversation', conversation, 'attempts', attempts
-  ) order by at, message), '[]'::jsonb) from taken
+  ) order by at, seq), '[]'::jsonb) from taken
 $$;
 
 create function msg_outbox_retry(

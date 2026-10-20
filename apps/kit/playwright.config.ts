@@ -38,11 +38,17 @@ export default defineConfig({
   // sometimes on a laptop: every test runs on all three (ADR 0021).
   projects: [
     { name: "mobile-chromium", use: { ...devices["Pixel 7"] } },
-    // Every iPhone browser is Safari's engine, WebKit (ADR 0021).
-    {
-      name: "iphone-webkit",
-      use: { ...devices["iPhone 15"], ...quietWebKit },
-    },
+    // The iPhone project runs only when asked (E2E_IOS=1): the owner tests on
+    // a real iPhone for now, since Playwright's WebKit kept failing on layout
+    // checks that passed everywhere else (ADR 0021, note of 20 Oct 2026).
+    ...(process.env.E2E_IOS
+      ? [
+          {
+            name: "iphone-webkit",
+            use: { ...devices["iPhone 15"], ...quietWebKit },
+          },
+        ]
+      : []),
     {
       name: "desktop-chromium",
       use: {

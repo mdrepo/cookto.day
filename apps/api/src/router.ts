@@ -1,4 +1,6 @@
 import { AUTH_ROUTES } from "./auth/routes.js";
+import { HOUSEHOLD_ROUTES } from "./household/routes.js";
+import { SYNC_ROUTES } from "./household/sync.js";
 import { json, problem } from "./http.js";
 import type { KeysReport } from "./keys.js";
 import type { MessengerDeps } from "./messenger/deps.js";
@@ -43,7 +45,12 @@ const ROUTES: Route[] = [
     matches: exact("/api/receipts/read"),
     answer: readReceipt,
   },
-  ...[...MESSENGER_ROUTES, ...AUTH_ROUTES].map((r) => ({
+  ...[
+    ...MESSENGER_ROUTES,
+    ...AUTH_ROUTES,
+    ...HOUSEHOLD_ROUTES,
+    ...SYNC_ROUTES,
+  ].map((r) => ({
     method: r.method,
     matches: (pathname: string) => matches(r, pathname),
     answer: (request: Request, deps: Deps) =>

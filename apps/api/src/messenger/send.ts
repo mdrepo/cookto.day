@@ -1,3 +1,4 @@
+import { accountOf } from "../auth/session.js";
 import { json, problem } from "../http.js";
 import {
   bearer,
@@ -9,6 +10,8 @@ import {
 
 // Sending (spec #207): the phone posts text for its cook, now or at a time,
 // and can cancel one still waiting. Text only, 2,000 characters, 20 a day.
+// Signed in, it goes to every cook of the household (spec #217); a phone
+// that never signed in still sends with its link's token.
 
 export const MAX_TEXT = 2_000;
 
@@ -48,31 +51,54 @@ async function sendBody(
   return { ok: true, body };
 }
 
+/** The conversations a send goes to, or why not. */
+async function recipients(
+  request: Request,
+  d: MessengerDeps,
+): Promise<
+  { ok: true; conversations: string[] } | { ok: false; response: Response }
+> {
+  const no = (status: number, error: string) =>
+    ({ ok: false, response: problem(status, error) }) as const;
+  const who = await accountOf(request, d);
+  if (who !== null) {
+    const cooks = await d.households.cooks(who.account, iso(d.now()));
+    if (cooks.ok) return cooks;
+    if (cooks.reason === "no-household") return no(403, "no-household");
+    return cooks.reason === "no-cook" ? no(409, "no-cook") : no(429, "limit");
+  }
+  const token = bearer(request);
+  if (token === null) return no(401, "token");
+  const allowed = await d.links.sendAllowed(await sha256(token), iso(d.now()));
+  if (!allowed.ok)
+    return allowed.reason === "gone" ? no(404, "gone") : no(429, "limit");
+  return { ok: true, conversations: [allowed.conversation] };
+}
+
 /** POST /api/messenger/send */
 export async function send(
   request: Request,
   d: MessengerDeps,
 ): Promise<Response> {
-  const token = bearer(request);
-  if (token === null) return problem(401, "token");
   const checked = await sendBody(request);
   if (!checked.ok) return problem(checked.status, checked.error);
-  const allowed = await d.links.sendAllowed(await sha256(token), iso(d.now()));
-  if (!allowed.ok)
-    return allowed.reason === "gone"
-      ? problem(404, "gone")
-      : problem(429, "limit");
+  const to = await recipients(request, d);
+  if (!to.ok) return to.response;
   const { text, at, context } = checked.body;
-  const id = await d.messenger.send(
-    allowed.conversation,
-    { kind: "text", text },
-    {
-      ...(at !== undefined && { at }),
-      ...(context !== undefined && { context, replaces: true }),
-    },
-  );
+  const ids: string[] = [];
+  for (const conversation of to.conversations)
+    ids.push(
+      await d.messenger.send(
+        conversation,
+        { kind: "text", text },
+        {
+          ...(at !== undefined && { at }),
+          ...(context !== undefined && { context, replaces: true }),
+        },
+      ),
+    );
   d.after(d.messenger.drain());
-  return json(202, { id });
+  return json(202, { id: ids[0], ids });
 }
 
 /** DELETE /api/messenger/send/{id}: a message still waiting is cancelled. */

@@ -4,11 +4,11 @@ import { iso, type MessengerDeps } from "./deps.js";
 import { WORDS } from "./words.js";
 
 // POST /api/messenger/telegram (spec #207): what the cook sends. The
-// messenger verifies and records; this decides. Four cases: Start with a
-// code connects her, or signs the planner in when the code is a sign-in's
-// (spec #216); /stop deletes everything; anything else is kept and answered
-// with the one line we have. A chat without a conversation gets a plain
-// reply through the channel, with nothing kept.
+// messenger verifies and records; this decides. Start with a code signs the
+// planner in (spec #216), joins the household by an invite (spec #217), or
+// connects the cook to a phone's link; /stop deletes everything; anything
+// else is kept and answered with the one line we have. A chat without a
+// conversation gets a plain reply through the channel, with nothing kept.
 
 const text = (t: string): Message => ({ kind: "text", text: t });
 
@@ -23,35 +23,58 @@ async function reply(d: MessengerDeps, conversation: string, t: string) {
   d.after(d.messenger.drain());
 }
 
-async function handle(d: MessengerDeps, got: Received): Promise<string> {
-  const { event, chat, conversation } = got;
-  const now = iso(d.now());
-  if (event.kind === "started") {
-    if (got.from !== undefined) {
-      const name = d.messenger.channel.name;
-      const signIn = await d.auth.start(event.code, name, got.from, now);
-      if (signIn.ok) {
-        await tell(d, chat, WORDS.signedIn);
-        return "signed-in";
-      }
-      if (signIn.reason === "bad") {
-        await tell(d, chat, WORDS.badCode);
-        return "bad-code";
-      }
+/** Start with a code: a sign-in's, an invite's, or a cook's link's. */
+async function started(
+  d: MessengerDeps,
+  got: Received,
+  code: string,
+  now: string,
+): Promise<string> {
+  const { chat } = got;
+  const name = d.messenger.channel.name;
+  if (got.from !== undefined) {
+    const signIn = await d.auth.start(code, name, got.from, now);
+    if (signIn.ok) {
+      await tell(d, chat, WORDS.signedIn);
+      return "signed-in";
     }
-    const connected = await d.links.connect(
-      event.code,
-      d.messenger.channel.name,
-      chat,
-      now,
-    );
-    if (!connected.ok) {
+    if (signIn.reason === "bad") {
       await tell(d, chat, WORDS.badCode);
       return "bad-code";
     }
-    await reply(d, connected.conversation.id, WORDS.connected);
-    return "connected";
   }
+  const invited = await d.households.startInvite(
+    code,
+    name,
+    chat,
+    got.from ?? null,
+    now,
+  );
+  if (invited.ok) {
+    if (invited.role === "cook") {
+      await reply(d, invited.conversation.id, WORDS.connected);
+      return "joined-cook";
+    }
+    await tell(d, chat, WORDS.joined);
+    return "joined";
+  }
+  if (invited.reason === "bad") {
+    await tell(d, chat, WORDS.badCode);
+    return "bad-code";
+  }
+  const connected = await d.links.connect(code, name, chat, now);
+  if (!connected.ok) {
+    await tell(d, chat, WORDS.badCode);
+    return "bad-code";
+  }
+  await reply(d, connected.conversation.id, WORDS.connected);
+  return "connected";
+}
+
+async function handle(d: MessengerDeps, got: Received): Promise<string> {
+  const { event, chat, conversation } = got;
+  const now = iso(d.now());
+  if (event.kind === "started") return started(d, got, event.code, now);
   if (event.kind === "stopped") {
     if (conversation === null) return "stranger";
     // The goodbye goes first: deleting the conversation takes its outbox.

@@ -1,4 +1,9 @@
-import { functionAuth, functionLinks, functionStore } from "@cookto/db";
+import {
+  functionAuth,
+  functionHouseholds,
+  functionLinks,
+  functionStore,
+} from "@cookto/db";
 import { createMessenger, telegram } from "@cookto/messenger";
 import { noSignInYet } from "./auth.js";
 import { type KeysReport, keysChecker } from "./keys.js";
@@ -64,6 +69,7 @@ function messengerOf(
       messenger,
       links: functionLinks(call, apiSecret),
       auth: functionAuth(call, apiSecret),
+      households: functionHouseholds(call, apiSecret),
       addressSecret: apiSecret,
       after: (work) => {
         ctx.waitUntil(work);
@@ -128,13 +134,15 @@ export default {
         ? Promise.all([
             m.deps.links.housekeeping(new Date(started).toISOString()),
             m.deps.auth.housekeeping(new Date(started).toISOString()),
-          ]).then(([gone, sessions]) => {
+            m.deps.households.housekeeping(new Date(started).toISOString()),
+          ]).then(([gone, sessions, changes]) => {
             log({
               route: "cron/housekeeping",
               status: 200,
               ms: now() - started,
               ...gone,
               ...sessions,
+              ...changes,
             });
           })
         : m.deps.messenger.drain().then((done) => {

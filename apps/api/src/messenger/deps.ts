@@ -1,4 +1,4 @@
-import type { AuthStore, Links } from "@cookto/db";
+import type { AuthStore, Households, Links } from "@cookto/db";
 import type { Messenger } from "@cookto/messenger";
 import type { LogEntry } from "../log.js";
 
@@ -11,6 +11,8 @@ export interface MessengerDeps {
   links: Links;
   /** Accounts, identities and sessions (spec #216). */
   auth: AuthStore;
+  /** Households, members, records and changes (spec #217). */
+  households: Households;
   /** Keys the address hash (ADR 0028); never stored, never the address. */
   addressSecret: string;
   /** Work to finish after the answer is sent (the drain). */

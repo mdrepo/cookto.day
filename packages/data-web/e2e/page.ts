@@ -7,7 +7,7 @@ import { indexedDbRecordStore } from "../src/index.js";
 const NAME = "cookto-e2e";
 
 export interface Call {
-  method: "get" | "all" | "put";
+  method: "get" | "all" | "put" | "clear";
   args: unknown[];
   aborted: boolean;
 }
@@ -22,6 +22,10 @@ async function answer({ method, args, aborted }: Call): Promise<Answer> {
   try {
     if (method === "put") {
       await store.put(collection, second as { id: string }[]);
+      return { ok: true, value: null };
+    }
+    if (method === "clear") {
+      await store.clear(collection);
       return { ok: true, value: null };
     }
     const value =

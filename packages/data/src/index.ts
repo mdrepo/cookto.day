@@ -39,7 +39,11 @@ export {
 export { createPantry, type KitchenItem, type NewItem } from "./pantry.js";
 export { createPlans, type PlannedMeal } from "./plans.js";
 export { createShopping, type ListItem } from "./shopping.js";
-export { memoryRecordStore, type RecordStore } from "./record-store.js";
+export {
+  type Clearable,
+  memoryRecordStore,
+  type RecordStore,
+} from "./record-store.js";
 export { type Cook, type PlanSent, type SignedIn } from "./settings-cook.js";
 export {
   createSaveProblems,
@@ -48,14 +52,10 @@ export {
   watchSaves,
 } from "./saves.js";
 export { type SyncRecord } from "./records.js";
-export {
-  createSync,
-  type Sync,
-  SYNC_KEY,
-  SYNC_TOPICS,
-  type SyncOptions,
-  type SyncOutcome,
-} from "./sync.js";
+// The sync engine's code is "@cookto/data/sync", its own entry, loaded only
+// when a phone that signed in syncs (specs/217). Its types are here.
+export type { Sync, SyncOptions, SyncOutcome } from "./sync.js";
+export { SYNC_TOPICS } from "./sync-topics.js";
 export {
   BEANS,
   ROLES,

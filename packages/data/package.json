@@ -12,7 +12,8 @@
     ".": "./src/index.ts",
     "./read": "./src/read.ts",
     "./write": "./src/write.ts",
-    "./network": "./src/network.ts"
+    "./network": "./src/network.ts",
+    "./sync": "./src/sync.ts"
   },
   "dependencies": {
     "@cookto/engine": "workspace:*"

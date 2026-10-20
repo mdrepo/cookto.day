@@ -26,3 +26,7 @@
 - The e2e run takes about three times as long as with one browser, still seconds.
 - Each developer installs WebKit once (`bunx playwright install webkit`); the pre-push hook says so if it's missing.
 - Playwright's WebKit is close to Safari, not the same. Revisit with a device cloud if real iPhones show bugs the tests don't.
+
+## Notes (2026-10-20)
+
+- **The iPhone project is off unless asked for** (`E2E_IOS=1`), in the pre-push hook and in the deploy. Playwright's WebKit failed three runs in one day on layout checks that passed on both Chromium projects and on a real iPhone: "lunch and dinner side by side", "every page starts at the same place", a tap on "Who cooks?". The owner tests on a real iPhone for now. What stays: every test still runs on an Android phone and a desktop; the iPhone project and its specs stay in the repo, and `E2E_IOS=1 bun run e2e` runs them. Revisit when the WebKit checks poll for the layout instead of reading it once.

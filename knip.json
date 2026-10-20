@@ -34,6 +34,10 @@
     "packages/messenger": {
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
+    "city": {
+      "entry": ["test/*.test.ts"],
+      "project": ["scripts/**/*.ts", "test/**/*.ts"]
+    },
     "db": {
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },

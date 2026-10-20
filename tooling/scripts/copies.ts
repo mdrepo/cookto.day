@@ -7,13 +7,14 @@
 //   bun run copies --max 0    fail on any copy
 //
 // A copy is 6 or more lines in a row that read the same once spaces are
-// tidied, in two places. No dependency: about 60 lines of our own.
+// tidied, in two places. No dependency: the finder is copies-lib.ts, which
+// the city (bun run city, city/) shares to pin each copy to its buildings.
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+import { findCopies, WINDOW } from "./copies-lib.js";
 
 const repo = join(import.meta.dir, "../..");
-const WINDOW = 6;
 const ROOTS = ["apps/web/src", "apps/kit/src", "apps/api/src", "packages"];
 const maxAt = process.argv.indexOf("--max");
 const max = maxAt >= 0 ? Number(process.argv[maxAt + 1]) : null;
@@ -28,40 +29,16 @@ function files(dir: string): string[] {
   });
 }
 
-/** A line as it reads: no spaces at the ends, nothing that's only noise. */
-const tidy = (line: string) => line.trim().replace(/\s+/g, " ");
-const noise = (line: string) =>
-  line === "" ||
-  /^[{}()[\];,]*$/.test(line) ||
-  line.startsWith("//") ||
-  line.startsWith("*") ||
-  line.startsWith("import ");
-
-const seen = new Map<string, { file: string; at: number }>();
-const copies = new Map<string, string>();
-for (const root of ROOTS)
-  for (const path of files(join(repo, root))) {
-    const lines = readFileSync(path, "utf8")
-      .split("\n")
-      .map((text, i) => ({ text: tidy(text), at: i + 1 }))
-      .filter((l) => !noise(l.text));
-    for (let i = 0; i + WINDOW <= lines.length; i++) {
-      const block = lines.slice(i, i + WINDOW);
-      const key = block.map((l) => l.text).join("\n");
-      const file = relative(repo, path);
-      const here = { file, at: block[0]?.at ?? 0 };
-      const first = seen.get(key);
-      if (first === undefined) seen.set(key, here);
-      else if (first.file !== file && !copies.has(`${first.file} ${file}`))
-        copies.set(
-          `${first.file} ${file}`,
-          `${first.file}:${first.at} = ${file}:${here.at}`,
-        );
-    }
-  }
-
-for (const where of copies.values()) console.log(`  copy  ${where}`);
-console.log(
-  `\ncopies: ${copies.size} pair(s) of files share ${WINDOW}+ lines.`,
+const copies = findCopies(
+  ROOTS.flatMap((root) => files(join(repo, root))).map((path) => ({
+    path: relative(repo, path),
+    text: readFileSync(path, "utf8"),
+  })),
 );
-if (max !== null && copies.size > max) process.exit(1);
+
+for (const { a, b } of copies)
+  console.log(`  copy  ${a.file}:${a.at} = ${b.file}:${b.at}`);
+console.log(
+  `\ncopies: ${copies.length} pair(s) of files share ${WINDOW}+ lines.`,
+);
+if (max !== null && copies.length > max) process.exit(1);

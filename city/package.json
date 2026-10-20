@@ -1,0 +1,10 @@
+{
+  "name": "@cookto/city",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The repo drawn as a night city, with its notice board: bun run city. A picture of the code, not part of the app; no CI task runs here, and its tests run by hand with `bun test city/test`.",
+  "scripts": {
+    "build": "bun scripts/city.ts"
+  }
+}

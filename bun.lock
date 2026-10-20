@@ -57,6 +57,10 @@
         "@cookto/testing": "workspace:*",
       },
     },
+    "city": {
+      "name": "@cookto/city",
+      "version": "0.0.0",
+    },
     "db": {
       "name": "@cookto/db",
       "version": "0.0.0",
@@ -153,6 +157,8 @@
     "@cloudflare/workers-types": ["@cloudflare/workers-types@5.20261009.1", "", {}, "sha512-Oa/7pS2upeCKG0lEvPSGHLK8B8sx3lPanEaXDlOj13H6HfZV5agBeHq5A1VtJj+/x9dXuMJpHTg7U7kTYt4xDA=="],
 
     "@cookto/api": ["@cookto/api@workspace:apps/api"],
+
+    "@cookto/city": ["@cookto/city@workspace:city"],
 
     "@cookto/data": ["@cookto/data@workspace:packages/data"],
 

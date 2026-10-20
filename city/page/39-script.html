@@ -1,0 +1,247 @@
+<script>
+  // ---------- The notice board ----------
+  // Gaps, copies and things to watch, from the scan (city-notices-lib.ts),
+  // plus the one check the page makes itself: roads that go the wrong way.
+  const WRONG = breaks.length
+    ? [
+        {
+          id: "wrongway",
+          kind: "gap",
+          title: "Roads that go the wrong way",
+          why: "ADR 0022: every road runs one way, from a feature down towards the engine, never between two features.",
+          items: breaks.map((k) => ({
+            text: `${nodes[E[k].s].label} → ${nodes[E[k].t].label}`,
+            ids: [nodes[E[k].s].id, nodes[E[k].t].id],
+            edge: k,
+          })),
+        },
+      ]
+    : [];
+  const NOTICES = [...WRONG, ...(G.notices || [])];
+  const posted = NOTICES.filter((g) => g.items.length);
+  const todo = posted.filter((g) => g.kind !== "watch");
+  const KINDS_N = { gap: "Gap", copy: "Copy", watch: "Watch" };
+  const idsOf = (ids) => (ids || []).map(byId).filter((i) => i != null);
+  const ghLink = (file, line) => G.github + file + (line ? `#L${line}` : "");
+
+  // Lights the buildings a notice (or one of its items) is about.
+  function showNotice(group, item) {
+    const items = item ? [item] : group.items;
+    const ids = idsOf(items.flatMap((it) => it.ids || []));
+    if (!ids.length && item?.file) {
+      open(ghLink(item.file, item.line), "_blank", "noopener");
+      return;
+    }
+    clearFocus();
+    state.pathFrom = -1;
+    state.sel = -1;
+    state.alarm = {
+      title: item ? item.text : group.title,
+      why: item ? `${group.title}. ${group.why}` : group.why,
+      file: item?.file,
+      line: item?.line,
+    };
+    ids.forEach((i) => {
+      showDistrict(blockOf[i].district);
+      lit[i] = 1;
+    });
+    items.forEach((it) => {
+      if (it.edge != null) litEdge[it.edge] = 2;
+    });
+    if (ids.some((i) => nodes[i].added > state.time)) setTime(lastCommit);
+    paint();
+    renderInspector();
+    fit();
+    touched();
+  }
+
+  // The left panel: districts or notices. Narrow screens open and close it.
+  function panel(name) {
+    const narrow = innerWidth <= 820;
+    const lg = $("legend"),
+      nt = $("notices");
+    if (narrow) {
+      const box = name === "notices" ? nt : lg;
+      const wasOpen = box.classList.contains("open");
+      lg.classList.remove("open");
+      nt.classList.remove("open");
+      lg.hidden = nt.hidden = false;
+      if (!wasOpen) box.classList.add("open");
+    } else {
+      lg.hidden = name === "notices";
+      nt.hidden = name !== "notices";
+    }
+    const shown = (el) =>
+      !el.hidden && (!narrow || el.classList.contains("open"));
+    $("legend-btn").setAttribute("aria-pressed", String(shown(lg)));
+    $("notices-btn").setAttribute("aria-pressed", String(shown(nt)));
+    requestAnimationFrame(measure);
+  }
+
+  function noticeRow(group, it) {
+    const row = el("div", { className: "ni " + group.kind });
+    const b = el("button", { type: "button", textContent: it.text });
+    b.onclick = () => showNotice(group, it);
+    row.append(b);
+    const n = idsOf(it.ids).length;
+    if (n) row.append(el("em", { textContent: n }));
+    if (it.file)
+      row.append(
+        el("a", {
+          className: "link",
+          href: ghLink(it.file, it.line),
+          target: "_blank",
+          rel: "noopener",
+          textContent: "↗",
+          title: "Open on GitHub",
+        }),
+      );
+    return row;
+  }
+
+  function renderWhatNow(box) {
+    const count = todo.reduce((s, g) => s + g.items.length, 0);
+    $("notices-n").textContent = count;
+    const now = el("div", {});
+    now.append(el("h2", { textContent: "What now" }));
+    const ol = el("ol", { className: "wn" });
+    for (const g of todo.slice(0, 5)) {
+      const b = el("button", { type: "button" });
+      b.append(
+        el("b", { textContent: `${g.items.length} ${g.title.toLowerCase()}` }),
+        el("span", { textContent: g.items[0].text }),
+      );
+      b.onclick = () => {
+        const d = box.querySelector(`[data-id="${g.id}"]`);
+        d.open = true;
+        d.scrollIntoView({ block: "start", behavior: "smooth" });
+        showNotice(g);
+      };
+      ol.append(el("li", {}, b));
+    }
+    if (!todo.length)
+      ol.append(
+        el("li", { textContent: "Nothing to do: no gaps, no copies." }),
+      );
+    now.append(ol);
+    const all = el("button", {
+      type: "button",
+      className: "btn",
+      textContent: "Light every building with a notice",
+    });
+    all.onclick = () =>
+      showNotice({
+        title: "Every building with a notice",
+        why: `${count} notices across the city. Click a building for its own.`,
+        items: todo.flatMap((g) => g.items),
+      });
+    now.append(all);
+    box.append(now);
+  }
+
+  function renderGroups(box) {
+    const groups = el("div", {});
+    groups.append(el("h2", { textContent: "Notices" }));
+    for (const g of NOTICES) {
+      const d = el("details", { className: "ng " + g.kind });
+      d.dataset.id = g.id;
+      const sum = el("summary", {});
+      sum.append(
+        el("span", { className: "k", textContent: KINDS_N[g.kind] }),
+        el("b", { textContent: g.title }),
+        el("em", { textContent: g.items.length }),
+      );
+      d.append(sum, el("p", { className: "why", textContent: g.why }));
+      if (!g.items.length)
+        d.append(el("p", { className: "why ok", textContent: "None found." }));
+      else {
+        if (g.items.some((it) => idsOf(it.ids).length)) {
+          const show = el("button", {
+            type: "button",
+            className: "btn",
+            textContent: "Show all on the map",
+          });
+          show.onclick = () => showNotice(g);
+          d.append(show);
+        }
+        const list = el("div", { className: "nis" });
+        g.items.forEach((it) => list.append(noticeRow(g, it)));
+        d.append(list);
+      }
+      groups.append(d);
+    }
+    box.append(groups);
+  }
+
+  function renderLaws(box) {
+    const wrap = el("div", {});
+    const beats = G.rules.filter((r) => !r.guarded).length;
+    wrap.append(
+      el("h2", { textContent: "Statute book" }),
+      el("p", {
+        className: "why",
+        textContent: `${G.rules.length} rules in AGENTS.md. Each has an inspector, except the ${beats} marked: those hold only as long as the owner keeps reading.`,
+      }),
+    );
+    for (const r of G.rules) {
+      const row = el("div", { className: "law" + (r.guarded ? "" : " beat") });
+      row.append(
+        el("b", { textContent: r.title }),
+        el("small", {
+          textContent:
+            (r.guarded ? "Enforced by " : "Only you watch this: ") + r.enforced,
+        }),
+      );
+      wrap.append(row);
+    }
+    box.append(wrap);
+  }
+
+  function renderWalks(box) {
+    const wrap = el("div", {});
+    const tests = G.walks.reduce((s, w) => s + w.tests, 0),
+      bugs = G.walks.reduce((s, w) => s + w.bugs, 0);
+    wrap.append(
+      el("h2", { textContent: "Walks" }),
+      el("p", {
+        className: "why",
+        textContent: `${G.walks.length} walks through the streets, ${tests} tests between them, ${bugs ? `${bugs} cordoned off as known bugs` : "none cordoned off"}. Each is an e2e test named in a person's words. Click one to light the screens it reaches.`,
+      }),
+    );
+    const list = el("div", { className: "chips" });
+    for (const w of G.walks
+      .slice()
+      .sort((a, b) => a.name.localeCompare(b.name))) {
+      const ids = nodes
+        .filter((n) => n.info?.walks?.includes(w.name))
+        .map((n) => n.id);
+      const c = el("button", {
+        type: "button",
+        className: "chip" + (ids.length ? "" : " more"),
+        title: `${w.tests} tests · ${w.file}`,
+      });
+      c.append(w.name, el("em", { textContent: ids.length || "–" }));
+      c.onclick = () =>
+        showNotice({
+          title: `The walk “${w.name}”`,
+          why: `${w.tests} tests in ${w.file}. Lit: the screens it reaches.`,
+          items: [{ ids, file: w.file }],
+        });
+      list.append(c);
+    }
+    wrap.append(list);
+    box.append(wrap);
+  }
+
+  function renderNotices() {
+    const box = $("notices");
+    box.replaceChildren();
+    renderWhatNow(box);
+    renderGroups(box);
+    renderLaws(box);
+    renderWalks(box);
+  }
+  $("legend-btn").onclick = () => panel("districts");
+  $("notices-btn").onclick = () => panel("notices");
+  renderNotices();
+</script>

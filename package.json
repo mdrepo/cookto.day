@@ -25,7 +25,7 @@
     "packs:bundle": "bun tooling/scripts/packs-bundle.ts",
     "packs:refresh": "bun tooling/scripts/packs-refresh.ts",
     "words:check": "bun tooling/scripts/check-words.ts",
-    "city": "bun tooling/scripts/city.ts",
+    "city": "bun city/scripts/city.ts",
     "copies": "bun tooling/scripts/copies.ts",
     "tokens": "bun tooling/scripts/tokens.ts",
     "new": "bun tooling/scripts/new.ts",
@@ -57,6 +57,7 @@
   "workspaces": [
     "apps/*",
     "packages/*",
+    "city",
     "db",
     "tooling"
   ],

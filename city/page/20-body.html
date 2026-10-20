@@ -16,8 +16,17 @@
       <p id="stats"></p>
     </div>
     <div class="tools">
-      <button type="button" class="btn" id="legend-btn" aria-expanded="false">
+      <button type="button" class="btn" id="legend-btn" aria-pressed="true">
         Districts
+      </button>
+      <button
+        type="button"
+        class="btn"
+        id="notices-btn"
+        aria-pressed="false"
+        title="Gaps, copies and what to do first"
+      >
+        Notices <em id="notices-n"></em>
       </button>
       <button
         type="button"
@@ -71,6 +80,13 @@
       <div class="check" id="check"></div>
     </div>
   </aside>
+
+  <aside
+    class="legend notices glass"
+    id="notices"
+    hidden
+    aria-label="Notices: gaps, copies and what to do first"
+  ></aside>
 
   <section class="insp glass" id="insp" hidden aria-live="polite"></section>
 

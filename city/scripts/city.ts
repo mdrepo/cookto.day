@@ -2,6 +2,7 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { buildGraph, parseHistory } from "./city-graph-lib.js";
+import { board } from "./city-notices-lib.js";
 
 // bun run city: draws the repo as a night city, every file a building, into
 // .build/city/index.html (open it in a browser), with graph.json beside it.
@@ -9,10 +10,15 @@ import { buildGraph, parseHistory } from "./city-graph-lib.js";
 // design kit, the works (use cases, data, engine), the pack warehouses and
 // the API Worker's port stand behind. Click a building for what it is, in
 // plain words, with its functions, specs and a link to the file on GitHub.
-// The page's parts live in tooling/city/, stitched in name order, with the
-// graph put in at __GRAPH__. Pass --out <dir> to write somewhere else.
+// A notice board lists the gaps and copies the scan found (city-notices-lib)
+// and what to do first; the statute book lists AGENTS.md's rules and who
+// enforces each. The page's parts live in tooling/city/, stitched in name
+// order, with the graph put in at __GRAPH__. Pass --out <dir> to write
+// somewhere else.
 
-const PARTS = "tooling/city";
+// Runs from the repo root wherever it was started: paths are repo-relative.
+process.chdir(join(import.meta.dir, "../.."));
+const PARTS = "city/page";
 const GITHUB = "https://github.com/mdrepo/cookto.day/blob/main/";
 
 const outAt = process.argv.indexOf("--out");
@@ -37,6 +43,12 @@ const graph = buildGraph({
   history,
 });
 
+const notices = board(graph, {
+  files,
+  read: (p) => readFileSync(p, "utf8"),
+  history,
+});
+
 const head = history.commits[history.commits.length - 1];
 const data = {
   repo: "cookto.day",
@@ -45,6 +57,7 @@ const data = {
   head,
   commits: history.commits.map((c) => [c.d, c.m.slice(0, 90)]),
   ...graph,
+  ...notices,
 };
 const page = readdirSync(PARTS)
   .filter((f) => f.endsWith(".html"))
@@ -60,10 +73,11 @@ writeFileSync(join(out, "index.html"), page);
 
 const by: Record<string, number> = {};
 for (const n of graph.nodes) by[n.layer] = (by[n.layer] ?? 0) + 1;
+const posted = notices.notices.filter((n) => n.items.length);
 console.log(
   `City: ${graph.nodes.length} buildings (${Object.entries(by)
     .map(([k, v]) => `${k} ${v}`)
     .join(
       ", ",
-    )}), ${graph.edges.length} roads, ${history.commits.length} commits at ${head?.h ?? "?"}. Open ${join(out, "index.html")}`,
+    )}), ${graph.edges.length} roads, ${history.commits.length} commits at ${head?.h ?? "?"}.\nNotices: ${posted.map((n) => `${n.title.toLowerCase()} ${n.items.length}`).join(", ")}. Open ${join(out, "index.html")}`,
 );

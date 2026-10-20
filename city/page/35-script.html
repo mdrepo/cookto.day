@@ -151,15 +151,33 @@
       select(-1);
     };
     if (state.alarm) {
+      const a = state.alarm;
       box.append(
         el(
           "div",
           { className: "insp-head" },
-          el("h2", { textContent: "Roads that go the wrong way" }),
+          el("h2", { textContent: a.title }),
           close,
         ),
-        chipList([...new Set(breaks.flatMap((k) => [E[k].s, E[k].t]))]),
       );
+      if (a.why) box.append(el("p", { className: "what", textContent: a.why }));
+      if (a.file)
+        box.append(
+          el(
+            "div",
+            {},
+            el("a", {
+              className: "open",
+              href: G.github + a.file + (a.line ? `#L${a.line}` : ""),
+              target: "_blank",
+              rel: "noopener",
+              textContent: "Open on GitHub ↗",
+            }),
+          ),
+        );
+      const ids = [];
+      for (let j = 0; j < N; j++) if (lit[j]) ids.push(j);
+      box.append(chipList(ids.sort(byName), 40));
       return;
     }
     const n = nodes[i],
@@ -227,6 +245,7 @@
     renderInside(box, n, repoPath);
     renderTrace(box, n);
     renderFacts(box, n, i);
+    renderExtra(box, n, i);
   }
 
   // The functions a file declares, with their comments, and what it passes on.

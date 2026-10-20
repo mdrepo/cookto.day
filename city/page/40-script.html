@@ -1,0 +1,71 @@
+<script>
+  // Extra facts on a building's card: listed, walked by, brought in from
+  // abroad, and the notices pinned to it.
+  function renderExtra(box, n, i) {
+    if (n.info?.listed)
+      box.append(
+        el("p", {
+          className: "plaque",
+          textContent:
+            "Listed building: a change here needs the owner's seal (CODEOWNERS).",
+        }),
+      );
+    if (n.info?.walks?.length) {
+      const ch = el("div", { className: "chips" });
+      for (const name of n.info.walks) {
+        const w = G.walks.find((x) => x.name === name);
+        ch.append(
+          el("a", {
+            className: "chip",
+            href: G.github + (w?.file ?? ""),
+            target: "_blank",
+            rel: "noopener",
+            textContent: name,
+            title: w ? `${w.tests} tests · ${w.file}` : "",
+          }),
+        );
+      }
+      box.append(el("h3", { textContent: "Walked by" }), ch);
+    } else if (n.layer === "screens" && n.group !== "app shell")
+      box.append(
+        el("h3", { textContent: "Walked by" }),
+        el("p", {
+          className: "note",
+          textContent: "No walk reaches this screen.",
+        }),
+      );
+    if (n.info?.abroad?.length) {
+      const p = el("p", { className: "passes" });
+      n.info.abroad.forEach((pk, k) => {
+        if (k) p.append(", ");
+        p.append(el("code", { textContent: pk }));
+      });
+      box.append(el("h3", { textContent: "Brings in from abroad" }), p);
+    }
+    const mine = [];
+    for (const g of NOTICES)
+      if (g.id !== "abroad")
+        for (const it of g.items)
+          if (idsOf(it.ids).includes(i)) mine.push([g, it]);
+    if (mine.length) {
+      const list = el("div", { className: "nis" });
+      for (const [g, it] of mine) {
+        const row = el("div", { className: "ni " + g.kind });
+        const b = el("button", { type: "button" });
+        b.append(el("span", { className: "k", textContent: g.title }), it.text);
+        b.onclick = () => {
+          panel("notices");
+          showNotice(g, it);
+        };
+        row.append(b);
+        list.append(row);
+      }
+      box.append(
+        el("h3", {
+          textContent: `${plural(mine.length, "notice")} on this building`,
+        }),
+        list,
+      );
+    }
+  }
+</script>

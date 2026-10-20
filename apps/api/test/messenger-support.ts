@@ -9,6 +9,7 @@ import {
 import type { LogEntry } from "../src/log.js";
 import type { MessengerDeps } from "../src/messenger/deps.js";
 import { type FakeAuth, fakeAuth } from "./auth-support.js";
+import { type FakeHouseholds, fakeHouseholds } from "./household-support.js";
 
 // What the messenger's route tests share (spec #207): the package's fake
 // channel and memory store, and links kept in memory the way the database's
@@ -123,6 +124,8 @@ export interface Harness {
   deps: MessengerDeps;
   /** Sign-in in memory (spec #216): accounts, identities, sessions. */
   auth: FakeAuth;
+  /** Households in memory (spec #217): members, records, changes. */
+  households: FakeHouseholds;
   channel: FakeChannel;
   store: Store;
   logged: LogEntry[];
@@ -143,10 +146,13 @@ export function harness(start = T0): Harness {
   const pending: Promise<unknown>[] = [];
   const logged: LogEntry[] = [];
   const auth = fakeAuth();
+  const links = fakeLinks(store);
+  const households = fakeHouseholds(store, auth, links);
   const deps: MessengerDeps = {
     messenger,
-    links: fakeLinks(store).links,
+    links: links.links,
     auth: auth.auth,
+    households: households.households,
     addressSecret: "address-secret-for-tests",
     after: (work) => {
       pending.push(work);
@@ -159,6 +165,7 @@ export function harness(start = T0): Harness {
   return {
     deps,
     auth,
+    households,
     channel,
     store,
     logged,

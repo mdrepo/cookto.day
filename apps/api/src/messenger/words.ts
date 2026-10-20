@@ -6,6 +6,8 @@ export const WORDS = {
     "Connected. I'll send you tomorrow's plan each evening. What we send each other is kept for 90 days. Send /stop any time to stop, and it's all deleted.",
   badCode: "That code didn't work. Ask for a new one in the app.",
   signedIn: "Signed in. Go back to the app.",
+  joined: "You're in. Sign in on your phone to see the plan.",
+  removed: "You've been removed. Nothing more will come from me.",
   stopped: "Stopped and deleted. Nothing more will come from me.",
   cantRead: "I can't read replies yet. Tomorrow's plan comes from the app.",
 } as const;

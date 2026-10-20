@@ -12,12 +12,19 @@ export { memoryKeyValue, type KeyValue } from "./kv.js";
 export type {
   Api,
   ApiOptions,
+  Change,
+  HouseholdApi,
+  HouseholdView,
   LinkMade,
+  MemberRow,
+  Pulled,
+  PushedRecord,
   LinkState,
   Send,
   SendRequest,
   SignInApi,
   SignInStatus,
+  SyncApi,
 } from "./network.js";
 export {
   type AppPack,
@@ -41,6 +48,14 @@ export {
   watchSaves,
 } from "./saves.js";
 export { type SyncRecord } from "./records.js";
+export {
+  createSync,
+  type Sync,
+  SYNC_KEY,
+  SYNC_TOPICS,
+  type SyncOptions,
+  type SyncOutcome,
+} from "./sync.js";
 export {
   BEANS,
   ROLES,

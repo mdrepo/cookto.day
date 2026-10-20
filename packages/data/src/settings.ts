@@ -1,5 +1,13 @@
 import { createStore, type StoreApi } from "zustand/vanilla";
 import type { KeyValue } from "./kv.js";
+import {
+  type Cook,
+  type CookWriter,
+  readCook,
+  readSignedIn,
+  type SignedIn,
+  type SignInWriter,
+} from "./settings-cook.js";
 
 // App-wide settings (ADR 0023): one Zustand store, read by screen hooks
 // through selectors, and written only by use cases (ADR 0022).
@@ -16,27 +24,6 @@ export type Beans = (typeof BEANS)[number];
 export const ROLES = ["cook", "plan"] as const;
 export type Role = (typeof ROLES)[number];
 
-/** Tomorrow's plan as it last went to the cook, or waits to (specs/207). */
-export interface PlanSent {
-  on: string;
-  text: string;
-  /** When it was sent, or when it will be. */
-  at: string;
-  /** The API's id of a message still waiting, so it can be cancelled. */
-  id: string | null;
-}
-
-/** The cook's Telegram, connected from this phone (specs/207). */
-export interface Cook {
-  /** The link's token: the only thing that lets this phone send. */
-  token: string;
-  connectedAt: string;
-  /** The plan last sent to her. */
-  sent: PlanSent | null;
-  /** The plan waiting to go at 9 pm. */
-  scheduled: PlanSent | null;
-}
-
 export interface Settings {
   language: string;
   theme: Theme;
@@ -47,6 +34,8 @@ export interface Settings {
   sorted: string | null;
   /** The cook's Telegram, once connected, and what went to her (specs/207). */
   cook: Cook | null;
+  /** Signed in with Telegram (specs/216), or not. */
+  signedIn: SignedIn | null;
   /** Where the household lives: its currency and shops (ADR 0026). */
   country: string;
   /** Whether onboarding is done or skipped: it's asked once (specs/65). */
@@ -91,11 +80,6 @@ export interface WhoCooksWriter {
   setSorted(on: string): void;
 }
 
-/** The cook's Telegram and what went to her (specs/207), for its use cases. */
-export interface CookWriter {
-  setCook(cook: Cook | null): void;
-}
-
 /** Dried or tinned beans (specs/144), for its use case only. */
 export interface BeansWriter {
   setBeans(beans: Beans): void;
@@ -119,22 +103,9 @@ const ROLE_KEY = "cookto.day:role";
 const SORTED_KEY = "cookto.day:sorted";
 const ONBOARDED = "cookto.day:onboarded";
 const KITCHEN = "cookto.day:kitchen";
+const SIGNED_IN_KEY = "cookto.day:signedIn";
 const MOVES = "cookto.day:moves";
 const COOK_KEY = "cookto.day:cook";
-
-const isString = (v: unknown): v is string => typeof v === "string";
-
-/** The saved cook, or none when missing or not what we saved. */
-function readCook(text: string | null): Cook | null {
-  try {
-    const v = JSON.parse(text ?? "null") as Cook | null;
-    if (!v || !isString(v.token) || !isString(v.connectedAt)) return null;
-    const plan = (p: PlanSent | null) => (isString(p?.text) ? p : null);
-    return { ...v, sent: plan(v.sent), scheduled: plan(v.scheduled) };
-  } catch {
-    return null;
-  }
-}
 
 const strings = (v: unknown): v is string[] =>
   Array.isArray(v) && v.every((s) => typeof s === "string");
@@ -223,6 +194,7 @@ function startingState(
     role: ROLES.find((r) => r === savedRole) ?? "cook",
     sorted: read(kv, SORTED_KEY),
     cook: readCook(read(kv, COOK_KEY)),
+    signedIn: readSignedIn(read(kv, SIGNED_IN_KEY)),
     country:
       savedCountry !== null && knowsCountry(savedCountry)
         ? savedCountry
@@ -242,7 +214,8 @@ export function createSettings(
     ThemeWriter &
     BeansWriter &
     WhoCooksWriter &
-    CookWriter;
+    CookWriter &
+    SignInWriter;
 } {
   const speaks = (language: string) => options.languages.includes(language);
   const knowsCountry = (country: string) => options.countries.includes(country);
@@ -276,6 +249,10 @@ export function createSettings(
       setCook(cook) {
         store.setState({ cook });
         write(kv, COOK_KEY, JSON.stringify(cook));
+      },
+      setSignedIn(signedIn) {
+        store.setState({ signedIn });
+        write(kv, SIGNED_IN_KEY, JSON.stringify(signedIn));
       },
       knowsCountry,
       setCountry(country) {

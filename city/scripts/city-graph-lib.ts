@@ -220,6 +220,7 @@ function dishBuildings(repo: Repo, { nodes, edges, when }: City): void {
           servedWith: dish.servedWith,
           steps: dish.steps?.length,
           ingredients: ingredients.length,
+          needs: ingredients,
           note: dish.note,
         },
       });

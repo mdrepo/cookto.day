@@ -28,18 +28,7 @@
       className: "btn",
       textContent: "Show them",
     });
-    b.onclick = () => {
-      clearFocus();
-      state.sel = -1;
-      state.alarm = true;
-      breaks.forEach((k) => {
-        litEdge[k] = 2;
-        lit[E[k].s] = lit[E[k].t] = 1;
-      });
-      paint();
-      renderInspector();
-      fit();
-    };
+    b.onclick = () => showNotice(WRONG[0]);
     c.replaceChildren(
       el("strong", { textContent: `${breaks.length} roads go the wrong way` }),
       b,
@@ -213,10 +202,6 @@
     state.pathFrom = -1;
     select(-1, false);
     fit();
-  };
-  $("legend-btn").onclick = (e) => {
-    const open = $("legend").classList.toggle("open");
-    e.currentTarget.setAttribute("aria-expanded", String(open));
   };
   $("window").onchange = (e) => {
     state.window = +e.target.value;

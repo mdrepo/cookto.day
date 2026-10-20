@@ -137,10 +137,12 @@ test.describe("Connect the cook", () => {
     expect(api.sends.at(-1)?.text).toContain(name);
   });
 
-  test("not connected, nothing changes", async ({ page }) => {
+  test("not connected: nothing goes, and Settings offers the link", async ({
+    page,
+  }) => {
     await planner(page);
     const api = await fakeApi(page);
-    await evening(page);
+    const k = await evening(page);
     const tm = tomorrow(page);
     await tm.getByRole("button", { name: "Looks good" }).click();
     await expect(tm).toContainText("Tomorrow's sorted");
@@ -151,6 +153,8 @@ test.describe("Connect the cook", () => {
     await expect(tm).not.toContainText("Sent to");
     await expect(tm).not.toContainText("Goes to");
     expect(api.sends).toEqual([]);
+    await k.settings();
+    await expect(k.button("Connect the cook's Telegram")).toBeVisible();
   });
 
   test("disconnect, and the cook leaving", async ({ page }) => {

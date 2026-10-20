@@ -95,11 +95,17 @@ const notice = (id: string) =>
 describe("the statute book", () => {
   test("each rule, with its enforcer, and whether a script guards it", () => {
     expect(rules(files["AGENTS.md"] ?? "")).toEqual([
-      { title: "Small files", enforced: "`size:check`", guarded: true },
+      {
+        title: "Small files",
+        enforced: "`size:check`",
+        guarded: true,
+        adrs: [],
+      },
       {
         title: "No mocks",
         enforced: "the owner reads it; ESLint bans `.only`",
         guarded: false,
+        adrs: [],
       },
     ]);
   });

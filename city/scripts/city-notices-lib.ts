@@ -1,3 +1,10 @@
+import {
+  adrs,
+  proposals,
+  uncited,
+  type Adr,
+  type Proposal,
+} from "./city-book-lib.js";
 import { copies, dishTwins, signs, twins } from "./city-dups-lib.js";
 import {
   beats,
@@ -11,8 +18,23 @@ import {
   type Rule,
   type Walk,
 } from "./city-gaps-lib.js";
-import type { CityEdge, CityNode, Repo } from "./city-graph-lib.js";
+import {
+  packageExports,
+  type CityEdge,
+  type CityNode,
+  type Repo,
+} from "./city-graph-lib.js";
+import { wayIn } from "./city-screens-lib.js";
 import { decorate, guests, junctions } from "./city-watch-lib.js";
+import {
+  deadEnds,
+  markDoors,
+  onlyInspectors,
+  topics,
+  trespasses,
+  uninspected,
+  type Topic,
+} from "./city-works-lib.js";
 
 // The city's notice board (bun run city): every gap, copy and thing to watch
 // the scan found, in the order worth acting on. The page lists them, pins
@@ -22,6 +44,9 @@ export interface Board {
   notices: Notice[];
   rules: Rule[];
   walks: Walk[];
+  adrs: Adr[];
+  proposals: Proposal[];
+  topics: Topic[];
 }
 
 const EN = "apps/web/src/i18n/en.ts";
@@ -31,8 +56,20 @@ const readOr = (repo: Repo, file: string) =>
   repo.files.includes(file) ? repo.read(file) : "";
 
 /** The gaps: what the repo is missing, in the order worth acting on. */
-function gaps(nodes: CityNode[], repo: Repo): Notice[] {
+function gaps(
+  nodes: CityNode[],
+  edges: CityEdge[],
+  repo: Repo,
+  doors: Record<string, string>,
+): Notice[] {
   return [
+    {
+      id: "door",
+      kind: "gap",
+      title: "Roads not through a door",
+      why: "A package's doors are the files its package.json exports name. A road from outside that enters anywhere else bypasses the contract.",
+      items: trespasses(nodes, edges, doors),
+    },
     {
       id: "shelf",
       kind: "gap",
@@ -60,6 +97,13 @@ function gaps(nodes: CityNode[], repo: Repo): Notice[] {
       title: "Near the zoning cap",
       why: "Within 15% of the 150 or 300 line limit. The next change here will need a split; plan it rather than squeeze it.",
       items: nearCap(nodes),
+    },
+    {
+      id: "inspect",
+      kind: "gap",
+      title: "Uninspected buildings",
+      why: "An engine, use case, data or API file with no unit test file of its own. Walks cover the screens; nothing covers these.",
+      items: uninspected(nodes, repo.files),
     },
   ];
 }
@@ -95,6 +139,13 @@ function copiesTwice(nodes: CityNode[], repo: Repo): Notice[] {
       why: "One slug or one ingredient set in two packs.",
       items: dishTwins(nodes),
     },
+    {
+      id: "testdoor",
+      kind: "copy",
+      title: "Offered only to the inspectors",
+      why: "An exported function that only test files import: a door cut for the inspectors, not for the street. Test it through what the street uses, or stop exporting it.",
+      items: onlyInspectors(nodes, repo),
+    },
   ];
 }
 
@@ -104,8 +155,23 @@ function watchList(
   edges: CityEdge[],
   repo: Repo,
   allRules: Rule[],
+  allAdrs: Adr[],
 ): Notice[] {
   return [
+    {
+      id: "deadend",
+      kind: "watch",
+      title: "Dead ends",
+      why: "A building with no roads in or out: an entry point the app starts from, or something forgotten.",
+      items: deadEnds(nodes, edges),
+    },
+    {
+      id: "adr",
+      kind: "watch",
+      title: "Decisions nothing cites",
+      why: "An accepted ADR that no rule, code file, spec, proposal or other ADR points at. Either the ground everything stands on, or forgotten.",
+      items: uncited(allAdrs, nodes, repo),
+    },
     {
       id: "beat",
       kind: "watch",
@@ -130,22 +196,33 @@ function watchList(
   ];
 }
 
-/** Builds the board and marks each building with its extra facts. */
+/**
+ * Builds the board and marks each building with its extra facts. `en` is
+ * the English words (apps/web/src/i18n/en.ts), for what each screen shows.
+ */
 export function board(
   graph: { nodes: CityNode[]; edges: CityEdge[] },
   repo: Repo,
+  en: Record<string, unknown> = {},
 ): Board {
   const { nodes, edges } = graph;
   const allWalks = walks(repo);
   const allRules = rules(readOr(repo, "AGENTS.md"));
+  const allAdrs = adrs(repo);
+  const doors = packageExports(repo);
   decorate(nodes, repo, allWalks);
+  markDoors(nodes, doors);
+  wayIn(nodes, edges, repo, en);
   return {
     notices: [
-      ...gaps(nodes, repo),
+      ...gaps(nodes, edges, repo, doors),
       ...copiesTwice(nodes, repo),
-      ...watchList(nodes, edges, repo, allRules),
+      ...watchList(nodes, edges, repo, allRules, allAdrs),
     ],
     rules: allRules,
     walks: allWalks,
+    adrs: allAdrs,
+    proposals: proposals(repo),
+    topics: topics(nodes),
   };
 }

@@ -33,6 +33,12 @@ test.describe("Connect the cook", () => {
       page.getByRole("status", { name: "The cook's Telegram" }),
     ).toHaveText("KM7Q-4HTX");
     await expect(k.button("Send the link")).toBeVisible();
+    // The cook scans the planner's phone: the QR shows on every screen.
+    await expect(
+      page
+        .getByRole("dialog")
+        .getByRole("img", { name: "QR code of the link" }),
+    ).toBeVisible();
     await expect(page.getByText("Waiting for the cook")).toBeVisible();
     await k.press("Send the link");
     expect(await shared(page)).toEqual([

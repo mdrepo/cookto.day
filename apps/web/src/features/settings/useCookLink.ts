@@ -7,13 +7,17 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "zustand";
 import { useRole } from "../../food.js";
+import { fill } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
 import { api, now, settings } from "../../platform.js";
 import { send as share } from "../../share.js";
+import { useQr } from "./useQr.js";
 
-// Connect the cook's Telegram (specs/207), on a phone that plans: one line
-// about Telegram, then a code to send her, polled every 3 seconds until she
-// has pressed Start, or the code ran out.
+// Connect the cook's Telegram (specs/207), on a phone that plans: a sheet
+// with one line about Telegram, then a code to send her, polled every 3
+// seconds until she has pressed Start, or the code ran out. The link is a
+// QR code too, on every screen: she scans the planner's phone (the owner's
+// design, 20 Oct).
 
 /** The bot she presses Start on; its link carries the code. */
 export const BOT = "cookto_day_bot";
@@ -30,16 +34,9 @@ type Step =
 
 const deps = async () => ({ api: await api(), settings: settings.writer });
 
-export function useCookLink() {
-  const { t } = useWords();
-  const role = useRole();
-  const cook = useStore(settings.store, (s) => s.cook);
-  const [step, setStep] = useState<Step>({ kind: "idle" });
-  const [busy, setBusy] = useState(false);
-  const made = step.kind === "code" ? step.made : null;
+/** While the code shows, ask every few seconds whether she has connected. */
+function useCookPoll(made: LinkMade | null, setStep: (step: Step) => void) {
   const stop = useRef(false);
-
-  // While the code shows, ask whether she has connected.
   useEffect(() => {
     if (made === null) return;
     stop.current = false;
@@ -57,7 +54,19 @@ export function useCookLink() {
       stop.current = true;
       clearInterval(timer);
     };
-  }, [made]);
+  }, [made, setStep]);
+}
+
+export function useCookLink() {
+  const { t } = useWords();
+  const role = useRole();
+  const cook = useStore(settings.store, (s) => s.cook);
+  const [step, setStep] = useState<Step>({ kind: "idle" });
+  const [busy, setBusy] = useState(false);
+  const made = step.kind === "code" ? step.made : null;
+  const link = made === null ? null : `https://t.me/${BOT}?start=${made.code}`;
+  const qr = useQr(link, true);
+  useCookPoll(made, setStep);
 
   const ask = () => {
     setBusy(true);
@@ -81,7 +90,14 @@ export function useCookLink() {
     connectedWords: t.connected,
     step,
     busy,
+    closeLabel: t.close,
+    close: () => {
+      setStep({ kind: "idle" });
+    },
     code: made === null ? null : spaced(made.code),
+    qr,
+    qrLabel: t.qrCode,
+    startLine: made === null ? "" : fill(t.orSendStart, { code: made.code }),
     privacyLine: t.cookPrivacyLine,
     start: {
       label: t.connectCook,
@@ -93,7 +109,7 @@ export function useCookLink() {
     sendLink: {
       label: t.sendTheLink,
       run: () => {
-        if (made !== null) void share(`https://t.me/${BOT}?start=${made.code}`);
+        if (link !== null) void share(link);
       },
     },
     waiting: t.waitingForCook,

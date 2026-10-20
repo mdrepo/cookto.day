@@ -92,6 +92,8 @@ export const words = {
     sampleBody: "Pretend food, so you can look around.",
     chooseWhatYouCook: "Choose what you cook",
     clearSample: "Clear the sample",
+    account: "Account",
+    qrCode: "QR code of the link",
   },
   ar: {
     language: "اللغة",
@@ -161,6 +163,8 @@ export const words = {
     sampleBody: "طعام للتجربة، لتتعرّف على التطبيق.",
     chooseWhatYouCook: "اختر ما تطبخه",
     clearSample: "احذف المطبخ التجريبي",
+    account: "الحساب",
+    qrCode: "رمز QR للرابط",
   },
 } satisfies Record<KitLanguage, Record<string, string>>;
 

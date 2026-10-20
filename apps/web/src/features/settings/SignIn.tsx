@@ -1,7 +1,7 @@
 import {
   Button,
   Cluster,
-  LinkOut,
+  JoinCode,
   Note,
   Section,
   Sheet,
@@ -10,9 +10,77 @@ import {
 } from "@cookto/ui";
 import { useSignIn } from "./useSignIn.js";
 
+type SignInState = ReturnType<typeof useSignIn>;
+
+/** The sheet's steps: the line about what's kept, the code, or it ran out. */
+function SignInSteps({ s }: { s: SignInState }) {
+  if (s.step.kind === "explain")
+    return (
+      <>
+        <p>{s.privacyLine}</p>
+        <Cluster>
+          <Button onClick={s.go.run} busy={s.busy}>
+            {s.go.label}
+          </Button>
+        </Cluster>
+      </>
+    );
+  if (s.step.kind === "code")
+    return (
+      <>
+        <JoinCode
+          code={s.code ?? ""}
+          label={s.title}
+          qr={s.qr}
+          qrLabel={s.qrLabel}
+        />
+        <Cluster>
+          <Button onClick={s.openTelegram.run}>{s.openTelegram.label}</Button>
+        </Cluster>
+        <p>{s.startLine}</p>
+        <Note>{s.waiting}</Note>
+      </>
+    );
+  return (
+    <>
+      <Note>{s.ranOut}</Note>
+      <Cluster>
+        <Button onClick={s.tryAgain.run} busy={s.busy}>
+          {s.tryAgain.label}
+        </Button>
+      </Cluster>
+    </>
+  );
+}
+
+/** Joining a household that already exists: replace this phone's kitchen? */
+function JoinQuestion({ s }: { s: SignInState }) {
+  const q = s.question;
+  return (
+    <Sheet
+      open={q !== null}
+      title={s.title}
+      closeLabel={s.closeLabel}
+      onClose={q?.notNow.run ?? (() => undefined)}
+    >
+      {q !== null && (
+        <Stack gap={3}>
+          <p>{q.text}</p>
+          <Cluster>
+            <Button onClick={q.replace.run}>{q.replace.label}</Button>
+            <Button kind="plain" onClick={q.notNow.run}>
+              {q.notNow.label}
+            </Button>
+          </Cluster>
+        </Stack>
+      )}
+    </Sheet>
+  );
+}
+
 /**
- * Sign in with Telegram (specs/216), on any phone: one line about what's
- * kept, a code and the bot's link, then the name and "Sign out".
+ * Sign in with Telegram (specs/216), on any phone: the steps in a sheet (a
+ * dialog on a wide screen), then the name and "Sign out".
  */
 export function SignIn() {
   const s = useSignIn();
@@ -26,62 +94,24 @@ export function SignIn() {
               {s.signOut.label}
             </Button>
           </Cluster>
-        ) : s.step.kind === "idle" ? (
-          <>
-            {s.signedOutNote !== null && <Note>{s.signedOutNote}</Note>}
-            <Cluster>
-              <Button onClick={s.start.run}>{s.start.label}</Button>
-            </Cluster>
-          </>
-        ) : s.step.kind === "explain" ? (
-          <>
-            <Note>{s.privacyLine}</Note>
-            <Cluster>
-              <Button onClick={s.go.run} busy={s.busy}>
-                {s.go.label}
-              </Button>
-            </Cluster>
-          </>
-        ) : s.step.kind === "code" ? (
-          <>
-            <p>
-              <output aria-label={s.title}>{s.code}</output>
-            </p>
-            <LinkOut href={s.link}>{s.openTelegram}</LinkOut>
-            <Note>{s.waiting}</Note>
-          </>
         ) : (
           <>
-            <Note>{s.ranOut}</Note>
+            {s.signedOutNote !== null && <p>{s.signedOutNote}</p>}
             <Cluster>
-              <Button onClick={s.tryAgain.run} busy={s.busy}>
-                {s.tryAgain.label}
-              </Button>
+              <Button onClick={s.start.run}>{s.start.label}</Button>
             </Cluster>
           </>
         )}
       </Stack>
       <Sheet
-        open={s.question !== null}
+        open={s.signedIn === null && s.step.kind !== "idle"}
         title={s.title}
         closeLabel={s.closeLabel}
-        onClose={s.question?.notNow.run ?? (() => undefined)}
+        onClose={s.close}
       >
-        <Stack gap={3}>
-          <p>{s.question?.text}</p>
-          <Cluster>
-            <Button onClick={s.question?.replace.run ?? (() => undefined)}>
-              {s.question?.replace.label}
-            </Button>
-            <Button
-              kind="plain"
-              onClick={s.question?.notNow.run ?? (() => undefined)}
-            >
-              {s.question?.notNow.label}
-            </Button>
-          </Cluster>
-        </Stack>
+        <Stack gap={3}>{s.step.kind !== "idle" && <SignInSteps s={s} />}</Stack>
       </Sheet>
+      <JoinQuestion s={s} />
     </Section>
   );
 }

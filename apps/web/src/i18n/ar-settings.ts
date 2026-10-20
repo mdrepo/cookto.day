@@ -58,6 +58,8 @@ export const arSettings = {
   notNow: "ليس الآن",
   stopped: "متوقف",
   waitingForThem: "بانتظار أن يضغطوا Start",
+  orSendStart: "أو أرسل ‎/start {code} إلى @cookto_day_bot من هاتفك",
+  qrCode: "رمز QR للرابط",
   tryAgain: "حاول مرة أخرى",
   sentToCook: "أُرسلت إلى الطاهية، {time}",
   goesToCook: "تصل إلى الطاهية في 9 مساءً",

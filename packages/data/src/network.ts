@@ -66,17 +66,75 @@ export interface ApiOptions {
   timeoutMs?: number;
 }
 
-export function createApi(options: ApiOptions = {}): Api & SignInApi {
+/** A record as the phone pushes it: whole, with its version inside (#217). */
+export interface PushedRecord {
+  collection: string;
+  record: { id: string; version: number; [field: string]: unknown };
+}
+
+export interface Change {
+  seq: number;
+  collection: string;
+  record: PushedRecord["record"];
+}
+
+export interface Pulled {
+  changes: Change[];
+  cursor: number;
+  more: boolean;
+  /** The cursor was older than what's kept: these are every record. */
+  reset: boolean;
+}
+
+export interface MemberRow {
+  id: string;
+  role: "plan" | "cook";
+  kind: "account" | "telegram";
+  name: string | null;
+  stopped: boolean;
+}
+
+export interface HouseholdView {
+  id: string;
+  members: MemberRow[];
+}
+
+/** Sync (spec #217): push what changed, pull what changed elsewhere. */
+export interface SyncApi {
+  push(records: PushedRecord[]): Promise<{ refused: PushedRecord[] }>;
+  changes(after: number): Promise<Pulled>;
+}
+
+/** The household (spec #217): made, seen, invited to, left. */
+export interface HouseholdApi {
+  createHousehold(
+    records: PushedRecord[],
+    cookToken?: string,
+  ): Promise<{ id: string }>;
+  household(): Promise<HouseholdView>;
+  invite(role: "plan" | "cook"): Promise<{ code: string; expiresAt: string }>;
+  removeMember(id: string): Promise<void>;
+  deleteAccount(): Promise<void>;
+}
+
+/** One call of the API: the method, the path, a bearer, a JSON body. */
+type Call = (
+  method: string,
+  path: string,
+  token?: string,
+  body?: unknown,
+) => Promise<unknown>;
+
+function callerOf(options: ApiOptions): Call {
   const base = options.base ?? "";
   const send: Send = options.send ?? ((url, init) => fetch(url, init));
   const timeout = options.timeoutMs ?? TIMEOUT_MS;
-
-  async function call(
+  return async (
     method: string,
     path: string,
     token?: string,
     body?: unknown,
-  ): Promise<unknown> {
+  ): Promise<unknown> => {
     const headers: Record<string, string> = { accept: "application/json" };
     if (token !== undefined) headers.authorization = `Bearer ${token}`;
     if (body !== undefined) headers["content-type"] = "application/json";
@@ -101,42 +159,89 @@ export function createApi(options: ApiOptions = {}): Api & SignInApi {
       throw new ApiError(response.status, code);
     }
     return parsed;
-  }
+  };
+}
 
-  return {
-    makeLink: () => call("POST", "/api/messenger/links") as Promise<LinkMade>,
-    linkState: async (token, code) =>
-      (
-        (await call(
-          "GET",
-          `/api/messenger/links/${encodeURIComponent(code)}`,
-          token,
-        )) as { state: LinkState }
-      ).state,
-    unlink: async (token) => {
-      await call("DELETE", "/api/messenger/links", token);
-    },
-    send: (token, request) =>
-      call("POST", "/api/messenger/send", token, request) as Promise<{
-        id: string;
-      }>,
-    cancel: async (token, id) => {
-      await call(
-        "DELETE",
-        `/api/messenger/send/${encodeURIComponent(id)}`,
-        token,
-      );
-    },
-    startSignIn: () => call("POST", "/api/auth/links") as Promise<LinkMade>,
-    signInStatus: (token, code) =>
-      call(
+const cookApi = (call: Call): Api => ({
+  makeLink: () => call("POST", "/api/messenger/links") as Promise<LinkMade>,
+  linkState: async (token, code) =>
+    (
+      (await call(
         "GET",
-        `/api/auth/links/${encodeURIComponent(code)}`,
+        `/api/messenger/links/${encodeURIComponent(code)}`,
         token,
-      ) as Promise<SignInStatus>,
-    me: () => call("GET", "/api/auth/me") as Promise<{ name: string }>,
-    signOut: async () => {
-      await call("DELETE", "/api/auth/session");
-    },
+      )) as { state: LinkState }
+    ).state,
+  unlink: async (token) => {
+    await call("DELETE", "/api/messenger/links", token);
+  },
+  send: (token, request) =>
+    call("POST", "/api/messenger/send", token, request) as Promise<{
+      id: string;
+    }>,
+  cancel: async (token, id) => {
+    await call(
+      "DELETE",
+      `/api/messenger/send/${encodeURIComponent(id)}`,
+      token,
+    );
+  },
+});
+
+const signInApi = (call: Call): SignInApi => ({
+  startSignIn: () => call("POST", "/api/auth/links") as Promise<LinkMade>,
+  signInStatus: (token, code) =>
+    call(
+      "GET",
+      `/api/auth/links/${encodeURIComponent(code)}`,
+      token,
+    ) as Promise<SignInStatus>,
+  me: () => call("GET", "/api/auth/me") as Promise<{ name: string }>,
+  signOut: async () => {
+    await call("DELETE", "/api/auth/session");
+  },
+});
+
+const syncApi = (call: Call): SyncApi => ({
+  push: (records) =>
+    call("POST", "/api/sync/push", undefined, { records }) as Promise<{
+      refused: PushedRecord[];
+    }>,
+  changes: (after) =>
+    call(
+      "GET",
+      `/api/sync/changes?after=${encodeURIComponent(String(after))}`,
+    ) as Promise<Pulled>,
+});
+
+const householdApi = (call: Call): HouseholdApi => ({
+  createHousehold: (records, cookToken) =>
+    call("POST", "/api/household", undefined, {
+      records,
+      ...(cookToken !== undefined && { cookToken }),
+    }) as Promise<{ id: string }>,
+  household: () => call("GET", "/api/household") as Promise<HouseholdView>,
+  invite: (role) =>
+    call("POST", "/api/household/links", undefined, { role }) as Promise<{
+      code: string;
+      expiresAt: string;
+    }>,
+  removeMember: async (id) => {
+    await call("DELETE", `/api/household/members/${encodeURIComponent(id)}`);
+  },
+  deleteAccount: async () => {
+    await call("DELETE", "/api/account");
+  },
+});
+
+export function createApi(
+  options: ApiOptions = {},
+): Api & SignInApi & SyncApi & HouseholdApi {
+  const call = callerOf(options);
+  return {
+    ...cookApi(call),
+    ...signInApi(call),
+    ...syncApi(call),
+    ...householdApi(call),
   };
 }

@@ -15,6 +15,12 @@ export interface LogEntry {
   lines?: number;
   tokensIn?: number;
   tokensOut?: number;
+  /** A message's kind, and what was done with it (spec #207); never text. */
+  kind?: string;
+  outcome?: string;
+  /** What a drain or the housekeeping did: counts only. */
+  sent?: number;
+  failed?: number;
 }
 
 export function log(entry: LogEntry): void {

@@ -37,14 +37,51 @@ const allGood: Answer = (url) =>
     ? ok({ ok: true, result: { username: "cooktoday_bot" } })
     : ok();
 
-function checker(answer: Answer, keys: Keys = KEYS, start = 0) {
+function checker(
+  answer: Answer,
+  keys: Keys = KEYS,
+  start = 0,
+  install?: () => Promise<"set" | "kept">,
+) {
   const clock = { now: start };
   const net = network(answer);
-  const check = keysChecker({ keys, send: net.send, now: () => clock.now });
+  const check = keysChecker({
+    keys,
+    send: net.send,
+    now: () => clock.now,
+    install,
+  });
   return { check, clock, ...net };
 }
 
 describe("the keys health check", () => {
+  test("with the messenger set up, it installs Telegram's webhook and says so (#207)", async () => {
+    let installed = 0;
+    const { check } = checker(allGood, KEYS, 0, () => {
+      installed++;
+      return Promise.resolve(installed === 1 ? "set" : "kept");
+    });
+    expect((await check()).telegram).toEqual({
+      state: "ok",
+      bot: "cooktoday_bot",
+      webhook: "set",
+    });
+    expect(installed).toBe(1);
+    const failing = checker(allGood, KEYS, 0, () =>
+      Promise.reject(new Error("401")),
+    );
+    expect((await failing.check()).telegram.webhook).toBe("missing");
+    // A bad token: nothing to install.
+    const bad = checker(
+      (url) =>
+        url.includes("telegram") ? new Response("", { status: 401 }) : ok(),
+      KEYS,
+      0,
+      () => Promise.resolve("set"),
+    );
+    expect((await bad.check()).telegram).toEqual({ state: "rejected" });
+  });
+
   test("every key good: ok, and the bot's name", async () => {
     const { check, asked } = checker(allGood);
     expect(await check()).toEqual({

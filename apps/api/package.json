@@ -7,5 +7,9 @@
     "typecheck": "tsc --noEmit -p src && tsc --noEmit -p .",
     "lint": "eslint .",
     "test": "bun test ./test"
+  },
+  "dependencies": {
+    "@cookto/db": "workspace:*",
+    "@cookto/messenger": "workspace:*"
   }
 }

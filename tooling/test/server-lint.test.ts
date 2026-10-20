@@ -46,11 +46,13 @@ describe("the API's network and logs", () => {
     for (const file of [
       "apps/api/src/router.ts",
       "apps/api/src/usage/ledger.ts",
+      "apps/api/src/receipts/gemini.ts",
+      "apps/api/src/messenger/postgrest.ts",
     ]) {
       for (const code of NETWORK) {
         const found = await problems(file, code);
         expect(found, code).toHaveLength(1);
-        expect(found[0]).toContain("apps/api/src/receipts/gemini.ts");
+        expect(found[0]).toContain("apps/api/src/network.ts");
       }
       for (const code of CONSOLE) {
         const found = await problems(file, code);
@@ -60,8 +62,8 @@ describe("the API's network and logs", () => {
     }
   });
 
-  test("the AI adapter may call fetch, and nothing else", async () => {
-    const file = "apps/api/src/receipts/gemini.ts";
+  test("the network file may call fetch, and nothing else", async () => {
+    const file = "apps/api/src/network.ts";
     expect(await problems(file, `void fetch("https://example.com");`)).toEqual(
       [],
     );

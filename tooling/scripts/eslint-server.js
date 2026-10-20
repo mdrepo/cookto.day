@@ -8,10 +8,10 @@ import { RAW_HTML } from "./eslint-syntax.js";
 // A file gets one setting per rule (a later block replaces an earlier one),
 // so each block lists every ban for the files it matches.
 
-const ADAPTER = "apps/api/src/receipts/gemini.ts";
+const ADAPTER = "apps/api/src/network.ts";
 const LOGGER = "apps/api/src/log.ts";
 
-const NETWORK = `The API reaches the network only in ${ADAPTER}, the AI adapter (ADR 0028). Ask a code owner before adding another.`;
+const NETWORK = `The API reaches the network only in ${ADAPTER}, which the adapters receive as an argument (ADR 0028, 0031). Ask a code owner before adding another.`;
 const LOG = `The API logs only through ${LOGGER}: its entries hold codes and numbers, never what a person sent (ADR 0028).`;
 
 const NETWORK_GLOBALS = ["fetch", "XMLHttpRequest", "WebSocket", "EventSource"];

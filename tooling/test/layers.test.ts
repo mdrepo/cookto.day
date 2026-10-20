@@ -198,22 +198,32 @@ describe("the new packages exist", () => {
   const read = (path: string): unknown =>
     JSON.parse(readFileSync(join(ROOT, path), "utf8"));
 
-  test.each([
-    ["packages/usecases", "@cookto/usecases", ["."]],
-    ["packages/data", "@cookto/data", [".", "./read", "./write"]],
-    ["packages/messenger", "@cookto/messenger", [".", "./contract"]],
-  ])("%s is %s, without the browser's own types", (dir, name, entries) => {
-    const pkg = read(`${dir}/package.json`) as {
-      name: string;
-      exports: Record<string, string>;
-    };
-    expect(pkg.name).toBe(name);
-    expect(Object.keys(pkg.exports).sort()).toEqual([...entries].sort());
-    for (const file of Object.values(pkg.exports))
-      expect(existsSync(join(ROOT, dir, file))).toBe(true);
-    const tsconfig = read(`${dir}/tsconfig.json`) as {
-      compilerOptions: { lib: string[] };
-    };
-    expect(tsconfig.compilerOptions.lib).toEqual(["ES2022"]);
+  test("each package exports what it declares, without the browser's own types", () => {
+    // One test, its table inside and nothing before its name: tdd:verify
+    // reads a test from its declaration to the next, so a line above the
+    // name would count for the test above.
+    const packages: [string, string, string[]][] = [
+      ["packages/usecases", "@cookto/usecases", [".", "./cook"]],
+      [
+        "packages/data",
+        "@cookto/data",
+        [".", "./read", "./write", "./network"],
+      ],
+      ["packages/messenger", "@cookto/messenger", [".", "./contract"]],
+    ];
+    for (const [dir, name, entries] of packages) {
+      const pkg = read(`${dir}/package.json`) as {
+        name: string;
+        exports: Record<string, string>;
+      };
+      expect(pkg.name).toBe(name);
+      expect(Object.keys(pkg.exports).sort()).toEqual([...entries].sort());
+      for (const file of Object.values(pkg.exports))
+        expect(existsSync(join(ROOT, dir, file))).toBe(true);
+      const tsconfig = read(`${dir}/tsconfig.json`) as {
+        compilerOptions: { lib: string[] };
+      };
+      expect(tsconfig.compilerOptions.lib).toEqual(["ES2022"]);
+    }
   });
 });

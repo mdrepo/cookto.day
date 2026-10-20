@@ -68,19 +68,32 @@ export default defineConfig(
     rules: {
       // The app runs in people's browsers: no debug output left behind.
       "no-console": ["error", { allow: ["warn", "error"] }],
-      // Even in packages/data, no network yet: it comes with the network
-      // adapter, and only there (ADR 0025). Elsewhere `storage` below bans it.
+      // The network goes only through packages/data's network adapter
+      // (ADR 0024, 0025), the block after this. Elsewhere `storage` bans it.
       "no-restricted-globals": [
         "error",
         {
           name: "fetch",
           message:
-            "The network goes only through packages/data's network adapter, which doesn't exist yet (ADR 0025). Ask a code owner.",
+            "The network goes only through packages/data/src/network.ts (ADR 0025). Ask a code owner.",
         },
         {
           name: "XMLHttpRequest",
           message:
-            "The network goes only through packages/data's network adapter, which doesn't exist yet (ADR 0025). Ask a code owner.",
+            "The network goes only through packages/data/src/network.ts (ADR 0025). Ask a code owner.",
+        },
+      ],
+    },
+  },
+  {
+    // The app's one way to the network: our own API (ADR 0025, spec #207).
+    files: ["packages/data/src/network.ts"],
+    rules: {
+      "no-restricted-globals": [
+        "error",
+        {
+          name: "XMLHttpRequest",
+          message: "Use fetch, with a timeout (ADR 0024).",
         },
       ],
     },

@@ -16,9 +16,11 @@ const BUDGET_KB = {
   /**
    * Our own JavaScript that a first visit loads: everything but React's
    * file. Until 14 Oct it counted every script, even ones loaded later; it
-   * was 36 then (20 before the kitchen, specs/72).
+   * was 36 then (20 before the kitchen, specs/72). 35 until 20 Oct, when
+   * the owner raised it to 50 for the cook's words (specs/207); the page
+   * was 35.2 then.
    */
-  ourScripts: 35,
+  ourScripts: 50,
   /**
    * A first visit, nothing cached: pages, styles and the scripts the page
    * loads. Until 14 Oct it counted every script; it was 120 then.

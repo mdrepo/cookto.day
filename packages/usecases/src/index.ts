@@ -41,5 +41,7 @@ export {
   bought,
 } from "./shopping.js";
 export { chooseCountry, chooseLanguage, chooseTheme } from "./settings.js";
+// The cook's Telegram (specs/207) is "@cookto/usecases/cook", its own entry:
+// the app loads it only once a cook is connected, to keep the page small.
 export { chooseBeans, keepTomorrow, prepDone, prepNotDone } from "./prep.js";
 export { addChildDish, childAddIn, removeChildDish } from "./child-dish.js";

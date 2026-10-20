@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { basename, join } from "node:path";
+import { basename, extname, join } from "node:path";
 import { buildSite } from "../../scripts/build.js";
 
 // What the build ships, besides size (see ../budget): the page people can
@@ -32,15 +32,21 @@ describe("the built site", () => {
     expect(html).toContain(">More<");
   });
 
-  test("browsers keep every hashed file for a year, and never the page", () => {
+  test("browsers keep every hashed file for a year, and never the page, within Cloudflare's 100 rules", () => {
     const headers = readFileSync(join(outdir, "_headers"), "utf8");
     const hashed = files.filter((f) => !f.endsWith(".html"));
     expect(hashed.length).toBeGreaterThan(0);
+    // One rule per kind of file, not per file: Cloudflare refuses a
+    // _headers file with more than 100 rules, and the dish photos alone
+    // are more than that (the deploy of #214 failed on it).
+    const rules = headers.split("\n").filter((line) => line.startsWith("/"));
+    expect(rules.length).toBeLessThanOrEqual(100);
     for (const f of hashed) {
       expect(headers).toContain(
-        `/${basename(f)}\n  Cache-Control: public, max-age=31536000, immutable\n`,
+        `/*${extname(f)}\n  Cache-Control: public, max-age=31536000, immutable\n`,
       );
     }
     expect(headers).not.toContain(".html");
+    expect(basename(hashed[0] ?? "")).toMatch(/[a-z0-9]{8}\./);
   });
 });

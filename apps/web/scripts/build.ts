@@ -5,7 +5,7 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { basename, join } from "node:path";
+import { basename, extname, join } from "node:path";
 import { Glob } from "bun";
 
 // Builds the static site (ADR 0013): every page in src/*.html, with the
@@ -138,14 +138,19 @@ function prerender(page: string, app: string): void {
 /**
  * Cloudflare's `_headers` file: every file but the pages has a content hash
  * in its name, so browsers may keep it for a year without asking. Pages keep
- * Cloudflare's default (always revalidate), so a deploy shows at once.
+ * Cloudflare's default (always revalidate), so a deploy shows at once. One
+ * rule per kind of file: Cloudflare allows 100 rules, and the dish photos
+ * alone are more than that.
  */
 function writeHeaders(outdir: string, files: string[]): void {
-  const rules = files
-    .filter((f) => !f.endsWith(".html"))
+  const kinds = new Set(
+    files.filter((f) => !f.endsWith(".html")).map((f) => extname(f)),
+  );
+  const rules = [...kinds]
+    .sort()
     .map(
-      (f) =>
-        `/${basename(f)}\n  Cache-Control: public, max-age=31536000, immutable\n`,
+      (ext) =>
+        `/*${ext}\n  Cache-Control: public, max-age=31536000, immutable\n`,
     );
   writeFileSync(join(outdir, "_headers"), rules.join(""));
 }

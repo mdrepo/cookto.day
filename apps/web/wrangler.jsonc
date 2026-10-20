@@ -25,6 +25,9 @@
     "RECEIPT_PHOTOS": "off",
     "RECEIPT_MODEL": "gemini-2.5-flash-lite",
   },
+  // The messenger's outbox is drained every minute, and its housekeeping
+  // runs at 3 UTC (ADR 0031, apps/api/src/index.ts).
+  "triggers": { "crons": ["* * * * *", "0 3 * * *"] },
   "routes": [{ "pattern": "cookto.day", "custom_domain": true }],
   "workers_dev": false,
   "preview_urls": false,

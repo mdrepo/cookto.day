@@ -1,14 +1,16 @@
-import type { Send } from "./receipts/gemini.js";
+import type { Send } from "./network.js";
 
 // GET /api/health/keys (#202). The Worker's secrets are write-only, so this
 // is the one way to learn whether a saved key works: ask each service a
 // question that costs nothing. The answer names states, never values, and
 // is kept a minute so the endpoint can't be used to hammer the services.
+// With the bot token good, it also makes sure Telegram's webhook points at
+// us (spec #207): only the Worker holds both the token and the secret.
 
 export type KeyState = "ok" | "rejected" | "missing" | "unreachable";
 
 export interface KeysReport {
-  telegram: { state: KeyState; bot?: string };
+  telegram: { state: KeyState; bot?: string; webhook?: "set" | "missing" };
   supabase: { state: KeyState };
   gemini: { state: KeyState };
 }
@@ -27,6 +29,8 @@ export interface KeysOptions {
   /** Milliseconds since 1970. */
   now: () => number;
   timeoutMs?: number;
+  /** Points Telegram's webhook at us, when the messenger is set up. */
+  install?: (() => Promise<"set" | "kept">) | undefined;
 }
 
 const KEEP_MS = 60_000;
@@ -75,7 +79,14 @@ async function telegram(
     result?: { username?: string };
   };
   const bot = body.result?.username;
-  return bot === undefined ? { state } : { state, bot };
+  const report: KeysReport["telegram"] =
+    bot === undefined ? { state } : { state, bot };
+  if (options.install === undefined) return report;
+  const webhook = await options.install().then(
+    () => "set" as const,
+    () => "missing" as const,
+  );
+  return { ...report, webhook };
 }
 
 async function supabase(

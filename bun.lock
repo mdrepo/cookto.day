@@ -31,6 +31,10 @@
     "apps/api": {
       "name": "@cookto/api",
       "version": "0.0.0",
+      "dependencies": {
+        "@cookto/db": "workspace:*",
+        "@cookto/messenger": "workspace:*",
+      },
     },
     "apps/kit": {
       "name": "@cookto/kit",
@@ -51,6 +55,13 @@
       },
       "devDependencies": {
         "@cookto/testing": "workspace:*",
+      },
+    },
+    "db": {
+      "name": "@cookto/db",
+      "version": "0.0.0",
+      "dependencies": {
+        "@cookto/messenger": "workspace:*",
       },
     },
     "packages/data": {
@@ -75,6 +86,10 @@
     },
     "packages/engine": {
       "name": "@cookto/engine",
+      "version": "0.0.0",
+    },
+    "packages/messenger": {
+      "name": "@cookto/messenger",
       "version": "0.0.0",
     },
     "packages/testing": {
@@ -143,9 +158,13 @@
 
     "@cookto/data-web": ["@cookto/data-web@workspace:packages/data-web"],
 
+    "@cookto/db": ["@cookto/db@workspace:db"],
+
     "@cookto/engine": ["@cookto/engine@workspace:packages/engine"],
 
     "@cookto/kit": ["@cookto/kit@workspace:apps/kit"],
+
+    "@cookto/messenger": ["@cookto/messenger@workspace:packages/messenger"],
 
     "@cookto/testing": ["@cookto/testing@workspace:packages/testing"],
 

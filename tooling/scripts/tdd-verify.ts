@@ -72,7 +72,11 @@ const changedTests = git(
   .filter((f) => UNIT.test(f) || E2E.test(f))
   // CI has no browser (ADR 0004), so it checks unit tests only; e2e runs
   // in the pre-push hook.
-  .filter((f) => !unitOnly || UNIT.test(f));
+  .filter((f) => !unitOnly || UNIT.test(f))
+  // The database's tests need a Postgres with the branch's migrations, which
+  // can't be swapped onto main's source. CI's database job runs them up and
+  // down instead (ADR 0032).
+  .filter((f) => !f.startsWith("db/"));
 
 if (changedTests.length === 0) {
   console.log("tdd:verify: no new or changed tests on this branch.");

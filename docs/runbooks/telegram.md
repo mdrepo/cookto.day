@@ -42,9 +42,11 @@ TELEGRAM_WEBHOOK_SECRET=random
 
 Secrets are write-only, so the Worker is the only thing that can tell whether a value works. Open <https://cookto.day/api/health/keys>. For the Telegram token, Supabase and Gemini it answers one of `ok`, `rejected` (the service refused the value), `missing` (not saved yet) or `unreachable` (the service didn't answer), and the bot's username when the token is good. Never the values. The answer is kept a minute, so a second look right after a fix shows the old one.
 
-## 3. Point Telegram at the API (after the bot PR deploys)
+## 3. Point Telegram at the API (once, after the database is set up)
 
-The bot PR adds a script that tells Telegram where to send updates (`setWebhook` with the secret above). Run it once after that PR is live; the PR's runbook change says how.
+Only the Worker holds both the bot's token and the webhook secret, so it installs the webhook itself ([spec #207](../../specs/207-connect-the-cook.md)). Once the database runbook's three steps are done (`migrate.sh up`, `migrate.sh secret`, and the Worker deployed with the messenger), open <https://cookto.day/api/health/keys> once more. `telegram` gains `"webhook": "set"`: Telegram now sends every update to `https://cookto.day/api/messenger/telegram`, with the secret, and the bot refuses anything without it. `"webhook": "missing"` means Telegram refused; look again in a minute, then at the Worker's logs.
+
+Until the database is set up, the messenger's routes answer 503 and the bot stays silent.
 
 ## Stop it
 

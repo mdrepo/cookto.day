@@ -63,3 +63,64 @@ jobs:
           echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
           tar -xzf gitleaks.tgz gitleaks
           ./gitleaks git --redact --no-banner .
+
+  # Every migration, up and then down, on a throwaway Postgres (ADR 0032):
+  # the stores' contract tests run in between, and nothing may be left after.
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: cookto
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 5s
+          --health-timeout 5s --health-retries 10
+
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/cookto
+      PSQL: psql
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version-file: package.json
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Every up has a down
+        run: |
+          for up in db/migrations/*.up.sql; do
+            [ -f "${up%.up.sql}.down.sql" ] || { echo "$up has no .down.sql"; exit 1; }
+          done
+
+      - name: Up
+        run: sh db/scripts/migrate.sh up
+
+      - name: The stores' contract, on the real tables
+        run: bun run --cwd db test
+
+      - name: Down, all the way
+        run: sh db/scripts/migrate.sh down 999
+
+      - name: Nothing is left
+        run: |
+          tables=$(psql "$DATABASE_URL" -Atc "select count(*) from pg_tables where schemaname = 'public' and tablename <> 'schema_migrations'")
+          functions=$(psql "$DATABASE_URL" -Atc "select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public'")
+          echo "tables left: $tables, functions left: $functions"
+          [ "$tables" = 0 ] && [ "$functions" = 0 ]

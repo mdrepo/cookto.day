@@ -31,6 +31,12 @@
     "packages/data": {
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
+    "packages/messenger": {
+      "project": ["src/**/*.ts", "test/**/*.ts"]
+    },
+    "db": {
+      "project": ["src/**/*.ts", "test/**/*.ts"]
+    },
     "packages/data-web": {
       "entry": ["e2e/page.ts", "e2e/serve.ts"],
       "project": ["src/**/*.ts", "e2e/**/*.ts"]

@@ -1,8 +1,10 @@
+import { network, type Send } from "../network.js";
 import type { Photo, Reader, ReaderResult } from "./reader.js";
 
-// ADR 0028: reading a receipt photo with Gemini. The only file in the API
-// that reaches the network, and the only one that holds the key. Google gets
-// our fixed instruction and the photo; nothing a person types ever gets here.
+// ADR 0028: reading a receipt photo with Gemini. The only file that holds
+// the key; it reaches Google through network.ts, the API's one way out.
+// Google gets our fixed instruction and the photo; nothing a person types
+// ever gets here.
 
 export const INSTRUCTION = [
   "You read photos of shop receipts for a grocery app.",
@@ -40,16 +42,6 @@ const SCHEMA = {
 const MAX_OUTPUT_TOKENS = 2_560;
 
 const API = "https://generativelanguage.googleapis.com/v1beta/models";
-
-/** All of `fetch` the adapter uses. */
-export type Send = (url: string, init: RequestInit) => Promise<Response>;
-
-/**
- * The network itself: a wrapper, not `fetch`, since Workers refuse a detached
- * fetch. This file is the API's only way out (eslint-server.js); the keys
- * health check (keys.ts) borrows it rather than opening a second one.
- */
-export const network: Send = (url, init) => fetch(url, init);
 
 export interface GeminiOptions {
   key: string;

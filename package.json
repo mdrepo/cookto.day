@@ -57,6 +57,7 @@
   "workspaces": [
     "apps/*",
     "packages/*",
+    "db",
     "tooling"
   ],
   "dependencies": {

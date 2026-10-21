@@ -176,14 +176,21 @@ class Syncer implements Sync {
   }
 
   /** The server's copy of a record lands if it's newer than the phone's. */
+  /**
+   * The server's copy, unless this phone's is newer. A copy the server
+   * refused wins a tie too (ADR 0033: ties to the server), so two phones
+   * that wrote one record at one version end up alike (specs/236).
+   */
   private async apply(
     r: PushedRecord,
     signal: AbortSignal,
     touched: Set<string>,
+    tie: "server" | "mine" = "mine",
   ): Promise<void> {
     const local = await this.o.store.get<Stored>(r.collection, r.record.id);
     check(signal);
-    if (local && local.version >= r.record.version) return;
+    if (local && local.version > r.record.version) return;
+    if (local && local.version === r.record.version && tie === "mine") return;
     await this.o.store.put(r.collection, [r.record]);
     this.queue.delete(key(r.collection, r.record.id));
     touched.add(SYNC_TOPICS[r.collection] ?? r.collection);
@@ -217,7 +224,7 @@ class Syncer implements Sync {
         if (now && now.version === sent.record.version)
           this.queue.delete(key(sent.collection, sent.record.id));
       }
-      for (const r of refused) await this.apply(r, signal, touched);
+      for (const r of refused) await this.apply(r, signal, touched, "server");
       this.persist();
     }
   }

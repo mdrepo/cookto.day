@@ -16,7 +16,10 @@ interface Plan {
   for?: "child";
 }
 
-/** Meals planned on an earlier day, saved the way the app saves them. */
+/**
+ * Meals planned on an earlier day, saved the way the app saves them: each at
+ * its meal's one id (specs/236), in place of what this phone picked itself.
+ */
 async function planned(page: Page, plans: Plan[]): Promise<void> {
   await page.evaluate(async (plans) => {
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
@@ -32,8 +35,8 @@ async function planned(page: Page, plans: Plan[]): Promise<void> {
       };
     });
     const tx = db.transaction("records", "readwrite");
-    plans.forEach((plan, i) => {
-      const id = `seed-${String(i)}`;
+    plans.forEach((plan) => {
+      const id = `plan:${plan.on}:${plan.slot}${plan.for ? `:${plan.for}` : ""}`;
       tx.objectStore("records").put({
         c: "plans",
         id,

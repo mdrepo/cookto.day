@@ -1,6 +1,7 @@
 import type { AuthStore, Households, Links } from "@cookto/db";
 import type { Messenger } from "@cookto/messenger";
 import type { LogEntry } from "../log.js";
+import type { WorkflowDeps } from "../workflows/deps.js";
 
 // What the messenger's routes need (spec #207): the messenger itself, the
 // links, sign-in (spec #216), and a way to hash a network address before it
@@ -20,6 +21,8 @@ export interface MessengerDeps {
   log: (entry: LogEntry) => void;
   /** Milliseconds since 1970. */
   now: () => number;
+  /** The workflows engine (ADR 0034); without it, no run is reached. */
+  workflows?: WorkflowDeps;
 }
 
 /** The link's token from the Authorization header, or null. */

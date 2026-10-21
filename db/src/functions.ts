@@ -1,9 +1,9 @@
-// The functions the Worker calls (db/migrations/0002 to 0005), with each
+// The functions the Worker calls (db/migrations/0002 to 0007), with each
 // argument's SQL type. The API calls them over HTTPS; the tests call them
 // through a Postgres client, which needs the types to cast its arguments.
 
 export type SqlType =
-  "text" | "uuid" | "timestamptz" | "jsonb" | "int" | "bigint";
+  "text" | "uuid" | "timestamptz" | "jsonb" | "int" | "bigint" | "boolean";
 
 const SECRET = { p_secret: "text" } as const;
 
@@ -129,6 +129,29 @@ export const FUNCTIONS = {
     p_limit: "int",
   },
   hh_housekeeping: { ...SECRET, p_now: "timestamptz" },
+  run_create: { ...SECRET, p_row: "jsonb" },
+  run_get: { ...SECRET, p_id: "text" },
+  run_conversations: { ...SECRET, p_id: "text" },
+  runs_open: { ...SECRET, p_member: "uuid" },
+  run_claim: {
+    ...SECRET,
+    p_id: "text",
+    p_step: "text",
+    p_rev: "int",
+    p_now: "timestamptz",
+    p_until: "timestamptz",
+  },
+  run_commit: {
+    ...SECRET,
+    p_id: "text",
+    p_rev: "int",
+    p_next: "jsonb",
+    p_messages: "jsonb",
+    p_now: "timestamptz",
+  },
+  runs_due: { ...SECRET, p_now: "timestamptz" },
+  runs_expired: { ...SECRET, p_now: "timestamptz" },
+  hh_bot_off: { ...SECRET, p_account: "uuid", p_off: "boolean" },
 } as const satisfies Record<string, Record<string, SqlType>>;
 
 export type FunctionName = keyof typeof FUNCTIONS;

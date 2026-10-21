@@ -2,9 +2,11 @@ import {
   functionAuth,
   functionHouseholds,
   functionLinks,
+  functionRuns,
   functionStore,
 } from "@cookto/db";
 import { createMessenger, telegram } from "@cookto/messenger";
+import { EN } from "@cookto/templates";
 import { noSignInYet } from "./auth.js";
 import { type KeysReport, keysChecker } from "./keys.js";
 import { log } from "./log.js";
@@ -15,6 +17,9 @@ import { gemini } from "./receipts/gemini.js";
 import { route } from "./router.js";
 import type { UsageCounter } from "./usage/durable.js";
 import type { Strikes, Usage } from "./usage/usage.js";
+import { ACTIONS } from "./workflows/actions.js";
+import { tick } from "./workflows/engine.js";
+import { WORKFLOWS } from "./workflows/registry.js";
 
 export { UsageCounter } from "./usage/durable.js";
 
@@ -34,6 +39,8 @@ interface Env {
   SUPABASE_ANON_KEY?: string;
   /** Saved by db/scripts/migrate.sh secret (ADR 0032). */
   MESSENGER_API_SECRET?: string;
+  /** "1" stops every run starting and every run's message (ADR 0034). */
+  BOT_OFF?: string;
   USAGE: DurableObjectNamespace<UsageCounter>;
 }
 
@@ -76,6 +83,14 @@ function messengerOf(
       },
       log,
       now,
+      workflows: {
+        runs: functionRuns(call, apiSecret),
+        workflows: WORKFLOWS,
+        actions: ACTIONS,
+        templates: { en: EN },
+        off: env.BOT_OFF === "1",
+        leaseMs: 30_000,
+      },
     },
     install: () => channel.installWebhook(WEBHOOK_URL),
   };
@@ -124,7 +139,8 @@ export default {
     });
   },
 
-  // Every minute, what the outbox owes; at 3 UTC, the housekeeping (ADR 0031).
+  // Every minute, the runs that are due or expired (ADR 0034), then what the
+  // outbox owes; at 3 UTC, the housekeeping (ADR 0031).
   scheduled(event, env, ctx) {
     const m = messengerOf(env, ctx);
     if (m === null) return;
@@ -145,14 +161,27 @@ export default {
               ...changes,
             });
           })
-        : m.deps.messenger.drain().then((done) => {
-            if (done.length === 0) return;
+        : Promise.all([
+            // A run that fails is logged; the outbox is still drained.
+            tick(m.deps).catch((e: unknown) => {
+              log({
+                route: "cron/runs",
+                status: 500,
+                ms: now() - started,
+                error: e instanceof Error ? e.message : "unknown",
+              });
+              return { started: 0, expired: 0 };
+            }),
+            m.deps.messenger.drain(),
+          ]).then(([runs, done]) => {
+            if (done.length === 0 && runs.started + runs.expired === 0) return;
             log({
               route: "cron/drain",
               status: 200,
               ms: now() - started,
               sent: done.filter((d) => d.outcome === "sent").length,
               failed: done.filter((d) => d.outcome !== "sent").length,
+              ...runs,
             });
           });
     ctx.waitUntil(work);

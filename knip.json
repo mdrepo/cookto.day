@@ -34,6 +34,12 @@
     "packages/messenger": {
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
+    "packages/templates": {
+      "project": ["src/**/*.ts", "test/**/*.ts"]
+    },
+    "packages/workflows": {
+      "project": ["src/**/*.ts", "test/**/*.ts"]
+    },
     "city": {
       "entry": ["test/*.test.ts"],
       "project": ["scripts/**/*.ts", "test/**/*.ts"]

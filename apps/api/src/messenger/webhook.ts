@@ -1,14 +1,19 @@
-import type { Message, Received } from "@cookto/messenger";
+import type { Conversation, Message, Received } from "@cookto/messenger";
+import { render } from "@cookto/templates";
 import { json, problem } from "../http.js";
+import { answered, pressed } from "../workflows/engine.js";
 import { iso, type MessengerDeps } from "./deps.js";
 import { WORDS } from "./words.js";
 
 // POST /api/messenger/telegram (spec #207): what the cook sends. The
 // messenger verifies and records; this decides. Start with a code signs the
 // planner in (spec #216), joins the household by an invite (spec #217), or
-// connects the cook to a phone's link; /stop deletes everything; anything
-// else is kept and answered with the one line we have. A chat without a
-// conversation gets a plain reply through the channel, with nothing kept.
+// connects the cook to a phone's link; /stop deletes everything. Then the
+// router's order (ADR 0034): another command is answered beside any open
+// step; a run's button goes to its run; text or a photo goes to her open
+// step if it takes it; anything else is kept for the planner and answered
+// with the one line we have. A chat without a conversation gets a plain
+// reply through the channel, with nothing kept.
 
 const text = (t: string): Message => ({ kind: "text", text: t });
 
@@ -71,6 +76,31 @@ async function started(
   return "connected";
 }
 
+/** A run's button, her text or her photo, to the engine: null if not taken. */
+async function toRuns(
+  d: MessengerDeps,
+  conversation: Conversation,
+  event: Received["event"],
+): Promise<string | null> {
+  if (event.kind === "button") {
+    const press = await pressed(d, conversation, event.value);
+    if (press === null) return null;
+    if (press.doneAlready && d.workflows) {
+      const done = render(d.workflows.templates, "en", "done_already");
+      await reply(d, conversation.id, done.text);
+    }
+    return `run-${press.result}`;
+  }
+  if (event.kind !== "text" && event.kind !== "photo") return null;
+  if (event.kind === "text" && event.text.startsWith("/")) return null;
+  const answer = await answered(
+    d,
+    conversation,
+    event.kind === "text" ? event : { kind: "photo", ref: event.ref },
+  );
+  return answer === null ? null : `run-${answer}`;
+}
+
 async function handle(d: MessengerDeps, got: Received): Promise<string> {
   const { event, chat, conversation } = got;
   const now = iso(d.now());
@@ -88,6 +118,8 @@ async function handle(d: MessengerDeps, got: Received): Promise<string> {
     await tell(d, chat, WORDS.cantRead);
     return "stranger";
   }
+  const run = await toRuns(d, conversation, event);
+  if (run !== null) return run;
   await reply(d, conversation.id, WORDS.cantRead);
   return "kept";
 }

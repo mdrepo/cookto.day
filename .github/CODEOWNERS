@@ -65,6 +65,12 @@
 /packages/messenger/package.json    @mdrepo
 /packages/messenger/tsconfig.json   @mdrepo
 /packages/messenger/test/           @mdrepo
+/packages/templates/package.json    @mdrepo
+/packages/templates/tsconfig.json   @mdrepo
+/packages/templates/test/           @mdrepo
+/packages/workflows/package.json    @mdrepo
+/packages/workflows/tsconfig.json   @mdrepo
+/packages/workflows/test/           @mdrepo
 /db/package.json                    @mdrepo
 /db/tsconfig.json                   @mdrepo
 /db/test/                           @mdrepo

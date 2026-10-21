@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@cookto/db": "workspace:*",
-    "@cookto/messenger": "workspace:*"
+    "@cookto/messenger": "workspace:*",
+    "@cookto/templates": "workspace:*",
+    "@cookto/workflows": "workspace:*"
   }
 }

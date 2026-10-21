@@ -1,0 +1,141 @@
+import type { Outgoing, RunRow } from "@cookto/db";
+import type { Conversation, Message } from "@cookto/messenger";
+import { render } from "@cookto/templates";
+import { type Advanced, accepts, advance, type Event } from "@cookto/workflows";
+import { iso, type MessengerDeps } from "../messenger/deps.js";
+import { buttonValue, parseButton } from "./buttons.js";
+import type { WorkflowDeps } from "./deps.js";
+
+// The engine (ADR 0034): one transition is claim, act, commit. A press
+// claims its run only at its step and revision; the actions run, keyed by
+// run and step; one call moves the run and queues its messages. A press
+// that loses changes nothing and hears "That's done already". The cron
+// expires runs, then starts the due ones.
+
+type Result = "moved" | "stale" | "lost" | "not-accepted" | "off";
+
+function build(
+  w: WorkflowDeps,
+  run: RunRow,
+  step: string,
+  m: Advanced["messages"][number],
+): Message {
+  const r = render(w.templates, "en", m.template, run.about);
+  const buttons = r.buttons
+    .filter((b) => !m.keys || m.keys.includes(b.key))
+    .map((b) => ({ label: b.label, value: buttonValue(run.id, step, b.key) }));
+  if (buttons.length === 0) return { kind: "text", text: r.text };
+  const rows = r.kind === "choices" ? buttons.map((b) => [b]) : [buttons];
+  return { kind: "buttons", text: r.text, buttons: rows };
+}
+
+async function transition(
+  d: MessengerDeps,
+  w: WorkflowDeps,
+  run: RunRow,
+  event: Event,
+): Promise<Result> {
+  const flow = w.workflows[run.workflow];
+  if (!flow) return "stale";
+  const outcome = advance(flow, run.step, event);
+  if ("refused" in outcome) return outcome.refused;
+  const now = d.now();
+  const claimed = await w.runs.claim(
+    run.id,
+    run.step,
+    run.rev,
+    iso(now),
+    iso(now + w.leaseMs),
+  );
+  if (!claimed) return "lost";
+  const key = `${run.id}:${run.step ?? "start"}`;
+  for (const a of outcome.actions) {
+    const act = w.actions[a.name];
+    if (!act) throw new Error(`no-action:${a.name}`);
+    await act({ run: claimed, key, input: a.input });
+  }
+  const to =
+    outcome.messages.length > 0 ? await w.runs.conversations(run.id) : [];
+  const outgoing: Outgoing[] = outcome.messages.flatMap((m) => {
+    const message = build(w, claimed, outcome.step, m);
+    return to.map((conversation) => ({
+      conversation,
+      message,
+      context: { run: run.id },
+    }));
+  });
+  const next = {
+    step: outcome.step,
+    status: outcome.status,
+    floor: outcome.floor,
+  };
+  const done = await w.runs.commit(
+    run.id,
+    claimed.rev,
+    next,
+    outgoing,
+    iso(now),
+  );
+  if (done.ok && outgoing.length > 0) d.after(d.messenger.drain());
+  return done.ok ? "moved" : "lost";
+}
+
+/** Expired runs ended, then due runs started; nothing while it's off. */
+export async function tick(
+  d: MessengerDeps,
+): Promise<{ started: number; expired: number }> {
+  const w = d.workflows;
+  const counts = { started: 0, expired: 0 };
+  if (!w || w.off) return counts;
+  const now = iso(d.now());
+  for (const run of await w.runs.expired(now))
+    if ((await transition(d, w, run, { kind: "expire" })) === "moved")
+      counts.expired++;
+  // A run started here that holds its person's floor keeps the next waiting.
+  const held = new Set<string>();
+  for (const run of await w.runs.due(now)) {
+    const who = `${run.household}/${run.audience}`;
+    if (held.has(who)) continue;
+    if ((await transition(d, w, run, { kind: "start" })) !== "moved") continue;
+    counts.started++;
+    if ((await w.runs.get(run.id))?.floor) held.add(who);
+  }
+  return counts;
+}
+
+/** A run's button, pressed: null when it isn't one. */
+export async function pressed(
+  d: MessengerDeps,
+  conversation: Conversation,
+  value: string,
+): Promise<{ result: Result; doneAlready: boolean } | null> {
+  const b = parseButton(value);
+  const w = d.workflows;
+  if (!b || !w) return null;
+  if (w.off) return { result: "off", doneAlready: false };
+  const run = await w.runs.get(b.run);
+  if (run?.botOff) return { result: "off", doneAlready: false };
+  const ours = run && (await w.runs.conversations(run.id));
+  if (!run || !ours?.includes(conversation.id) || run.step !== b.step)
+    return { result: "stale", doneAlready: true };
+  const result = await transition(d, w, run, { kind: "button", key: b.key });
+  return { result, doneAlready: result !== "moved" };
+}
+
+/** Her text or photo, to the open step that takes it: null when none does. */
+export async function answered(
+  d: MessengerDeps,
+  conversation: Conversation,
+  event: Extract<Event, { kind: "text" | "photo" }>,
+): Promise<Result | null> {
+  const w = d.workflows;
+  if (!w || w.off || conversation.owner.kind !== "member") return null;
+  for (const run of await w.runs.open(conversation.owner.id)) {
+    const flow = w.workflows[run.workflow];
+    const takes = flow ? accepts(flow, run.step) : null;
+    if (!takes || !(event.kind === "text" ? takes.text : takes.photo)) continue;
+    if ((await w.runs.get(run.id))?.botOff) return "off";
+    return transition(d, w, run, event);
+  }
+  return null;
+}

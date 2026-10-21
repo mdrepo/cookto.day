@@ -1,13 +1,17 @@
-// What the bot says (spec #207), in English until a native speaker reviews
-// other words (ADR 0012, 0031). The plan's own text comes from the app.
+import { EN, render } from "@cookto/templates";
+
+// What the bot says (spec #207), from its templates now (ADR 0034, specs/234),
+// word for word, in English until a native speaker reviews other words (ADR
+// 0012, 0031). The plan's own text comes from the app.
+
+const say = (id: string) => render({ en: EN }, "en", id).text;
 
 export const WORDS = {
-  connected:
-    "Connected. I'll send you tomorrow's plan each evening. What we send each other is kept for 90 days. Send /stop any time to stop, and it's all deleted.",
-  badCode: "That code didn't work. Ask for a new one in the app.",
-  signedIn: "Signed in. Go back to the app.",
-  joined: "You're in. Sign in on your phone to see the plan.",
-  removed: "You've been removed. Nothing more will come from me.",
-  stopped: "Stopped and deleted. Nothing more will come from me.",
-  cantRead: "I can't read replies yet. Tomorrow's plan comes from the app.",
+  connected: say("connected"),
+  badCode: say("bad_code"),
+  signedIn: say("signed_in"),
+  joined: say("joined"),
+  removed: say("removed"),
+  stopped: say("stopped"),
+  cantRead: say("cant_read"),
 } as const;

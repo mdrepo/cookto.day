@@ -1,7 +1,12 @@
 <script>
   function measure() {
     const wide = innerWidth > 820;
-    const lg = $("legend"),
+    // The left panel showing: the districts, the notices or the town hall.
+    const lg =
+        ["legend", "notices", "hall"]
+          .map($)
+          .find((p) => !p.hidden && p.getBoundingClientRect().width) ??
+        $("legend"),
       ins = $("insp"),
       hd = document.querySelector("header").getBoundingClientRect(),
       bar = document.querySelector(".bar").getBoundingClientRect();
@@ -17,7 +22,8 @@
   }
   let flight = null,
     started = false;
-  const VIEW = new THREE.Vector3(-0.45, 0.5, 1).normalize();
+  const VIEW = new THREE.Vector3(-0.45, 0.5, 1).normalize(),
+    MAP_VIEW = new THREE.Vector3(-0.3, 1.05, 1).normalize();
   function frameBox(box, dir) {
     measure();
     const size = box.getSize(new THREE.Vector3()),
@@ -59,14 +65,20 @@
       box.expandByPoint(new THREE.Vector3(city.x0, 0, city.z0));
       box.expandByPoint(new THREE.Vector3(city.x1, 10, city.z1));
     }
-    if (!focusActive())
+    if (!focusActive()) {
       for (const b of blocks)
         if (!state.hidden.has(b.district)) {
           box.expandByPoint(new THREE.Vector3(b.x0 - 1, 0, b.z0 - 1));
           box.expandByPoint(new THREE.Vector3(b.x1 + 1, 0, b.z1 + 1));
         }
+      box.expandByPoint(new THREE.Vector3(HALL_AT.x, 8, HALL_AT.z + 6));
+    }
     const dir = camera.position.clone().sub(controls.target).normalize();
-    frameBox(box, !started || dir.y < 0.25 ? VIEW : dir);
+    // The whole city is read like a map, from higher up.
+    frameBox(
+      box,
+      !focusActive() ? MAP_VIEW : !started || dir.y < 0.25 ? VIEW : dir,
+    );
   }
   function flyTo(i) {
     const d = camera.position.clone().sub(controls.target).normalize();
@@ -160,6 +172,7 @@
         : null;
     };
     const camDist = camera.position.distanceTo(controls.target);
+    placeMarks(put, proj);
     for (const b of blocks) {
       if (
         state.hidden.has(b.district) ||
@@ -172,7 +185,7 @@
         bw = b.name.length * 9.5 + 40;
       if (!put(at[0], at[1] - 18, bw, 18)) continue;
       const d = labelEl(k++);
-      d.className = "lbl district";
+      d.className = "lbl district" + (zoom.city ? " big" : "");
       d.style.setProperty("--c", b.color);
       d.replaceChildren(
         b.name,
@@ -188,17 +201,20 @@
       d.style.transform = `translate(${at[0]}px, ${at[1] - 18}px)`;
       d.hidden = false;
     }
+    k = roadLabels(put, proj, k);
     const list =
       state.hover >= 0
         ? [state.hover, ...ranked.filter((i) => i !== state.hover)]
         : ranked;
     const budget = focusActive()
       ? 80
-      : camDist > 220
+      : zoom.city
         ? 0
-        : camDist > 120
-          ? 14
-          : 60;
+        : camDist > 220
+          ? 0
+          : camDist > 120
+            ? 14
+            : 60;
     let shown = 0;
     for (const i of list) {
       if (shown >= budget && i !== state.hover) break;

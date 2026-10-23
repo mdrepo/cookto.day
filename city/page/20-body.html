@@ -3,10 +3,11 @@
   aria-label="cookto.day drawn as a night city: each file is a building, features are blocks downtown, packs are warehouses, the API Worker is the port"
 ></canvas>
 <div id="labels"></div>
+<div id="marks"></div>
 <div class="tip" id="tip" hidden></div>
 <div class="hint" id="hint">
-  Tap a building to see what it is · drag to move · right-drag or two fingers to
-  turn · scroll or pinch to zoom
+  Tap a block to go in · tap a gate for its rule · drag to move · right-drag or
+  two fingers to turn · scroll or pinch to zoom
 </div>
 
 <div class="hud">
@@ -14,6 +15,7 @@
     <div class="brand">
       <h1>cookto<span>.</span>day City</h1>
       <p id="stats"></p>
+      <nav class="where" id="where" aria-label="Where you are"></nav>
     </div>
     <div class="tools">
       <button type="button" class="btn" id="legend-btn" aria-pressed="true">
@@ -27,6 +29,15 @@
         title="Gaps, copies and what to do first"
       >
         Notices <em id="notices-n"></em>
+      </button>
+      <button
+        type="button"
+        class="btn"
+        id="hall-btn"
+        aria-pressed="false"
+        title="The rules about how work is done, and the decisions"
+      >
+        Town hall
       </button>
       <button
         type="button"
@@ -63,6 +74,14 @@
     </div>
     <div class="key">
       <div>
+        <b>From far away</b> each block is one shape. Zoom in, or tap one, and
+        its files rise as buildings.
+      </div>
+      <div>
+        <b>Walls and gates</b>: an ADR stands where it acts. The amber gate is
+        the way through; a red wall has a road over it.
+      </div>
+      <div>
         <b>Height</b> is the file's length. The zoning law: a screen stops at
         150 lines, anything else at 300.
       </div>
@@ -93,6 +112,13 @@
     id="notices"
     hidden
     aria-label="Notices: gaps, copies and what to do first"
+  ></aside>
+
+  <aside
+    class="legend notices hall glass"
+    id="hall"
+    hidden
+    aria-label="The town hall: rules of conduct and decisions"
   ></aside>
 
   <section class="insp glass" id="insp" hidden aria-live="polite"></section>

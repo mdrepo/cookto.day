@@ -5,6 +5,7 @@ import {
   type Adr,
   type Proposal,
 } from "./city-book-lib.js";
+import { overTheWall, type Gate } from "./city-borders-lib.js";
 import { copies, dishTwins, signs, twins } from "./city-dups-lib.js";
 import {
   beats,
@@ -15,6 +16,7 @@ import {
   walkGaps,
   walks,
   type Notice,
+  type NoticeItem,
   type Rule,
   type Walk,
 } from "./city-gaps-lib.js";
@@ -24,6 +26,8 @@ import {
   type CityNode,
   type Repo,
 } from "./city-graph-lib.js";
+import { conduct, withAsks, type HallRule } from "./city-hall-lib.js";
+import { gates } from "./city-port-lib.js";
 import { wayIn } from "./city-screens-lib.js";
 import { decorate, guests, junctions } from "./city-watch-lib.js";
 import {
@@ -37,12 +41,14 @@ import {
 } from "./city-works-lib.js";
 
 // The city's notice board (bun run city): every gap, copy and thing to watch
-// the scan found, in the order worth acting on. The page lists them, pins
-// each to its buildings, and takes the first few as "What now".
+// the scan found, in the order worth acting on, each with its ask. The page
+// lists them, pins each to its buildings, and takes the first few as "What
+// now". The walls and gates, and the town hall's rules, come out of it too.
 
 export interface Board {
   notices: Notice[];
-  rules: Rule[];
+  rules: HallRule[];
+  gates: Gate[];
   walks: Walk[];
   adrs: Adr[];
   proposals: Proposal[];
@@ -58,17 +64,24 @@ const readOr = (repo: Repo, file: string) =>
 /** The gaps: what the repo is missing, in the order worth acting on. */
 function gaps(
   nodes: CityNode[],
-  edges: CityEdge[],
   repo: Repo,
-  doors: Record<string, string>,
+  allGates: Gate[],
+  doors: NoticeItem[],
 ): Notice[] {
   return [
+    {
+      id: "wall",
+      kind: "gap",
+      title: "Roads over a wall",
+      why: "A wall stands where an ADR governs a place, and its gate is the one way through. A road or file that goes over the wall instead breaks the ADR.",
+      items: overTheWall(allGates.filter((g) => g.id !== "door")),
+    },
     {
       id: "door",
       kind: "gap",
       title: "Roads not through a door",
-      why: "A package's doors are the files its package.json exports name. A road from outside that enters anywhere else bypasses the contract.",
-      items: trespasses(nodes, edges, doors),
+      why: "A package's doors are the files its package.json exports name. A road from outside that enters anywhere else bypasses the contract (ADR 0016).",
+      items: doors,
     },
     {
       id: "shelf",
@@ -213,13 +226,27 @@ export function board(
   decorate(nodes, repo, allWalks);
   markDoors(nodes, doors);
   wayIn(nodes, edges, repo, en);
+  const doorless = trespasses(nodes, edges, doors);
+  const allowlist = JSON.parse(readOr(repo, ALLOWLIST) || "{}") as {
+    dependencies?: Record<string, unknown>;
+  };
+  const allGates = gates({
+    nodes,
+    edges,
+    repo,
+    doors,
+    shipping: Object.keys(allowlist.dependencies ?? {}),
+    trespasses: doorless,
+  });
+  const notices = withAsks([
+    ...gaps(nodes, repo, allGates, doorless),
+    ...copiesTwice(nodes, repo),
+    ...watchList(nodes, edges, repo, allRules, allAdrs),
+  ]);
   return {
-    notices: [
-      ...gaps(nodes, edges, repo, doors),
-      ...copiesTwice(nodes, repo),
-      ...watchList(nodes, edges, repo, allRules, allAdrs),
-    ],
-    rules: allRules,
+    notices,
+    rules: conduct(allRules, allGates, notices),
+    gates: allGates,
     walks: allWalks,
     adrs: allAdrs,
     proposals: proposals(repo),

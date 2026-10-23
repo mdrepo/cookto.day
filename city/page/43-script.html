@@ -1,0 +1,175 @@
+<script>
+  // ---------- Zoom levels ----------
+  // From far away each block is one shape, as tall as its buildings' bulk,
+  // with thick roads between blocks carrying their import counts. Come
+  // close, or tap a block, and its buildings rise in its place.
+  const SPAN = Math.max(city.x1 - city.x0, city.z1 - city.z0);
+  const CITY_IN = SPAN * 0.75,
+    CITY_OUT = SPAN * 0.6;
+  const masses = blocks.map((b) => {
+    const c = new THREE.Color(b.color);
+    const geo = new THREE.BoxGeometry(b.w + 1, 1, b.d + 1).translate(0, 0.5, 0);
+    const mesh = new THREE.Mesh(
+      geo,
+      new THREE.MeshStandardMaterial({
+        color: c.clone().lerp(BG, 0.2),
+        emissive: c.clone().multiplyScalar(0.22),
+        roughness: 0.75,
+        transparent: true,
+        opacity: 0,
+      }),
+    );
+    const edge = new THREE.LineSegments(
+      new THREE.EdgesGeometry(geo),
+      new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: 0 }),
+    );
+    const g = new THREE.Group();
+    g.add(mesh, edge);
+    g.position.set(b.cx, 0.3, b.cz);
+    g.visible = false;
+    mesh.userData.block = b;
+    scene.add(g);
+    return { b, g, mesh, edge, k: 0 };
+  });
+  // A block's bulk: the volume of the buildings standing now, over its footprint.
+  function bulk(b) {
+    if (state.hidden.has(b.district)) return 0;
+    let v = 0;
+    for (const i of b.ids)
+      if (nodes[i].added <= state.time) v += W[i] * W[i] * H[i];
+    return v ? Math.min(28, 2.5 + (v / (b.w * b.d)) * 2.4) : 0;
+  }
+  function tintMasses() {
+    for (const m of masses) {
+      const k = Math.min(0.55, (m.b.notices || 0) * 0.07);
+      m.mesh.material.color.lerp(ALARM_C, k);
+      m.edge.material.color.lerp(ALARM_C, k);
+    }
+  }
+
+  // Trunk roads: the imports between two blocks, one road each way summed.
+  const between = new Map();
+  for (const e of E) {
+    const a = blockOf[e.s],
+      b = blockOf[e.t];
+    if (e.k !== "import" || a === b) continue;
+    const [p, q] = blocks.indexOf(a) < blocks.indexOf(b) ? [a, b] : [b, a];
+    const r = between.get(p.id + ">" + q.id) ?? { a: p, b: q, n: 0 };
+    r.n++;
+    between.set(p.id + ">" + q.id, r);
+  }
+  const trunks = [...between.values()]
+    .filter((r) => r.n >= 2)
+    .sort((x, y) => y.n - x.n);
+  const tPos = [],
+    tCol = [];
+  for (const r of trunks) {
+    const dx = r.b.cx - r.a.cx,
+      dz = r.b.cz - r.a.cz,
+      len = Math.hypot(dx, dz) || 1;
+    const w = (0.5 + Math.log2(r.n) * 0.55) / 2,
+      px = (-dz / len) * w,
+      pz = (dx / len) * w;
+    const c = new THREE.Color(r.a.color).lerp(new THREE.Color(r.b.color), 0.5);
+    const A = [r.a.cx + px, r.a.cz + pz],
+      B = [r.a.cx - px, r.a.cz - pz],
+      C = [r.b.cx - px, r.b.cz - pz],
+      D = [r.b.cx + px, r.b.cz + pz];
+    for (const [x, z] of [A, B, C, A, C, D]) {
+      tPos.push(x, 0.4, z);
+      tCol.push(c.r, c.g, c.b);
+    }
+  }
+  const tGeo = new THREE.BufferGeometry();
+  tGeo.setAttribute("position", new THREE.Float32BufferAttribute(tPos, 3));
+  tGeo.setAttribute("color", new THREE.Float32BufferAttribute(tCol, 3));
+  const trunkMat = new THREE.MeshBasicMaterial({
+    vertexColors: true,
+    transparent: true,
+    opacity: 0,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+  });
+  const trunkMesh = new THREE.Mesh(tGeo, trunkMat);
+  trunkMesh.frustumCulled = false;
+  scene.add(trunkMesh);
+
+  // The level follows the camera: far away, nothing picked, is the city.
+  let cityK = 0;
+  function updateZoom(dt) {
+    const dist = camera.position.distanceTo(controls.target);
+    const free = !focusActive() && state.sel < 0;
+    const far = free && (zoom.city ? dist > CITY_OUT : dist > CITY_IN);
+    if (far !== zoom.city) {
+      zoom.city = far;
+      if (!far) zoom.open.clear();
+      refreshRise();
+      paint();
+    }
+    const step = Math.min(1, dt * 5);
+    cityK += ((zoom.city ? 1 : 0) - cityK) * step;
+    trunkMat.opacity = 0.5 * cityK;
+    trunkMesh.visible = cityK > 0.02;
+    for (const m of masses) {
+      const show = zoom.city && !zoom.open.has(m.b);
+      m.k += ((show ? 1 : 0) - m.k) * step;
+      const h = bulk(m.b);
+      m.g.visible = m.k > 0.02 && h > 0;
+      m.g.scale.y = Math.max(1e-3, h * m.k);
+      m.mesh.material.opacity = 0.92 * m.k;
+      m.edge.material.opacity = 0.75 * m.k;
+    }
+  }
+  function roadLabels(put, proj, k) {
+    if (cityK < 0.5) return k;
+    for (const r of trunks.filter((t) => t.n >= 4).slice(0, 18)) {
+      const at = proj((r.a.cx + r.b.cx) / 2, 0.5, (r.a.cz + r.b.cz) / 2);
+      const text = String(r.n),
+        bw = text.length * 7 + 12;
+      if (!at || !put(at[0] - bw / 2, at[1] - 9, bw, 18)) continue;
+      const d = labelEl(k++);
+      d.className = "lbl road";
+      d.textContent = text;
+      d.style.transform = `translate(${at[0] - bw / 2}px, ${at[1] - 9}px)`;
+      d.hidden = false;
+    }
+    return k;
+  }
+
+  // Tapping a block at the city level goes into it.
+  function pickMass(x, y) {
+    if (!zoom.city) return null;
+    mouse.set((x / innerWidth) * 2 - 1, -(y / innerHeight) * 2 + 1);
+    ray.setFromCamera(mouse, camera);
+    const shown = masses.filter((m) => m.g.visible && m.k > 0.5);
+    const hit = ray.intersectObjects(
+      shown.map((m) => m.mesh),
+      false,
+    )[0];
+    return hit ? hit.object.userData.block : null;
+  }
+  function openBlock(b) {
+    tip.hidden = true;
+    showDistrict(b.district);
+    zoom.open.add(b);
+    zoom.focus = b;
+    refreshRise();
+    paint();
+    const d = camera.position.clone().sub(controls.target).normalize();
+    frameBox(
+      new THREE.Box3(
+        new THREE.Vector3(b.x0 - 2, 0, b.z0 - 2),
+        new THREE.Vector3(b.x1 + 2, 14, b.z1 + 2),
+      ),
+      d.y < 0.25 ? VIEW : d,
+    );
+  }
+  function goCity() {
+    state.pathFrom = -1;
+    select(-1, false);
+    zoom.open.clear();
+    zoom.focus = null;
+    refreshRise();
+    fit();
+  }
+</script>

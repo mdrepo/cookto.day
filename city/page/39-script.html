@@ -1,23 +1,8 @@
 <script>
   // ---------- The notice board ----------
   // Gaps, copies and things to watch, from the scan (city-notices-lib.ts),
-  // plus the one check the page makes itself: roads that go the wrong way.
-  const WRONG = breaks.length
-    ? [
-        {
-          id: "wrongway",
-          kind: "gap",
-          title: "Roads that go the wrong way",
-          why: "ADR 0022: every road runs one way, from a feature down towards the engine, never between two features.",
-          items: breaks.map((k) => ({
-            text: `${nodes[E[k].s].label} → ${nodes[E[k].t].label}`,
-            ids: [nodes[E[k].s].id, nodes[E[k].t].id],
-            edge: k,
-          })),
-        },
-      ]
-    : [];
-  const NOTICES = [...WRONG, ...(G.notices || [])];
+  // each with its ask: a sentence to hand to an agent or file as an issue.
+  const NOTICES = G.notices || [];
   const posted = NOTICES.filter((g) => g.items.length);
   const todo = posted.filter((g) => g.kind !== "watch");
   const KINDS_N = { gap: "Gap", copy: "Copy", watch: "Watch" };
@@ -40,14 +25,19 @@
       why: item ? `${group.title}. ${group.why}` : group.why,
       file: item?.file,
       line: item?.line,
+      ask: item?.ask,
     };
     ids.forEach((i) => {
       showDistrict(blockOf[i].district);
       lit[i] = 1;
     });
-    items.forEach((it) => {
-      if (it.edge != null) litEdge[it.edge] = 2;
-    });
+    // A road over a wall, or past a door, shows red.
+    if (group.id === "wall" || group.id === "door")
+      items.forEach((it) => {
+        const [a, b] = idsOf(it.ids);
+        const k = a != null && b != null ? edgeOf(a, b) : null;
+        if (k != null) litEdge[k] = 2;
+      });
     if (ids.some((i) => nodes[i].added > state.time)) setTime(lastCommit);
     paint();
     renderInspector();
@@ -55,27 +45,59 @@
     touched();
   }
 
-  // The left panel: districts or notices. Narrow screens open and close it.
+  // The left panel: districts, notices or the town hall. Narrow screens open and close it.
   function panel(name) {
     const narrow = innerWidth <= 820;
-    const lg = $("legend"),
-      nt = $("notices");
+    const boxes = {
+      legend: $("legend"),
+      notices: $("notices"),
+      hall: $("hall"),
+    };
+    const box = boxes[name === "districts" ? "legend" : name];
     if (narrow) {
-      const box = name === "notices" ? nt : lg;
       const wasOpen = box.classList.contains("open");
-      lg.classList.remove("open");
-      nt.classList.remove("open");
-      lg.hidden = nt.hidden = false;
+      for (const b of Object.values(boxes)) {
+        b.classList.remove("open");
+        b.hidden = false;
+      }
       if (!wasOpen) box.classList.add("open");
-    } else {
-      lg.hidden = name === "notices";
-      nt.hidden = name !== "notices";
-    }
-    const shown = (el) =>
-      !el.hidden && (!narrow || el.classList.contains("open"));
-    $("legend-btn").setAttribute("aria-pressed", String(shown(lg)));
-    $("notices-btn").setAttribute("aria-pressed", String(shown(nt)));
+    } else for (const b of Object.values(boxes)) b.hidden = b !== box;
+    const shown = (b) => !b.hidden && (!narrow || b.classList.contains("open"));
+    for (const k of Object.keys(boxes))
+      $(k + "-btn").setAttribute("aria-pressed", String(shown(boxes[k])));
     requestAnimationFrame(measure);
+  }
+
+  // An ask, with a button that copies it.
+  function askBox(text) {
+    const d = el("div", { className: "ask" });
+    const p = el("p", { textContent: text });
+    const b = el("button", {
+      type: "button",
+      className: "copy",
+      textContent: "Copy the ask",
+    });
+    b.onclick = (e) => {
+      e.stopPropagation();
+      const done = () => {
+        b.textContent = "Copied";
+        setTimeout(() => (b.textContent = "Copy the ask"), 1600);
+      };
+      const pickText = () => {
+        const r = document.createRange();
+        r.selectNodeContents(p);
+        getSelection().removeAllRanges();
+        getSelection().addRange(r);
+        b.textContent = "Selected: copy it";
+      };
+      try {
+        navigator.clipboard.writeText(text).then(done, pickText);
+      } catch {
+        pickText();
+      }
+    };
+    d.append(p, b);
+    return d;
   }
 
   function noticeRow(group, it) {
@@ -103,21 +125,39 @@
     const count = todo.reduce((s, g) => s + g.items.length, 0);
     $("notices-n").textContent = count;
     const now = el("div", {});
-    now.append(el("h2", { textContent: "What now" }));
+    now.append(
+      el("h2", { textContent: "What now" }),
+      el("p", {
+        className: "why",
+        textContent:
+          "Five things to do first. Each ends in an ask you can hand to an agent or file as an issue.",
+      }),
+    );
     const ol = el("ol", { className: "wn" });
     for (const g of todo.slice(0, 5)) {
+      const it = g.items[0];
       const b = el("button", { type: "button" });
       b.append(
-        el("b", { textContent: `${g.items.length} ${g.title.toLowerCase()}` }),
-        el("span", { textContent: g.items[0].text }),
+        el("b", { textContent: g.title }),
+        el("span", { textContent: it.text }),
       );
-      b.onclick = () => {
-        const d = box.querySelector(`[data-id="${g.id}"]`);
-        d.open = true;
-        d.scrollIntoView({ block: "start", behavior: "smooth" });
-        showNotice(g);
-      };
-      ol.append(el("li", {}, b));
+      b.onclick = () => showNotice(g, it);
+      const li = el("li", {}, b, askBox(it.ask));
+      if (g.items.length > 1) {
+        const more = el("button", {
+          type: "button",
+          className: "more",
+          textContent: `${g.items.length - 1} more like this`,
+        });
+        more.onclick = () => {
+          const d = box.querySelector(`[data-id="${g.id}"]`);
+          d.open = true;
+          d.scrollIntoView({ block: "start", behavior: "smooth" });
+          showNotice(g);
+        };
+        li.append(more);
+      }
+      ol.append(li);
     }
     if (!todo.length)
       ol.append(
@@ -173,31 +213,6 @@
     box.append(groups);
   }
 
-  function renderLaws(box) {
-    const wrap = el("div", {});
-    const beats = G.rules.filter((r) => !r.guarded).length;
-    wrap.append(
-      el("h2", { textContent: "Statute book" }),
-      el("p", {
-        className: "why",
-        textContent: `${G.rules.length} rules in AGENTS.md. Each has an inspector, except the ${beats} marked: those hold only as long as the owner keeps reading.`,
-      }),
-    );
-    for (const r of G.rules) {
-      const row = el("div", { className: "law" + (r.guarded ? "" : " beat") });
-      row.append(
-        el("b", { textContent: r.title }),
-        el("small", {
-          textContent:
-            (r.guarded ? "Enforced by " : "Only you watch this: ") + r.enforced,
-        }),
-      );
-      if (r.adrs?.length) row.append(adrChips(r.adrs));
-      wrap.append(row);
-    }
-    box.append(wrap);
-  }
-
   function renderWalks(box) {
     const wrap = el("div", {});
     const tests = G.walks.reduce((s, w) => s + w.tests, 0),
@@ -239,11 +254,10 @@
     box.replaceChildren();
     renderWhatNow(box);
     renderGroups(box);
-    renderLaws(box);
-    renderDecisions(box);
     renderWalks(box);
   }
   $("legend-btn").onclick = () => panel("districts");
   $("notices-btn").onclick = () => panel("notices");
-  // renderNotices() runs once every part is loaded, at the end of 42-script.
+  $("hall-btn").onclick = () => panel("hall");
+  // renderNotices() runs once every part is loaded, in 49-script.
 </script>

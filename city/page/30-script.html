@@ -96,6 +96,20 @@
       color: "#ff7a55",
       what: (n) => `Part of the API Worker at cookto.day/api: ${n.group}.`,
     },
+    messenger: {
+      name: "Messenger",
+      color: "#f0a35e",
+      what: () =>
+        "The messenger: how the port hands a message to Telegram and keeps what is waiting to go.",
+    },
+    workflows: {
+      name: "Workflow",
+      color: "#e8c46a",
+      what: (n) =>
+        n.group === "templates"
+          ? "A template: every word the bot says, in each language."
+          : "The workflows engine: the bot's conversations, step by step, kept as rows.",
+    },
   };
   const FEATURES = {
     onboarding: "Getting started",

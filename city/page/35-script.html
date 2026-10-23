@@ -17,7 +17,12 @@
     canvas.style.cursor = "grab";
     if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) return;
     const i = pick(e.clientX, e.clientY);
-    if (i < 0) return;
+    if (i < 0) {
+      const b = pickMass(e.clientX, e.clientY);
+      if (b) openBlock(b);
+      else if (pickHall(e.clientX, e.clientY)) panel("hall");
+      return;
+    }
     if (e.shiftKey && state.sel >= 0 && i !== state.sel) showPath(state.sel, i);
     else if (state.pathFrom >= 0 && i !== state.pathFrom) {
       const a = state.pathFrom;
@@ -26,11 +31,8 @@
     } else select(i);
   });
   canvas.addEventListener("dblclick", (e) => {
-    if (pick(e.clientX, e.clientY) < 0) {
-      state.pathFrom = -1;
-      select(-1, false);
-      fit();
-    }
+    if (pick(e.clientX, e.clientY) < 0 && !pickMass(e.clientX, e.clientY))
+      goCity();
   });
   function hover() {
     if (!pending) return;
@@ -42,16 +44,27 @@
     }
     const i = pick(e.clientX, e.clientY);
     state.hover = i;
-    canvas.style.cursor = i >= 0 ? "pointer" : "grab";
-    if (i < 0) {
-      tip.hidden = true;
-      return;
-    }
-    const n = nodes[i];
+    const mass = i < 0 ? pickMass(e.clientX, e.clientY) : null,
+      hall = i < 0 && !mass && pickHall(e.clientX, e.clientY);
+    canvas.style.cursor = i >= 0 || mass || hall ? "pointer" : "grab";
+    if (i >= 0) {
+      const n = nodes[i];
+      showTip(e, n.label, `${KIND[n.layer].name} · ${blockOf[i].name}`);
+    } else if (mass)
+      showTip(
+        e,
+        mass.name,
+        `${plural(mass.ids.length, "building")} · tap to go in`,
+      );
+    else if (hall)
+      showTip(e, "The town hall", "The rules about how work is done");
+    else tip.hidden = true;
+  }
+  function showTip(e, title, line) {
     const b = document.createElement("b");
-    b.textContent = n.label;
+    b.textContent = title;
     const s = document.createElement("span");
-    s.textContent = `${KIND[n.layer].name} · ${blockOf[i].name}`;
+    s.textContent = line;
     tip.replaceChildren(b, s);
     tip.hidden = false;
     tip.style.left = Math.min(e.clientX + 14, innerWidth - 290) + "px";
@@ -150,6 +163,7 @@
       state.pathFrom = -1;
       select(-1);
     };
+    if (state.alarm?.gate) return renderGateCard(box, state.alarm.gate, close);
     if (state.alarm) {
       const a = state.alarm;
       box.append(
@@ -161,6 +175,7 @@
         ),
       );
       if (a.why) box.append(el("p", { className: "what", textContent: a.why }));
+      if (a.ask) box.append(askBox(a.ask));
       if (a.file)
         box.append(
           el(

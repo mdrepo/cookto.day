@@ -217,6 +217,10 @@
     playing: null,
     alarm: false,
   };
+  // Zoom levels: from far away each block is one shape (43-script); its
+  // buildings rise when you come close, or when the block is opened.
+  const zoom = { city: false, open: new Set(), focus: null };
+  const atLevel = (i) => !zoom.city || zoom.open.has(blockOf[i]);
   const rise = new Float32Array(N),
     riseTo = new Float32Array(N),
     flash = new Float32Array(N);
@@ -228,7 +232,8 @@
     nodes[i].added > state.time - state.window;
   const lit = new Uint8Array(N),
     litEdge = new Uint8Array(E.length);
-  const focusActive = () => !!(state.cone || state.path || state.alarm);
+  const focusActive = () =>
+    !!(state.cone || state.path || (state.alarm && !state.alarm.quiet));
   const WHITE = new THREE.Color("#ffffff"),
     RED = new THREE.Color("#ff6b57"),
     AMBER = new THREE.Color("#ffb547");

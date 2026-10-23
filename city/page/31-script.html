@@ -102,6 +102,30 @@
     [],
     sortedBy("api", byPack),
   );
+  const dock = [
+    block(
+      {
+        id: "messenger",
+        name: "Messenger",
+        district: "port",
+        color: KIND.messenger.color,
+        note: "The dock where messages leave for Telegram.",
+      },
+      [],
+      sortedBy("messenger"),
+    ),
+    block(
+      {
+        id: "workflows",
+        name: "Workflows",
+        district: "port",
+        color: KIND.workflows.color,
+        note: "The bot's conversations and every word it says.",
+      },
+      [],
+      sortedBy("workflows", byPack),
+    ),
+  ];
   // Lay rows out: downtown by the street at the front, then the works, then the warehouses at the back.
   let z0 = 0;
   const STREET = 9;
@@ -121,14 +145,23 @@
   }
   {
     const east = Math.max(
-      ...blocks.filter((b) => b !== port).map((b) => b.x0 + b.w),
+      ...[...rowA, ...rowB, ...rowC].map((b) => b.x0 + b.w),
     );
     port.x0 = east + GAP * 2.5;
     port.z0 = 0;
-    port.ids.forEach((i) => {
-      X[i] += port.x0;
-      Z[i] += port.z0;
-    });
+    // Behind the port, its dock: the messenger and the workflows.
+    let z = port.d + GAP;
+    for (const b of [port, ...dock]) {
+      if (b !== port) {
+        b.x0 = port.x0;
+        b.z0 = z;
+        z += b.d + GAP;
+      }
+      b.ids.forEach((i) => {
+        X[i] += b.x0;
+        Z[i] += b.z0;
+      });
+    }
   }
   for (const b of blocks) {
     b.x1 = b.x0 + b.w;
@@ -171,7 +204,7 @@
     port: {
       name: "The port",
       color: KIND.api.color,
-      note: "The API Worker. The only part that talks to the outside.",
+      note: "The API Worker, its messenger and its workflows. The only part that talks to the outside.",
     },
   };
   const city = {

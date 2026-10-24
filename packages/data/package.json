@@ -13,7 +13,8 @@
     "./read": "./src/read.ts",
     "./write": "./src/write.ts",
     "./network": "./src/network.ts",
-    "./sync": "./src/sync.ts"
+    "./sync": "./src/sync.ts",
+    "./household-settings": "./src/household-settings.ts"
   },
   "dependencies": {
     "@cookto/engine": "workspace:*"

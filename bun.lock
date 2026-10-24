@@ -33,6 +33,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@cookto/db": "workspace:*",
+        "@cookto/engine": "workspace:*",
         "@cookto/messenger": "workspace:*",
         "@cookto/templates": "workspace:*",
         "@cookto/workflows": "workspace:*",

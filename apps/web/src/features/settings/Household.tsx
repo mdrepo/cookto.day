@@ -7,8 +7,15 @@ import {
   Sheet,
   Stack,
 } from "@cookto/ui";
+import { lazy, Suspense } from "react";
 import { useHousehold } from "./useHousehold.js";
 import type { useInvite } from "./useInvite.js";
+
+// Meal times and days off load when Household first shows a household, so
+// Settings stays within its budget (ADR 0013).
+const Schedule = lazy(() =>
+  import("./Schedule.js").then((m) => ({ default: m.Schedule })),
+);
 
 /** "Who?", then the code to share and the wait: an invite's steps. */
 function InviteSteps({
@@ -79,6 +86,10 @@ export function Household() {
                 action: m.remove,
               }))}
             />
+            {s.timeZone !== null && <Note>{s.timeZone}</Note>}
+            <Suspense fallback={null}>
+              <Schedule hasCook={s.hasCook} />
+            </Suspense>
             {s.invite.invite.kind === "idle" ? (
               <Cluster>
                 <Button onClick={s.invite.askWho} busy={s.busy}>

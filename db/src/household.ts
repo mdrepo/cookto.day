@@ -106,6 +106,11 @@ export interface Households {
     limit: number,
   ): Promise<Pulled | null>;
   housekeeping(now: string): Promise<{ changes: number }>;
+  /** One collection of a household's records, whole, in id order (specs/240). */
+  records(
+    household: string,
+    collection: string,
+  ): Promise<PushedRecord["record"][]>;
 }
 
 export function functionHouseholds(call: Call, secret: string): Households {
@@ -167,5 +172,10 @@ export function functionHouseholds(call: Call, secret: string): Households {
       }) as Promise<Pulled | null>,
     housekeeping: (now) =>
       c("hh_housekeeping", { p_now: now }) as Promise<{ changes: number }>,
+    records: (household, collection) =>
+      c("hh_records", {
+        p_household: household,
+        p_collection: collection,
+      }) as Promise<PushedRecord["record"][]>,
   };
 }

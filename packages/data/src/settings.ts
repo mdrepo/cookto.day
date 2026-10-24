@@ -1,5 +1,6 @@
 import { createStore, type StoreApi } from "zustand/vanilla";
 import type { KeyValue } from "./kv.js";
+import { SCHEDULE_KEY, type Schedule, startSchedule } from "./schedule.js";
 import {
   type Cook,
   type CookWriter,
@@ -24,7 +25,8 @@ export type Beans = (typeof BEANS)[number];
 export const ROLES = ["cook", "plan"] as const;
 export type Role = (typeof ROLES)[number];
 
-export interface Settings {
+/** The schedule's three (specs/240) are with the rest, in ./schedule. */
+export interface Settings extends Schedule {
   language: string;
   theme: Theme;
   beans: Beans;
@@ -111,7 +113,7 @@ const strings = (v: unknown): v is string[] =>
   Array.isArray(v) && v.every((s) => typeof s === "string");
 
 /** The saved kitchen, or none when it's missing or not what we saved. */
-function readKitchen(text: string | null): KitchenSettings {
+export function readKitchen(text: string | null): KitchenSettings {
   try {
     const v = JSON.parse(text ?? "null") as Partial<KitchenSettings> | null;
     const sample = v?.sample ?? null;
@@ -201,6 +203,7 @@ function startingState(
         : options.fallbackCountry,
     onboarded: read(kv, ONBOARDED) === "yes",
     kitchen: readKitchen(read(kv, KITCHEN)),
+    ...startSchedule(read(kv, SCHEDULE_KEY)),
   };
 }
 

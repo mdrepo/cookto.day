@@ -29,10 +29,9 @@ export function useInvite(members: number) {
     askWho: () => {
       setInvite({ kind: "who" });
     },
-    roles: [
-      { role: "plan" as const, label: t.someoneWhoPlans },
-      { role: "cook" as const, label: t.theCook },
-    ],
+    // One planner for now (specs/240): someone who plans is invited again
+    // once a later spec decides who the bot asks.
+    roles: [{ role: "cook" as const, label: t.theCook }],
     chooseRole: (role: "plan" | "cook") => {
       setBusy(true);
       void api()

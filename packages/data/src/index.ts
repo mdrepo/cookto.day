@@ -57,6 +57,9 @@ export { type SyncRecord } from "./records.js";
 // when a phone that signed in syncs (specs/217). Its types are here.
 export type { Sync, SyncOptions, SyncOutcome } from "./sync.js";
 export { SYNC_TOPICS } from "./sync-topics.js";
+// The household's settings record is "@cookto/data/household-settings", its
+// own entry, loaded once a phone signs in (specs/240).
+export type { Schedule } from "./schedule.js";
 export {
   BEANS,
   ROLES,

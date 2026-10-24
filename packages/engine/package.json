@@ -12,6 +12,7 @@
     ".": "./src/index.ts",
     "./names": "./src/names.ts",
     "./time": "./src/time.ts",
+    "./schedule": "./src/schedule.ts",
     "./qr": "./src/qr.ts"
   }
 }

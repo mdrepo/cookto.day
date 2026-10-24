@@ -1,0 +1,220 @@
+<script>
+  // ---------- The town hall and the workshop (#252) ----------
+  // The town hall's room: the rules of conduct as plaques, the decisions as
+  // books, the specs in a filing cabinet, the notices on a pinboard, the
+  // gates on the table. The workshop: each skill a workbench with its
+  // steps, each generator a stamp with the files it makes.
+  const SHADE = {
+    guarded: "#7cc47a",
+    kept: "#7cc47a",
+    near: "#ffb547",
+    you: "#ff8f6b",
+    Accepted: "#5ec4b6",
+    Proposed: "#ffb547",
+    Superseded: "#6b7785",
+    built: "#7cc47a",
+    approved: "#7aa7ff",
+  };
+  const list = (items, ordered) =>
+    el(
+      ordered ? "ol" : "ul",
+      { className: "room-list" },
+      ...items.map((t) => el("li", { textContent: t })),
+    );
+  const gateOf = (n) => GATES.find((g) => g.adr === n);
+
+  ROOMS.hall = () => ({
+    title: "The town hall",
+    what: "How work is done here: the rules, the decisions behind them, the specs, what needs attention, and the walls around the city.",
+    walls: [
+      {
+        title: "Rules",
+        line: "AGENTS.md, and what guards each",
+        color: "#7cc47a",
+        items: G.rules.map((r) => ({
+          title: r.title,
+          sub: r.now.text,
+          color: SHADE[r.now.state] ?? "#7cc47a",
+          open: () =>
+            openCard({
+              kicker: "Rule · AGENTS.md",
+              title: r.title,
+              color: SHADE[r.now.state],
+              state: [r.now.text, r.guarded ? "ok" : "bad"],
+              what:
+                (r.guarded ? "Guarded by " : "Only you watch this: ") +
+                r.enforced.replace(/`/g, ""),
+              body: r.adrs?.length
+                ? [
+                    el("p", {
+                      textContent: `Rests on ADR ${r.adrs.join(", ")}`,
+                    }),
+                  ]
+                : [],
+              link: "AGENTS.md",
+              ...(gateOf(r.gate)
+                ? {
+                    go: [
+                      "See its gate in the city",
+                      () => showGate(gateOf(r.gate)),
+                    ],
+                  }
+                : {}),
+            }),
+        })),
+      },
+      {
+        title: "Decisions",
+        line: "The ADRs in docs/adr: accepted ones are binding",
+        color: "#5ec4b6",
+        shape: "book",
+        items: G.adrs.map((a) => ({
+          title: a.n,
+          sub: a.title,
+          color: SHADE[a.status],
+          open: () =>
+            openCard({
+              kicker: `ADR ${a.n} · ${a.status}`,
+              title: a.title,
+              color: SHADE[a.status],
+              what: a.cites.length
+                ? `Rests on ADR ${a.cites.join(", ")}.`
+                : "Rests on no other decision.",
+              link: a.file,
+              ...(gateOf(a.n)
+                ? {
+                    go: [
+                      "See its gate in the city",
+                      () => showGate(gateOf(a.n)),
+                    ],
+                  }
+                : {}),
+            }),
+        })),
+      },
+      {
+        title: "Specs",
+        line: "One drawer per issue: approved, or built",
+        color: "#7aa7ff",
+        shape: "drawer",
+        items: G.specs.map((s) => ({
+          title: `#${s.n}`,
+          sub: s.title,
+          color: SHADE[s.state],
+          open: () =>
+            openCard({
+              kicker: `Spec · #${s.n}`,
+              title: s.title,
+              color: SHADE[s.state],
+              state:
+                s.state === "built"
+                  ? ["Built: a feature or fix names it", "ok"]
+                  : ["Approved, not built yet", "warn"],
+              link: s.file,
+            }),
+        })),
+      },
+      {
+        title: "Notices",
+        line: "Gaps and copies the scan found",
+        color: "#ff6b57",
+        items: NOTICES.filter((n) => n.items.length).map((n) => ({
+          title: n.title,
+          sub: plural(n.items.length, "item"),
+          color: n.kind === "gap" ? "#ff6b57" : "#ffb547",
+          open: () =>
+            openCard({
+              kicker: `Notice · ${plural(n.items.length, "item")}`,
+              title: n.title,
+              color: "#ff6b57",
+              what: n.why,
+              body: n.items.flatMap((it) => [
+                el("p", { className: "what", textContent: it.text }),
+                ...(it.ask ? [askBox(it.ask)] : []),
+              ]),
+            }),
+        })),
+      },
+    ],
+    table: {
+      title: "Gates",
+      items: GATES.map((g) => ({
+        title: g.title,
+        color: g.over.length ? "#ff6b57" : "#ffb547",
+        open: () =>
+          openCard({
+            kicker: `Gate · ADR ${g.adr}`,
+            title: g.title,
+            color: "#ffb547",
+            state: g.over.length
+              ? [`${plural(g.over.length, "road")} over the wall`, "bad"]
+              : ["Kept: nothing goes over the wall", "ok"],
+            body: [
+              factList([
+                ["Lets through", g.lets],
+                ["Stops", g.stops],
+                ["Guarded by", g.guard],
+              ]),
+            ],
+            go: ["See it in the city", () => showGate(g)],
+          }),
+      })),
+    },
+  });
+
+  ROOMS.workshop = () => ({
+    title: "The workshop",
+    what: "How things get made: the skills agents follow, step by step, and the stamps that make a new part or screen with every file it needs.",
+    walls: [
+      {
+        title: "Skills",
+        line: "Each skill a workbench, its steps in order",
+        color: "#b39af0",
+        items: G.skills.map((s) => ({
+          title: s.name,
+          sub: s.steps.join(" → "),
+          color: "#b39af0",
+          open: () =>
+            openCard({
+              kicker: `Skill · ${plural(s.steps.length, "step")}`,
+              title: s.name,
+              color: "#b39af0",
+              what: s.what,
+              body: [list(s.steps, true)],
+              link: s.file,
+            }),
+        })),
+      },
+      {
+        title: "Stamps",
+        line: "bun run new: a new part, with every file",
+        color: "#d9c69a",
+        items: G.stamps.map((s) => ({
+          title: s.command.replace("bun run ", ""),
+          sub: plural(s.makes.length, "file"),
+          color: "#d9c69a",
+          open: () =>
+            openCard({
+              kicker: "Stamp",
+              title: s.command,
+              color: "#d9c69a",
+              what: s.what,
+              body: [
+                el("h3", { textContent: "Makes" }),
+                list(s.makes),
+                ...(s.edits.length
+                  ? [el("h3", { textContent: "Adds a line to" }), list(s.edits)]
+                  : []),
+              ],
+            }),
+        })),
+      },
+      null,
+      null,
+    ],
+  });
+
+  // The ways in: the town hall's button, sign and building; the workshop's.
+  $("hall-btn").onclick = () => enterRoom("hall");
+  $("workshop-btn").onclick = () => enterRoom("workshop");
+</script>

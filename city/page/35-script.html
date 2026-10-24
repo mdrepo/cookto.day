@@ -20,7 +20,7 @@
     if (i < 0) {
       const b = pickMass(e.clientX, e.clientY);
       if (b) openBlock(b);
-      else if (pickHall(e.clientX, e.clientY)) panel("hall");
+      else if (pickHall(e.clientX, e.clientY)) enterRoom("hall");
       return;
     }
     if (e.shiftKey && state.sel >= 0 && i !== state.sel) showPath(state.sel, i);

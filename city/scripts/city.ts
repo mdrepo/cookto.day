@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { buildGraph, parseHistory } from "./city-graph-lib.js";
 import { board } from "./city-notices-lib.js";
 import { people } from "./city-people-lib.js";
+import { skills, specs, stamps } from "./city-room-lib.js";
 
 // bun run city: draws the repo as a night city, every file a building, into
 // .build/city/index.html (open it in a browser), with graph.json beside it.
@@ -38,11 +39,12 @@ const history = parseHistory(
     "--name-status",
   ),
 );
-const graph = buildGraph({
+const repoNow = {
   files,
-  read: (path) => readFileSync(path, "utf8"),
+  read: (path: string) => readFileSync(path, "utf8"),
   history,
-});
+};
+const graph = buildGraph(repoNow);
 
 // The English words, for what each screen shows (city-screens-lib).
 const { en } = (await import(
@@ -93,6 +95,10 @@ const data = {
   ...graph,
   ...notices,
   people: crew,
+  // The town hall's filing cabinet and the workshop (#252).
+  specs: specs(repoNow),
+  skills: skills(repoNow),
+  stamps: stamps(repoNow),
 };
 const page = readdirSync(PARTS)
   .filter((f) => f.endsWith(".html"))

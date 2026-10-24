@@ -1,0 +1,259 @@
+<script>
+  // ---------- In a room (#252) ----------
+  // Going in hides the city's labels and panels and shows the room's own bar:
+  // its name, the way back, and a button per wall. The camera stands in the
+  // middle; a wall it walks to fills the view. The city's controls wait.
+  const ROOMS = {};
+  function enterRoom(name) {
+    const plan = ROOMS[name]?.();
+    if (!plan) return;
+    ROOM.built[name] ??= buildRoom(plan);
+    ROOM.open = ROOM.built[name];
+    controls.enabled = false;
+    document.body.classList.add("in-room");
+    $("insp").hidden = true;
+    // In at the door: the table in front, the first wall beyond it.
+    ROOM.pos.copy(DOOR.pos);
+    ROOM.yaw = 0;
+    ROOM.pitch = DOOR.pitch;
+    ROOM.goal = null;
+    renderRoomBar(name);
+    resize();
+  }
+  function leaveRoom() {
+    ROOM.open = null;
+    controls.enabled = true;
+    document.body.classList.remove("in-room");
+    $("room-bar").hidden = true;
+    $("insp").hidden = true;
+    requestAnimationFrame(measure);
+  }
+  // Walk to a wall: face it, and stand where the whole wall fits the view.
+  // On a phone no spot in the room fits it: come close enough to read, and
+  // look round with a drag.
+  function toWall(k) {
+    const W = WALLS[k],
+      cam = ROOM.camera;
+    const dx = W.at[0],
+      dz = W.at[1],
+      len = Math.hypot(dx, dz);
+    const half = Math.tan(THREE.MathUtils.degToRad(cam.fov / 2));
+    // Back across the room if need be, short of the far wall.
+    const fits = W.span / 2 / (half * cam.aspect) + 0.5;
+    const keep = len - (fits <= len * 2 - 3 ? fits : 7);
+    ROOM.goal = {
+      yaw: W.ry,
+      pitch: 0.02,
+      pos: new THREE.Vector3((dx / len) * keep, 4.4, (dz / len) * keep),
+    };
+  }
+  const DOOR = { pos: new THREE.Vector3(0, 4.8, 9.5), pitch: -0.14 };
+  // Back to the door, facing the first wall.
+  function toMiddle() {
+    ROOM.goal = { yaw: 0, pitch: DOOR.pitch, pos: DOOR.pos.clone() };
+  }
+  // Over the table, looking down at what stands on it.
+  function toTable() {
+    ROOM.goal = { yaw: 0, pitch: -0.75, pos: new THREE.Vector3(0, 8, 5.5) };
+  }
+  function updateRoom(dt) {
+    const g = ROOM.goal;
+    if (g) {
+      const k = Math.min(1, dt * 4);
+      let dy = g.yaw - ROOM.yaw;
+      dy = Math.atan2(Math.sin(dy), Math.cos(dy));
+      ROOM.yaw += dy * k;
+      ROOM.pitch += (g.pitch - ROOM.pitch) * k;
+      ROOM.pos.lerp(g.pos, k);
+      if (Math.abs(dy) < 0.002 && ROOM.pos.distanceTo(g.pos) < 0.02)
+        ROOM.goal = null;
+    }
+    const cam = ROOM.camera;
+    cam.position.copy(ROOM.pos);
+    cam.rotation.set(ROOM.pitch, ROOM.yaw, 0, "YXZ");
+  }
+
+  // Taps and drags in the room, ahead of the city's own: the city never sees
+  // them while a room is open.
+  function roomHit(x, y) {
+    const r = canvas.getBoundingClientRect();
+    roomPoint.set(
+      ((x - r.left) / r.width) * 2 - 1,
+      -((y - r.top) / r.height) * 2 + 1,
+    );
+    roomRay.setFromCamera(roomPoint, ROOM.camera);
+    const hit = roomRay.intersectObjects(
+      [...ROOM.open.items, ...ROOM.open.walls],
+      false,
+    )[0];
+    return hit?.object.userData ?? null;
+  }
+  const swallow = (e) => {
+    if (!ROOM.open) return false;
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    return true;
+  };
+  canvas.addEventListener(
+    "pointerdown",
+    (e) => {
+      if (!swallow(e)) return;
+      canvas.setPointerCapture(e.pointerId);
+      ROOM.drag = { x: e.clientX, y: e.clientY, moved: 0 };
+    },
+    true,
+  );
+  canvas.addEventListener(
+    "pointermove",
+    (e) => {
+      if (!ROOM.open) return;
+      e.stopImmediatePropagation();
+      const d = ROOM.drag;
+      if (!d) {
+        const hit = roomHit(e.clientX, e.clientY);
+        canvas.style.cursor = hit?.item ? "pointer" : "grab";
+        return;
+      }
+      const dx = e.clientX - d.x,
+        dy = e.clientY - d.y;
+      d.moved += Math.abs(dx) + Math.abs(dy);
+      d.x = e.clientX;
+      d.y = e.clientY;
+      ROOM.goal = null;
+      ROOM.yaw += dx * 0.005;
+      ROOM.pitch = Math.max(-0.7, Math.min(0.5, ROOM.pitch + dy * 0.004));
+    },
+    true,
+  );
+  canvas.addEventListener(
+    "pointerup",
+    (e) => {
+      if (!swallow(e)) return;
+      const d = ROOM.drag;
+      ROOM.drag = null;
+      if (!d || d.moved > 8) return;
+      const hit = roomHit(e.clientX, e.clientY);
+      if (hit?.item) hit.item.open();
+      else if (hit?.wall != null) toWall(hit.wall);
+      else toMiddle();
+    },
+    true,
+  );
+  for (const kind of ["wheel", "dblclick", "pointercancel"])
+    canvas.addEventListener(kind, (e) => void swallow(e), {
+      capture: true,
+      passive: false,
+    });
+  addEventListener("keydown", (e) => {
+    if (ROOM.open && e.key === "Escape") leaveRoom();
+  });
+
+  // The room's bar: where you are, the way out, and each wall by name.
+  function renderRoomBar(name) {
+    const plan = ROOM.open.plan,
+      bar = $("room-bar");
+    const back = el("button", {
+      type: "button",
+      className: "btn",
+      textContent: "← Back to the city",
+    });
+    back.onclick = leaveRoom;
+    const walls = el("div", { className: "room-walls" });
+    plan.walls.forEach((w, k) => {
+      if (!w) return;
+      const b = el("button", {
+        type: "button",
+        className: "chip",
+        textContent: `${w.title} ${w.items.length}`,
+      });
+      b.style.setProperty("--c", w.color);
+      b.onclick = () => toWall(k);
+      walls.append(b);
+    });
+    if (plan.table) {
+      const b = el("button", {
+        type: "button",
+        className: "chip",
+        textContent: `${plan.table.title} ${plan.table.items.length}`,
+      });
+      b.onclick = toTable;
+      walls.append(b);
+    }
+    bar.replaceChildren(
+      el(
+        "div",
+        { className: "room-head" },
+        el("h2", { textContent: plan.title }),
+        back,
+      ),
+      el("p", { className: "why", textContent: plan.what }),
+      walls,
+      el("p", {
+        className: "room-hint",
+        textContent:
+          "Drag to look round · tap a wall to walk to it · tap anything to open it",
+      }),
+    );
+    bar.hidden = false;
+  }
+
+  // A thing's card, in the city's own card panel.
+  function openCard(c) {
+    const box = $("insp");
+    const close = el("button", {
+      type: "button",
+      className: "x",
+      textContent: "×",
+      ariaLabel: "Close",
+    });
+    close.onclick = () => (box.hidden = true);
+    const kick = el("div", { className: "kicker", textContent: c.kicker });
+    kick.style.setProperty("--c", c.color ?? "#ffb547");
+    box.replaceChildren(
+      el(
+        "div",
+        { className: "insp-head" },
+        el("div", {}, kick, el("h2", { textContent: c.title })),
+        close,
+      ),
+      ...(c.what ? [el("p", { className: "what", textContent: c.what })] : []),
+      ...(c.state
+        ? [
+            el("p", {
+              className: "state " + c.state[1],
+              textContent: c.state[0],
+            }),
+          ]
+        : []),
+      ...(c.body ?? []),
+    );
+    if (c.link)
+      box.append(
+        el(
+          "div",
+          {},
+          el("a", {
+            className: "open",
+            href: G.github + c.link,
+            target: "_blank",
+            rel: "noopener",
+            textContent: `Read ${c.link.split("/").pop()} on GitHub ↗`,
+          }),
+        ),
+      );
+    if (c.go) {
+      const b = el("button", {
+        type: "button",
+        className: "btn go",
+        textContent: c.go[0],
+      });
+      b.onclick = () => {
+        leaveRoom();
+        c.go[1]();
+      };
+      box.append(b);
+    }
+    box.hidden = false;
+    box.scrollTop = 0;
+  }
+</script>

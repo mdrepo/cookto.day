@@ -46,7 +46,7 @@
     "@types/react-dom": "19.3.0",
     "eslint": "10.11.0",
     "eslint-plugin-react-hooks": "7.1.1",
-    "happy-dom": "20.14.5",
+    "happy-dom": "21.0.4",
     "knip": "6.38.0",
     "prettier": "3.9.9",
     "turbo": "2.11.7",

@@ -84,6 +84,8 @@ test.describe("Connect the cook", () => {
     const now = api.sends.filter((s) => s.at === undefined);
     expect(now).toHaveLength(1);
     expect(now[0]?.text.split("\n")).toEqual(text?.split("\n"));
+    // specs/241: nothing waits on the server for 9 pm; the bot asks at 10.
+    expect(api.sends.filter((s) => s.at !== undefined)).toEqual([]);
   });
 
   test("couldn't send", async ({ page }) => {

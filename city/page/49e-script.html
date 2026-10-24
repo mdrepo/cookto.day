@@ -1,0 +1,53 @@
+<script>
+  // ---------- Pictures (#252) ----------
+  // Taken when the city was built (city-pictures.ts): each feature's main
+  // screen, with the sample kitchen in, and each part of the design kit as
+  // its kit page shows it. A screen's card shows its screen in a phone; a
+  // kit part's card shows the part. Each feature's block holds its screen
+  // up to the street, like a shop window.
+  const PICS = G.pictures ?? { screens: {}, kit: {} };
+  function pictureOf(n) {
+    const screen = n.layer === "screens" ? PICS.screens[n.group] : null;
+    const part =
+      n.layer === "ui" ? PICS.kit[n.label.replace(/\.kit$/, "")] : null;
+    const src = screen ?? part;
+    if (!src) return null;
+    return el(
+      "figure",
+      { className: screen ? "look phone" : "look part" },
+      el("img", {
+        src,
+        alt: screen
+          ? `The ${featureName(n.group)} screen, with the sample kitchen`
+          : `${n.label} from the kit page`,
+        loading: "lazy",
+      }),
+      el("figcaption", {
+        textContent: screen
+          ? `The ${featureName(n.group)} screen, with the sample kitchen in`
+          : "From the kit page: light, in English",
+      }),
+    );
+  }
+
+  // Each feature's screen, held up on a board at its block's street side.
+  const loader = new THREE.TextureLoader();
+  for (const b of blocks) {
+    const src = b.id.startsWith("feat:") && PICS.screens[b.id.slice(5)];
+    if (!src) continue;
+    const w = Math.min(7, (b.x1 - b.x0) * 0.8),
+      h = w * 2;
+    const board = new THREE.Mesh(
+      new THREE.PlaneGeometry(w, h),
+      new THREE.MeshBasicMaterial({ map: loader.load(src), toneMapped: false }),
+    );
+    board.position.set((b.x0 + b.x1) / 2, h / 2 + 0.6, b.z1 + 1.2);
+    scene.add(board);
+    const frame = new THREE.Mesh(
+      new THREE.PlaneGeometry(w + 0.5, h + 0.5),
+      new THREE.MeshBasicMaterial({ color: "#05080c" }),
+    );
+    frame.position.copy(board.position).add(new THREE.Vector3(0, 0, -0.02));
+    scene.add(frame);
+  }
+</script>

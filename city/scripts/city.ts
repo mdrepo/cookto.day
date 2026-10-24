@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { buildGraph, parseHistory } from "./city-graph-lib.js";
 import { board } from "./city-notices-lib.js";
 import { people } from "./city-people-lib.js";
+import { takePictures } from "./city-pictures.js";
 import { skills, specs, stamps } from "./city-room-lib.js";
 
 // bun run city: draws the repo as a night city, every file a building, into
@@ -96,6 +97,9 @@ const data = {
   ...notices,
   people: crew,
   // The town hall's filing cabinet and the workshop (#252).
+  pictures: process.argv.includes("--no-pictures")
+    ? { screens: {}, kit: {} }
+    : await takePictures(process.cwd()),
   specs: specs(repoNow),
   skills: skills(repoNow),
   stamps: stamps(repoNow),

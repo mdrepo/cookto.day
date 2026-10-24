@@ -26,6 +26,7 @@ export type {
   SignInApi,
   SignInStatus,
   SyncApi,
+  TelegramAppApi,
 } from "./network.js";
 export {
   type AppPack,

@@ -9,10 +9,12 @@
     "test": "bun test ./test"
   },
   "dependencies": {
+    "@cookto/data": "workspace:*",
     "@cookto/db": "workspace:*",
     "@cookto/engine": "workspace:*",
     "@cookto/messenger": "workspace:*",
     "@cookto/templates": "workspace:*",
+    "@cookto/usecases": "workspace:*",
     "@cookto/workflows": "workspace:*"
   }
 }

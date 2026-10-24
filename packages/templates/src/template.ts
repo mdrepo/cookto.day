@@ -17,6 +17,11 @@ export interface Template {
   buttons?: Record<string, string>;
   /** Slots that are counts, said in the language's plural forms. */
   plurals?: Record<string, PluralForms>;
+  /**
+   * Buttons that open a page of cookto.day inside the chat (specs/241),
+   * by key: the slot that holds the page's address.
+   */
+  links?: Record<string, string>;
 }
 
 /** Every template of one language, by id. */

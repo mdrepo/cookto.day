@@ -32,10 +32,12 @@
       "name": "@cookto/api",
       "version": "0.0.0",
       "dependencies": {
+        "@cookto/data": "workspace:*",
         "@cookto/db": "workspace:*",
         "@cookto/engine": "workspace:*",
         "@cookto/messenger": "workspace:*",
         "@cookto/templates": "workspace:*",
+        "@cookto/usecases": "workspace:*",
         "@cookto/workflows": "workspace:*",
       },
     },

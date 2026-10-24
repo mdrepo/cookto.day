@@ -1,11 +1,11 @@
 import type { RunRow, Runs } from "@cookto/db";
 import type { Catalogues } from "@cookto/templates";
 import type { Event, Workflow } from "@cookto/workflows";
+import type { MessengerDeps } from "../messenger/deps.js";
 
 // What the workflows engine needs (ADR 0034): the runs, the workflows by
-// name, the actions they name, every language's templates, and the switch
-// for everyone. Production has no workflows yet (specs/234); the tests give
-// it one.
+// name, the actions they name, the starters the cron runs, every
+// language's templates, and the switch for everyone.
 
 /**
  * An action a step names. It changes the household; `key` is the run and
@@ -15,12 +15,17 @@ export type Action = (a: {
   run: RunRow;
   key: string;
   input: Event;
+  d: MessengerDeps;
 }) => Promise<void>;
+
+/** Makes the runs that are due now, each once: tomorrow's at 10 pm. */
+export type Starter = (d: MessengerDeps) => Promise<void>;
 
 export interface WorkflowDeps {
   runs: Runs;
   workflows: Record<string, Workflow>;
   actions: Record<string, Action>;
+  starters?: Starter[];
   templates: Catalogues;
   /** BOT_OFF: no run starts, and no run's message is queued. */
   off: boolean;

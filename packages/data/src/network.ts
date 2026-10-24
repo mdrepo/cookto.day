@@ -250,9 +250,20 @@ const householdApi = (call: Call): HouseholdApi => ({
   },
 });
 
+/** Signing in from a page the bot opened inside Telegram (specs/241). */
+export interface TelegramAppApi {
+  /** Telegram's proof of who opened the page; 401 when it doesn't hold. */
+  telegramSignIn(initData: string): Promise<{ name: string }>;
+}
+
 export function createApi(
   options: ApiOptions = {},
-): Api & SignInApi & SyncApi & HouseholdApi & HouseholdSendApi {
+): Api &
+  SignInApi &
+  SyncApi &
+  HouseholdApi &
+  HouseholdSendApi &
+  TelegramAppApi {
   const call = callerOf(options);
   return {
     ...cookApi(call),
@@ -260,5 +271,9 @@ export function createApi(
     ...signInApi(call),
     ...syncApi(call),
     ...householdApi(call),
+    telegramSignIn: (initData) =>
+      call("POST", "/api/auth/telegram", undefined, { initData }) as Promise<{
+        name: string;
+      }>,
   };
 }

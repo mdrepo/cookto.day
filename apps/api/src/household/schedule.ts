@@ -20,6 +20,8 @@ export interface Schedule {
   /** The meals at least one person eats, in the day's order. */
   slots: MealSlot[];
   daysOff: DaysOff;
+  /** The day whose plan was approved, "YYYY-MM-DD" (specs/241). */
+  sorted: string | null;
 }
 
 const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
@@ -58,6 +60,7 @@ export async function schedule(
         ? off.dates.filter((d): d is string => typeof d === "string")
         : [],
     },
+    sorted: typeof settings?.sorted === "string" ? settings.sorted : null,
   };
 }
 

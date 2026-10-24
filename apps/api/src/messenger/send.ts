@@ -1,5 +1,7 @@
 import { accountOf } from "../auth/session.js";
 import { json, problem } from "../http.js";
+import { finish } from "../workflows/engine.js";
+import { tomorrowRun } from "../workflows/tomorrow.js";
 import {
   bearer,
   iso,
@@ -98,7 +100,23 @@ export async function send(
       ),
     );
   d.after(d.messenger.drain());
+  await answeredInTheApp(request, d, context);
   return json(202, { id: ids[0], ids });
+}
+
+/**
+ * Tomorrow's plan sent from the app (specs/241): the bot's 10 pm question
+ * for that day is answered, so its run ends and nothing goes at 11 pm.
+ */
+async function answeredInTheApp(
+  request: Request,
+  d: MessengerDeps,
+  context: unknown,
+): Promise<void> {
+  const day = /^plan:(\d{4}-\d{2}-\d{2})$/.exec(String(context))?.[1];
+  const who = day ? await accountOf(request, d) : null;
+  const home = who ? await d.households.get(who.account) : null;
+  if (day && home) await finish(d, tomorrowRun(home.id, day));
 }
 
 /** DELETE /api/messenger/send/{id}: a message still waiting is cancelled. */

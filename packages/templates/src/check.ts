@@ -27,6 +27,9 @@ function limits(where: string, t: Template): string[] {
     problems.push(`${where}: more than 3 buttons`);
   if (t.kind === "choices" && n > LIMITS.choices)
     problems.push(`${where}: more than 10 choices`);
+  for (const key of Object.keys(t.links ?? {}))
+    if (!(key in (t.buttons ?? {})))
+      problems.push(`${where}: a link with no button: ${key}`);
   return problems;
 }
 

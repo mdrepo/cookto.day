@@ -153,6 +153,25 @@ export const FUNCTIONS = {
   runs_expired: { ...SECRET, p_now: "timestamptz" },
   hh_bot_off: { ...SECRET, p_account: "uuid", p_off: "boolean" },
   hh_records: { ...SECRET, p_household: "uuid", p_collection: "text" },
+  hh_list: { ...SECRET },
+  hh_put: {
+    ...SECRET,
+    p_household: "uuid",
+    p_records: "jsonb",
+    p_now: "timestamptz",
+  },
+  hh_reach_planners: {
+    ...SECRET,
+    p_household: "uuid",
+    p_channel: "text",
+    p_now: "timestamptz",
+  },
+  auth_telegram_session: {
+    ...SECRET,
+    p_channel: "text",
+    p_user_id: "text",
+    p_now: "timestamptz",
+  },
 } as const satisfies Record<string, Record<string, SqlType>>;
 
 export type FunctionName = keyof typeof FUNCTIONS;

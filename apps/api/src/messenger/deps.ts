@@ -23,6 +23,8 @@ export interface MessengerDeps {
   now: () => number;
   /** The workflows engine (ADR 0034); without it, no run is reached. */
   workflows?: WorkflowDeps;
+  /** The bot's token, to check a web app's proof (specs/241); never logged. */
+  telegramToken?: string;
 }
 
 /** The link's token from the Authorization header, or null. */

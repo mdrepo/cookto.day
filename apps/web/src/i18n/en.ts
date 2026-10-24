@@ -214,7 +214,7 @@ export const en = {
   qrCode: "QR code of the link",
   tryAgain: "Try again",
   sentToCook: "Sent to the cook, {time}",
-  goesToCook: "Goes to the cook at 9 pm",
+  weAskAtTen: "We'll ask you at 10 pm.",
   sendToCook: "Send to the cook",
   sendAgain: "Send again",
   changedSinceSent: "Changed since you sent it",

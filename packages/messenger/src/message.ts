@@ -2,9 +2,15 @@
 // kind is added when a spec first sends it; the first four are text, photo,
 // buttons and an edit of a message already sent.
 
-/** A button under a message: a value that comes back when pressed, or a link. */
+/**
+ * A button under a message: a value that comes back when pressed, a link,
+ * or a page that opens inside the chat (specs/241: Telegram's web app; a
+ * call-to-action link on WhatsApp).
+ */
 export type Button =
-  { label: string; value: string } | { label: string; url: string };
+  | { label: string; value: string }
+  | { label: string; url: string }
+  | { label: string; app: string };
 
 export type Message =
   | { kind: "text"; text: string }

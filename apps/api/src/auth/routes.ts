@@ -3,6 +3,7 @@ import { bearer, iso, type MessengerDeps, sha256 } from "../messenger/deps.js";
 import type { MessengerRoute } from "../messenger/routes.js";
 import { addressKey } from "../usage/address.js";
 import { clearedCookie, sessionCookie, sessionToken } from "./cookie.js";
+import { telegramAppSignIn } from "./telegram-app.js";
 
 // Sign in with Telegram (spec #216, ADR 0033): the phone asks for a code,
 // the person presses Start in the bot (messenger/webhook.ts), and the phone,
@@ -109,4 +110,5 @@ export const AUTH_ROUTES: MessengerRoute[] = [
   },
   { method: "GET", path: "/api/auth/me", handler: me },
   { method: "DELETE", path: "/api/auth/session", handler: signOut },
+  { method: "POST", path: "/api/auth/telegram", handler: telegramAppSignIn },
 ];

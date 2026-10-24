@@ -65,6 +65,16 @@ const PackScreen = lazy(() =>
     default: m.PackScreen,
   })),
 );
+const CookScreen = lazy(() =>
+  import("./features/cook/CookScreen.js").then((m) => ({
+    default: m.CookScreen,
+  })),
+);
+const TelegramScreen = lazy(() =>
+  import("./features/telegram/TelegramScreen.js").then((m) => ({
+    default: m.TelegramScreen,
+  })),
+);
 const StaplesScreen = lazy(() =>
   import("./features/staples/StaplesScreen.js").then((m) => ({
     default: m.StaplesScreen,
@@ -125,6 +135,10 @@ function Page() {
       return <MoreScreen bar={<Bar current={route} />} />;
     case "pack":
       return <PackScreen bar={<Bar current={route} />} />;
+    case "cook":
+      return <CookScreen />;
+    case "telegram":
+      return <TelegramScreen />;
     default:
       return (
         <OnboardingScreen

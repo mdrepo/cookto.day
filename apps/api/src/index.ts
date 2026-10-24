@@ -19,7 +19,7 @@ import type { UsageCounter } from "./usage/durable.js";
 import type { Strikes, Usage } from "./usage/usage.js";
 import { ACTIONS } from "./workflows/actions.js";
 import { tick } from "./workflows/engine.js";
-import { WORKFLOWS } from "./workflows/registry.js";
+import { STARTERS, WORKFLOWS } from "./workflows/registry.js";
 
 export { UsageCounter } from "./usage/durable.js";
 
@@ -78,6 +78,7 @@ function messengerOf(
       auth: functionAuth(call, apiSecret),
       households: functionHouseholds(call, apiSecret),
       addressSecret: apiSecret,
+      telegramToken: token,
       after: (work) => {
         ctx.waitUntil(work);
       },
@@ -87,6 +88,7 @@ function messengerOf(
         runs: functionRuns(call, apiSecret),
         workflows: WORKFLOWS,
         actions: ACTIONS,
+        starters: STARTERS,
         templates: { en: EN },
         off: env.BOT_OFF === "1",
         leaseMs: 30_000,

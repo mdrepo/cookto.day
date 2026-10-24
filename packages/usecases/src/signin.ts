@@ -1,6 +1,10 @@
-import type { LinkMade, SignInApi } from "@cookto/data";
+import type { LinkMade, SignInApi, TelegramAppApi } from "@cookto/data";
 import { ApiError } from "@cookto/data/network";
-import type { SignInWriter } from "@cookto/data/write";
+import type {
+  SettingsWriter,
+  SignInWriter,
+  WhoCooksWriter,
+} from "@cookto/data/write";
 
 // Sign in with Telegram (specs/216): a code to press Start with, polled
 // until Start happened; the session is a cookie only the API reads, so the
@@ -52,6 +56,33 @@ export async function checkSignedIn(
       return "signed-out";
     }
     return "unknown";
+  }
+}
+
+/**
+ * A page the bot opened inside Telegram (specs/241), signed in with the
+ * proof Telegram handed it. Telegram's window keeps nothing of the phone's
+ * app, so it becomes a planner's phone, set up, at once. Whether it worked.
+ */
+export async function signInFromTelegram(
+  {
+    api,
+    settings,
+  }: {
+    api: TelegramAppApi;
+    settings: SignInWriter & WhoCooksWriter & SettingsWriter;
+  },
+  initData: string,
+  now: string,
+): Promise<boolean> {
+  try {
+    const { name } = await api.telegramSignIn(initData);
+    settings.setSignedIn({ name, at: now });
+    settings.setRole("plan");
+    settings.setOnboarded();
+    return true;
+  } catch {
+    return false;
   }
 }
 

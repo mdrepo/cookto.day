@@ -48,7 +48,9 @@ class MemoryRuns implements Runs {
   private static speaksTo(r: RunRow, m: RunMember): boolean {
     return (
       m.household === r.household &&
-      (m.id === r.audience || (r.audience === "planners" && m.role === "plan"))
+      (m.id === r.audience ||
+        (r.audience === "planners" && m.role === "plan") ||
+        (r.audience === "cooks" && m.role === "cook"))
     );
   }
 

@@ -21,10 +21,14 @@ export async function allow(sql: SQL): Promise<void> {
     on conflict (name) do update set hash = excluded.hash`;
 }
 
-/** Every row of every table, gone, for a fresh test. */
+/**
+ * Every row of every table, gone, for a fresh test, and their sequences
+ * back at 1, so a test sees the same numbers whichever file ran before it.
+ */
 export async function wipe(sql: SQL): Promise<void> {
   await sql`truncate conversations, messages, outbox, seen_updates, links, link_requests,
-    accounts, identities, sessions, households, members, records, changes, runs`;
+    accounts, identities, sessions, households, members, records, changes, runs
+    restart identity`;
 }
 
 /** A Call that runs `select fn(p_a => $1::type, ...)`. */

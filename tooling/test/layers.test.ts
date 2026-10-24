@@ -206,12 +206,19 @@ describe("the new packages exist", () => {
       [
         "packages/usecases",
         "@cookto/usecases",
-        [".", "./cook", "./signin", "./household-sync"],
+        [".", "./cook", "./signin", "./household-sync", "./schedule"],
       ],
       [
         "packages/data",
         "@cookto/data",
-        [".", "./read", "./write", "./network", "./sync"],
+        [
+          ".",
+          "./read",
+          "./write",
+          "./network",
+          "./sync",
+          "./household-settings",
+        ],
       ],
       ["packages/messenger", "@cookto/messenger", [".", "./contract"]],
     ];

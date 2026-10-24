@@ -3,6 +3,7 @@ import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { buildGraph, parseHistory } from "./city-graph-lib.js";
 import { board } from "./city-notices-lib.js";
+import { people } from "./city-people-lib.js";
 
 // bun run city: draws the repo as a night city, every file a building, into
 // .build/city/index.html (open it in a browser), with graph.json beside it.
@@ -55,6 +56,33 @@ const notices = board(
   en,
 );
 
+// What GitHub's public API says about CI and deploys on main; a token in
+// GH_TOKEN or GITHUB_TOKEN, when there is one, only lifts the rate limit.
+const token = process.env.GH_TOKEN ?? process.env.GITHUB_TOKEN;
+const ask = (path: string): unknown => {
+  try {
+    const auth = token ? ["-H", `Authorization: Bearer ${token}`] : [];
+    const url = `https://api.github.com/repos/mdrepo/cookto.day/${path}`;
+    return JSON.parse(
+      execFileSync("curl", ["-sf", "--max-time", "10", ...auth, url], {
+        encoding: "utf8",
+      }),
+    );
+  } catch {
+    return null;
+  }
+};
+const crew = people({
+  files,
+  read: (p) => readFileSync(p, "utf8"),
+  scripts: (
+    JSON.parse(readFileSync("package.json", "utf8")) as {
+      scripts: Record<string, string>;
+    }
+  ).scripts,
+  ask,
+});
+
 const head = history.commits[history.commits.length - 1];
 const data = {
   repo: "cookto.day",
@@ -64,6 +92,7 @@ const data = {
   commits: history.commits.map((c) => [c.d, c.m.slice(0, 90)]),
   ...graph,
   ...notices,
+  people: crew,
 };
 const page = readdirSync(PARTS)
   .filter((f) => f.endsWith(".html"))

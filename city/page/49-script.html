@@ -1,53 +1,201 @@
 <script>
-  // ---------- Run ----------
-  // Every part is loaded: fill the panels, then start the city from far away.
-  function resize() {
-    renderer.setSize(innerWidth, innerHeight, false);
-    camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
-    measure();
+  // ---------- The people's cards (#247) ----------
+  // Tap a person: their card opens in the inspector and the camera walks up
+  // to them. Everything on a card was read when the city was built.
+  function factList(rows) {
+    const dl = el("dl", { className: "facts" });
+    for (const [k, v, cls] of rows)
+      dl.append(
+        el("dt", { textContent: k }),
+        el("dd", { textContent: v, className: cls || "" }),
+      );
+    return dl;
   }
-  addEventListener("resize", resize);
-  renderTopics();
-  renderNotices();
-  renderHall();
-  tintMasses();
-  resize();
-  renderDistricts();
-  renderCheck();
-  renderInspector();
-  setTime(lastCommit);
-  fit();
-  if (flight) {
-    camera.position.copy(flight.toP);
-    controls.target.copy(flight.toT);
-    flight = null;
-  }
-  updateZoom(1);
-  for (let i = 0; i < N; i++) rise[i] = riseTo[i];
-  update(0);
-  setTimeout(touched, 8000);
-  let last = performance.now();
-  function frame(now) {
-    const dt = Math.min(0.05, (now - last) / 1000);
-    last = now;
-    if (flight) {
-      flight.t = Math.min(1, flight.t + dt / (reduced ? 0.2 : 1));
-      const k = flight.t * flight.t * (3 - 2 * flight.t);
-      controls.target.lerpVectors(flight.fromT, flight.toT, k);
-      camera.position.lerpVectors(flight.fromP, flight.toP, k);
-      if (flight.t >= 1) flight = null;
+  const section = ([title, rows]) =>
+    el(
+      "div",
+      { className: "who" },
+      el("h3", { textContent: title }),
+      factList(rows),
+    );
+  const ciLink = () =>
+    CI &&
+    el("a", {
+      className: "open",
+      href: CI.url,
+      target: "_blank",
+      rel: "noopener",
+      textContent: "Open main's last CI run on GitHub ↗",
+    });
+  const notRead =
+    "Not read: GitHub couldn't be reached when the city was built";
+
+  const CARDS = {
+    soldier: (p) => ({
+      kicker: `Guard · ADR ${p.gate.adr}`,
+      title: p.gate.title,
+      what: `This soldier is the check that guards the gate: ${p.gate.guard}. It runs on every PR and stops a change that would go over the wall.`,
+      state: p.gate.over.length
+        ? [`${plural(p.gate.over.length, "road")} over the wall`, "bad"]
+        : ciSays,
+      secs: [
+        [
+          "On duty",
+          [
+            ["Stops", p.gate.stops],
+            ["Today", p.gate.today],
+          ],
+        ],
+      ],
+      link: ciLink(),
+      go: ["Open the gate", () => showGate(p.gate)],
+    }),
+    honour: (p) => ({
+      kicker: "Guard of honour · the town hall",
+      title: p.name,
+      what: `${p.what}. A check with no gate: it guards a rule about how work is done, so it stands by the town hall.`,
+      state: ciSays,
+      secs: [["Run it yourself", [["bun run", p.name]]]],
+      link: ciLink(),
+    }),
+    sentry: () => ({
+      kicker: "Sentry · where main street begins",
+      title: "The sentry",
+      what: "Knows every command in package.json, and stops code at the door on your laptop, before it reaches GitHub.",
+      state: [
+        `${P.commands.reduce((n, g) => n + g.rows.length, 0)} commands, ${plural(P.hooks.length, "checkpoint")}`,
+        "calm",
+      ],
+      secs: [
+        ...P.commands.map((g) => [g.group, g.rows]),
+        ["At the door: the git hooks", P.hooks],
+      ],
+    }),
+    doctor: () => ({
+      kicker: "Doctor · the first-aid tent",
+      title: "The doctor",
+      what: `Looks after the tests: ${P.tests.files} test files, and ${P.tests.walks} browser walks through the app, the kit and the phone's database.`,
+      state: [
+        `${P.tests.bugs.length ? plural(P.tests.bugs.length, "patient") : "No patients"}. ${unwalked.length ? plural(unwalked.length, "screen") + " no walk reaches." : "Every screen is walked."}`,
+        DOCTOR.state,
+      ],
+      secs: [
+        [
+          "Patients: walks marked as known bugs",
+          P.tests.bugs.length
+            ? P.tests.bugs
+            : [["none", "No walk is marked test.fail()"]],
+        ],
+      ],
+      chips: unwalked.length
+        ? [
+            "Screens no walk reaches",
+            unwalked.map((it) => idsOf(it.ids)[0]).filter((i) => i != null),
+          ]
+        : null,
+    }),
+    driver: () => {
+      const d = P.github?.deploys ?? [];
+      return {
+        kicker: "Driver · the port",
+        title: "The truck driver",
+        what: "Drives every merge to main out to cookto.day, once check, the browser walks and the build pass on the merged code.",
+        state: !waiting
+          ? [notRead, "calm"]
+          : waiting.length
+            ? [
+                `${plural(waiting.length, "change")} merged, not live yet`,
+                "warn",
+              ]
+            : ["Main's latest is live. The truck is empty.", "ok"],
+        secs: [
+          ...(waiting?.length
+            ? [["In the truck", waiting.map((t) => ["next", t])]]
+            : []),
+          [
+            "Last deliveries",
+            d.length
+              ? d.map((r) => [
+                  r.when,
+                  (r.ok ? "" : "Turned back: ") + r.title,
+                  r.ok ? "" : "bad",
+                ])
+              : [["none", notRead]],
+          ],
+          [
+            "The route",
+            [
+              ["1", "Check everything"],
+              ["2", "Browser walks, in Chromium and WebKit"],
+              ["3", "Build the site, with the kit at /kit/"],
+              ["4", "Deploy to Cloudflare"],
+            ],
+          ],
+        ],
+      };
+    },
+  };
+
+  function showPerson(p) {
+    touched();
+    state.alarm = null;
+    select(-1, false);
+    const c = CARDS[p.kind](p),
+      box = $("insp");
+    const close = el("button", {
+      type: "button",
+      className: "btn close",
+      textContent: "×",
+      ariaLabel: "Close",
+    });
+    close.onclick = () => {
+      box.hidden = true;
+      requestAnimationFrame(measure);
+    };
+    const kick = el("div", { className: "kicker", textContent: c.kicker });
+    kick.style.setProperty("--c", LIGHT[p.state]);
+    box.replaceChildren(
+      el(
+        "div",
+        { className: "insp-head" },
+        el("div", {}, kick, el("h2", { textContent: c.title })),
+        close,
+      ),
+      el("p", { className: "what", textContent: c.what }),
+      el("p", { className: "state " + c.state[1], textContent: c.state[0] }),
+      ...c.secs.map(section),
+    );
+    if (c.chips)
+      box.append(
+        el("h3", { textContent: c.chips[0] }),
+        chipList(c.chips[1], 20),
+      );
+    if (c.link) box.append(el("div", {}, c.link));
+    if (c.go) {
+      const b = el("button", {
+        type: "button",
+        className: "btn go",
+        textContent: c.go[0],
+      });
+      b.onclick = c.go[1];
+      box.append(b);
     }
-    applyOffset(dt);
-    hover();
-    updateZoom(dt);
-    update(dt);
-    updateFacade();
-    controls.update();
-    renderer.render(scene, camera);
-    drawLabels();
-    updateWhere();
-    requestAnimationFrame(frame);
+    box.append(
+      el("p", {
+        className: "note",
+        textContent: `Read when the city was built, ${G.scanned}`,
+      }),
+    );
+    box.hidden = false;
+    box.scrollTop = 0;
+    requestAnimationFrame(measure);
+    const r = p.kind === "driver" ? 4.5 : p.kind === "doctor" ? 3 : 1.8;
+    frameBox(
+      new THREE.Box3(
+        new THREE.Vector3(p.at.x - r, 0, p.at.z - r),
+        new THREE.Vector3(p.at.x + r, 4.5, p.at.z + r),
+      ),
+      VIEW,
+    );
   }
-  requestAnimationFrame(frame);
 </script>

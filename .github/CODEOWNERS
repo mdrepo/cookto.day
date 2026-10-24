@@ -75,11 +75,10 @@
 /db/tsconfig.json                   @mdrepo
 /db/test/                           @mdrepo
 /db/scripts/                        @mdrepo
-# The city (bun run city): a picture of the code, not part of the app.
+# The city (bun run city): a picture of the code, not part of the app. Its
+# scripts and tests check nothing in CI, so only its package files are here.
 /city/package.json                  @mdrepo
 /city/tsconfig.json                 @mdrepo
-/city/scripts/                      @mdrepo
-/city/test/                         @mdrepo
 /packages/testing/package.json      @mdrepo
 /packages/testing/tsconfig.json     @mdrepo
 /packages/testing/test/             @mdrepo

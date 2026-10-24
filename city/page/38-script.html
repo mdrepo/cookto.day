@@ -5,33 +5,6 @@
     else if (state.sel >= 0 && state.cone) select(state.sel, false);
     else paint();
   }
-  function stop() {
-    clearInterval(state.playing);
-    state.playing = null;
-    $("play").textContent = "▶";
-  }
-  function play(force) {
-    if (state.playing && !force) return stop();
-    stop();
-    state.pathFrom = -1;
-    select(-1, false);
-    setTime(0);
-    fit();
-    $("play").textContent = "❚❚";
-    state.playing = setInterval(
-      () => {
-        if (state.time >= lastCommit) return stop();
-        setTime(state.time + 1);
-      },
-      reduced ? 40 : 120,
-    );
-  }
-  time.oninput = () => {
-    stop();
-    setTime(+time.value);
-  };
-  $("play").onclick = () => play(false);
-
   addEventListener("keydown", (e) => {
     if (e.target.matches("input, select")) return;
     if (e.key === "/") {

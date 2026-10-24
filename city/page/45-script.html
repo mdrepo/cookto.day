@@ -38,8 +38,8 @@
     "Town hall",
     "hall",
     { x: HALL_AT.x, y: 10.5, z: HALL_AT.z },
-    () => panel("hall"),
-    "The rules about how work is done",
+    () => enterRoom("hall"),
+    "Go in: the rules, the decisions, the specs and the notices",
   );
   function pickHall(x, y) {
     mouse.set((x / innerWidth) * 2 - 1, -(y / innerHeight) * 2 + 1);

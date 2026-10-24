@@ -1,13 +1,24 @@
 <script>
   // ---------- Run ----------
   // Every part is loaded: fill the panels, then start the city from far away.
+  // The drawing and its labels both take the canvas's own size: on a phone
+  // the window's size changes as the browser's bars come and go (#252).
   function resize() {
-    renderer.setSize(innerWidth, innerHeight, false);
-    camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
+    const w = canvas.clientWidth || innerWidth,
+      h = canvas.clientHeight || innerHeight;
+    renderer.setSize(w, h, false);
+    for (const cam of [camera, ROOM.camera]) {
+      cam.aspect = w / h;
+      cam.updateProjectionMatrix();
+    }
     measure();
   }
   addEventListener("resize", resize);
+  visualViewport?.addEventListener("resize", resize);
+  // Safari zooms the whole page on a pinch over the panels: only the city
+  // zooms (#252).
+  for (const kind of ["gesturestart", "gesturechange"])
+    document.addEventListener(kind, (e) => e.preventDefault());
   renderTopics();
   renderNotices();
   renderHall();
@@ -31,6 +42,13 @@
   function frame(now) {
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
+    // Inside a building, only its room is drawn (#252).
+    if (ROOM.open) {
+      updateRoom(dt);
+      renderer.render(ROOM.open.s, ROOM.camera);
+      requestAnimationFrame(frame);
+      return;
+    }
     if (flight) {
       flight.t = Math.min(1, flight.t + dt / (reduced ? 0.2 : 1));
       const k = flight.t * flight.t * (3 - 2 * flight.t);

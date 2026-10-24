@@ -1,0 +1,218 @@
+<script>
+  // ---------- Rooms (#252) ----------
+  // A building you can go into: one room, four walls and a table, each wall
+  // holding one kind of thing, every thing a labelled box. Drag to look
+  // round, tap a wall to walk to it, tap a thing to open its card. While a
+  // room is open the city waits: the room has its own scene and camera.
+  const ROOM = {
+    open: null,
+    built: {},
+    camera: new THREE.PerspectiveCamera(62, 1, 0.1, 200),
+    yaw: 0,
+    pitch: -0.08,
+    pos: new THREE.Vector3(0, 3.2, 0),
+    goal: null,
+    drag: null,
+  };
+  const ROOM_W = 26,
+    ROOM_D = 26,
+    ROOM_H = 10;
+  const roomRay = new THREE.Raycaster(),
+    roomPoint = new THREE.Vector2();
+
+  // Words on a card, drawn once onto a canvas: a bold first line, then the rest.
+  function wordsTexture(lines, o = {}) {
+    const w = o.w ?? 512,
+      h = o.h ?? 320,
+      pad = 26;
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    const g = c.getContext("2d");
+    g.fillStyle = o.bg ?? "#1c2632";
+    g.fillRect(0, 0, w, h);
+    if (o.accent) {
+      g.fillStyle = o.accent;
+      g.fillRect(0, 0, w, 14);
+    }
+    let y = pad + (o.accent ? 10 : 0);
+    lines.forEach((text, k) => {
+      const size = k === 0 ? (o.big ?? 44) : (o.small ?? 30);
+      g.font = `${k === 0 ? 700 : 500} ${size}px "Instrument Sans", system-ui, sans-serif`;
+      g.fillStyle = k === 0 ? (o.fg ?? "#edf1f4") : (o.muted ?? "#9fb0bf");
+      let line = "";
+      for (const word of String(text).split(/\s+/)) {
+        const next = line ? `${line} ${word}` : word;
+        if (g.measureText(next).width > w - pad * 2 && line) {
+          if (y + size > h - pad) return;
+          g.fillText(line, pad, y + size);
+          y += size * 1.2;
+          line = word;
+        } else line = next;
+      }
+      if (line && y + size <= h - pad) {
+        g.fillText(line, pad, y + size);
+        y += size * 1.25;
+      }
+    });
+    const t = new THREE.CanvasTexture(c);
+    t.anisotropy = 4;
+    return t;
+  }
+
+  // A wall's place in the room: its centre, and the way it faces (inward).
+  const WALLS = [
+    { at: [0, -ROOM_D / 2], ry: 0, span: ROOM_W },
+    { at: [ROOM_W / 2, 0], ry: -Math.PI / 2, span: ROOM_D },
+    { at: [0, ROOM_D / 2], ry: Math.PI, span: ROOM_W },
+    { at: [-ROOM_W / 2, 0], ry: Math.PI / 2, span: ROOM_D },
+  ];
+
+  // The things on one wall, in rows: as big as the wall lets them be.
+  function hangWall(s, k, wall, items, shape) {
+    const W = WALLS[k],
+      g = new THREE.Group();
+    g.position.set(W.at[0], 0, W.at[1]);
+    g.rotation.y = W.ry;
+    s.add(g);
+    const sign = new THREE.Mesh(
+      new THREE.PlaneGeometry(9, 1.6),
+      new THREE.MeshBasicMaterial({
+        map: wordsTexture([wall.title, wall.line], {
+          w: 900,
+          h: 160,
+          bg: "#0f151d",
+          accent: wall.color,
+          big: 52,
+          small: 28,
+        }),
+      }),
+    );
+    sign.position.set(0, ROOM_H - 1.6, 0.05);
+    g.add(sign);
+    const n = Math.max(items.length, 1),
+      areaW = W.span - 3,
+      areaH = ROOM_H - 3.4;
+    const ratio = shape === "book" ? 0.42 : 1.6;
+    let cols = Math.max(
+      1,
+      Math.round(Math.sqrt((n * areaW) / (areaH * ratio))),
+    );
+    let rows = Math.ceil(n / cols);
+    while (rows * (areaW / cols / ratio) > areaH && cols < n) {
+      cols++;
+      rows = Math.ceil(n / cols);
+    }
+    const cellW = areaW / cols,
+      cellH = Math.min(areaH / rows, cellW / ratio);
+    const iw = cellW * 0.9,
+      ih = cellH * 0.86;
+    const top = ROOM_H - 2.6 - (areaH - rows * cellH) / 2;
+    const out = [];
+    items.forEach((item, i) => {
+      const r = Math.floor(i / cols),
+        c = i % cols;
+      const face = new THREE.MeshStandardMaterial({
+        map: wordsTexture(
+          [item.title, item.sub ?? ""],
+          shape === "book"
+            ? { w: 220, h: 520, accent: item.color, big: 40, small: 24 }
+            : { accent: item.color },
+        ),
+        roughness: 0.8,
+      });
+      const side = new THREE.MeshStandardMaterial({
+        color: item.color ?? "#2a3542",
+        roughness: 0.9,
+      });
+      const depth = shape === "book" ? 0.9 : shape === "drawer" ? 0.7 : 0.18;
+      const m = new THREE.Mesh(new THREE.BoxGeometry(iw, ih, depth), [
+        side,
+        side,
+        side,
+        side,
+        face,
+        side,
+      ]);
+      m.position.set(
+        -areaW / 2 + cellW * (c + 0.5),
+        top - cellH * (r + 0.5),
+        depth / 2 + 0.05,
+      );
+      m.userData.item = item;
+      g.add(m);
+      out.push(m);
+    });
+    return out;
+  }
+
+  // A room from its plan: four walls of things, and a table in the middle.
+  function buildRoom(plan) {
+    const s = new THREE.Scene();
+    s.background = new THREE.Color("#121921");
+    s.add(new THREE.HemisphereLight("#dfe8ff", "#2a2118", 0.9));
+    const lamp = new THREE.PointLight("#ffe2b8", 0.7, 60);
+    lamp.position.set(0, ROOM_H - 1, 0);
+    s.add(lamp);
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(ROOM_W, ROOM_D),
+      new THREE.MeshStandardMaterial({ color: "#3a2f26", roughness: 0.9 }),
+    );
+    floor.rotation.x = -Math.PI / 2;
+    s.add(floor);
+    const walls = WALLS.map((W, k) => {
+      const m = new THREE.Mesh(
+        new THREE.PlaneGeometry(W.span, ROOM_H),
+        new THREE.MeshStandardMaterial({
+          color: plan.walls[k] ? "#202a35" : "#1a222b",
+          roughness: 1,
+        }),
+      );
+      m.position.set(W.at[0], ROOM_H / 2, W.at[1]);
+      m.rotation.y = W.ry;
+      m.userData.wall = k;
+      s.add(m);
+      return m;
+    });
+    const items = plan.walls.flatMap((wall, k) =>
+      wall ? hangWall(s, k, wall, wall.items, wall.shape) : [],
+    );
+    if (plan.table) items.push(...setTable(s, plan.table));
+    return { s, walls, items, plan };
+  }
+
+  // The table: a round top, and its things standing on it like place cards.
+  function setTable(s, table) {
+    const top = new THREE.Mesh(
+      new THREE.CylinderGeometry(4.2, 4.2, 0.3, 40),
+      new THREE.MeshStandardMaterial({ color: "#5a4535", roughness: 0.7 }),
+    );
+    top.position.y = 1.6;
+    s.add(top);
+    const leg = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.5, 0.7, 1.6, 16),
+      top.material,
+    );
+    leg.position.y = 0.8;
+    s.add(leg);
+    return table.items.map((item, i) => {
+      const a = (i / table.items.length) * Math.PI * 2;
+      const card = new THREE.Mesh(
+        new THREE.BoxGeometry(1.5, 0.95, 0.06),
+        new THREE.MeshStandardMaterial({
+          map: wordsTexture([item.title], {
+            w: 320,
+            h: 200,
+            accent: item.color,
+            big: 30,
+          }),
+        }),
+      );
+      card.position.set(Math.sin(a) * 3.1, 2.25, Math.cos(a) * 3.1);
+      card.rotation.y = a;
+      card.userData.item = item;
+      s.add(card);
+      return card;
+    });
+  }
+</script>

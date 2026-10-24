@@ -40,6 +40,10 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      # The city photographs the app's screens and the kit's parts (#252).
+      - name: Install Chromium for the pictures
+        run: bunx playwright install --with-deps chromium
+
       - name: Draw the city
         run: bun run city
 

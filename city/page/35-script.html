@@ -20,7 +20,7 @@
     if (i < 0) {
       const b = pickMass(e.clientX, e.clientY);
       if (b) openBlock(b);
-      else if (pickHall(e.clientX, e.clientY)) panel("hall");
+      else if (pickHall(e.clientX, e.clientY)) enterRoom("hall");
       return;
     }
     if (e.shiftKey && state.sel >= 0 && i !== state.sel) showPath(state.sel, i);
@@ -225,6 +225,9 @@
       ),
     );
     box.append(el("p", { className: "what", textContent: kind.what(n) }));
+    // What it looks like, when the city was built with pictures (#252).
+    const look = pictureOf(n);
+    if (look) box.append(look);
     // A screen is the way in: what a person sees comes before the code.
     if (n.layer === "screens" && n.group !== "app shell") renderWayIn(box, n);
     const repoPath = n.info?.file ?? (n.id.includes("/") ? n.id : null);

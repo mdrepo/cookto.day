@@ -178,7 +178,6 @@
         }
       },
     ],
-    ["Watch it being built", () => play(true)],
   ];
   for (const [name, go] of TOURS) {
     const b = el("button", {
@@ -199,23 +198,10 @@
     paint();
   };
 
-  // History.
-  const time = $("time");
-  time.max = lastCommit;
-  time.value = lastCommit;
+  // The city as it stands now: the timeline went in #252, so the time is
+  // always the last commit.
   function setTime(t) {
-    const prev = state.time;
     state.time = t;
-    time.value = t;
-    if (t !== prev && t < lastCommit)
-      for (let i = 0; i < N; i++) if (nodes[i].added === t) flash[i] = 1;
-    const present = nodes.filter(
-      (n, i) => n.added <= t && !state.hidden.has(blockOf[i].district),
-    ).length;
-    $("commit").replaceChildren(
-      el("b", { textContent: `${present} buildings` }),
-      el("span", { textContent: commitText(t) }),
-    );
     refresh();
   }
 </script>

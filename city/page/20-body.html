@@ -6,8 +6,7 @@
 <div id="marks"></div>
 <div class="tip" id="tip" hidden></div>
 <div class="hint" id="hint">
-  Tap a block to go in · tap a gate for its rule · drag to move · right-drag or
-  two fingers to turn · scroll or pinch to zoom
+  Tap anything to open it · drag to move · pinch or scroll to zoom
 </div>
 
 <div class="hud">
@@ -35,9 +34,17 @@
         class="btn"
         id="hall-btn"
         aria-pressed="false"
-        title="The rules about how work is done, and the decisions"
+        title="Go in: the rules, the decisions, the specs and the notices"
       >
         Town hall
+      </button>
+      <button
+        type="button"
+        class="btn"
+        id="workshop-btn"
+        title="Go in: the skills and the stamps that make new parts"
+      >
+        Workshop
       </button>
       <button
         type="button"
@@ -123,27 +130,15 @@
 
   <section class="insp glass" id="insp" hidden aria-live="polite"></section>
 
+  <aside
+    class="room-bar glass"
+    id="room-bar"
+    hidden
+    aria-label="The room you're in"
+  ></aside>
+
   <div class="bar glass">
     <div class="tours" id="tours"><span>Try</span></div>
-    <div class="history">
-      <button
-        type="button"
-        class="btn"
-        id="play"
-        aria-label="Watch the city being built"
-      >
-        ▶
-      </button>
-      <input
-        type="range"
-        id="time"
-        min="0"
-        max="1"
-        value="1"
-        aria-label="Commit"
-      />
-      <div class="commit" id="commit"></div>
-    </div>
   </div>
 </div>
 

@@ -150,7 +150,8 @@ describe.skipIf(sql === null)("households, on Postgres", () => {
     await hh.create(me, [rec("plans", "p-1")], T0);
     await hh.push(me, [rec("plans", "p-2")], days(1));
     expect(await hh.housekeeping(days(91))).toEqual({ changes: 1 });
-    const stale = await hh.changes(me, 1, 500);
+    // From before the purge: change 1 went, so only a cursor of 0 is older.
+    const stale = await hh.changes(me, 0, 500);
     expect(stale?.reset).toBe(true);
     expect(stale?.changes.map((c) => c.record.id).sort()).toEqual([
       "p-1",

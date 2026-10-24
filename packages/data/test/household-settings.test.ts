@@ -85,21 +85,20 @@ describe("the household's settings record", () => {
 
   test("a copy from another phone lands in the settings, not saved back", async () => {
     const b = build();
-    await b.store.put(HOUSEHOLD_SETTINGS, [
-      {
-        id: "household",
-        version: 4,
-        updatedAt: T0,
-        deletedAt: null,
-        kitchen: { cuisines: ["north-indian"], skip: [], sample: null },
-        country: "IN",
-        beans: "tinned",
-        sorted: "2026-10-21",
-        timeZone: "Asia/Kolkata",
-        mealTimes: { lunch: "13:30", dinner: "21:00" },
-        daysOff: { weekdays: [6], dates: [] },
-      },
-    ]);
+    const pulled = {
+      id: "household",
+      version: 4,
+      updatedAt: T0,
+      deletedAt: null,
+      kitchen: { cuisines: ["north-indian"], skip: [], sample: null },
+      country: "IN",
+      beans: "tinned",
+      sorted: "2026-10-21",
+      timeZone: "Asia/Kolkata",
+      mealTimes: { lunch: "13:30", dinner: "21:00" },
+      daysOff: { weekdays: [6], dates: [] },
+    };
+    await b.store.put(HOUSEHOLD_SETTINGS, [pulled]);
     b.changes.announce("household-settings");
     await b.writer.saved();
     const s = b.settings.store.getState();

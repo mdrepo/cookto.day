@@ -1,10 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import {
-  cooksOn,
-  MEAL_TIMES,
-  mealTimeProblem,
-  upcomingDaysOff,
-} from "../src/household.js";
+import { MEAL_TIMES } from "../src/household.js";
+import { cooksOn, mealTimeProblem, upcomingDaysOff } from "../src/schedule.js";
 
 // specs/240-meal-times-and-days-off.md, criterion 7: is the cook cooking
 // that day; and the rules the settings screen and the bot share: each

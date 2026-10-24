@@ -144,7 +144,8 @@ test.describe("Who cooks", () => {
   });
 
   test("silence is yes", async ({ page }) => {
-    await at(page, "2026-10-19T21:30");
+    // At 11 pm since specs/241: the bot asks at 10 and sends it as planned.
+    await at(page, "2026-10-19T23:30");
     const k = new Cooking(page);
     await k.start();
     await k.loadNorthIndianWithStaples();

@@ -1,13 +1,22 @@
 <script>
   // ---------- Run ----------
   // Every part is loaded: fill the panels, then start the city from far away.
+  // The drawing and its labels both take the canvas's own size: on a phone
+  // the window's size changes as the browser's bars come and go (#252).
   function resize() {
-    renderer.setSize(innerWidth, innerHeight, false);
-    camera.aspect = innerWidth / innerHeight;
+    const w = canvas.clientWidth || innerWidth,
+      h = canvas.clientHeight || innerHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
     camera.updateProjectionMatrix();
     measure();
   }
   addEventListener("resize", resize);
+  visualViewport?.addEventListener("resize", resize);
+  // Safari zooms the whole page on a pinch over the panels: only the city
+  // zooms (#252).
+  for (const kind of ["gesturestart", "gesturechange"])
+    document.addEventListener(kind, (e) => e.preventDefault());
   renderTopics();
   renderNotices();
   renderHall();

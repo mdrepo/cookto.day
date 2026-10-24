@@ -154,8 +154,8 @@
   }
   const v3 = new THREE.Vector3();
   function drawLabels() {
-    const w = innerWidth,
-      h = innerHeight,
+    const w = canvas.clientWidth || innerWidth,
+      h = canvas.clientHeight || innerHeight,
       boxes = [];
     let k = 0;
     const put = (x, y, bw, bh) => {

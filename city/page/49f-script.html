@@ -1,0 +1,48 @@
+<script>
+  // ---------- The workshop, in the city (#252) ----------
+  // Beside the town hall, a low workshop with a saw-tooth roof: tap it, or
+  // its sign, to go in, where the skills and the stamps are.
+  const WORKSHOP_AT = { x: HALL_AT.x + 22, z: HALL_AT.z };
+  const workshop = new THREE.Group();
+  {
+    const wood = new THREE.MeshStandardMaterial({
+      color: new THREE.Color("#b08a5e").lerp(BG, 0.3),
+      emissive: "#3a2a18",
+      emissiveIntensity: 0.3,
+      roughness: 0.8,
+    });
+    const body = new THREE.Mesh(new THREE.BoxGeometry(12, 4, 8), wood);
+    body.position.y = 2;
+    workshop.add(body);
+    for (let k = 0; k < 3; k++) {
+      const tooth = new THREE.Mesh(
+        new THREE.CylinderGeometry(1, 1, 8, 3),
+        wood,
+      );
+      tooth.rotation.x = Math.PI / 2;
+      tooth.scale.set(2, 1, 1.2);
+      tooth.position.set(-4 + k * 4, 4.8, 0);
+      workshop.add(tooth);
+    }
+  }
+  workshop.position.set(WORKSHOP_AT.x, 0.3, WORKSHOP_AT.z);
+  scene.add(workshop);
+  mark(
+    "Workshop",
+    "hall",
+    { x: WORKSHOP_AT.x, y: 8, z: WORKSHOP_AT.z },
+    () => enterRoom("workshop"),
+    "Go in: the skills and the stamps that make new parts",
+  );
+  canvas.addEventListener("pointerup", (e) => {
+    if (ROOM.open || !down) return;
+    if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) return;
+    const r = canvas.getBoundingClientRect();
+    mouse.set(
+      ((e.clientX - r.left) / r.width) * 2 - 1,
+      -((e.clientY - r.top) / r.height) * 2 + 1,
+    );
+    ray.setFromCamera(mouse, camera);
+    if (ray.intersectObject(workshop, true).length) enterRoom("workshop");
+  });
+</script>

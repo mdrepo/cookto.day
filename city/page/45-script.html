@@ -1,0 +1,198 @@
+<script>
+  // ---------- The town hall ----------
+  // Across main street, one civic building for the rules about how work is
+  // done. Its panel lists each rule with its guard and how it stands now
+  // (city-hall-lib), then the decisions and the planning applications.
+  const hall = new THREE.Group();
+  {
+    const stone = new THREE.MeshStandardMaterial({
+      color: new THREE.Color("#c9d3dc").lerp(BG, 0.25),
+      emissive: "#3a4654",
+      emissiveIntensity: 0.25,
+      roughness: 0.7,
+    });
+    const add = (geo, x, y, z) => {
+      const m = new THREE.Mesh(geo, stone);
+      m.position.set(x, y, z);
+      hall.add(m);
+    };
+    add(new THREE.BoxGeometry(17, 0.8, 11), 0, 0.4, 0);
+    add(new THREE.BoxGeometry(14, 5, 7), 0, 3.3, -1);
+    for (let k = 0; k < 6; k++)
+      add(
+        new THREE.CylinderGeometry(0.45, 0.45, 4.6, 10),
+        -6 + k * 2.4,
+        3.1,
+        3.4,
+      );
+    add(new THREE.BoxGeometry(15, 0.7, 9.5), 0, 5.9, 0);
+    const roof = new THREE.CylinderGeometry(1, 1, 15, 3);
+    roof.rotateZ(Math.PI / 2);
+    roof.scale(1, 1.6, 4.4);
+    add(roof, 0, 7.1, 0);
+  }
+  hall.position.set(HALL_AT.x, 0.3, HALL_AT.z);
+  hall.rotation.y = Math.PI;
+  scene.add(hall);
+  mark(
+    "Town hall",
+    "hall",
+    { x: HALL_AT.x, y: 10.5, z: HALL_AT.z },
+    () => panel("hall"),
+    "The rules about how work is done",
+  );
+  function pickHall(x, y) {
+    mouse.set((x / innerWidth) * 2 - 1, -(y / innerHeight) * 2 + 1);
+    ray.setFromCamera(mouse, camera);
+    return ray.intersectObject(hall, true).length > 0;
+  }
+
+  function ruleRow(r) {
+    const row = el("div", { className: "law" + (r.guarded ? "" : " beat") });
+    row.append(
+      el("b", { textContent: r.title }),
+      el("span", { className: "now " + r.now.state, textContent: r.now.text }),
+    );
+    row.append(
+      el("small", {
+        textContent:
+          (r.guarded ? "Guarded by " : "Only you watch this: ") +
+          r.enforced.replace(/`/g, ""),
+      }),
+    );
+    if (r.adrs?.length) row.append(adrChips(r.adrs));
+    const g = GATES.find((x) => x.id === r.gate);
+    if (g) {
+      const go = el("button", {
+        type: "button",
+        className: "chip",
+        textContent: `Go to its gate: ${g.title}`,
+      });
+      go.onclick = () => showGate(g);
+      row.append(go);
+    }
+    return row;
+  }
+  function renderHall() {
+    const box = $("hall");
+    box.replaceChildren();
+    const atGate = G.rules.filter((r) => r.gate),
+      conduct = G.rules.filter((r) => !r.gate),
+      you = G.rules.filter((r) => r.now.state === "you").length;
+    const wrap = el("div", {});
+    wrap.append(
+      el("h2", { textContent: "The town hall" }),
+      el("p", {
+        className: "why",
+        textContent: `The ${conduct.length} rules in AGENTS.md about how work is done. Each says what guards it and how it stands now; ${you} hold only as long as you keep reading.`,
+      }),
+      ...conduct.map(ruleRow),
+      el("h2", { className: "sub", textContent: "Rules that stand at a gate" }),
+      el("p", {
+        className: "why",
+        textContent: `${atGate.length} rules govern a place, so they stand on the map as a wall with a gate.`,
+      }),
+      ...atGate.map(ruleRow),
+    );
+    box.append(wrap);
+    renderDecisions(box);
+  }
+
+  // A gate's card: what it lets through, what it stops, who guards it.
+  function renderGateCard(box, g, close) {
+    const a = G.adrs.find((x) => x.n === g.adr);
+    const kick = el("div", {
+      className: "kicker",
+      textContent: `Gate · ADR ${g.adr}`,
+    });
+    kick.style.setProperty("--c", "#ffb547");
+    box.append(
+      el(
+        "div",
+        { className: "insp-head" },
+        el("div", {}, kick, el("h2", { textContent: g.title })),
+        close,
+      ),
+      el("p", {
+        className: "state " + (g.over.length ? "bad" : "ok"),
+        textContent: g.over.length
+          ? `${plural(g.over.length, "road")} over the wall`
+          : "Kept: nothing goes over the wall",
+      }),
+    );
+    const facts = el("dl", { className: "facts gate-facts" });
+    for (const [k, v] of [
+      ["Lets through", g.lets],
+      ["Stops", g.stops],
+      ["Guarded by", g.guard],
+      ["Today", g.today],
+    ])
+      facts.append(el("dt", { textContent: k }), el("dd", { textContent: v }));
+    box.append(facts);
+    for (const it of g.over) {
+      const on = NOTICES.flatMap((n) => n.items).find(
+        (x) => x.text.endsWith(it.text) && x.ask,
+      );
+      box.append(el("p", { className: "what", textContent: it.text }));
+      if (on) box.append(askBox(on.ask));
+    }
+    if (a)
+      box.append(
+        el(
+          "div",
+          {},
+          el("a", {
+            className: "open",
+            href: G.github + a.file,
+            target: "_blank",
+            rel: "noopener",
+            textContent: `Read ADR ${g.adr} on GitHub ↗`,
+          }),
+        ),
+      );
+    const ids = [];
+    for (let j = 0; j < N; j++) if (lit[j]) ids.push(j);
+    if (ids.length)
+      box.append(
+        el("h3", { textContent: "The buildings on its roads" }),
+        chipList(ids.sort(byName), 30),
+      );
+  }
+
+  // Where you are: the city, a block, a building.
+  let whereKey = "";
+  function nearestBlock() {
+    let best = null,
+      d = Infinity;
+    for (const b of blocks) {
+      const dd = Math.hypot(b.cx - controls.target.x, b.cz - controls.target.z);
+      if (dd < d) [best, d] = [b, dd];
+    }
+    return best;
+  }
+  function updateWhere() {
+    const sel = state.sel >= 0 ? state.sel : -1;
+    const b =
+      sel >= 0
+        ? blockOf[sel]
+        : zoom.city
+          ? zoom.focus && zoom.open.has(zoom.focus)
+            ? zoom.focus
+            : null
+          : nearestBlock();
+    const key = `${zoom.city}|${b?.id}|${sel}`;
+    if (key === whereKey) return;
+    whereKey = key;
+    const nav = $("where"),
+      step = (text, go) => {
+        if (nav.childElementCount) nav.append(el("span", { textContent: "›" }));
+        const s = el(go ? "button" : "b", { textContent: text });
+        if (go) Object.assign(s, { type: "button", onclick: go });
+        nav.append(s);
+      };
+    nav.replaceChildren();
+    step("The city", b ? goCity : null);
+    if (b) step(b.name, sel >= 0 ? () => openBlock(b) : null);
+    if (sel >= 0) step(nodes[sel].label, null);
+  }
+</script>

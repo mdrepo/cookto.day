@@ -1,0 +1,53 @@
+<script>
+  // ---------- Run ----------
+  // Every part is loaded: fill the panels, then start the city from far away.
+  function resize() {
+    renderer.setSize(innerWidth, innerHeight, false);
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
+    measure();
+  }
+  addEventListener("resize", resize);
+  renderTopics();
+  renderNotices();
+  renderHall();
+  tintMasses();
+  resize();
+  renderDistricts();
+  renderCheck();
+  renderInspector();
+  setTime(lastCommit);
+  fit();
+  if (flight) {
+    camera.position.copy(flight.toP);
+    controls.target.copy(flight.toT);
+    flight = null;
+  }
+  updateZoom(1);
+  for (let i = 0; i < N; i++) rise[i] = riseTo[i];
+  update(0);
+  setTimeout(touched, 8000);
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    if (flight) {
+      flight.t = Math.min(1, flight.t + dt / (reduced ? 0.2 : 1));
+      const k = flight.t * flight.t * (3 - 2 * flight.t);
+      controls.target.lerpVectors(flight.fromT, flight.toT, k);
+      camera.position.lerpVectors(flight.fromP, flight.toP, k);
+      if (flight.t >= 1) flight = null;
+    }
+    applyOffset(dt);
+    hover();
+    updateZoom(dt);
+    update(dt);
+    updateFacade();
+    controls.update();
+    renderer.render(scene, camera);
+    drawLabels();
+    updateWhere();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+</script>

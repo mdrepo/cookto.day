@@ -22,7 +22,7 @@
     lGeo.attributes.color.needsUpdate = true;
     roadE.forEach((k, j) => {
       const e = E[k],
-        on = visible(e.s) && visible(e.t);
+        on = visible(e.s) && visible(e.t) && atLevel(e.s) && atLevel(e.t);
       const a = !on
         ? 0
         : f
@@ -168,7 +168,7 @@
   // ---------- Per-frame ----------
   const dummy = new THREE.Object3D();
   function refreshRise() {
-    for (let i = 0; i < N; i++) riseTo[i] = visible(i) ? 1 : 0;
+    for (let i = 0; i < N; i++) riseTo[i] = visible(i) && atLevel(i) ? 1 : 0;
   }
   function update(dt) {
     let moved = false;

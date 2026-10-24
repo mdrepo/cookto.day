@@ -1,25 +1,14 @@
 <script>
-  E.forEach((e, k) => {
-    if (e.k !== "import") return;
-    const a = nodes[e.s],
-      b = nodes[e.t];
-    if (a.layer === "api" || b.layer === "api") return;
-    const feat = (x) =>
-      (x.layer === "hooks" || x.layer === "screens") && x.group !== "app shell";
-    if (
-      RANK[b.layer] > RANK[a.layer] ||
-      (feat(a) && feat(b) && a.group !== b.group)
-    )
-      breaks.push(k);
-  });
+  // The walls at a glance: every gate kept, or how many walls have a road over them.
   function renderCheck() {
     const c = $("check");
-    const imports = E.filter((e) => e.k === "import").length;
-    c.className = "check " + (breaks.length ? "bad" : "ok");
-    if (!breaks.length) {
+    const all = G.gates || [],
+      bad = all.filter((g) => g.over.length);
+    c.className = "check " + (bad.length ? "bad" : "ok");
+    if (!bad.length) {
       c.replaceChildren(
-        el("strong", { textContent: "Every road runs one way" }),
-        `All ${imports} imports go from the street towards the engine, never between features (ADR 0022).`,
+        el("strong", { textContent: "Every wall holds" }),
+        `${all.length} gates, and nothing goes over a wall. Tap a gate on the map for its rule.`,
       );
       return;
     }
@@ -28,9 +17,15 @@
       className: "btn",
       textContent: "Show them",
     });
-    b.onclick = () => showNotice(WRONG[0]);
+    b.onclick = () =>
+      showNotice(
+        NOTICES.find((g) => g.id === "wall" && g.items.length) ??
+          NOTICES.find((g) => g.id === "door"),
+      );
     c.replaceChildren(
-      el("strong", { textContent: `${breaks.length} roads go the wrong way` }),
+      el("strong", {
+        textContent: `${plural(bad.length, "wall")} with a road over it`,
+      }),
       b,
     );
   }
@@ -198,11 +193,7 @@
     $("tours").append(b);
   }
 
-  $("fit").onclick = () => {
-    state.pathFrom = -1;
-    select(-1, false);
-    fit();
-  };
+  $("fit").onclick = () => goCity();
   $("window").onchange = (e) => {
     state.window = +e.target.value;
     paint();

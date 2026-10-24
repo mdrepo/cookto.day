@@ -65,7 +65,7 @@
       el("h2", { textContent: "Decisions" }),
       el("p", {
         className: "why",
-        textContent: `${G.adrs.length} ADRs in docs/adr: ${order.map((s) => `${by[s].length} ${s.toLowerCase()}`).join(", ")}. Accepted ones are binding. Each row says which other decisions it rests on.`,
+        textContent: `${G.adrs.length} ADRs in docs/adr: ${order.map((s) => `${by[s].length} ${s.toLowerCase()}`).join(", ")}. Accepted ones are binding. Each row says which other decisions it rests on, and a decision about a place names its gate.`,
       }),
     );
     for (const a of G.adrs) {
@@ -90,6 +90,16 @@
             textContent: `Rests on ${a.cites.map((n) => `ADR ${n}`).join(", ")}`,
           }),
         );
+      // A decision about a place stands there as a gate: go to it.
+      for (const g of GATES.filter((x) => x.adr === a.n)) {
+        const go = el("button", {
+          type: "button",
+          className: "chip",
+          textContent: `Gate: ${g.title}`,
+        });
+        go.onclick = () => showGate(g);
+        row.append(go);
+      }
       wrap.append(row);
     }
     if (G.proposals.length) {

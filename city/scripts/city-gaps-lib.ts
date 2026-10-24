@@ -14,6 +14,8 @@ export interface NoticeItem {
   /** A repo file to open when it isn't a building (a spec, the i18n). */
   file?: string;
   line?: number;
+  /** A sentence to hand to an agent or file as an issue (city-hall-lib). */
+  ask?: string;
 }
 export interface Notice {
   id: string;

@@ -48,6 +48,9 @@ export function layerOf(path: string): [string, string] {
     return ["data", "IndexedDB adapter"];
   if (path.startsWith("packages/usecases/")) return ["usecases", "use cases"];
   if (path.startsWith("packages/testing/")) return ["engine", "testing"];
+  if (path.startsWith("packages/messenger/")) return ["messenger", "messenger"];
+  if (path.startsWith("packages/workflows/")) return ["workflows", "workflows"];
+  if (path.startsWith("packages/templates/")) return ["workflows", "templates"];
   return ["engine", "engine"];
 }
 

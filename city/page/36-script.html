@@ -35,14 +35,19 @@
         const ul = el("ul", { className: "fns" });
         pub.forEach((f) => ul.append(row(f, "")));
         box.append(
-          el("h3", { textContent: "What it offers to other buildings" }),
+          el("h3", {
+            textContent: "The facade: what other buildings may use",
+          }),
           ul,
         );
       }
       if (inner.length) {
         const ul = el("ul", { className: "fns" });
         inner.forEach((f) => ul.append(row(f, "inner")));
-        box.append(el("h3", { textContent: "Only used inside" }), ul);
+        box.append(
+          el("h3", { textContent: "Behind the facade: used only inside" }),
+          ul,
+        );
       }
       if (passes.length) {
         const pp = el("p", { className: "passes" });
@@ -226,7 +231,7 @@
       box.append(b);
     }
   }
-  // ADR 0022: every road runs one way, from a feature down towards the engine; never between two features.
+  // Search lists the street first: screens, then down through the layers.
   const RANK = {
     app: 9,
     screens: 8,
@@ -239,6 +244,7 @@
     dishes: 1,
     ingredients: 0,
     api: -1,
+    messenger: -2,
+    workflows: -2,
   };
-  const breaks = [];
 </script>

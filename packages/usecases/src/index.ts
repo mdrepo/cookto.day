@@ -41,6 +41,8 @@ export {
   bought,
 } from "./shopping.js";
 export { chooseCountry, chooseLanguage, chooseTheme } from "./settings.js";
+// The schedule (specs/240) is "@cookto/usecases/schedule", its own entry:
+// only Settings' meal times and days off load it.
 // The cook's Telegram (specs/207) is "@cookto/usecases/cook", its own entry:
 // the app loads it only once a cook is connected, to keep the page small.
 export { chooseBeans, keepTomorrow, prepDone, prepNotDone } from "./prep.js";

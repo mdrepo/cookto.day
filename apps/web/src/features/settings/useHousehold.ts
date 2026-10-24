@@ -1,4 +1,5 @@
 import type { HouseholdView, MemberRow } from "@cookto/data";
+import { upcomingDaysOff } from "@cookto/engine/schedule";
 import {
   currentHousehold,
   deleteAccount,
@@ -11,7 +12,14 @@ import { useState } from "react";
 import { useStore } from "zustand";
 import { fill } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
-import { api, householdSync, queries, settings } from "../../platform.js";
+import {
+  api,
+  householdSync,
+  queries,
+  settings,
+  today,
+} from "../../platform.js";
+import { offWords } from "./daysOffWords.js";
 import { useInvite } from "./useInvite.js";
 
 // The household (specs/217), in Settings when signed in: who's in it, an
@@ -62,8 +70,11 @@ function useStep() {
 }
 
 export function useHousehold() {
-  const { t } = useWords();
+  const { t, locale } = useWords();
   const signedIn = useStore(settings.store, (s) => s.signedIn);
+  const timeZone = useStore(settings.store, (s) => s.timeZone);
+  const daysOff = useStore(settings.store, (s) => s.daysOff);
+  const off = offWords(upcomingDaysOff(daysOff, today()), t, locale);
   const [confirming, setConfirming] = useState(false);
   const { busy, step } = useStep();
   const [polling, setPolling] = useState(false);
@@ -101,9 +112,16 @@ export function useHousehold() {
         m.kind === "telegram"
           ? t.theCookOnTelegram
           : fill(t.memberPlans, { name: m.name ?? "" }),
-      line: m.stopped ? t.stopped : undefined,
+      line: m.stopped
+        ? t.stopped
+        : m.role === "cook"
+          ? (off ?? undefined)
+          : undefined,
       remove: remove(m),
     })),
+    /** The cook's days off show once there's a cook (specs/240). */
+    hasCook: (view?.members ?? []).some((m) => m.role === "cook"),
+    timeZone: timeZone === null ? null : fill(t.timeZoneIs, { zone: timeZone }),
     start: {
       label: t.startHousehold,
       run: () => {

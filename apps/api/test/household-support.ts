@@ -210,6 +210,15 @@ export function fakeHouseholds(
       return Promise.resolve(me ? s.page(me.household, after, limit) : null);
     },
     housekeeping: (now) => Promise.resolve({ changes: s.purge(now) }),
+    records: (household, collection) =>
+      Promise.resolve(
+        s.records
+          .filter(
+            (r) => r.household === household && r.collection === collection,
+          )
+          .sort((a, b) => (a.id < b.id ? -1 : 1))
+          .map((r) => structuredClone(r.record)),
+      ),
   };
   return Object.assign(s, { households });
 }

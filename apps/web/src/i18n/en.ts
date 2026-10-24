@@ -1,6 +1,8 @@
 // Every word the app shows, in English. The other languages must have every
 // key here (TypeScript checks it), so a new string starts in this file
 // (ADR 0012).
+import { enSchedule } from "./en-schedule.js";
+
 export const en = {
   languageLabel: "Language",
   languageSoon: "coming soon",
@@ -284,6 +286,7 @@ export const en = {
     one: "use within {n} month",
     other: "use within {n} months",
   },
+  ...enSchedule,
 };
 
 /** Words that change with a number: CLDR's plural forms, "other" always. */

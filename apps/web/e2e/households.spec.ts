@@ -60,7 +60,9 @@ test.describe("The household", () => {
     expect(now[0]?.text).toContain("Dinner");
   });
 
-  test("invite a planner, and the cook", async ({ page }) => {
+  test("invite the cook", async ({ page }) => {
+    // specs/240, criterion 5: one planner for now, so "Who?" offers only
+    // the cook; inviting someone who plans is hidden until a later spec.
     const s = householdServer();
     await fakeShare(page);
     await fakeHouseholdApi(page, s);
@@ -69,7 +71,8 @@ test.describe("The household", () => {
     await k.settings();
     await signIn(page, s, "Mayur");
     await household(page).getByRole("button", { name: "Invite" }).click();
-    await k.press("Someone who plans");
+    await expect(k.button("Someone who plans")).toHaveCount(0);
+    await k.press("The cook");
     const code = page.getByRole("status", { name: "Household" });
     await expect(code).toHaveText(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/);
     await k.press("Send the link");
@@ -77,15 +80,7 @@ test.describe("The household", () => {
     expect(link).toMatch(
       /^https:\/\/t\.me\/cookto_day_bot\?start=[A-Z0-9]{8}$/,
     );
-    s.start(link.split("start=")[1] ?? "", "Priya");
-    await expect(household(page).getByText("Priya, plans")).toBeVisible({
-      timeout: 10_000,
-    });
-
-    await household(page).getByRole("button", { name: "Invite" }).click();
-    await k.press("The cook");
-    const cookCode = (await code.textContent())?.replace("-", "") ?? "";
-    s.start(cookCode, "cook");
+    s.start(link.split("start=")[1] ?? "", "cook");
     await expect(
       household(page).getByText("The cook, on Telegram"),
     ).toBeVisible({ timeout: 10_000 });

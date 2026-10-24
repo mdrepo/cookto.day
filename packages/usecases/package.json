@@ -12,7 +12,8 @@
     ".": "./src/index.ts",
     "./cook": "./src/cook.ts",
     "./signin": "./src/signin.ts",
-    "./household-sync": "./src/household-sync.ts"
+    "./household-sync": "./src/household-sync.ts",
+    "./schedule": "./src/schedule.ts"
   },
   "dependencies": {
     "@cookto/data": "workspace:*",

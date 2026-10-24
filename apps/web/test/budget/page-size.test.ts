@@ -23,11 +23,16 @@ const BUDGET_KB = {
   ourScripts: 50,
   /**
    * A first visit, nothing cached: pages, styles and the scripts the page
-   * loads. Until 14 Oct it counted every script; it was 120 then.
+   * loads. Until 14 Oct it counted every script; it was 120 then. 120
+   * until 24 Oct, when the owner raised it to 121 for the household's
+   * schedule (specs/240); a first visit was 120.2 then.
    */
-  firstVisit: 120,
-  /** Each script loaded later, like a cuisine pack when one is picked. */
-  laterFile: 8,
+  firstVisit: 121,
+  /**
+   * Each script loaded later, like a cuisine pack when one is picked. 8
+   * until 24 Oct, when the owner raised it to 9 (specs/240): Settings was 8.0.
+   */
+  laterFile: 9,
 };
 
 /** Only React's production build links its error codes here. */

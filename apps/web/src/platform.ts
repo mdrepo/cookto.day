@@ -63,7 +63,8 @@ const saved = watchSaves(browserRecordStore("cookto.day"), saveProblems.report);
  */
 let engine: Promise<Sync> | null = null;
 export const sync = () =>
-  (engine ??= import("@cookto/data/sync").then((m) =>
+  // The settings record follows what a pull brings, so it's there first.
+  (engine ??= Promise.all([import("@cookto/data/sync"), shared()]).then(([m]) =>
     m.createSync({
       store: saved,
       api: {
@@ -85,14 +86,42 @@ const records = {
   },
 };
 
+/**
+ * The household's settings as one synced record (specs/240): the kitchen,
+ * the beans, the schedule... Its code loads once a phone signs in or opens
+ * meal times, so a first visit doesn't carry it.
+ */
+let sharing: ReturnType<typeof shareLater> | null = null;
+const shareLater = () =>
+  import("@cookto/data/household-settings").then((m) =>
+    m.shareSettings(settings, records, { changes, kv: browserKeyValue() }),
+  );
+export const shared = () => (sharing ??= shareLater());
+
+// Signed in, a household setting changed anywhere: the record follows.
+settings.store.subscribe((s, was) => {
+  if (
+    signedIn() &&
+    (s.kitchen !== was.kitchen ||
+      s.country !== was.country ||
+      s.beans !== was.beans ||
+      s.sorted !== was.sorted)
+  )
+    void shared().then((w) => w.ensure());
+});
+
+/** This phone's time zone, which a household it starts takes (specs/240). */
+const phoneTimeZone = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
+
 /** What the household's use cases need (specs/217). */
 export const householdSync = async () => ({
   api: await api(),
   store: saved,
   sync: await sync(),
-  settings: settings.writer,
+  settings: await shared(),
   changes,
   now: () => now().toISOString(),
+  timeZone: phoneTimeZone,
 });
 
 export const household = createHousehold(records, { changes });

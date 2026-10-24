@@ -13,10 +13,13 @@ import {
   type SyncOutcome,
   type SyncRecord,
 } from "@cookto/data";
+import { HOUSEHOLD_SETTINGS } from "@cookto/data/household-settings";
 import { ApiError } from "@cookto/data/network";
 import type {
   CookWriter,
   KitchenSettingsWriter,
+  ScheduleWriter,
+  SharedSettings,
   SignInWriter,
 } from "@cookto/data/write";
 
@@ -30,10 +33,16 @@ export interface HouseholdSync {
   /** The store itself, to read every record and to clear a collection. */
   store: RecordStore & Clearable;
   sync: Sync;
-  settings: SignInWriter & KitchenSettingsWriter & CookWriter;
+  /** With the household's settings record (specs/240), when the app has it. */
+  settings: SignInWriter &
+    KitchenSettingsWriter &
+    CookWriter &
+    Partial<ScheduleWriter & SharedSettings>;
   changes: Changes;
   /** This moment, ISO, for when the cook joined this phone; the app passes it. */
   now?: () => string;
+  /** This phone's time zone, which a household it starts takes. */
+  timeZone?: () => string;
 }
 
 /** The collections a household shares, and what each announces. */
@@ -60,7 +69,8 @@ async function everything({ store }: HouseholdSync): Promise<PushedRecord[]> {
 export async function phoneHasOwnKitchen(d: HouseholdSync): Promise<boolean> {
   const kitchen = d.settings.kitchen();
   if (kitchen.sample !== null) return false;
-  for (const collection of SYNCED) {
+  // Every phone has the settings record: it's no kitchen of its own.
+  for (const collection of SYNCED.filter((c) => c !== HOUSEHOLD_SETTINGS)) {
     const records = await d.store.all<Stored>(collection);
     if (records.some((r) => r.deletedAt === null)) return true;
   }
@@ -141,6 +151,7 @@ export async function joinOrStart(d: HouseholdSync): Promise<Joined> {
     if (!(error instanceof ApiError) || error.status !== 404)
       return outcomeOf(d, error);
     const held = d.settings.cook();
+    await adoptSettings(d);
     try {
       await d.api.createHousehold(
         await everything(d),
@@ -158,7 +169,23 @@ export async function joinOrStart(d: HouseholdSync): Promise<Joined> {
   if (await phoneHasOwnKitchen(d)) return "ask";
   await replaceWithHousehold(d);
   await followCook(d);
+  await adoptSettings(d);
   return "joined";
+}
+
+/**
+ * The household's settings record, from this phone when the household has
+ * none yet, with this phone's time zone when it has no clock (specs/240):
+ * a household made before records had one takes the first phone's.
+ */
+async function adoptSettings(d: HouseholdSync): Promise<void> {
+  const s = d.settings;
+  if (s.timeZone?.() === null && d.timeZone) {
+    const { zoneName } = await import("@cookto/engine/time");
+    s.setTimeZone?.(zoneName(d.timeZone()));
+  }
+  await s.ensure?.();
+  await s.saved?.();
 }
 
 /** "Leave": the membership ends; this phone's copy goes with it. */
@@ -185,5 +212,6 @@ export async function deleteAccount(d: HouseholdSync): Promise<void> {
 export async function syncNow(d: HouseholdSync): Promise<SyncOutcome> {
   const outcome = await d.sync.run();
   if (outcome === "signed-out") d.settings.setSignedIn(null);
+  if (outcome === "synced") await adoptSettings(d);
   return outcome;
 }

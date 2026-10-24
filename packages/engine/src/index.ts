@@ -10,10 +10,13 @@ export {
 } from "./cooked.js";
 export {
   childrenOnly,
+  type DaysOff,
   defaultMeals,
   eatersOf,
   MEAL_SLOTS,
+  MEAL_TIMES,
   type MealSlot,
+  type MealTimes,
   type Member,
   MEMBER_KINDS,
   type MemberKind,

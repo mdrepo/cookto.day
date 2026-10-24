@@ -152,6 +152,7 @@ export const FUNCTIONS = {
   runs_due: { ...SECRET, p_now: "timestamptz" },
   runs_expired: { ...SECRET, p_now: "timestamptz" },
   hh_bot_off: { ...SECRET, p_account: "uuid", p_off: "boolean" },
+  hh_records: { ...SECRET, p_household: "uuid", p_collection: "text" },
 } as const satisfies Record<string, Record<string, SqlType>>;
 
 export type FunctionName = keyof typeof FUNCTIONS;

@@ -68,6 +68,18 @@ export function memberProblems(value: unknown): string[] {
   return problems;
 }
 
+/** When each meal is eaten, until the household sets its own (specs/240). */
+export const MEAL_TIMES: Readonly<Record<MealSlot, string>> = {
+  breakfast: "08:00",
+  "morning-snack": "11:00",
+  lunch: "13:00",
+  "evening-snack": "17:00",
+  dinner: "20:00",
+};
+export type MealTimes = Record<MealSlot, string>;
+// Days off and the meal-time rule are in ./schedule, their own entry.
+export type { DaysOff } from "./schedule.js";
+
 const isChild = (m: Member) => m.kind !== "adult";
 
 /** A meal only children eat: their snacks, say. Theirs is the child's list (specs/145). */

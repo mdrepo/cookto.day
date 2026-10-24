@@ -5,8 +5,12 @@
   // card. A wall turns red when a road goes over it (city-borders-lib).
   const GATES = G.gates || [];
   const blockById = new Map(blocks.map((b) => [b.id, b]));
-  // Across main street from downtown, the town hall (45-script).
-  const HALL_AT = { x: rowA[0].x0 + 8, z: city.z1 + 10 };
+  // Across main street, facing the middle of downtown, the town hall
+  // (45-script): in the middle of the view on a phone too.
+  const HALL_AT = {
+    x: (rowA[0].x0 + rowA[rowA.length - 1].x1) / 2,
+    z: city.z1 + 10,
+  };
   city.z1 = HALL_AT.z + 9;
   const WALL_C = new THREE.Color("#5b7085");
   const edgeOf = (a, b) => out[a].find((k) => E[k].t === b);

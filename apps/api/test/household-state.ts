@@ -19,6 +19,8 @@ export interface Household {
   sendsOn: string;
   sends: number;
   purgedThrough: number;
+  /** Its bot switched off by a planner (migration 0007). */
+  botOff?: boolean;
 }
 
 export interface Member {

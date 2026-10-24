@@ -74,11 +74,13 @@
       box.expandByPoint(new THREE.Vector3(HALL_AT.x, 8, HALL_AT.z + 6));
     }
     const dir = camera.position.clone().sub(controls.target).normalize();
-    // The whole city is read like a map, from higher up.
-    frameBox(
-      box,
-      !focusActive() ? MAP_VIEW : !started || dir.y < 0.25 ? VIEW : dir,
-    );
+    // The whole city is read like a map, from higher up. On a tall phone
+    // screen the long city runs down it, not across (#252).
+    const map =
+      camera.aspect < 0.9
+        ? new THREE.Vector3(1.05, 1.15, 0.3).normalize()
+        : MAP_VIEW;
+    frameBox(box, !focusActive() ? map : !started || dir.y < 0.25 ? VIEW : dir);
   }
   function flyTo(i) {
     const d = camera.position.clone().sub(controls.target).normalize();

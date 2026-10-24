@@ -86,7 +86,14 @@
   function placeMarks(put, proj) {
     const dim = focusActive() || state.sel >= 0;
     for (const m of marks) {
-      const p = proj(m.at.x, m.at.y, m.at.z);
+      // From far away a gate's sign waits until you come close, unless the
+      // gate is broken or picked: its ADR is a book in the town hall (#252).
+      const quiet =
+        m.id != null &&
+        zoom.city &&
+        !m.b.classList.contains("bad") &&
+        state.alarm?.gate?.id !== m.id;
+      const p = quiet ? null : proj(m.at.x, m.at.y, m.at.z);
       if (!p) {
         m.b.hidden = true;
         continue;

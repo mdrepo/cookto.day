@@ -14,7 +14,7 @@ const TOKEN = "123456:test-token-not-a-real-one";
 const T0 = "2026-10-21T16:40:00.000Z";
 const enc = new TextEncoder();
 
-async function hmac(key: Uint8Array | string, data: string) {
+async function hmac(key: ArrayBuffer | string, data: string) {
   const k = await crypto.subtle.importKey(
     "raw",
     typeof key === "string" ? enc.encode(key) : key,
@@ -22,11 +22,11 @@ async function hmac(key: Uint8Array | string, data: string) {
     false,
     ["sign"],
   );
-  return new Uint8Array(await crypto.subtle.sign("HMAC", k, enc.encode(data)));
+  return crypto.subtle.sign("HMAC", k, enc.encode(data));
 }
 
-const hex = (b: Uint8Array) =>
-  [...b].map((x) => x.toString(16).padStart(2, "0")).join("");
+const hex = (b: ArrayBuffer) =>
+  [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, "0")).join("");
 
 /** The init data Telegram hands a web app it opens, signed with `token`. */
 async function proof(

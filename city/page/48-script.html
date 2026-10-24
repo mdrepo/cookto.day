@@ -1,0 +1,179 @@
+<script>
+  // ---------- Who stands where (#247) ----------
+  // A soldier at every gate, in the colour of the place it guards; the guard
+  // of honour either side of the town hall; the sentry where main street
+  // begins; the doctor across from downtown; the driver on the port's quay.
+  const P = G.people;
+  const CI = P.github?.ci;
+  const ciSays = !CI
+    ? ["Main's CI wasn't read when the city was built", "calm"]
+    : CI.ok
+      ? [`Main's last CI run passed, ${CI.when} UTC`, "ok"]
+      : [
+          `Main's last CI run failed, ${CI.when} UTC: open it to see which check`,
+          "warn",
+        ];
+  const glowTex = (() => {
+    const c = document.createElement("canvas");
+    c.width = c.height = 128;
+    const x = c.getContext("2d");
+    const r = x.createRadialGradient(64, 64, 0, 64, 64, 64);
+    r.addColorStop(0, "rgba(255,255,255,0.9)");
+    r.addColorStop(0.45, "rgba(255,255,255,0.35)");
+    r.addColorStop(1, "rgba(255,255,255,0)");
+    x.fillStyle = r;
+    x.fillRect(0, 0, 128, 128);
+    return new THREE.CanvasTexture(c);
+  })();
+  const people = [],
+    hitMeshes = [];
+  function stand(p, g, at, face, hit) {
+    g.position.set(at.x, 0.3, at.z);
+    g.rotation.y = face;
+    const pool = new THREE.Mesh(
+      new THREE.CircleGeometry(hit.r * 1.6, 32).rotateX(-Math.PI / 2),
+      new THREE.MeshBasicMaterial({
+        map: glowTex,
+        color: LIGHT[p.state],
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      }),
+    );
+    pool.position.y = 0.04;
+    g.add(pool);
+    const h = new THREE.Mesh(
+      new THREE.CylinderGeometry(hit.r, hit.r, hit.h, 12),
+      new THREE.MeshBasicMaterial({ visible: false }),
+    );
+    h.position.y = hit.h / 2;
+    h.userData.person = p;
+    g.add(h);
+    hitMeshes.push(h);
+    scene.add(g);
+    Object.assign(p, { group: g, at });
+    people.push(p);
+  }
+
+  // Facing out of the wall, beside the gate's posts.
+  const OUT = {
+    front: [0, 1, 0],
+    back: [0, -1, Math.PI],
+    east: [1, 0, Math.PI / 2],
+    west: [-1, 0, -Math.PI / 2],
+  };
+  GATES.forEach((gate, k) => {
+    if (!gate.pos) return;
+    // Downtown's walls run between the features, so its gate faces east.
+    const side = gate.at === "downtown" ? "east" : gate.side;
+    const [ox, oz, face] = OUT[side];
+    const [ax, az] = side === "front" || side === "back" ? [1, 0] : [0, 1];
+    const place =
+      blockById.get(gate.at)?.color ??
+      (gate.at === "downtown" ? KIND.screens.color : KIND.api.color);
+    // The place's colour, deepened to paint a coat: pale ones read as white.
+    const hsl = new THREE.Color(place).getHSL({});
+    const coat =
+      "#" +
+      new THREE.Color()
+        .setHSL(hsl.h, Math.max(hsl.s, 0.55), 0.4)
+        .getHexString();
+    const p = {
+      kind: "soldier",
+      gate,
+      state: gate.over.length ? "bad" : ciSays[1],
+    };
+    const at = {
+      x: gate.pos.x + ax * 2.6 + ox * 0.9,
+      z: gate.pos.z + az * 2.6 + oz * 0.9,
+    };
+    stand(p, soldier(k, coat, P.hats[gate.id] ?? `ADR ${gate.adr}`), at, face, {
+      r: 0.9,
+      h: 3.2,
+    });
+  });
+  P.honour.forEach(([name, what], k) => {
+    const s = k % 2 ? 1 : -1,
+      x = HALL_AT.x + s * (10.5 + Math.floor(k / 2) * 2.5);
+    stand(
+      { kind: "honour", name, what, state: ciSays[1] },
+      honourGuard(k, name),
+      { x, z: HALL_AT.z + 1 },
+      0,
+      {
+        r: 0.9,
+        h: 3.2,
+      },
+    );
+  });
+
+  const unwalked = NOTICES.find((n) => n.id === "walk")?.items ?? [];
+  const waiting = P.github?.waiting;
+  const SENTRY = { kind: "sentry", state: "calm" };
+  const DOCTOR = {
+    kind: "doctor",
+    state: P.tests.bugs.length || unwalked.length ? "warn" : "ok",
+  };
+  const DRIVER = {
+    kind: "driver",
+    state: !waiting ? "calm" : waiting.length ? "warn" : "ok",
+  };
+  stand(SENTRY, sentry(), { x: city.x0 + 1.5, z: 6 }, 0, { r: 1.2, h: 4.4 });
+  stand(DOCTOR, doctor(), { x: -60, z: 17 }, -0.42, { r: 2, h: 3.4 });
+  const quay = blockById.get("api");
+  stand(DRIVER, driver(), { x: quay.x0 - 4, z: 7.5 }, 0, { r: 3, h: 3.4 });
+  for (const [p, name, role] of [
+    [SENTRY, "Sentry", "commands"],
+    [DOCTOR, "Doctor", "tests"],
+    [DRIVER, "Driver", "deploys"],
+  ]) {
+    const b = mark(
+      "",
+      "person",
+      { x: p.at.x, y: 5, z: p.at.z },
+      () => showPerson(p),
+      `${name}: ${role}`,
+    );
+    b.append(name + " ", el("em", { textContent: role }));
+    b.style.setProperty("--c", LIGHT[p.state]);
+  }
+
+  // A tap on a person opens their card, and nothing under them answers it.
+  const pmouse = new THREE.Vector2();
+  function personAt(x, y) {
+    pmouse.set((x / innerWidth) * 2 - 1, -(y / innerHeight) * 2 + 1);
+    ray.setFromCamera(pmouse, camera);
+    return (
+      ray.intersectObjects(hitMeshes, false)[0]?.object.userData.person ?? null
+    );
+  }
+  {
+    const [p0, m0, h0] = [pick, pickMass, pickHall];
+    pick = (x, y) => (personAt(x, y) ? -1 : p0(x, y));
+    pickMass = (x, y) => (personAt(x, y) ? null : m0(x, y));
+    pickHall = (x, y) => !personAt(x, y) && h0(x, y);
+  }
+  canvas.addEventListener("pointerup", (e) => {
+    if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) return;
+    const p = personAt(e.clientX, e.clientY);
+    if (p) showPerson(p);
+  });
+  canvas.addEventListener("pointermove", (e) => {
+    if (!e.buttons && personAt(e.clientX, e.clientY))
+      canvas.style.cursor = "pointer";
+  });
+
+  // Soldiers breathe; the sentry looks up and down the street.
+  (function idle(now) {
+    if (!reduced) {
+      const t = now / 1000;
+      people.forEach((p, k) => {
+        if (p.kind === "soldier" || p.kind === "honour")
+          p.group.scale.y = 1 + Math.sin(t * 1.6 + k) * 0.012;
+        if (p.kind === "sentry")
+          p.group.children[0].rotation.y = Math.sin(t * 0.4) * 0.5;
+      });
+    }
+    requestAnimationFrame(idle);
+  })(0);
+</script>

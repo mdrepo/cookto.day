@@ -1,0 +1,261 @@
+<script>
+  // ---------- The people's places (#247) ----------
+  // The sentry in a striped box, the doctor by a first-aid tent, the driver
+  // by the truck. Each returns one group, standing at 0,0, facing +z.
+  function painted(draw, w, h) {
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    draw(c.getContext("2d"));
+    const t = new THREE.CanvasTexture(c);
+    return new THREE.MeshPhysicalMaterial({
+      map: t,
+      roughness: 0.35,
+      clearcoat: 0.8,
+      emissive: "#ffffff",
+      emissiveMap: t,
+      emissiveIntensity: 0.12,
+    });
+  }
+
+  function sentry() {
+    const g = new THREE.Group();
+    const man = figure(
+      {
+        coat: "#22305a",
+        legs: "#22305a",
+        long: true,
+        gloves: "#f4f1e8",
+        buttons: true,
+        belt: "#f2efe6",
+      },
+      2,
+    );
+    part(man, ball(0.31), lacquer("#0d0d0d", 0.95), 0, 2.66, 0, [1, 1.55, 1]);
+    part(
+      man,
+      new THREE.TorusGeometry(0.24, 0.015, 6, 20, Math.PI),
+      GOLD,
+      0,
+      2.3,
+      0.04,
+    ).rotation.z = Math.PI;
+    rifle(man, 0.56);
+    man.position.z = 0.15;
+    g.add(man);
+    // Red and white stripes, a pitched roof, open at the front.
+    const stripes = painted(
+      (x) => {
+        for (let i = 0; i < 8; i++) {
+          x.fillStyle = i % 2 ? "#f2efe6" : "#b3262d";
+          x.fillRect(i * 8, 0, 8, 8);
+        }
+      },
+      64,
+      8,
+    );
+    part(g, new THREE.BoxGeometry(1.5, 3.3, 0.08), stripes, 0, 1.65, -0.62);
+    for (const s of [-1, 1])
+      part(
+        g,
+        new THREE.BoxGeometry(0.08, 3.3, 1.3),
+        stripes,
+        s * 0.75,
+        1.65,
+        0,
+      );
+    part(
+      g,
+      new THREE.ConeGeometry(1.2, 0.8, 4),
+      "#1d2b4a",
+      0,
+      3.7,
+      0,
+    ).rotation.y = Math.PI / 4;
+    part(g, ball(0.09), GOLD, 0, 4.15, 0);
+    return g;
+  }
+
+  function doctor() {
+    const g = new THREE.Group();
+    const man = figure({ coat: "#f4f6f6", legs: "#2f8f8a", long: true }, 1);
+    // Hair, the head mirror, the stethoscope, the bag.
+    part(
+      man,
+      new THREE.SphereGeometry(0.285, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2.2),
+      "#2b1d14",
+      0,
+      2.29,
+      -0.01,
+    );
+    part(
+      man,
+      new THREE.TorusGeometry(0.28, 0.02, 6, 24),
+      "#2b2b2b",
+      0,
+      2.42,
+      0,
+    ).rotation.x = Math.PI / 2 - 0.2;
+    part(
+      man,
+      new THREE.CylinderGeometry(0.1, 0.1, 0.02, 20),
+      STEEL,
+      0,
+      2.47,
+      0.27,
+    ).rotation.x = Math.PI / 2 - 0.3;
+    part(
+      man,
+      new THREE.TorusGeometry(0.2, 0.022, 6, 24, Math.PI * 1.3),
+      "#232323",
+      0,
+      1.86,
+      0.12,
+    ).rotation.set(Math.PI / 2.6, 0, Math.PI * 1.35);
+    part(man, ball(0.05), STEEL, 0.06, 1.55, 0.36);
+    part(
+      man,
+      new THREE.BoxGeometry(0.42, 0.28, 0.2),
+      "#1b1b1b",
+      -0.5,
+      1.02,
+      0.06,
+    );
+    part(
+      man,
+      new THREE.TorusGeometry(0.08, 0.018, 6, 16, Math.PI),
+      "#1b1b1b",
+      -0.5,
+      1.16,
+      0.06,
+    );
+    man.position.set(1.3, 0, 2.3);
+    g.add(man);
+    // White canvas, a red cross over the door.
+    const tent = new THREE.Shape(
+      V2([
+        [-1.7, 0],
+        [1.7, 0],
+        [0, 2.5],
+      ]),
+    );
+    part(
+      g,
+      new THREE.ExtrudeGeometry(tent, { depth: 3, bevelEnabled: false }),
+      lacquer("#e9ecea", 0.7),
+      0,
+      0,
+      -1.6,
+    );
+    part(g, new THREE.BoxGeometry(0.62, 0.18, 0.04), "#c8242c", 0, 1.35, 1.42);
+    part(g, new THREE.BoxGeometry(0.18, 0.62, 0.04), "#c8242c", 0, 1.35, 1.42);
+    const door = new THREE.Shape(
+      V2([
+        [-0.45, 0],
+        [0.45, 0],
+        [0, 0.95],
+      ]),
+    );
+    part(
+      g,
+      new THREE.ShapeGeometry(door),
+      lacquer("#2a2f33", 0.9),
+      0,
+      0.01,
+      1.41,
+    );
+    return g;
+  }
+
+  function driver() {
+    const g = new THREE.Group();
+    const man = figure(
+      { coat: "#c8772f", legs: "#2b3442", belt: "#3a2a1c" },
+      3,
+    );
+    part(
+      man,
+      new THREE.CylinderGeometry(0.29, 0.3, 0.13, 24),
+      "#2f5d9e",
+      0,
+      2.47,
+      -0.02,
+    );
+    part(man, new THREE.BoxGeometry(0.38, 0.04, 0.22), "#2f5d9e", 0, 2.43, 0.3);
+    man.position.set(4.5, 0, 1.3);
+    man.rotation.y = -0.3;
+    g.add(man);
+    // A rounded blue cab, glass, lamps, and a box with the name on it.
+    const blue = "#2f5d9e";
+    part(g, new THREE.BoxGeometry(5.2, 0.35, 1.7), "#1f1f1f", 0.3, 0.6, 0);
+    part(g, new THREE.BoxGeometry(1.6, 1.5, 1.7), blue, 2.2, 1.5, 0);
+    part(g, new THREE.BoxGeometry(0.7, 0.8, 1.6), blue, 3.2, 1.15, 0);
+    part(
+      g,
+      new THREE.CylinderGeometry(0.85, 0.85, 1.7, 20, 1, false, 0, Math.PI / 2),
+      blue,
+      2.15,
+      2.25,
+      0,
+    ).rotation.x = Math.PI / 2;
+    const glass = new THREE.MeshPhysicalMaterial({
+      color: "#0b1622",
+      roughness: 0.05,
+      clearcoat: 1,
+      metalness: 0.2,
+    });
+    part(g, new THREE.BoxGeometry(0.04, 0.6, 1.4), glass, 3.01, 1.9, 0);
+    const lamp = new THREE.MeshBasicMaterial({ color: "#ffe2a8" });
+    for (const s of [-1, 1]) {
+      part(
+        g,
+        new THREE.CylinderGeometry(0.12, 0.12, 0.05, 14),
+        lamp,
+        3.56,
+        1.1,
+        s * 0.58,
+      ).rotation.z = Math.PI / 2;
+      for (const x of [-1.6, 0.1, 2.4]) {
+        part(
+          g,
+          new THREE.CylinderGeometry(0.42, 0.42, 0.3, 20),
+          "#151515",
+          x,
+          0.42,
+          s * 0.82,
+        ).rotation.x = Math.PI / 2;
+        part(
+          g,
+          new THREE.CylinderGeometry(0.18, 0.18, 0.31, 14),
+          STEEL,
+          x,
+          0.42,
+          s * 0.82,
+        ).rotation.x = Math.PI / 2;
+      }
+    }
+    const side = painted(
+      (x) => {
+        x.fillStyle = "#f2efe6";
+        x.fillRect(0, 0, 512, 256);
+        x.fillStyle = blue;
+        x.fillRect(0, 196, 512, 24);
+        x.font = "800 64px 'Bricolage Grotesque', sans-serif";
+        x.textAlign = "center";
+        x.fillText("cookto.day", 256, 130);
+      },
+      512,
+      256,
+    );
+    const plain = lacquer("#f2efe6");
+    part(
+      g,
+      new THREE.BoxGeometry(3.6, 2.1, 1.9),
+      [plain, plain, plain, plain, side, side],
+      -0.3,
+      1.85,
+      0,
+    );
+    return g;
+  }
+</script>

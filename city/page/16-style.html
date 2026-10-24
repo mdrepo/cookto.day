@@ -1,0 +1,52 @@
+<style>
+  /* The city's people (#247): their signs, and their cards in the inspector. */
+  .mark.person {
+    font: 600 11px/1 var(--body);
+    color: var(--ink);
+    background: var(--panel-solid);
+    border-color: var(--rule);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .mark.person::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--c, var(--muted));
+  }
+  .mark.person em {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .who {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .who .facts {
+    padding-top: 8px;
+    border-top: 1px solid var(--rule);
+  }
+  .who .facts dt {
+    font: 500 11.5px var(--mono);
+    color: var(--ink);
+  }
+  .who .facts dd {
+    color: var(--muted);
+  }
+  .who .facts dd.bad {
+    color: var(--alarm);
+  }
+  .insp .go {
+    align-self: flex-start;
+  }
+  .state.warn {
+    color: var(--amber);
+  }
+  .state.calm {
+    color: var(--muted);
+  }
+</style>

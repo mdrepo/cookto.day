@@ -86,9 +86,6 @@ test.describe("Connect the cook", () => {
     expect(now[0]?.text.split("\n")).toEqual(text?.split("\n"));
   });
 
-  // "Silence is yes" at 9 pm from the phone went with specs/241: the bot asks
-  // at 10 pm and sends at 11 (tomorrow-in-telegram.spec.ts, "tomorrow's card").
-
   test("couldn't send", async ({ page }) => {
     await cookConnected(page);
     const api = await fakeApi(page);

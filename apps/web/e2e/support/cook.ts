@@ -4,9 +4,15 @@ import { Cooking } from "./cooking.js";
 // The cook's Telegram, as the browser tests play it (specs/207): the API
 // faked in the page (ADR 0025), the share sheet faked, a planner's evening.
 
-/** The household's clock, "YYYY-MM-DDTHH:MM", in the phone's own time. */
-export const at = (page: Page, time: string) =>
-  page.clock.setFixedTime(new Date(`${time}:00`));
+/**
+ * The household's clock, "YYYY-MM-DDTHH:MM", in the phone's own time: the
+ * page reads the words in its time zone, which a test may set (specs/240),
+ * not the test runner's (CI runs on UTC).
+ */
+export const at = async (page: Page, time: string) =>
+  page.clock.setFixedTime(
+    await page.evaluate((t) => new Date(t).getTime(), `${time}:00`),
+  );
 
 /** When a code made at 7 pm runs out: ten minutes on, as the API says it. */
 export const CODE_RUNS_OUT = new Date("2026-10-19T19:10:00").toISOString();

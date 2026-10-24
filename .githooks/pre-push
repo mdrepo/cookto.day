@@ -5,6 +5,7 @@ set -eu
 
 zero=0000000000000000000000000000000000000000
 changed=""
+fresh=""
 while read -r _local_ref local_sha _remote_ref remote_sha; do
   [ "$local_sha" = "$zero" ] && continue # deleting a branch
   # What this branch changes against main, whether or not it was pushed
@@ -12,10 +13,21 @@ while read -r _local_ref local_sha _remote_ref remote_sha; do
   # gained, and a docs branch would run the browser suite.
   base=$(git merge-base "$local_sha" origin/main 2>/dev/null || echo "")
   if [ -n "$base" ]; then
-    changed="$changed$(git diff --name-only "$base" "$local_sha")
+    branch=$(git diff --name-only "$base" "$local_sha")
+  else
+    branch="unknown"
+  fi
+  changed="$changed$branch
+"
+  # What's new since the last push, when this push only adds to it (#250):
+  # the browser suite already passed on the rest. After a rebase, or on a
+  # first push, everything the branch changes is new.
+  if [ "$remote_sha" != "$zero" ] &&
+    git merge-base --is-ancestor "$remote_sha" "$local_sha" 2>/dev/null; then
+    fresh="$fresh$(git diff --name-only "$remote_sha" "$local_sha")
 "
   else
-    changed="${changed}unknown
+    fresh="$fresh$branch
 "
   fi
 done
@@ -37,7 +49,14 @@ if [ -f tooling/scripts/tdd-verify.ts ]; then
   bun run --silent tdd:verify
 fi
 
-if printf '%s' "$changed" | grep -Eq '^(apps/|packages/|package\.json$|bun\.lock$|unknown$)'; then
-  echo "pre-push: e2e (an app, a package it may use, its tests or its build changed)"
+# The browser suites play the page, with the API faked (ADR 0025): they run
+# when something the page loads changed since the last push, not for db/,
+# the API, or the bot's own packages (#250).
+if printf '%s' "$fresh" |
+  grep -E '^(apps/web/|apps/kit/|packages/|package\.json$|bun\.lock$|unknown$)' |
+  grep -Ev '^packages/(messenger|templates|workflows)/' | grep -q .; then
+  echo "pre-push: e2e (the page, a package it loads, its tests or its build changed)"
   bun run e2e
+else
+  echo "pre-push: nothing the page loads changed since the last push, e2e skipped"
 fi

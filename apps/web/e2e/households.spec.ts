@@ -60,9 +60,9 @@ test.describe("The household", () => {
     expect(now[0]?.text).toContain("Dinner");
   });
 
-  // specs/240, criterion 5: one planner for now, so "Who?" offers only the
-  // cook; inviting someone who plans is hidden until a later spec.
   test("invite the cook", async ({ page }) => {
+    // specs/240, criterion 5: one planner for now, so "Who?" offers only
+    // the cook; inviting someone who plans is hidden until a later spec.
     const s = householdServer();
     await fakeShare(page);
     await fakeHouseholdApi(page, s);
@@ -71,6 +71,7 @@ test.describe("The household", () => {
     await k.settings();
     await signIn(page, s, "Mayur");
     await household(page).getByRole("button", { name: "Invite" }).click();
+    await expect(k.button("Someone who plans")).toHaveCount(0);
     await k.press("The cook");
     const code = page.getByRole("status", { name: "Household" });
     await expect(code).toHaveText(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/);

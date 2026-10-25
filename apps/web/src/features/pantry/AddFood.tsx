@@ -51,6 +51,16 @@ export function AddFood({ onDone }: { onDone: () => void }) {
         }}
       >
         <Stack gap={3}>
+          <Cluster>
+            <Button
+              type="button"
+              kind="quiet"
+              icon="plus"
+              onClick={a.receipt.run}
+            >
+              {a.receipt.label}
+            </Button>
+          </Cluster>
           <TapBought label={a.tapLabel} fresh={a.fresh} />
           <Field label={a.nameLabel} id="food-name">
             {(control) => (

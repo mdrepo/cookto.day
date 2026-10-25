@@ -4,6 +4,16 @@ export { addDays, daysLeft } from "./expiry.js";
 export { assumedStaples, missing } from "./needs.js";
 export { type MealDish, type Used, usedBy } from "./used.js";
 export {
+  type Adding,
+  type Answer,
+  answerKey,
+  type LineIn,
+  lineAmount,
+  type ReceiptRow,
+  receiptLines,
+  rowsToAdd,
+} from "./receipt.js";
+export {
   type Cooked,
   cookedLately,
   cookedOn,

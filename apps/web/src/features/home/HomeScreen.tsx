@@ -54,6 +54,11 @@ export function HomeScreen({
           </Button>
         </Cluster>
       )}
+      <Cluster>
+        <Button kind="quiet" icon="plus" onClick={t.receipt.run}>
+          {t.receipt.label}
+        </Button>
+      </Cluster>
       <KitchenCards />
       <Suspense fallback={null}>
         <PrepNotes />

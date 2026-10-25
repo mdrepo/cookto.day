@@ -206,7 +206,14 @@ describe("the new packages exist", () => {
       [
         "packages/usecases",
         "@cookto/usecases",
-        [".", "./cook", "./signin", "./household-sync", "./schedule"],
+        [
+          ".",
+          "./cook",
+          "./signin",
+          "./household-sync",
+          "./schedule",
+          "./receipt",
+        ],
       ],
       [
         "packages/data",

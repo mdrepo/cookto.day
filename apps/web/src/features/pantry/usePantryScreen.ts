@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useWords } from "../../i18n/useWords.js";
 import { packStaples, useItemWords, useLoadedPacks } from "../../food.js";
+import { useReceiptUndo } from "../../receipt.js";
 import { wantsAddFood } from "../../routes.js";
 import { useKitchenSetup } from "../../setup.js";
 import { pantryQuery, queries, today } from "../../platform.js";
@@ -25,6 +26,8 @@ export function usePantryScreen() {
   // button; "Add food" steps back to a quiet button (#115).
   const guiding = setup.known && !setup.hasFresh && !adding;
   const usedUp = useUsedUpNote();
+  // A receipt's food, just added: "Added 6 from your receipt · Undo" (specs/129).
+  const fromReceipt = useReceiptUndo();
   const staples = packStaples(packs);
   const { data: items = [] } = useQuery(pantryQuery, queries);
   const day = today();
@@ -38,6 +41,7 @@ export function usePantryScreen() {
       warn: w.warning !== null,
       onOpen: () => {
         usedUp.clear();
+        fromReceipt.clear();
         setOpen(item.id);
       },
     };
@@ -64,12 +68,13 @@ export function usePantryScreen() {
       setOpen(null);
     },
     onUsedUp: usedUp.onUsedUp,
-    undo: usedUp.note,
+    undo: usedUp.note ?? fromReceipt.note,
     add: {
       label: t.addFood,
       adding,
       start: () => {
         usedUp.clear();
+        fromReceipt.clear();
         setAdding(true);
       },
       done: () => {

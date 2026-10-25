@@ -42,6 +42,8 @@ export interface Settings extends Schedule {
   country: string;
   /** Whether onboarding is done or skipped: it's asked once (specs/65). */
   onboarded: boolean;
+  /** Read that a receipt photo goes to Gemini, on this phone (specs/129). */
+  receiptsAgreed: boolean;
   /** The cuisines loaded, what the household doesn't make, and the sample. */
   kitchen: KitchenSettings;
 }
@@ -69,6 +71,11 @@ export interface SettingsWriter {
   knowsCountry(country: string): boolean;
   setCountry(country: string): void;
   setOnboarded(): void;
+}
+
+/** "Read it", the first time (specs/129): not asked again on this phone. */
+export interface ReceiptsAgreedWriter {
+  agreeToReceipts(): void;
 }
 
 /** The theme (specs/96), for its use case only. */
@@ -104,6 +111,7 @@ const BEANS_KEY = "cookto.day:beans";
 const ROLE_KEY = "cookto.day:role";
 const SORTED_KEY = "cookto.day:sorted";
 const ONBOARDED = "cookto.day:onboarded";
+const RECEIPTS_AGREED = "cookto.day:receiptsAgreed";
 const KITCHEN = "cookto.day:kitchen";
 const SIGNED_IN_KEY = "cookto.day:signedIn";
 const MOVES = "cookto.day:moves";
@@ -202,6 +210,7 @@ function startingState(
         ? savedCountry
         : options.fallbackCountry,
     onboarded: read(kv, ONBOARDED) === "yes",
+    receiptsAgreed: read(kv, RECEIPTS_AGREED) === "yes",
     kitchen: readKitchen(read(kv, KITCHEN)),
     ...startSchedule(read(kv, SCHEDULE_KEY)),
   };
@@ -218,7 +227,8 @@ export function createSettings(
     BeansWriter &
     WhoCooksWriter &
     CookWriter &
-    SignInWriter;
+    SignInWriter &
+    ReceiptsAgreedWriter;
 } {
   const speaks = (language: string) => options.languages.includes(language);
   const knowsCountry = (country: string) => options.countries.includes(country);
@@ -266,6 +276,10 @@ export function createSettings(
       setOnboarded() {
         store.setState({ onboarded: true });
         write(kv, ONBOARDED, "yes");
+      },
+      agreeToReceipts() {
+        store.setState({ receiptsAgreed: true });
+        write(kv, RECEIPTS_AGREED, "yes");
       },
       kitchen: () => store.getState().kitchen,
       moves: () => readMoves(read(kv, MOVES)),

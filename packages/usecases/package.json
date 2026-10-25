@@ -13,6 +13,7 @@
     "./cook": "./src/cook.ts",
     "./signin": "./src/signin.ts",
     "./household-sync": "./src/household-sync.ts",
+    "./receipt": "./src/receipt.ts",
     "./schedule": "./src/schedule.ts"
   },
   "dependencies": {

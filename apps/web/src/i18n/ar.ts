@@ -1,3 +1,4 @@
+import { arReceipt } from "./ar-receipt.js";
 import { arSettings } from "./ar-settings.js";
 import type { Messages } from "./en.js";
 
@@ -15,7 +16,8 @@ export const ar: Messages = {
   noDishesBody: "اختر ما تطبخه، وستظهر أطباقه هنا.",
   noFreshYet: "لا طعام طازج بعد",
   noFreshBody: "أضف ما اشتريته، وسنختار أطباقًا تستخدمه.",
-  privacy: "تبقى ثلاجتك وبيانات عائلتك في هذا المتصفح. لا يتم رفع أي شيء.",
+  privacy:
+    "تبقى ثلاجتك وبيانات عائلتك في هذا المتصفح. لا تُرسل صورة الإيصال للقراءة إلا عندما تختار، ولا يُحتفظ بها.",
   whereTitle: "أين تعيش؟",
   whereBody: "نستخدم عملتك، ونقرأ الفواتير التي ترسلها متاجرك.",
   comingSoon: "قريبًا",
@@ -217,4 +219,5 @@ export const ar: Messages = {
   takeOut: "أخرِج",
   takeOutDish: "أخرِج {dish}",
   ...arSettings,
+  ...arReceipt,
 };

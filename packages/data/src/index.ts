@@ -41,6 +41,8 @@ export {
 export { createPantry, type KitchenItem, type NewItem } from "./pantry.js";
 export { createPlans, type PlannedMeal } from "./plans.js";
 export { createShopping, type ListItem } from "./shopping.js";
+export { createReceiptAnswers, RECEIPT_ANSWERS } from "./receipt-answers.js";
+export type { Receipt, ReceiptLine, ReceiptsApi } from "./network-receipts.js";
 export {
   type Clearable,
   memoryRecordStore,

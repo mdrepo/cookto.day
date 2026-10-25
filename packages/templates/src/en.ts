@@ -1,3 +1,4 @@
+import { CHECKS } from "./en-checks.js";
 import { TOMORROW } from "./en-tomorrow.js";
 import type { Catalogue } from "./template.js";
 
@@ -33,4 +34,5 @@ export const EN: Catalogue = {
   },
   done_already: { kind: "text", body: "That's done already." },
   ...TOMORROW,
+  ...CHECKS,
 };

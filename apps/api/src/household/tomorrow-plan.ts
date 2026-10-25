@@ -1,4 +1,4 @@
-import { type AppPack, createPacks } from "@cookto/data";
+import { type AppPack, createPacks, type PackLoader } from "@cookto/data";
 import type { Households } from "@cookto/db";
 import {
   MEAL_SLOTS,
@@ -22,35 +22,61 @@ export const CHANGE = `${APP}/?from=telegram`;
 
 type Row = Record<string, unknown> & { id: string; version: number };
 
-const live = (r: Row) => r.deletedAt === null || r.deletedAt === undefined;
+export const live = (r: Row) =>
+  r.deletedAt === null || r.deletedAt === undefined;
 
-const packs = createPacks();
-const loaded = new Map<string, Promise<AppPack | null>>();
-const pack = (id: string) => {
-  let p = loaded.get(id);
+const bundled = createPacks();
+const loaded = new WeakMap<PackLoader, Map<string, Promise<AppPack | null>>>();
+
+/** A cuisine's pack, loaded once; null when it doesn't load. */
+export function packOf(id: string, packs: PackLoader = bundled) {
+  let of = loaded.get(packs);
+  if (!of) {
+    of = new Map<string, Promise<AppPack | null>>();
+    loaded.set(packs, of);
+  }
+  let p = of.get(id);
   if (!p) {
     p = packs.load(id).catch(() => null);
-    loaded.set(id, p);
+    of.set(id, p);
   }
   return p;
-};
-
-/** Every dish's English name in these cuisines' packs. */
-async function dishNames(cuisines: readonly string[]) {
-  const names: Record<string, string> = {};
-  for (const id of cuisines)
-    Object.assign(names, (await pack(id))?.words.en?.dishes ?? {});
-  return names;
 }
 
-interface Planned {
+/** The packs of the cuisines the household loaded. */
+export async function householdPacks(
+  households: Households,
+  household: string,
+  packs?: PackLoader,
+): Promise<AppPack[]> {
+  const [settings] = (
+    await households.records(household, "household-settings")
+  ).filter(live);
+  const kitchen = (settings?.kitchen ?? {}) as { cuisines?: unknown };
+  const cuisines = Array.isArray(kitchen.cuisines)
+    ? kitchen.cuisines.map(String)
+    : [];
+  const all = await Promise.all(cuisines.map((id) => packOf(id, packs)));
+  return all.filter((p) => p !== null);
+}
+
+/** Every dish's English name in these packs. */
+export const dishNames = (packs: readonly AppPack[]) =>
+  Object.assign(
+    {} as Record<string, string>,
+    ...packs.map((p) => p.words.en?.dishes ?? {}),
+  ) as Record<string, string>;
+
+export interface Planned {
   slot: MealSlot;
   dish: string;
   child: boolean;
+  /** The child's extra, by Wikidata id. */
+  addIn?: string;
 }
 
 /** The meal's plan each phone shows: the newest, one per meal and who. */
-function plannedOn(rows: Row[], day: string): Planned[] {
+export function plannedOn(rows: Row[], day: string): Planned[] {
   const newest = new Map<string, Row>();
   for (const r of rows) {
     if (r.on !== day || typeof r.dish !== "string" || r.made === "no") continue;
@@ -61,10 +87,18 @@ function plannedOn(rows: Row[], day: string): Planned[] {
   return MEAL_SLOTS.flatMap((slot) =>
     [false, true].flatMap((child) => {
       const r = newest.get(`${slot}:${child ? "child" : ""}`);
-      return r ? [{ slot, dish: String(r.dish), child }] : [];
+      if (!r) return [];
+      const addIn = typeof r.addIn === "string" ? { addIn: r.addIn } : {};
+      return [{ slot, dish: String(r.dish), child, ...addIn }];
     }),
   );
 }
+
+/** The household's people, as the engine counts them. */
+export const peopleOf = async (households: Households, household: string) =>
+  (await households.records(household, "members"))
+    .filter((r) => live(r) && memberProblems(r).length === 0)
+    .map((r) => r as unknown as Member);
 
 export interface Tomorrow {
   /** "Thursday". */
@@ -86,16 +120,8 @@ export async function tomorrowOf(
     day,
   );
   if (planned.length === 0) return null;
-  const [settings] = (
-    await households.records(household, "household-settings")
-  ).filter(live);
-  const kitchen = (settings?.kitchen ?? {}) as { cuisines?: unknown };
-  const names = await dishNames(
-    Array.isArray(kitchen.cuisines) ? kitchen.cuisines.map(String) : [],
-  );
-  const people = (await households.records(household, "members"))
-    .filter((r) => live(r) && memberProblems(r).length === 0)
-    .map((r) => r as unknown as Member);
+  const names = dishNames(await householdPacks(households, household));
+  const people = await peopleOf(households, household);
   const word = (id: string, slots = {}) =>
     render(templates, "en", id, slots).text;
   const name = (dish: string) => names[dish] ?? dish;

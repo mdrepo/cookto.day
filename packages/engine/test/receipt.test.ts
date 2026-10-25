@@ -179,6 +179,24 @@ describe("Found in your receipt", () => {
   });
 });
 
+describe("a drink without sugar isn't sugar (12)", () => {
+  test("zero sugar, sugar free and no added sugar don't name sugar", () => {
+    const withSugar = nameIndex([{ id: "sugar", names: ["Sugar"] }], {});
+    expect(
+      receiptLines(
+        [
+          line("Coca-Cola Zero Sugar"),
+          line("Sugar-free Gum"),
+          line("Oat Drink No Added Sugar"),
+          line("White Sugar 1kg"),
+        ],
+        withSugar,
+        {},
+      ).map((r) => r.kind),
+    ).toEqual(["not-sure", "not-sure", "not-sure", "found"]);
+  });
+});
+
 describe("what Add adds (11)", () => {
   test("ticked rows, and the lines answered with a food or as it is; not skipped or unanswered ones", () => {
     const rows = receiptLines(

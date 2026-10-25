@@ -86,7 +86,8 @@ test.describe("Receipt photos", () => {
     const { k, reads } = await signedInKitchen(page);
     await k.openDish("Palak paneer");
     await k.press("Add to my list");
-    await k.home();
+    // The dish's Back goes to My dishes: Today is its tab.
+    await k.tabs().getByRole("button", { name: "Today" }).click();
     reads.next = RECEIPT;
     await choosePhoto(page, "Add a receipt");
     await k.press("Read it");

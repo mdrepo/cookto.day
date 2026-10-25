@@ -240,6 +240,12 @@ export function fakeHouseholds(
             conversation: m.conversation,
           })),
       ),
+    whose: (member) => {
+      const m = s.members.find((x) => x.id === member);
+      return Promise.resolve(
+        m ? { household: m.household, role: m.role } : null,
+      );
+    },
     nameCook: (member, name) => {
       const m = s.members.find((x) => x.id === member && x.role === "cook");
       if (m) m.name = name;

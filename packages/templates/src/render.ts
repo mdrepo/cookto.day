@@ -48,7 +48,9 @@ export function render(
     kind: template.kind,
     language: locale,
     text: fill(template.body, values),
-    buttons: Object.entries(template.buttons ?? {}).map(([key, label]) => {
+    // A label may name a slot too (specs/270: the dishes to pick from).
+    buttons: Object.entries(template.buttons ?? {}).map(([key, words]) => {
+      const label = fill(words, values);
       const slot = template.links?.[key];
       const page = slot === undefined ? undefined : values[slot];
       return page === undefined ? { key, label } : { key, label, page };

@@ -11,7 +11,12 @@ export const TOMORROW: Catalogue = {
     kind: "buttons",
     body: "{hello}\n{plan}\nShall I send it to {cook}?",
     buttons: { send: "Send it", change: "Change", none: "No cooking" },
-    links: { change: "change" },
+  },
+  // After a swap in the chat: the question again (specs/270).
+  tomorrow_ask_again: {
+    kind: "buttons",
+    body: "Shall I send it to {cook}?",
+    buttons: { send: "Send it", change: "Change", none: "No cooking" },
   },
   tomorrow_ask_off: {
     kind: "buttons",
@@ -29,8 +34,40 @@ export const TOMORROW: Catalogue = {
       none: "No cooking",
       recipes: "Recipes",
     },
-    links: { change: "change", recipes: "recipes" },
+    links: { recipes: "recipes" },
   },
+  tomorrow_ask_self_again: {
+    kind: "choices",
+    body: "Does this look right?",
+    buttons: {
+      good: "Looks good",
+      change: "Change",
+      none: "No cooking",
+      recipes: "Recipes",
+    },
+    links: { recipes: "recipes" },
+  },
+  // "Change" in the chat (specs/270): which meal, then three ideas.
+  change_which: {
+    kind: "choices",
+    body: "Which meal?",
+    buttons: {
+      breakfast: "Breakfast",
+      morning_snack: "Morning snack",
+      lunch: "Lunch",
+      evening_snack: "Evening snack",
+      dinner: "Dinner",
+      app: "Open the app",
+    },
+    links: { app: "change" },
+  },
+  change_ideas: {
+    kind: "choices",
+    body: "Instead of {dish}:",
+    buttons: { a: "{a}", b: "{b}", c: "{c}", more: "More in the app" },
+    links: { more: "change" },
+  },
+  change_swapped: { kind: "text", body: "{Meal} is {dish} now." },
   tomorrow_sorted: { kind: "text", body: "Tomorrow's sorted." },
   tomorrow_self_off: { kind: "text", body: "Got it.\nNo cooking tomorrow." },
   tomorrow_sent: { kind: "text", body: "Sent to {cook}." },

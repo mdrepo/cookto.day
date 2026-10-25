@@ -1,4 +1,4 @@
-import { workflow } from "./workflow.js";
+import { type Step, workflow } from "./workflow.js";
 
 // Tomorrow's plan in Telegram (specs/241, specs/270). At 10 pm the planners
 // are asked: "Send it" sorts it and sends it to the cook; "Change" opens the
@@ -9,10 +9,51 @@ import { workflow } from "./workflow.js";
 // it. The cook's "Got it" goes back to the planners; no "Got it" by an hour
 // before the day's first meal, and they hear she hasn't seen it.
 
+/** The meals "Change" can swap, by button key, as the steps name them. */
+const MEALS = [
+  "breakfast",
+  "morning_snack",
+  "lunch",
+  "evening_snack",
+  "dinner",
+] as const;
+
+/**
+ * "Change" in the chat (specs/270): which meal, its ideas, the one picked
+ * swapped, then the question again at `again`. Each meal's ideas are a
+ * step of their own, so the swap knows the meal.
+ */
+const changeSteps = (again: string): Record<string, Step> => ({
+  which: {
+    action: "mealsToChange",
+    sends: "change_which",
+    on: Object.fromEntries(MEALS.map((m) => [m, `ideas_${m}`])),
+  },
+  ...Object.fromEntries(
+    MEALS.map((m) => [
+      `ideas_${m}`,
+      {
+        action: "ideasFor",
+        sends: "change_ideas",
+        on: { a: "picked", b: "picked", c: "picked" },
+      },
+    ]),
+  ),
+  picked: { action: "swapIdea", sends: "change_swapped", then: again },
+});
+
 export const TOMORROW = workflow("tomorrow", {
   first: "ask",
   steps: {
-    ask: { sends: "tomorrow_ask", on: { send: "sent", none: "noCooking" } },
+    ask: {
+      sends: "tomorrow_ask",
+      on: { send: "sent", none: "noCooking", change: "which" },
+    },
+    again: {
+      sends: "tomorrow_ask_again",
+      on: { send: "sent", none: "noCooking", change: "which" },
+    },
+    ...changeSteps("again"),
     noCooking: { sends: "no_cooking_ask", on: { yes: "off", back: "ask" } },
     sent: { action: "sendToCook", sends: "tomorrow_sent", then: "end" },
     off: { action: "noCooking", then: "end" },
@@ -32,7 +73,15 @@ export const TOMORROW_OFF = workflow("tomorrow_off", {
 export const TOMORROW_SELF = workflow("tomorrow_self", {
   first: "ask",
   steps: {
-    ask: { sends: "tomorrow_ask_self", on: { good: "sorted", none: "off" } },
+    ask: {
+      sends: "tomorrow_ask_self",
+      on: { good: "sorted", none: "off", change: "which" },
+    },
+    again: {
+      sends: "tomorrow_ask_self_again",
+      on: { good: "sorted", none: "off", change: "which" },
+    },
+    ...changeSteps("again"),
     sorted: { action: "sorted", sends: "tomorrow_sorted", then: "end" },
     off: { action: "dayOff", sends: "tomorrow_self_off", then: "end" },
   },

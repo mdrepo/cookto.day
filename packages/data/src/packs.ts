@@ -94,26 +94,18 @@ const CUISINES = [
 
 type Photos = Record<string, readonly [string, string]>;
 
-/** A pack's file, and its photos' addresses (specs/118). */
-const LOADERS: Record<
-  string,
-  () => Promise<[{ default: string }, { default: Photos }]>
-> = {
-  "north-indian": () =>
-    Promise.all([
-      import("./packs/north-indian.js"),
-      import("./packs/north-indian.photos.js"),
-    ]),
-  maharashtrian: () =>
-    Promise.all([
-      import("./packs/maharashtrian.js"),
-      import("./packs/maharashtrian.photos.js"),
-    ]),
-  // No photos yet: the family's own dishes.
-  "our-kitchen": async () => [
-    await import("./packs/our-kitchen.js"),
-    { default: {} },
-  ],
+/**
+ * Each pack's photos' addresses (specs/118), by cuisine: the web app's,
+ * from @cookto/data/photos. The server loads packs without them, as its
+ * bundler loads no images.
+ */
+export type PackPhotos = Record<string, () => Promise<{ default: Photos }>>;
+
+/** A pack's file. */
+const LOADERS: Record<string, () => Promise<{ default: string }>> = {
+  "north-indian": () => import("./packs/north-indian.js"),
+  maharashtrian: () => import("./packs/maharashtrian.js"),
+  "our-kitchen": () => import("./packs/our-kitchen.js"),
 };
 
 /** A pack's steps: their own file, so Today never waits for them (#149). */
@@ -133,7 +125,7 @@ function withPhotos(pack: AppPack, photos: Photos): AppPack {
   return pack;
 }
 
-export function createPacks(): PackLoader {
+export function createPacks(photos: PackPhotos = {}): PackLoader {
   const dishes = JSON.parse(catalog) as Record<string, number>;
   return {
     cuisines: () =>
@@ -145,8 +137,11 @@ export function createPacks(): PackLoader {
     async load(id) {
       const loader = LOADERS[id];
       if (!loader) throw new Error(`No pack "${id}" to load yet.`);
-      const [pack, photos] = await loader();
-      return withPhotos(JSON.parse(pack.default) as AppPack, photos.default);
+      const [pack, files] = await Promise.all([
+        loader(),
+        photos[id]?.() ?? { default: {} },
+      ]);
+      return withPhotos(JSON.parse(pack.default) as AppPack, files.default);
     },
     async steps(id) {
       const loader = STEPS[id];

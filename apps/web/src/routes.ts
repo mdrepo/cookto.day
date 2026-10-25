@@ -11,7 +11,15 @@ export type Step = "where" | "who" | "cooks" | "done";
 /** The kitchen's pages (specs/72-kitchen.md). */
 export type Page =
   "cuisines" | "staples" | "pantry" | "dishes" | "list" | "more";
-export type Route = "home" | "settings" | "dish" | "pack" | Step | Page;
+export type Route =
+  "home" | "settings" | "dish" | "pack" | "cook" | "telegram" | Step | Page;
+
+/** The cook's recipes (specs/241): `#/cook/<day>?d=…`, no kitchen needed. */
+const COOK = "#/cook/";
+
+/** A page "Change" opened inside Telegram, until it has signed in. */
+const fromTelegram = () =>
+  new URLSearchParams(location.search).get("from") === "telegram";
 
 const STEPS: Partial<Record<string, Step>> = {
   "#/start/where": "where",
@@ -59,6 +67,8 @@ export function useRoute(): Route {
   // The prerender has no address: it draws home, which most visits show.
   const at = useSyncExternalStore(subscribe, hash, () => null);
   if (at === null) return "home";
+  if (at.startsWith(COOK)) return "cook";
+  if (fromTelegram()) return "telegram";
   const step = STEPS[at];
   if (step) return step;
   if (!onboarded) return "where";

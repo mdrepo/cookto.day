@@ -4,7 +4,12 @@ import {
   prepEvents,
   type Suggestion,
 } from "@cookto/engine";
-import { keepTomorrow, sortTomorrow, swapTomorrow } from "@cookto/usecases";
+import {
+  keepTomorrow,
+  sortTomorrow,
+  swapTomorrow,
+  tomorrowText,
+} from "@cookto/usecases";
 import { useEffect, useState } from "react";
 import { useStore } from "zustand";
 import { listOf, namer, SLOT_WORDS, useRole } from "../../food.js";
@@ -19,8 +24,11 @@ import { useMealPlans } from "./useMealPlans.js";
 
 /** How many dishes each meal offers, the pick included. */
 const SHOWN = 5;
-/** From this time, tomorrow's plan stands as it is: silence is yes. */
-const FIXED = "21:00";
+/**
+ * From this time, tomorrow's plan stands as it is: the bot asks at 10 pm
+ * and sends it as planned at 11 (specs/241), so it stays open till then.
+ */
+const FIXED = "23:00";
 
 type Plans = NonNullable<ReturnType<typeof useMealPlans>>;
 type Namer = ReturnType<typeof namer>;
@@ -66,47 +74,45 @@ function planText(
   locale: string,
 ): string {
   const words = prepWords(name, t, locale);
-  const lines = [
-    t.tomorrow,
-    ...meals.map((meal) => `${meal.label}: ${meal.dish}`),
-    ...m.plans
-      .filter((p) => p.on === m.next && p.for === "child")
-      .map((p) => fill(t.forTheChildDish, { dish: name("dishes", p.dish) })),
-    ...prepEvents({
-      now: m.now,
-      plans: m.plans,
-      dishes: m.dishes,
-      beans: m.beans,
-    })
-      .filter((e) => e.kind === "tonight")
-      .map((e) =>
-        fill(t.prepTonight, {
-          do: words.doing(e.prep),
-          meal: t[SLOT_WORDS[e.slot]].toLocaleLowerCase(locale),
-        }),
-      ),
-  ];
-  const needs = [...new Set(meals.flatMap((meal) => meal.needs))];
-  if (needs.length > 0)
-    lines.push(
-      fill(t.buy, {
-        items: listOf(
-          locale,
-          needs.map((id) => name("ingredients", id)),
+  const plan = tomorrowText(
+    {
+      meals,
+      child: m.plans
+        .filter((p) => p.on === m.next && p.for === "child")
+        .map((p) => name("dishes", p.dish)),
+      tonight: prepEvents({
+        now: m.now,
+        plans: m.plans,
+        dishes: m.dishes,
+        beans: m.beans,
+      })
+        .filter((e) => e.kind === "tonight")
+        .map((e) =>
+          fill(t.prepTonight, {
+            do: words.doing(e.prep),
+            meal: t[SLOT_WORDS[e.slot]].toLocaleLowerCase(locale),
+          }),
         ),
-      }),
-    );
-  return lines.join("\n");
+      buy: [...new Set(meals.flatMap((meal) => meal.needs))].map((id) =>
+        name("ingredients", id),
+      ),
+    },
+    {
+      childDish: (dish) => fill(t.forTheChildDish, { dish }),
+      buy: (items) => fill(t.buy, { items: listOf(locale, items) }),
+    },
+  );
+  return `${t.tomorrow}\n${plan}`;
 }
 
 /**
- * Tomorrow, on the planner's phone from 4 pm (specs/144, 195, 207): each
- * meal's pick, with other ideas to swap in, "Looks good" and "Share
- * tomorrow". Once approved, or from 9 pm, it's sorted; "Change" opens it
- * again. With the cook connected, "Looks good" sends her the plan, and an
- * evening nobody touched still reaches her at 9 pm (SendToCook). The picks
- * are kept as tonight's plan either way, so their prep can start and the
- * cook's morning shows the same.
+ * Tomorrow, on the planner's phone from 4 pm (specs/144, 195, 207, 241):
+ * each meal's pick, with other ideas to swap in, "Looks good" and "Share
+ * tomorrow". Once approved, or from 11 pm, it's sorted; "Change" opens it
+ * again. With the cook connected, "Looks good" sends her the plan; an
+ * evening nobody touched is asked about by the bot at 10 pm and sent as
+ * planned at 11. The picks are kept as tonight's plan either way, so their
+ * prep can start and the cook's morning shows the same.
  */
 export function useTomorrow() {
   const { locale, t } = useWords();

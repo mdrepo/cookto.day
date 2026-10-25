@@ -144,12 +144,18 @@ test.describe("Who cooks", () => {
   });
 
   test("silence is yes", async ({ page }) => {
+    // At 11 pm since specs/241: the bot asks at 10 and sends it as planned,
+    // so at 9:30 tomorrow is still open.
     await at(page, "2026-10-19T21:30");
     const k = new Cooking(page);
     await k.start();
     await k.loadNorthIndianWithStaples();
     await planner(k, page);
     const tm = tomorrow(page);
+    await expect(tm.getByRole("button", { name: "Looks good" })).toBeVisible();
+    await expect(tm).not.toContainText("Tomorrow's sorted");
+    await at(page, "2026-10-19T23:30");
+    await page.reload();
     await expect(tm).toContainText("Tomorrow's sorted");
     const lunch = await k.valueOf(
       tm.getByRole("list", { name: "Tomorrow" }),

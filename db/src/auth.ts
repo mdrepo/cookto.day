@@ -38,6 +38,15 @@ export interface AuthStore {
   /** The session, with its last use moved; null when gone or 30 days old. */
   session(hash: string, now: string): Promise<Session | null>;
   end(hash: string): Promise<boolean>;
+  /**
+   * A session for the account behind a channel's user id, as a web app the
+   * bot opened proves it (specs/241); null for someone never signed in.
+   */
+  sessionFor(
+    channel: string,
+    userId: string,
+    now: string,
+  ): Promise<{ name: string; session: string } | null>;
   housekeeping(now: string): Promise<{ sessions: number }>;
 }
 
@@ -69,6 +78,12 @@ export function functionAuth(call: Call, secret: string): AuthStore {
         p_now: now,
       }) as Promise<Session | null>,
     end: (hash) => c("auth_session_end", { p_hash: hash }) as Promise<boolean>,
+    sessionFor: (channel, userId, now) =>
+      c("auth_telegram_session", {
+        p_channel: channel,
+        p_user_id: userId,
+        p_now: now,
+      }) as Promise<{ name: string; session: string } | null>,
     housekeeping: (now) =>
       c("auth_housekeeping", { p_now: now }) as Promise<{ sessions: number }>,
   };

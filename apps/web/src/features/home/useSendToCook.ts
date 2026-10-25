@@ -1,23 +1,21 @@
-import type { Cook, PlanSent } from "@cookto/data";
-import { dayAt, timeWords } from "@cookto/engine/time";
-import {
-  scheduleTomorrow,
-  sendTomorrow,
-  type Sent,
-} from "@cookto/usecases/cook";
+import type { Cook } from "@cookto/data";
+import { timeWords } from "@cookto/engine/time";
+import { sendTomorrow, type Sent } from "@cookto/usecases/cook";
 import { useEffect, useRef, useState } from "react";
 import { fill } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
 import { api, now as clock, settings } from "../../platform.js";
 
-// Tomorrow's plan reaching the cook (specs/207): "Looks good" sends now;
-// opening Tomorrow from 4 pm schedules it for 9 pm; a change after sending
-// asks for "Send again". The plan's text is the same as "Share tomorrow"'s.
-// Loaded with SendToCook, only once a cook is connected.
+// Tomorrow's plan reaching the cook (specs/207, specs/241): "Looks good"
+// sends now; otherwise the bot asks at 10 pm and sends it as planned at 11,
+// so nothing waits on the phone. A change after sending asks for "Send
+// again". The plan's text is the same as "Share tomorrow"'s. Loaded with
+// SendToCook, only once a cook is connected.
 
-/** From this time the plan is scheduled; at this time the server sends it. */
-const SCHEDULE_FROM = "16:00";
-const SENDS_AT = "21:00";
+/** From this time the plan shows; the bot asks at 10 pm, sends at 11. */
+const EVENING_FROM = "16:00";
+const ASKS_AT = "22:00";
+const SENT_AT = "23:00";
 
 const deps = async () => ({ api: await api(), settings: settings.writer });
 
@@ -59,15 +57,12 @@ export function useSendToCook(p: SendProps): SendState {
   const { cook, now, on, text, approved } = p;
   const { locale, t } = useWords();
   const [last, setLast] = useState<Last>(null);
-  const tried = useRef("");
   const sentFor = useRef(0);
 
-  const forToday = (p: PlanSent | null | undefined) =>
-    p?.on === on ? p : null;
-  const sentToday = forToday(cook?.sent);
-  const waiting = forToday(cook?.scheduled);
-  const evening = now.slice(11) >= SCHEDULE_FROM;
-  const after9 = now.slice(11) >= SENDS_AT;
+  const sentToday = cook?.sent?.on === on ? cook.sent : null;
+  const time = now.slice(11);
+  const beforeAsked = time >= EVENING_FROM && time < ASKS_AT;
+  const after11 = time >= SENT_AT;
 
   // "Looks good" pressed: send, once per press, the plan as it stands then.
   useEffect(() => {
@@ -75,23 +70,6 @@ export function useSendToCook(p: SendProps): SendState {
     sentFor.current = approved;
     sendNow(cook, { on, text }, setLast);
   }, [approved, cook, on, text]);
-
-  // Silence is yes: once the evening's plan shows, it waits on the server
-  // for 9 pm, as it stands; a change replaces it. Once sent, nothing waits.
-  useEffect(() => {
-    if (!cook || !evening || after9 || sentToday !== null) return;
-    if (waiting?.text === text) return;
-    const key = `${on}\n${text}`;
-    if (tried.current === key) return;
-    tried.current = key;
-    const at = dayAt(now.slice(0, 10), SENDS_AT);
-    void deps()
-      .then((d) => scheduleTomorrow(d, cook, { on, text }, at))
-      .then((result) => {
-        // She has gone: say so now, not at the next press.
-        if (result === "gone") setLast("gone");
-      });
-  }, [cook, evening, after9, sentToday, waiting, on, text, now]);
 
   if (!cook)
     return {
@@ -116,8 +94,8 @@ export function useSendToCook(p: SendProps): SendState {
       },
       button: null,
     };
-  if (waiting !== null && !after9)
-    return { line: { text: t.goesToCook, tone: "good" }, button: null };
-  if (after9) return { line: null, button: { ...again, label: t.sendToCook } };
+  if (beforeAsked)
+    return { line: { text: t.weAskAtTen, tone: "good" }, button: null };
+  if (after11) return { line: null, button: { ...again, label: t.sendToCook } };
   return { line: null, button: null };
 }

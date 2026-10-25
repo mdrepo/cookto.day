@@ -111,6 +111,16 @@ export interface Households {
     household: string,
     collection: string,
   ): Promise<PushedRecord["record"][]>;
+  /** Every household, with its switch: the cron's list (specs/241). */
+  list(): Promise<{ id: string; botOff: boolean }[]>;
+  /** The server's own writes, by the phones' rules: what was refused. */
+  put(
+    household: string,
+    records: PushedRecord[],
+    now: string,
+  ): Promise<PushedRecord[]>;
+  /** Each planner reached in the chat they signed in from (specs/241). */
+  reachPlanners(household: string, channel: string, now: string): Promise<void>;
 }
 
 export function functionHouseholds(call: Call, secret: string): Households {
@@ -177,5 +187,19 @@ export function functionHouseholds(call: Call, secret: string): Households {
         p_household: household,
         p_collection: collection,
       }) as Promise<PushedRecord["record"][]>,
+    list: () => c("hh_list", {}) as Promise<{ id: string; botOff: boolean }[]>,
+    put: (household, records, now) =>
+      c("hh_put", {
+        p_household: household,
+        p_records: records,
+        p_now: now,
+      }) as Promise<PushedRecord[]>,
+    reachPlanners: async (household, channel, now) => {
+      await c("hh_reach_planners", {
+        p_household: household,
+        p_channel: channel,
+        p_now: now,
+      });
+    },
   };
 }

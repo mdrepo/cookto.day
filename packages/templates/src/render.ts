@@ -11,7 +11,8 @@ export interface Rendered {
   /** The language the words came from. */
   language: string;
   text: string;
-  buttons: { key: string; label: string }[];
+  /** A button with a `page` opens it inside the chat; the rest come back. */
+  buttons: { key: string; label: string; page?: string }[];
 }
 
 function fill(words: string, values: Record<string, string>): string {
@@ -47,9 +48,10 @@ export function render(
     kind: template.kind,
     language: locale,
     text: fill(template.body, values),
-    buttons: Object.entries(template.buttons ?? {}).map(([key, label]) => ({
-      key,
-      label,
-    })),
+    buttons: Object.entries(template.buttons ?? {}).map(([key, label]) => {
+      const slot = template.links?.[key];
+      const page = slot === undefined ? undefined : values[slot];
+      return page === undefined ? { key, label } : { key, label, page };
+    }),
   };
 }

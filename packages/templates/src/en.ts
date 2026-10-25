@@ -1,3 +1,4 @@
+import { TOMORROW } from "./en-tomorrow.js";
 import type { Catalogue } from "./template.js";
 
 // The bot's words in English (ADR 0034): today's replies (specs #207, #216,
@@ -31,4 +32,5 @@ export const EN: Catalogue = {
     body: "I can't read replies yet. Tomorrow's plan comes from the app.",
   },
   done_already: { kind: "text", body: "That's done already." },
+  ...TOMORROW,
 };

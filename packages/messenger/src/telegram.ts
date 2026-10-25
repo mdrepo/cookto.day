@@ -25,7 +25,9 @@ export interface TelegramOptions {
 
 const KINDS: readonly Kind[] = ["text", "photo", "buttons", "edit"];
 
-type Keyboard = { inline_keyboard: Record<string, string>[][] };
+type Keyboard = {
+  inline_keyboard: Record<string, string | { url: string }>[][];
+};
 
 const keyboard = (rows: Button[][] | undefined): Keyboard | undefined =>
   rows && {
@@ -33,7 +35,9 @@ const keyboard = (rows: Button[][] | undefined): Keyboard | undefined =>
       row.map((b) =>
         "url" in b
           ? { text: b.label, url: b.url }
-          : { text: b.label, callback_data: b.value },
+          : "app" in b
+            ? { text: b.label, web_app: { url: b.app } }
+            : { text: b.label, callback_data: b.value },
       ),
     ),
   };

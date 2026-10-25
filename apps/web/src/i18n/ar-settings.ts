@@ -62,7 +62,7 @@ export const arSettings = {
   qrCode: "رمز QR للرابط",
   tryAgain: "حاول مرة أخرى",
   sentToCook: "أُرسلت إلى الطاهية، {time}",
-  goesToCook: "تصل إلى الطاهية في 9 مساءً",
+  weAskAtTen: "سنسألك في الساعة 10 مساءً.",
   sendToCook: "أرسل إلى الطاهية",
   sendAgain: "أرسل مرة أخرى",
   changedSinceSent: "تغيّرت بعد إرسالها",
@@ -128,4 +128,6 @@ export const arSettings = {
   thursdays: "أيام الخميس",
   fridays: "أيام الجمعة",
   saturdays: "أيام السبت",
+  recipe: "الوصفة",
+  openFromApp: "افتح هذا من التطبيق.",
 } satisfies Partial<Messages>;

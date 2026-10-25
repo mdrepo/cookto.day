@@ -157,6 +157,13 @@ export function runsContract(name: string, setUp: () => Promise<RunsSetUp>) {
       ]);
     });
 
+    test("a run for the cooks speaks to every cook, not the planners (specs/241)", async () => {
+      const toCooks = await s.runs.create(run({ audience: "cooks" }));
+      expect(await s.runs.conversations(toCooks.id)).toEqual([
+        s.cook.conversation,
+      ]);
+    });
+
     test("expired when waiting past its time; gone with its household", async () => {
       const soon = await s.runs.create(run({ expiresAt: at(10) }));
       const c = await s.runs.claim(soon.id, null, 0, T0, at(1));

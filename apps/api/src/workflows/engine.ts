@@ -1,5 +1,5 @@
 import type { Outgoing, RunRow } from "@cookto/db";
-import type { Conversation, Message } from "@cookto/messenger";
+import type { Button, Conversation, Message } from "@cookto/messenger";
 import { render } from "@cookto/templates";
 import { type Advanced, accepts, advance, type Event } from "@cookto/workflows";
 import { iso, type MessengerDeps } from "../messenger/deps.js";
@@ -21,9 +21,14 @@ function build(
   m: Advanced["messages"][number],
 ): Message {
   const r = render(w.templates, "en", m.template, run.about);
-  const buttons = r.buttons
-    .filter((b) => !m.keys || m.keys.includes(b.key))
-    .map((b) => ({ label: b.label, value: buttonValue(run.id, step, b.key) }));
+  // A page opens in the chat and comes back as nothing: it's always shown.
+  const buttons: Button[] = r.buttons
+    .filter((b) => b.page !== undefined || !m.keys || m.keys.includes(b.key))
+    .map((b) =>
+      b.page !== undefined
+        ? { label: b.label, app: b.page }
+        : { label: b.label, value: buttonValue(run.id, step, b.key) },
+    );
   if (buttons.length === 0) return { kind: "text", text: r.text };
   const rows = r.kind === "choices" ? buttons.map((b) => [b]) : [buttons];
   return { kind: "buttons", text: r.text, buttons: rows };
@@ -52,7 +57,7 @@ async function transition(
   for (const a of outcome.actions) {
     const act = w.actions[a.name];
     if (!act) throw new Error(`no-action:${a.name}`);
-    await act({ run: claimed, key, input: a.input });
+    await act({ run: claimed, key, input: a.input, d });
   }
   const to =
     outcome.messages.length > 0 ? await w.runs.conversations(run.id) : [];
@@ -80,7 +85,46 @@ async function transition(
   return done.ok ? "moved" : "lost";
 }
 
-/** Expired runs ended, then due runs started; nothing while it's off. */
+/**
+ * A run just made, started now rather than at the next cron (specs/241:
+ * the cook gets her plan straight away). Whether it moved.
+ */
+export async function begin(d: MessengerDeps, run: RunRow): Promise<boolean> {
+  const w = d.workflows;
+  if (!w || w.off) return false;
+  return (await transition(d, w, run, { kind: "start" })) === "moved";
+}
+
+/**
+ * A waiting run ended without a word: what it asked was answered somewhere
+ * else (specs/241: "Looks good" in the app). Its buttons are done already.
+ */
+export async function finish(d: MessengerDeps, id: string): Promise<void> {
+  const w = d.workflows;
+  const run = w ? await w.runs.get(id) : null;
+  if (!w || run?.status !== "waiting") return;
+  const now = d.now();
+  const claimed = await w.runs.claim(
+    run.id,
+    run.step,
+    run.rev,
+    iso(now),
+    iso(now + w.leaseMs),
+  );
+  if (!claimed) return;
+  await w.runs.commit(
+    run.id,
+    claimed.rev,
+    { step: "end", status: "done", floor: false },
+    [],
+    iso(now),
+  );
+}
+
+/**
+ * Expired runs ended, the starters' new runs made, then due runs started;
+ * nothing while it's off.
+ */
 export async function tick(
   d: MessengerDeps,
 ): Promise<{ started: number; expired: number }> {
@@ -91,6 +135,7 @@ export async function tick(
   for (const run of await w.runs.expired(now))
     if ((await transition(d, w, run, { kind: "expire" })) === "moved")
       counts.expired++;
+  for (const start of w.starters ?? []) await start(d);
   // A run started here that holds its person's floor keeps the next waiting.
   const held = new Set<string>();
   for (const run of await w.runs.due(now)) {

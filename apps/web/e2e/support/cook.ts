@@ -16,8 +16,6 @@ export const at = async (page: Page, time: string) =>
 
 /** When a code made at 7 pm runs out: ten minutes on, as the API says it. */
 export const CODE_RUNS_OUT = new Date("2026-10-19T19:10:00").toISOString();
-/** 9 pm on that evening, as the API wants it. */
-export const NINE_PM = new Date("2026-10-19T21:00:00").toISOString();
 
 export const tomorrow = (page: Page) =>
   page.getByRole("region", { name: "Tomorrow" });

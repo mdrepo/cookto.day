@@ -216,7 +216,7 @@ export const hi: Messages = {
   qrCode: "लिंक का QR कोड",
   tryAgain: "फिर से कोशिश करें",
   sentToCook: "रसोइए को भेजा, {time}",
-  goesToCook: "रात 9 बजे रसोइए को जाएगा",
+  weAskAtTen: "हम रात 10 बजे आपसे पूछेंगे।",
   sendToCook: "रसोइए को भेजें",
   sendAgain: "फिर भेजें",
   changedSinceSent: "भेजने के बाद बदला है",
@@ -282,4 +282,6 @@ export const hi: Messages = {
   thursdays: "हर गुरुवार",
   fridays: "हर शुक्रवार",
   saturdays: "हर शनिवार",
+  recipe: "विधि",
+  openFromApp: "इसे ऐप से खोलें।",
 };

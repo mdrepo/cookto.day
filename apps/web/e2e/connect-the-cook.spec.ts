@@ -5,7 +5,6 @@ import {
   evening,
   fakeApi,
   fakeShare,
-  NINE_PM,
   planner,
   shared,
   swapDinner,
@@ -85,33 +84,8 @@ test.describe("Connect the cook", () => {
     const now = api.sends.filter((s) => s.at === undefined);
     expect(now).toHaveLength(1);
     expect(now[0]?.text.split("\n")).toEqual(text?.split("\n"));
-  });
-
-  test("silence is yes, and it still goes", async ({ page }) => {
-    await cookConnected(page);
-    const api = await fakeApi(page);
-    const k = await evening(page);
-    const tm = tomorrow(page);
-    await expect(tm).toContainText("Goes to the cook at 9 pm");
-    // The plan as it stands waits for 9 pm; a fuller one replaces it.
-    await expect.poll(() => api.sends.at(-1)?.at).toBe(NINE_PM);
-    expect(api.sends.at(-1)?.context).toBe("plan:2026-10-20");
-    const before = api.sends.length;
-
-    const name = await swapDinner(k, page);
-    await expect.poll(() => api.sends.at(-1)?.text).toContain(name);
-    expect(api.sends.length).toBeGreaterThan(before);
-    expect(api.sends.at(-1)).toMatchObject({
-      at: NINE_PM,
-      context: "plan:2026-10-20",
-    });
-    const waiting = `m-${String(api.sends.length)}`;
-
-    await tm.getByRole("button", { name: "Looks good" }).click();
-    await expect(tm).toContainText("Sent to the cook, 7:00 pm");
-    expect(api.cancelled).toEqual([waiting]);
-    expect(api.sends.at(-1)?.at).toBeUndefined();
-    expect(api.sends.at(-1)?.text).toContain(name);
+    // specs/241: nothing waits on the server for 9 pm; the bot asks at 10.
+    expect(api.sends.filter((s) => s.at !== undefined)).toEqual([]);
   });
 
   test("couldn't send", async ({ page }) => {

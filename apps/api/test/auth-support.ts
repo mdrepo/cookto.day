@@ -110,6 +110,18 @@ export function fakeAuth(): FakeAuth {
       return Promise.resolve({ account: s.account, name });
     },
     end: (hash) => Promise.resolve(sessions.delete(hash)),
+    sessionFor: async (channel, userId, now) => {
+      const who = identities.find(
+        (i) => i.channel === channel && i.userId === userId,
+      );
+      if (!who) return null;
+      const session = `ses-${String(sessions.size + 1)}-${"d".repeat(60)}`;
+      sessions.set(await sha256(session), {
+        account: who.account,
+        lastUsedAt: now,
+      });
+      return { name: who.name, session };
+    },
     housekeeping: (now) => {
       let gone = 0;
       for (const [hash, s] of sessions)

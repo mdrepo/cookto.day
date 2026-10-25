@@ -219,6 +219,34 @@ export function fakeHouseholds(
           .sort((a, b) => (a.id < b.id ? -1 : 1))
           .map((r) => structuredClone(r.record)),
       ),
+    list: () =>
+      Promise.resolve(
+        [...s.rows.values()].map((r) => ({
+          id: r.id,
+          botOff: r.botOff ?? false,
+        })),
+      ),
+    put: (household, pushed, now) =>
+      Promise.resolve(s.take(household, pushed, now)),
+    reachPlanners: async (household, channel, now) => {
+      for (const m of s.members) {
+        if (m.household !== household || m.role !== "plan") continue;
+        if (m.conversation !== null || m.account === null) continue;
+        // A private chat's id is its person's id, on Telegram.
+        const who = auth.identities.find(
+          (i) => i.account === m.account && i.channel === channel,
+        );
+        if (!who) continue;
+        const c = await store.open(
+          channel,
+          who.userId,
+          { kind: "member", id: m.id },
+          now,
+        );
+        m.conversation = c.id;
+        m.chat = who.userId;
+      }
+    },
   };
   return Object.assign(s, { households });
 }

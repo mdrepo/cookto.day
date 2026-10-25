@@ -56,9 +56,19 @@ const ranout =
     return "ranout";
   };
 
+/** A command that asks its first question: who's out, how many guests. */
+const asks =
+  (workflow: string): Handler =>
+  async (a) => {
+    await a.answer(workflow, {});
+    return workflow;
+  };
+
 const PLANNER: Record<string, Handler> = {
   tomorrow: plannersTomorrow,
   today: (a) => today(a, false),
+  out: asks("out_who"),
+  guests: asks("guests_count"),
   off,
   list,
 };

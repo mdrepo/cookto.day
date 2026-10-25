@@ -1,6 +1,7 @@
 import type { AppPack } from "@cookto/data";
 import {
   type Beans,
+  type Eating,
   goesOffWith,
   MEAL_SLOTS,
   type MealSlot,
@@ -8,7 +9,7 @@ import {
   overnight,
   type PantryItem,
   prepFor,
-  servings,
+  servingsOn,
 } from "@cookto/engine";
 
 // The plan's lines as the bot says them (specs/270): each meal for how
@@ -35,6 +36,8 @@ export interface PlanInput {
   packs: readonly AppPack[];
   pantry: readonly PantryItem[];
   beans: Beans;
+  /** Who's out and the guests, set from the chat (specs/270). */
+  eating: readonly Eating[];
   word: Word;
   /** "Friday", from "2026-10-23". */
   dayName: (day: string) => string;
@@ -72,7 +75,10 @@ export interface PlanMeal {
   label: string;
 }
 
-/** The plan's meals, in the day's order. */
+/**
+ * The plan's meals, in the day's order, each for how many once who's out
+ * and guests count (specs/270). A meal nobody is left to eat is off.
+ */
 export function planMeals(p: PlanInput): PlanMeal[] {
   const { planned, people, packs, word } = p;
   const names = Object.assign(
@@ -84,17 +90,19 @@ export function planMeals(p: PlanInput): PlanMeal[] {
       .filter((m) => m.slot === slot)
       .map((m) => {
         const ownChild = planned.some((x) => x.slot === slot && x.child);
+        const own = m.child ? "child" : ownChild;
         return {
           slot,
           child: m.child,
           id: m.dish,
           dish: names[m.dish] ?? m.dish,
-          n: servings(slot, people, m.child ? "child" : ownChild),
+          n: servingsOn(slot, people, own, p.day, p.eating),
           label: m.child
             ? childOf(slot, people, word)
             : word(`meal_${slot.replace("-", "_")}`),
         };
-      }),
+      })
+      .filter((m) => m.n > 0),
   );
 }
 

@@ -6,7 +6,7 @@ import { iso, type MessengerDeps } from "./deps.js";
 // commands. Set when a chat connects, and again for the whole household
 // when its cook comes or goes: planners who cook have /ranout too.
 
-const PLANNER = ["tomorrow", "today", "off", "list"];
+const PLANNER = ["tomorrow", "today", "out", "guests", "off", "list"];
 const COOK = ["tomorrow", "today", "ranout"];
 
 function menuOf(cook: boolean, planners: "cook" | "plan"): Command[] {

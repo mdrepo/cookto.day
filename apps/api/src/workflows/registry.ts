@@ -1,4 +1,10 @@
 import {
+  GUESTS_COUNT,
+  GUESTS_MEAL,
+  GUESTS_WHEN,
+  OUT_MEALS,
+  OUT_WHEN,
+  OUT_WHO,
   CMD_LIST,
   CMD_LIST_EMPTY,
   CMD_NOT_PLANNED,
@@ -74,6 +80,12 @@ export const WORKFLOWS: Record<string, Workflow> = Object.fromEntries(
     OFF_DAY,
     OFF_DAY_SELF,
     RANOUT,
+    OUT_WHO,
+    OUT_WHEN,
+    OUT_MEALS,
+    GUESTS_COUNT,
+    GUESTS_WHEN,
+    GUESTS_MEAL,
   ].map((w) => [w.name, w]),
 );
 

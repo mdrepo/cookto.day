@@ -3,6 +3,8 @@
 /** What each collection's change announces, as its repository does. */
 export const SYNC_TOPICS: Record<string, string> = {
   cooked: "cooked",
+  // Who's out and guests, set from the chat (specs/270).
+  eating: "eating",
   "household-settings": "household-settings",
   members: "household",
   "my-dishes-out": "my-dishes",

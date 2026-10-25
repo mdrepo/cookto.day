@@ -1,12 +1,12 @@
 import { type AppPack, createPacks, type PackLoader } from "@cookto/data";
 import type { Households } from "@cookto/db";
 import {
+  type Eating,
   MEAL_SLOTS,
   type MealSlot,
   type Member,
   memberProblems,
   type PantryItem,
-  servings,
 } from "@cookto/engine";
 import { dayWords } from "@cookto/engine/time";
 import { type Catalogues, render } from "@cookto/templates";
@@ -158,10 +158,17 @@ export async function planInputOf(
       .filter(live)
       .map((r) => r as unknown as PantryItem),
     beans: await beansOf(households, household),
+    eating: await eatingOf(households, household),
     word: (id, slots = {}) => render(templates, "en", id, slots).text,
     dayName: (d) => dayWords(d, "en", { weekday: "long" }),
   };
 }
+
+/** Who's out and the guests, set from the chat (specs/270). */
+export const eatingOf = async (households: Households, household: string) =>
+  (await households.records(household, "eating"))
+    .filter(live)
+    .map((r) => r as unknown as Eating);
 
 /** Tomorrow's plan for `day`, "YYYY-MM-DD"; null when nothing is planned. */
 export async function tomorrowOf(
@@ -173,15 +180,8 @@ export async function tomorrowOf(
   const input = await planInputOf(households, templates, household, day);
   const first = input?.planned[0];
   if (!input || !first) return null;
-  const { planned, people } = input;
-  const hasChildDish = (slot: MealSlot) =>
-    planned.some((p) => p.slot === slot && p.child);
-  const dishes = planned.map(
-    (p) =>
-      `${p.slot}.${p.dish}.${String(
-        servings(p.slot, people, p.child ? "child" : hasChildDish(p.slot)),
-      )}`,
-  );
+  const meals = planMeals(input);
+  const dishes = meals.map((m) => `${m.slot}.${m.id}.${String(m.n)}`);
   return {
     day: dayWords(day, "en", { weekday: "long" }),
     plan: planLines(input, true).join("\n"),
@@ -189,6 +189,6 @@ export async function tomorrowOf(
     tonight: tonightLines(input),
     recipes: `${APP}/#/cook/${day}?d=${dishes.join(",")}&l=en`,
     first: first.slot,
-    meals: planMeals(input),
+    meals,
   };
 }

@@ -91,6 +91,58 @@ export function childrenOnly(
   return eaters.length > 0 && eaters.every(isChild);
 }
 
+/** Who's out of a meal on a day, and how many guests come (specs/270). */
+export interface Eating {
+  on: string;
+  slot: MealSlot;
+  /** The people out, by id. */
+  out: readonly string[];
+  guests: number;
+}
+
+const that = (slot: MealSlot, day: string, eating: readonly Eating[]) =>
+  eating.find((e) => e.on === day && e.slot === slot);
+
+/** The people eating a meal on a day: its eaters, less who's out. */
+function presentOn(
+  slot: MealSlot,
+  members: readonly Member[],
+  day: string,
+  eating: readonly Eating[],
+): Member[] {
+  const out = new Set(that(slot, day, eating)?.out ?? []);
+  return eatersOf(slot, members).filter((m) => !out.has(m.id));
+}
+
+/** How many eat a meal on a day: who's in, and the guests (specs/270). */
+export function eatersOn(
+  slot: MealSlot,
+  members: readonly Member[],
+  day: string,
+  eating: readonly Eating[],
+): number {
+  const guests = that(slot, day, eating)?.guests ?? 0;
+  return presentOn(slot, members, day, eating).length + guests;
+}
+
+/**
+ * servings() on a day (specs/270): who's out isn't counted, and guests eat
+ * the meal's dish, as adults do.
+ */
+export function servingsOn(
+  slot: MealSlot,
+  members: readonly Member[],
+  childHasOwn: boolean | "child",
+  day: string,
+  eating: readonly Eating[],
+): number {
+  const present = presentOn(slot, members, day, eating);
+  const kids = present.filter(isChild).length;
+  if (childHasOwn === "child") return kids;
+  const all = eatersOn(slot, members, day, eating);
+  return childHasOwn ? all - kids : all;
+}
+
 /**
  * How many a dish serves at a meal (specs/145): everyone who eats it; the
  * adults only, when the children have a dish of their own (`true`); or,

@@ -6,6 +6,7 @@ import { useKitchenSettings, useLoadedPacks, useMyPacks } from "../../food.js";
 import {
   clock,
   cookedQuery,
+  eatingQuery,
   membersQuery,
   pantryQuery,
   plansQuery,
@@ -27,6 +28,8 @@ export function useMealPlans() {
   const { data: members = [] } = useQuery(membersQuery, queries);
   const { data: history = [] } = useQuery(cookedQuery, queries);
   const { data: plans = [] } = useQuery(plansQuery, queries);
+  // Who's out and guests, from the chat (specs/270).
+  const { data: eating = [] } = useQuery(eatingQuery, queries);
   // Only My dishes are planned (specs/175).
   const dishes = dishesOf(useMyPacks());
   if (dishes.length === 0) return null;
@@ -42,5 +45,5 @@ export function useMealPlans() {
     plans,
     now,
   });
-  return { ...ideas, packs, now, beans, plans, dishes, members };
+  return { ...ideas, packs, now, beans, plans, dishes, members, eating };
 }

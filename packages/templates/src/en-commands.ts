@@ -10,6 +10,65 @@ export const COMMANDS: Catalogue = {
   menu_off: { kind: "text", body: "The cook's day off" },
   menu_list: { kind: "text", body: "The shopping list" },
   menu_ranout: { kind: "text", body: "Something ran out" },
+  menu_out: { kind: "text", body: "Someone's eating out" },
+  menu_guests: { kind: "text", body: "Guests are coming" },
+  // /out and /guests: who, how many, when, which meal.
+  out_who: {
+    kind: "choices",
+    body: "Who's out?",
+    buttons: {
+      p0: "{p0}",
+      p1: "{p1}",
+      p2: "{p2}",
+      p3: "{p3}",
+      p4: "{p4}",
+      p5: "{p5}",
+      p6: "{p6}",
+      p7: "{p7}",
+    },
+  },
+  person_adult: { kind: "text", body: "Adult {n}" },
+  person_child: { kind: "text", body: "Child {n}" },
+  pick_when: {
+    kind: "buttons",
+    body: "When?",
+    buttons: { today: "Today", tomorrow: "Tomorrow" },
+  },
+  out_meals: {
+    kind: "choices",
+    body: "Which meals?",
+    buttons: {
+      breakfast: "Breakfast",
+      morning_snack: "Morning snack",
+      lunch: "Lunch",
+      evening_snack: "Evening snack",
+      dinner: "Dinner",
+      all: "All day",
+    },
+  },
+  out_done: {
+    kind: "text",
+    body: "Got it.\n{who}'s out for {meal} {when}.\n{Meal} is for {n} now.",
+  },
+  out_done_all: { kind: "text", body: "Got it.\n{who}'s out all day {when}." },
+  guests_count: {
+    kind: "choices",
+    body: "How many guests?",
+    buttons: { g1: "1", g2: "2", g3: "3", g4: "4", more: "5+" },
+  },
+  guests_how_many: { kind: "text", body: "How many?" },
+  guests_meal: {
+    kind: "choices",
+    body: "Which meal?",
+    buttons: {
+      breakfast: "Breakfast",
+      morning_snack: "Morning snack",
+      lunch: "Lunch",
+      evening_snack: "Evening snack",
+      dinner: "Dinner",
+    },
+  },
+  guests_done: { kind: "text", body: "Got it.\n{Meal} {when} is for {n} now." },
   // What a command says, its lines made from the words below.
   cmd_said: { kind: "text", body: "{lines}" },
   cmd_said_recipes: {

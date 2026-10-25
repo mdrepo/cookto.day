@@ -1,6 +1,7 @@
 import {
   createChanges,
   createCooked,
+  createEating,
   createSaveProblems,
   createHousehold,
   createMyDishes,
@@ -180,6 +181,14 @@ export const plans = createPlans(records, { changes });
 export const plansQuery = queryOptions({
   queryKey: ["plans", "all"],
   queryFn: ({ signal }) => plans.reader.all(signal),
+});
+
+/** Who's out and the guests, set from the chat (specs/270). */
+const eating = createEating(records, { changes });
+
+export const eatingQuery = queryOptions({
+  queryKey: ["eating", "all"],
+  queryFn: ({ signal }) => eating.reader.all(signal),
 });
 
 /** Everything in the pantry. Hooks narrow it with `select`. */

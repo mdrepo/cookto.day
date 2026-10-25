@@ -21,6 +21,7 @@ export {
   type Invited,
   type InviteStarted,
   type MemberRow,
+  type Person,
   type Pulled,
   type Pushed,
   type PushedRecord,

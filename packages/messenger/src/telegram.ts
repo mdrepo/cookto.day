@@ -49,13 +49,15 @@ function call(
   edits: string | undefined,
 ): [string, Record<string, unknown>] {
   const chat_id = chat;
+  // specs/270: the messages after a reply's first arrive without a sound.
+  const quiet = "silent" in m && m.silent ? { disable_notification: true } : {};
   switch (m.kind) {
     case "text":
-      return ["sendMessage", { chat_id, text: m.text }];
+      return ["sendMessage", { chat_id, text: m.text, ...quiet }];
     case "buttons":
       return [
         "sendMessage",
-        { chat_id, text: m.text, reply_markup: keyboard(m.buttons) },
+        { chat_id, text: m.text, reply_markup: keyboard(m.buttons), ...quiet },
       ];
     case "photo":
       return [

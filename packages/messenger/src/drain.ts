@@ -29,11 +29,21 @@ export interface Drained {
   outcome: "sent" | "retry" | "failed" | "unknown";
 }
 
+/** Rounds a drain takes at most: a reply's messages, one per round. */
+export const ROUNDS = 12;
+
+/**
+ * Sends what's due, round after round until nothing is, so a reply's
+ * messages arrive together (specs/270), still one at a time per chat.
+ */
 export async function drain(o: DrainOptions): Promise<Drained[]> {
-  const now = o.now();
-  const due = await o.store.claim(now, plus(now, LOCK_MS));
   const done: Drained[] = [];
-  for (const d of due) done.push(await one(o, d.message, d.attempts));
+  for (let round = 0; round < ROUNDS; round++) {
+    const now = o.now();
+    const due = await o.store.claim(now, plus(now, LOCK_MS));
+    if (due.length === 0) break;
+    for (const d of due) done.push(await one(o, d.message, d.attempts));
+  }
   return done;
 }
 

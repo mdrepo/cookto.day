@@ -13,14 +13,19 @@ export type Button =
   | { label: string; app: string };
 
 export type Message =
-  | { kind: "text"; text: string }
+  | {
+      kind: "text";
+      text: string;
+      /** Arrives without a sound (specs/270): a reply's later messages. */
+      silent?: boolean;
+    }
   | {
       kind: "photo";
       /** A link, or the channel's own reference to a file it already has. */
       photo: string;
       caption?: string;
     }
-  | { kind: "buttons"; text: string; buttons: Button[][] }
+  | { kind: "buttons"; text: string; buttons: Button[][]; silent?: boolean }
   | {
       kind: "edit";
       /** Our id of the message to change. */

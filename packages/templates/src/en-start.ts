@@ -19,6 +19,6 @@ export const START: Catalogue = {
   },
   set_up: {
     kind: "text",
-    body: "Your kitchen is set up. Each night at 10 I'll send you tomorrow's plan to check.",
+    body: "Your kitchen is set up.\nEach night at 10 I'll send you tomorrow's plan to check.",
   },
 };

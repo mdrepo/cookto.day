@@ -4,12 +4,15 @@ import {
   MEAL_AGAIN,
   MEAL_CHECK,
   NOT_MADE,
+  NOT_SEEN_PLAN,
+  SEEN_PLAN,
   SENT_AS_PLANNED,
   SET_UP,
   TO_COOK,
   TO_COOK_OFF,
   TOMORROW,
   TOMORROW_OFF,
+  TOMORROW_SELF,
   type Workflow,
 } from "@cookto/workflows";
 import { startChecks } from "./checks.js";
@@ -25,9 +28,12 @@ export const WORKFLOWS: Record<string, Workflow> = Object.fromEntries(
   [
     TOMORROW,
     TOMORROW_OFF,
+    TOMORROW_SELF,
     TO_COOK,
     TO_COOK_OFF,
     SENT_AS_PLANNED,
+    SEEN_PLAN,
+    NOT_SEEN_PLAN,
     MEAL_CHECK,
     MEAL_AGAIN,
     DAY_END,

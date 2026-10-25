@@ -40,6 +40,7 @@ export {
   type Condition,
   CONDITIONS,
   conditionOf,
+  goesOffWith,
   type PantryItem,
   pantryOrder,
   shownAmount,

@@ -31,6 +31,28 @@ export function useBy(item: PantryItem): string | undefined {
   return addDays(item.boughtOn, item.shelfLifeDays);
 }
 
+/**
+ * The fresh food a dish uses that goes off on `day` or the day after, the
+ * soonest first (specs/270): the reason a planned dish gives. None when its
+ * food keeps longer, is a staple, or has already gone off.
+ */
+export function goesOffWith(
+  ingredients: readonly string[],
+  pantry: readonly PantryItem[],
+  day: string,
+): { ingredient: string; useBy: string } | null {
+  const last = addDays(day, 1);
+  let soonest: { ingredient: string; useBy: string } | null = null;
+  for (const item of pantry) {
+    const by = useBy(item);
+    if (by === undefined || by < day || by > last) continue;
+    if (!ingredients.includes(item.ingredient)) continue;
+    if (!soonest || by < soonest.useBy)
+      soonest = { ingredient: item.ingredient, useBy: by };
+  }
+  return soonest;
+}
+
 /** Use soon from the day before the use-by date; past its best after it. */
 export function conditionOf(item: PantryItem, today: string): Condition {
   if (item.mark) return item.mark;

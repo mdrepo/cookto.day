@@ -21,6 +21,16 @@ export interface MemberRow {
   stopped: boolean;
 }
 
+/** Someone in a household, for the bot's words (specs/270). */
+export interface Person {
+  id: string;
+  role: Role;
+  /** A planner's from sign-in, the cook's from Telegram; null when unknown. */
+  name: string | null;
+  /** Their chat with the bot; null when they have none. */
+  conversation: string | null;
+}
+
 export interface HouseholdView {
   id: string;
   members: MemberRow[];
@@ -121,6 +131,10 @@ export interface Households {
   ): Promise<PushedRecord[]>;
   /** Each planner reached in the chat they signed in from (specs/241). */
   reachPlanners(household: string, channel: string, now: string): Promise<void>;
+  /** Everyone in a household, in the order they joined (specs/270). */
+  people(household: string): Promise<Person[]>;
+  /** The cook's first name, as Telegram gives it; a planner's stays theirs. */
+  nameCook(member: string, name: string): Promise<void>;
 }
 
 export function functionHouseholds(call: Call, secret: string): Households {
@@ -194,12 +208,29 @@ export function functionHouseholds(call: Call, secret: string): Households {
         p_records: records,
         p_now: now,
       }) as Promise<PushedRecord[]>,
+    ...peopleCalls(c),
+  };
+}
+
+/** Reaching the household's people, by name (specs/241, specs/270). */
+function peopleCalls(
+  c: (
+    fn: Parameters<Call>[0],
+    args: Record<string, unknown>,
+  ) => Promise<unknown>,
+): Pick<Households, "reachPlanners" | "people" | "nameCook"> {
+  return {
     reachPlanners: async (household, channel, now) => {
       await c("hh_reach_planners", {
         p_household: household,
         p_channel: channel,
         p_now: now,
       });
+    },
+    people: (household) =>
+      c("hh_people", { p_household: household }) as Promise<Person[]>,
+    nameCook: async (member, name) => {
+      await c("hh_name_cook", { p_member: member, p_name: name });
     },
   };
 }

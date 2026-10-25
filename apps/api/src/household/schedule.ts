@@ -64,6 +64,27 @@ export async function schedule(
   };
 }
 
+const minutesOf = (hhmm: string) =>
+  Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3, 5));
+
+/**
+ * The moment it's `hhmm` on `day` in the household's time (specs/270: an
+ * hour before the day's first meal), from `now` in milliseconds; null
+ * without a clock.
+ */
+export function whenLocal(
+  s: Schedule,
+  now: number,
+  day: string,
+  hhmm: string,
+): string | null {
+  const clock = clockOf(s, new Date(now).toISOString());
+  if (!clock) return null;
+  const days = (Date.parse(day) - Date.parse(clock.day)) / 86_400_000;
+  const minutes = days * 1440 + minutesOf(hhmm) - minutesOf(clock.time);
+  return new Date(now - (now % 60_000) + minutes * 60_000).toISOString();
+}
+
 /** The household's day and time at `iso`; null when it has no clock yet. */
 export function clockOf(
   s: Schedule,

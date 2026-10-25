@@ -44,7 +44,7 @@ describe("1. one sentence, one message, one sound", () => {
       "Shall I send it to the cook?",
     ]);
     const silent = (m: (typeof to)[number]["message"]) =>
-      "silent" in m && m.silent === true;
+      "silent" in m && m.silent;
     expect(to.map((d) => silent(d.message))).toEqual([false, true, true, true]);
     expect(to.map((d) => d.message.kind)).toEqual([
       "text",

@@ -15,8 +15,16 @@ import {
 // off; and the bot's switches. The fake messenger, runs in memory and a
 // fixed clock (ADR 0034).
 
-const PLAN = "Tomorrow, Thursday:\nLunch: Dal tadka\nDinner: Palak paneer";
+// The words are specs/270's: one sentence a message, the buttons on the
+// last, and the cook unnamed here, so "the cook".
+const PLAN = ["Lunch for 2: Dal tadka.", "Dinner for 2: Palak paneer."];
+const ASK = [
+  "Hi Mayur, here's tomorrow, Thursday.",
+  ...PLAN,
+  "Shall I send it to the cook?",
+];
 const labels = (b: { label: string }[]) => b.map((x) => x.label);
+const texts = (s: { text: string }[]) => s.map((x) => x.text);
 
 describe("1. the 10 pm question", () => {
   test("nothing at 21:59; the plan and three buttons at 22:00; nothing more at 22:01", async () => {
@@ -27,11 +35,11 @@ describe("1. the 10 pm question", () => {
 
     e.at("22:00");
     await e.tick();
-    const [ask, ...more] = e.to(PLANNER_CHAT);
-    expect(more).toEqual([]);
-    expect(ask?.text).toBe(PLAN);
+    const said = e.to(PLANNER_CHAT);
+    expect(texts(said)).toEqual(ASK);
+    const ask = said.at(-1);
     expect(labels(ask?.buttons ?? [])).toEqual([
-      "Looks good",
+      "Send it",
       "Change",
       "No cooking",
     ]);
@@ -55,14 +63,18 @@ describe("2. looks good", () => {
     await e.tick();
     e.to(PLANNER_CHAT);
     e.at("22:04");
-    await e.press(PLANNER_CHAT, "Looks good");
+    await e.press(PLANNER_CHAT, "Send it");
     expect(e.server("household-settings", "household")).toMatchObject({
       sorted: TOMORROW,
       version: 2,
     });
-    const [plan, ...more] = e.to(COOK_CHAT);
-    expect(more).toEqual([]);
-    expect(plan?.text).toBe(PLAN);
+    const sent = e.to(COOK_CHAT);
+    expect(texts(sent)).toEqual([
+      "Here's tomorrow, Thursday.",
+      ...PLAN,
+      "Tap Got it once you've seen it.",
+    ]);
+    const plan = sent.at(-1);
     const recipes = plan?.buttons.find((b) => b.label === "Recipes");
     expect(recipes && "app" in recipes ? recipes.app : "").toBe(
       `https://cookto.day/#/cook/${TOMORROW}?d=lunch.dal-tadka.2,dinner.palak-paneer.2&l=en`,
@@ -98,7 +110,7 @@ describe("4. change, in the app", () => {
     expect(e.to(COOK_CHAT).map((s) => s.text)).toEqual([
       "Tomorrow\nLunch: Dal tadka\nDinner: Rajma",
     ]);
-    await e.press(PLANNER_CHAT, "Looks good");
+    await e.press(PLANNER_CHAT, "Send it");
     expect(e.to(PLANNER_CHAT).map((s) => s.text)).toEqual([
       "That's done already.",
     ]);
@@ -115,15 +127,22 @@ describe("5. no cooking", () => {
     await e.tick();
     e.to(PLANNER_CHAT);
     await e.press(PLANNER_CHAT, "No cooking");
-    const [sure] = e.to(PLANNER_CHAT);
-    expect(sure?.text).toBe("No cooking tomorrow? The cook will be told.");
-    expect(labels(sure?.buttons ?? [])).toEqual(["Yes, tell her", "Back"]);
+    const sure = e.to(PLANNER_CHAT);
+    expect(texts(sure)).toEqual([
+      "No cooking tomorrow?",
+      "The cook will be told.",
+    ]);
+    expect(labels(sure.at(-1)?.buttons ?? [])).toEqual([
+      "Yes, tell her",
+      "Back",
+    ]);
     await e.press(PLANNER_CHAT, "Yes, tell her");
     expect(e.server("household-settings", "household")).toMatchObject({
       daysOff: { weekdays: [], dates: [TOMORROW] },
     });
     expect(e.to(COOK_CHAT).map((s) => s.text)).toEqual([
-      "No cooking tomorrow, Thursday. Enjoy the day off.",
+      "No cooking tomorrow, Thursday.",
+      "Enjoy the day off.",
     ]);
     e.at("23:00");
     await e.tick();
@@ -138,10 +157,10 @@ describe("5. no cooking", () => {
     await e.press(PLANNER_CHAT, "No cooking");
     e.to(PLANNER_CHAT);
     await e.press(PLANNER_CHAT, "Back");
-    const [again] = e.to(PLANNER_CHAT);
-    expect(again?.text).toBe(PLAN);
-    expect(labels(again?.buttons ?? [])).toEqual([
-      "Looks good",
+    const again = e.to(PLANNER_CHAT);
+    expect(texts(again)).toEqual(ASK);
+    expect(labels(again.at(-1)?.buttons ?? [])).toEqual([
+      "Send it",
       "Change",
       "No cooking",
     ]);
@@ -164,7 +183,10 @@ describe("6. silence", () => {
     e.at("23:00");
     await e.tick();
     expect(e.to(COOK_CHAT).map((s) => s.text)).toEqual([
-      "Tomorrow, Thursday:\nLunch: Dal tadka\nDinner: Rajma",
+      "Here's tomorrow, Thursday.",
+      "Lunch for 2: Dal tadka.",
+      "Dinner for 2: Rajma.",
+      "Tap Got it once you've seen it.",
     ]);
     expect(e.server("household-settings", "household")).toMatchObject({
       sorted: TOMORROW,
@@ -185,11 +207,16 @@ describe("7. the cook's day off", () => {
     await e.pushed(planRecord("lunch", "dal-tadka", 1, "2026-10-25"));
     e.at("22:00", "2026-10-24");
     await e.tick();
-    const [ask] = e.to(PLANNER_CHAT);
-    expect(ask?.text).toBe(
-      "The cook is off tomorrow.\nTomorrow, Sunday:\nLunch: Dal tadka",
-    );
-    expect(labels(ask?.buttons ?? [])).toEqual(["Looks good", "Change"]);
+    const said = e.to(PLANNER_CHAT);
+    expect(texts(said)).toEqual([
+      "The cook is off tomorrow, Sunday.",
+      "Lunch for 2: Dal tadka.",
+      "Does this look right?",
+    ]);
+    expect(labels(said.at(-1)?.buttons ?? [])).toEqual([
+      "Looks good",
+      "Change",
+    ]);
     await e.press(PLANNER_CHAT, "Looks good");
     expect(e.server("household-settings", "household")).toMatchObject({
       sorted: "2026-10-25",

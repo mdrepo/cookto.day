@@ -99,7 +99,11 @@ export interface Evening {
   /** What reached a chat since the last look. */
   to: (chat: string) => Said[];
   /** Presses the button with this label on the last message to `chat`. */
-  press: (chat: string, label: string) => Promise<void>;
+  press: (
+    chat: string,
+    label: string,
+    from?: { id: string; name: string },
+  ) => Promise<void>;
   say: (chat: string, event: Incoming) => Promise<void>;
   /** Another phone's records, pushed as the phone would. */
   pushed: (...records: ReturnType<typeof record>[]) => Promise<void>;
@@ -148,30 +152,52 @@ export function withWorkflows(h: Harness): WorkflowDeps {
   return w;
 }
 
-export async function evening(
-  more: { settings?: Record<string, unknown>; plans?: boolean } = {},
-): Promise<Evening> {
+export interface EveningOptions {
+  settings?: Record<string, unknown>;
+  /** false: nothing planned; a list: these plans instead of the usual. */
+  plans?: boolean | ReturnType<typeof record>[];
+  /** The household's people instead of two adults (specs/270). */
+  members?: ReturnType<typeof record>[];
+  /** More records: the pantry, say. */
+  records?: ReturnType<typeof record>[];
+  /** The cook's Telegram account; false: no cook on Telegram (specs/270). */
+  cook?: { id: string; name: string } | false;
+}
+
+export async function evening(more: EveningOptions = {}): Promise<Evening> {
   const h = harness(new Date(kolkata("18:30")).toISOString());
   const session = await signedInAs(h, MAYUR, PLANNER_CHAT);
+  const plans = Array.isArray(more.plans)
+    ? more.plans
+    : more.plans === false
+      ? []
+      : PLANS;
   const made = await createHousehold(
     as(session, "POST", "/api/household", {
       records: [
         settingsRecord(more.settings),
-        ...ADULTS,
-        ...(more.plans === false ? [] : PLANS),
+        ...(more.members ?? ADULTS),
+        ...plans,
+        ...(more.records ?? []),
       ],
     }),
     h.deps,
   );
   const { id: household } = (await made.json()) as { id: string };
-  await joined(h, session, "cook", COOK_CHAT);
+  if (more.cook !== false)
+    await joined(h, session, "cook", COOK_CHAT, more.cook);
   const w = withWorkflows(h);
   h.channel.deliveries.length = 0;
-  const event = async (chat: string, e: Incoming) => {
+  const event = async (
+    chat: string,
+    e: Incoming,
+    from?: { id: string; name: string },
+  ) => {
     const u = h.channel.update({
       id: `u-tm-${String(++updates)}`,
       chat,
       event: e,
+      ...(from && { from }),
     });
     await webhook(incoming(u), h.deps);
     await h.settle();
@@ -195,14 +221,18 @@ export async function evening(
       seen.set(chat, all.length);
       return all.slice(from).map((d) => said(d.message));
     },
-    press: async (chat, label) => {
+    press: async (chat, label, from) => {
       const last = h.channel.deliveries
         .filter((d) => d.chat === chat && d.message.kind === "buttons")
         .at(-1);
       const buttons = last ? said(last.message).buttons : [];
       const b = buttons.find((x) => x.label === label);
       if (!b || !("value" in b)) throw new Error(`no button "${label}"`);
-      await event(chat, { kind: "button", value: b.value, answers: null });
+      await event(
+        chat,
+        { kind: "button", value: b.value, answers: null },
+        from,
+      );
     },
     say: event,
     pushed: async (...records) => {

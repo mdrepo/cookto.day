@@ -17,8 +17,11 @@ import { withWorkflows } from "./tomorrow-support.js";
 
 const WELCOME =
   "Hello! I help your family plan its meals, and send them to your cook. Setting up takes a minute.";
-const SET_UP =
-  "Your kitchen is set up. Each night at 10 I'll send you tomorrow's plan to check.";
+// One sentence a message (specs/270).
+const SET_UP = [
+  "Your kitchen is set up.",
+  "Each night at 10 I'll send you tomorrow's plan to check.",
+];
 
 let updates = 0;
 
@@ -101,7 +104,7 @@ describe("4. the bot says it's set up", () => {
     );
     expect(made.status).toBe(201);
     await h.settle();
-    expect(to(h, MAYUR.id).map((s) => s.text)).toEqual([SET_UP]);
+    expect(to(h, MAYUR.id).map((s) => s.text)).toEqual(SET_UP);
 
     await push(
       as(session, "POST", "/api/sync/push", {
@@ -110,6 +113,6 @@ describe("4. the bot says it's set up", () => {
       h.deps,
     );
     await h.settle();
-    expect(to(h, MAYUR.id).map((s) => s.text)).toEqual([SET_UP]);
+    expect(to(h, MAYUR.id).map((s) => s.text)).toEqual(SET_UP);
   });
 });

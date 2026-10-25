@@ -30,6 +30,8 @@ export interface Member {
   chat: string | null;
   conversation: string | null;
   role: "plan" | "cook";
+  /** The cook's first name from Telegram (migration 0011). */
+  name?: string | null;
 }
 
 export interface StoredRecord {
@@ -115,7 +117,7 @@ export class HouseholdState {
         id: m.id,
         role: m.role,
         kind: m.account === null ? "telegram" : "account",
-        name: this.nameOf(m.account),
+        name: m.name ?? this.nameOf(m.account),
         stopped: m.account === null && m.conversation === null,
       }));
     return { id: household, members: list };

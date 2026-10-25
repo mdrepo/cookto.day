@@ -29,10 +29,10 @@ describe("1. an hour after the meal", () => {
     expect(e.to(COOK_CHAT)).toEqual([]);
     e.at("14:00");
     await e.tick();
-    const [ask, ...more] = e.to(COOK_CHAT);
-    expect(more).toEqual([]);
-    expect(ask?.text).toBe("Did you make lunch?\nDal tadka");
-    expect(labels(ask?.buttons ?? [])).toEqual(["Yes", "No"]);
+    // One sentence a message (specs/270): the buttons on the last.
+    const ask = e.to(COOK_CHAT);
+    expect(texts(ask)).toEqual(["Did you make lunch?", "Dal tadka"]);
+    expect(labels(ask.at(-1)?.buttons ?? [])).toEqual(["Yes", "No"]);
     e.at("14:01");
     await e.tick();
     expect(e.to(COOK_CHAT)).toEqual([]);
@@ -93,7 +93,10 @@ describe("4. ran out", () => {
     await e.tick();
     await e.press(COOK_CHAT, "No");
     await e.press(COOK_CHAT, "Ran out of something");
-    expect(texts(e.to(COOK_CHAT)).at(-1)).toBe("What ran out? Send its name.");
+    expect(texts(e.to(COOK_CHAT)).slice(-2)).toEqual([
+      "What ran out?",
+      "Send its name.",
+    ]);
     await e.say(COOK_CHAT, { kind: "text", text: "milk and kasuri methi" });
     expect(live(e, "shopping").map((s) => s.ingredient)).toEqual(["Q8495"]);
     expect(texts(e.to(COOK_CHAT))).toEqual([
@@ -135,8 +138,10 @@ describe("5. the end of the day", () => {
       "None of them",
     ]);
     await e.press(COOK_CHAT, "Some of them");
-    const [lunch] = e.to(COOK_CHAT);
-    expect(lunch?.text).toBe("Did you make lunch?\nDal tadka");
+    expect(texts(e.to(COOK_CHAT))).toEqual([
+      "Did you make lunch?",
+      "Dal tadka",
+    ]);
     await e.press(COOK_CHAT, "No");
     expect(texts(e.to(PLANNER_CHAT))).toEqual([
       "Lunch wasn't made: didn't say.",

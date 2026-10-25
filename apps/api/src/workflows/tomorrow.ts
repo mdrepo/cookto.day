@@ -34,7 +34,7 @@ const minutes = (hhmm: string) =>
   Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3, 5));
 
 /** A run made and started now, once for its seed. */
-async function say(
+export async function say(
   d: MessengerDeps,
   run: RunRow,
   seed: string,

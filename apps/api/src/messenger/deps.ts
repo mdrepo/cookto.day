@@ -1,3 +1,4 @@
+import type { PackLoader } from "@cookto/data";
 import type { AuthStore, Households, Links } from "@cookto/db";
 import type { Messenger } from "@cookto/messenger";
 import type { LogEntry } from "../log.js";
@@ -25,6 +26,8 @@ export interface MessengerDeps {
   workflows?: WorkflowDeps;
   /** The bot's token, to check a web app's proof (specs/241); never logged. */
   telegramToken?: string;
+  /** The cuisine packs; the bundled ones when left out (specs/242). */
+  packs?: PackLoader;
 }
 
 /** The link's token from the Authorization header, or null. */

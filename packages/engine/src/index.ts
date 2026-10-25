@@ -2,6 +2,7 @@
 // Apps import it as "@cookto/engine".
 export { addDays, daysLeft } from "./expiry.js";
 export { assumedStaples, missing } from "./needs.js";
+export { type MealDish, type Used, usedBy } from "./used.js";
 export {
   type Cooked,
   cookedLately,

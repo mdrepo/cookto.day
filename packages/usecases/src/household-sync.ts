@@ -19,8 +19,10 @@ import type {
   CookWriter,
   KitchenSettingsWriter,
   ScheduleWriter,
+  SettingsWriter,
   SharedSettings,
   SignInWriter,
+  WhoCooksWriter,
 } from "@cookto/data/write";
 
 // The household on the server (specs/217, ADR 0033): signing in starts one
@@ -171,6 +173,37 @@ export async function joinOrStart(d: HouseholdSync): Promise<Joined> {
   await followCook(d);
   await adoptSettings(d);
   return "joined";
+}
+
+/**
+ * A page the bot opened, signed in (specs/241, 260). Telegram's window
+ * keeps nothing of the phone's app: with a household, it becomes a
+ * planner's phone, set up, and joins it. "setup" when there's no household
+ * and this phone hasn't been set up, so the app's setup comes first.
+ */
+export async function openInTelegram(
+  d: HouseholdSync,
+  phone: { onboarded: boolean; settings: WhoCooksWriter & SettingsWriter },
+): Promise<Joined | "setup"> {
+  const none = (await currentHousehold(d).catch(() => undefined)) === null;
+  if (none && !phone.onboarded) return "setup";
+  phone.settings.setRole("plan");
+  phone.settings.setOnboarded();
+  return joinOrStart(d);
+}
+
+/**
+ * Setup finished (specs/260): a signed-in phone starts its household from
+ * what setup chose. "invite" when it started and someone else cooks, so the
+ * cook's invite comes next; "home" otherwise.
+ */
+export async function afterSetup(
+  d: () => Promise<HouseholdSync>,
+  phone: { signedIn: boolean; role: "plan" | "cook" },
+): Promise<"home" | "invite"> {
+  if (!phone.signedIn) return "home";
+  const joined = await joinOrStart(await d());
+  return joined === "started" && phone.role === "plan" ? "invite" : "home";
 }
 
 /**

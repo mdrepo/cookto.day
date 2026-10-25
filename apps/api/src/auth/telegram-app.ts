@@ -1,3 +1,4 @@
+import type { Sender } from "@cookto/db";
 import { json, problem } from "../http.js";
 import { iso, type MessengerDeps } from "../messenger/deps.js";
 import { sessionCookie } from "./cookie.js";
@@ -5,8 +6,9 @@ import { sessionCookie } from "./cookie.js";
 // Signing in from a page the bot opened inside Telegram (specs/241): the
 // page sends the init data Telegram handed it, and the API checks it with
 // the bot's token, by Telegram's rule for web apps. The Telegram account
-// it proves gets a session, as signing in with the bot gives; the page
-// never sees the token. A proof older than a day is refused.
+// it proves gets a session, as signing in with the bot gives, and is made
+// when it has none ("Set up your kitchen", specs/260); the page never sees
+// the token. A proof older than a day is refused.
 
 const MAX_AGE_MS = 24 * 3_600_000;
 const enc = new TextEncoder();
@@ -33,12 +35,12 @@ function same(a: string, b: string): boolean {
   return diff === 0;
 }
 
-/** The Telegram user id the init data proves, or null. */
+/** The Telegram user the init data proves, by id and first name, or null. */
 export async function provenUser(
   initData: string,
   token: string,
   now: number,
-): Promise<string | null> {
+): Promise<Sender | null> {
   const params = new URLSearchParams(initData);
   const hash = params.get("hash");
   if (!hash) return null;
@@ -52,10 +54,13 @@ export async function provenUser(
   const at = Number(params.get("auth_date")) * 1000;
   if (!Number.isFinite(at) || now - at > MAX_AGE_MS) return null;
   try {
-    const user = JSON.parse(params.get("user") ?? "") as { id?: unknown };
-    return typeof user.id === "number" || typeof user.id === "string"
-      ? String(user.id)
-      : null;
+    const user = JSON.parse(params.get("user") ?? "") as {
+      id?: unknown;
+      first_name?: unknown;
+    };
+    if (typeof user.id !== "number" && typeof user.id !== "string") return null;
+    const name = typeof user.first_name === "string" ? user.first_name : "";
+    return { id: String(user.id), name };
   } catch {
     return null;
   }
@@ -84,7 +89,6 @@ export async function telegramAppSignIn(
     user,
     iso(started),
   );
-  if (got === null) return problem(404, "account");
   d.log({ route: "auth/telegram", status: 200, ms: d.now() - started });
   return json(
     200,

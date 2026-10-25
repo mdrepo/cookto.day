@@ -278,4 +278,5 @@ export const mr: Messages = {
   saturdays: "दर शनिवारी",
   recipe: "कृती",
   openFromApp: "हे ॲपमधून उघडा.",
+  getMealsHere: "दिवसाचं जेवण इथे माझ्याकडून मिळवा:",
 };

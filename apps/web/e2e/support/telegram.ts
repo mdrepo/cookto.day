@@ -16,6 +16,33 @@ export const fromTelegram = (proof: string) =>
     `user=${encodeURIComponent('{"id":42,"first_name":"Mayur"}')}&auth_date=1&hash=${proof}`,
   )}&tgWebAppVersion=7.0&tgWebAppPlatform=android`;
 
+interface TelegramEvent {
+  eventType: string;
+  eventData: unknown;
+}
+
+/**
+ * Telegram's window, as a phone's Telegram gives it to a page: the events
+ * the page posts to it (specs/260: its picker of chats), kept to read back.
+ */
+export async function telegramWindow(page: Page) {
+  await page.addInitScript(() => {
+    const posted: TelegramEvent[] = [];
+    Object.assign(window, {
+      posted,
+      TelegramWebviewProxy: {
+        postEvent: (eventType: string, eventData: string) => {
+          posted.push({ eventType, eventData: JSON.parse(eventData) });
+        },
+      },
+    });
+  });
+  return () =>
+    page.evaluate(
+      () => (window as unknown as { posted: TelegramEvent[] }).posted,
+    );
+}
+
 /** POST /api/auth/telegram, faked: a "good" proof signs in as `name`. */
 export async function fakeTelegramProof(
   page: Page,

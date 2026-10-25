@@ -284,4 +284,5 @@ export const hi: Messages = {
   saturdays: "हर शनिवार",
   recipe: "विधि",
   openFromApp: "इसे ऐप से खोलें।",
+  getMealsHere: "दिन का खाना यहाँ मुझसे पाएँ:",
 };

@@ -112,23 +112,8 @@ export interface Evening {
 
 let updates = 0;
 
-export async function evening(
-  more: { settings?: Record<string, unknown>; plans?: boolean } = {},
-): Promise<Evening> {
-  const h = harness(new Date(kolkata("18:30")).toISOString());
-  const session = await signedInAs(h, MAYUR, PLANNER_CHAT);
-  const made = await createHousehold(
-    as(session, "POST", "/api/household", {
-      records: [
-        settingsRecord(more.settings),
-        ...ADULTS,
-        ...(more.plans === false ? [] : PLANS),
-      ],
-    }),
-    h.deps,
-  );
-  const { id: household } = (await made.json()) as { id: string };
-  await joined(h, session, "cook", COOK_CHAT);
+/** The real workflows, actions and starters, runs in memory, on `h`. */
+export function withWorkflows(h: Harness): WorkflowDeps {
   const members = (): RunMember[] =>
     h.households.members.map((m) => ({
       id: m.id,
@@ -160,6 +145,27 @@ export async function evening(
     leaseMs: 30_000,
   };
   h.deps.workflows = w;
+  return w;
+}
+
+export async function evening(
+  more: { settings?: Record<string, unknown>; plans?: boolean } = {},
+): Promise<Evening> {
+  const h = harness(new Date(kolkata("18:30")).toISOString());
+  const session = await signedInAs(h, MAYUR, PLANNER_CHAT);
+  const made = await createHousehold(
+    as(session, "POST", "/api/household", {
+      records: [
+        settingsRecord(more.settings),
+        ...ADULTS,
+        ...(more.plans === false ? [] : PLANS),
+      ],
+    }),
+    h.deps,
+  );
+  const { id: household } = (await made.json()) as { id: string };
+  await joined(h, session, "cook", COOK_CHAT);
+  const w = withWorkflows(h);
   h.channel.deliveries.length = 0;
   const event = async (chat: string, e: Incoming) => {
     const u = h.channel.update({

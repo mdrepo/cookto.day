@@ -59,6 +59,9 @@ async function setup() {
 const post = (initData: string) =>
   ask("POST", "/api/auth/telegram", { initData });
 
+/** Someone with no account yet (specs/260). */
+const ASHA = { id: "77", name: "Asha" };
+
 describe("11. Tomorrow, opened from Telegram: the proof", () => {
   test("Telegram's proof for the planner's account: a session, as signing in gives", async () => {
     const h = await setup();
@@ -96,13 +99,47 @@ describe("11. Tomorrow, opened from Telegram: the proof", () => {
     }
   });
 
-  test("someone who never signed in with Telegram: 404, no session", async () => {
+  test("specs/260, 2: a valid proof from someone with no account: the account, and a session", async () => {
+    // "Set up your kitchen" opens the same page for someone who never
+    // signed in: the proof makes their account, with the identity a
+    // sign-in code's Start makes, once.
     const h = await setup();
     const response = await telegramAppSignIn(
-      post(await proof({ id: "77", name: "Stranger" }, T0)),
+      post(await proof(ASHA, T0)),
       h.deps,
     );
-    expect(response.status).toBe(404);
-    expect(cookieValue(response)).toBeNull();
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ name: "Asha" });
+    expect(cookieValue(response) ?? "").not.toBe("");
+    expect(h.auth.identities.filter((i) => i.userId === "77")).toMatchObject([
+      { channel: "fake", userId: "77", name: "Asha" },
+    ]);
+    expect(h.auth.accounts.size).toBe(2);
+
+    const again = await telegramAppSignIn(post(await proof(ASHA, T0)), h.deps);
+    expect(again.status).toBe(200);
+    expect(cookieValue(again)).not.toBe(cookieValue(response));
+    expect(h.auth.accounts.size).toBe(2);
+  });
+
+  test("specs/260, 2: a forged or day-old proof from someone with no account: refused, no account", async () => {
+    const h = await setup();
+    const forged = (await proof(ASHA, T0)).replace(
+      /hash=[0-9a-f]+/,
+      `hash=${"0".repeat(64)}`,
+    );
+    const old = await proof(
+      ASHA,
+      new Date(Date.parse(T0) - 25 * 3_600_000).toISOString(),
+    );
+    for (const initData of [forged, old]) {
+      const response = await telegramAppSignIn(post(initData), h.deps);
+      expect(response.status).toBe(401);
+    }
+    expect(h.auth.accounts.size).toBe(1);
+    // Then the real proof: the one account, Asha's.
+    const ok = await telegramAppSignIn(post(await proof(ASHA, T0)), h.deps);
+    expect(await ok.json()).toEqual({ name: "Asha" });
+    expect(h.auth.accounts.size).toBe(2);
   });
 });

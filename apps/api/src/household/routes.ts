@@ -10,10 +10,12 @@ import {
 import type { MessengerRoute } from "../messenger/routes.js";
 import { WORDS } from "../messenger/words.js";
 import { addressKey } from "../usage/address.js";
+import { setUp } from "../workflows/start.js";
 import { readRecords } from "./sync.js";
 
 // The household (spec #217, ADR 0033): made from a phone's records when it
-// signs in; its members; invites by role; remove a member; delete the
+// signs in, and its planners on Telegram told it's set up (specs/260); its
+// members; invites by role; remove a member; delete the
 // account. Every route takes the session; who may do what is the
 // database's check, membership by membership.
 
@@ -37,6 +39,7 @@ export async function createHousehold(
       await sha256(body.cookToken),
       now,
     );
+  await setUp(d, made.household);
   return json(201, { id: made.household });
 }
 

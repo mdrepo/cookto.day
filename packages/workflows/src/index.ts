@@ -15,6 +15,7 @@ export {
   TOMORROW,
   TOMORROW_OFF,
 } from "./tomorrow.js";
+export { SET_UP } from "./start.js";
 export {
   CHECK_ADDED,
   DAY_END,

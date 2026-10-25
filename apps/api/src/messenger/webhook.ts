@@ -3,12 +3,13 @@ import { render } from "@cookto/templates";
 import { json, problem } from "../http.js";
 import { answered, pressed } from "../workflows/engine.js";
 import { iso, type MessengerDeps } from "./deps.js";
-import { WORDS } from "./words.js";
+import { withApp, WORDS } from "./words.js";
 
 // POST /api/messenger/telegram (spec #207): what the cook sends. The
 // messenger verifies and records; this decides. Start with a code signs the
 // planner in (spec #216), joins the household by an invite (spec #217), or
-// connects the cook to a phone's link; /stop deletes everything. Then the
+// connects the cook to a phone's link; Start with no code opens the app's
+// setup in the chat (specs/260); /stop deletes everything. Then the
 // router's order (ADR 0034): another command is answered beside any open
 // step; a run's button goes to its run; text or a photo goes to her open
 // step if it takes it; anything else is kept for the planner and answered
@@ -28,6 +29,32 @@ async function reply(d: MessengerDeps, conversation: string, t: string) {
   d.after(d.messenger.drain());
 }
 
+/**
+ * Start with no code (specs/260): the app's setup, opened in the chat; the
+ * app again for a planner with a household; the cook hears she's connected.
+ */
+async function welcomed(d: MessengerDeps, got: Received): Promise<string> {
+  const { chat, conversation } = got;
+  const account =
+    got.from === undefined
+      ? null
+      : await d.auth.accountOf(d.messenger.channel.name, got.from.id);
+  if (account !== null && (await d.households.get(account)) !== null) {
+    await d.messenger.channel
+      .deliver(chat, withApp("welcome_back"))
+      .catch(() => undefined);
+    return "welcome-back";
+  }
+  if (conversation?.owner.kind === "member") {
+    await reply(d, conversation.id, WORDS.connected);
+    return "connected-again";
+  }
+  await d.messenger.channel
+    .deliver(chat, withApp("welcome"))
+    .catch(() => undefined);
+  return "welcome";
+}
+
 /** Start with a code: a sign-in's, an invite's, or a cook's link's. */
 async function started(
   d: MessengerDeps,
@@ -37,6 +64,7 @@ async function started(
 ): Promise<string> {
   const { chat } = got;
   const name = d.messenger.channel.name;
+  if (code === "") return welcomed(d, got);
   if (got.from !== undefined) {
     const signIn = await d.auth.start(code, name, got.from, now);
     if (signIn.ok) {

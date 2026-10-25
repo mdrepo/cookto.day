@@ -43,6 +43,9 @@ const PACK = "#/kitchen/pack/";
 /** The Fridge with "Add food" open (#115). */
 const ADD_FOOD = "#/kitchen/pantry/add";
 
+/** Settings, with the cook's invite made: setup's last step (specs/260). */
+const INVITE_COOK = "#/settings/invite-cook";
+
 const PAGES: Partial<Record<string, Page>> = {
   "#/kitchen/cuisines": "cuisines",
   "#/kitchen/staples": "staples",
@@ -72,7 +75,7 @@ export function useRoute(): Route {
   const step = STEPS[at];
   if (step) return step;
   if (!onboarded) return "where";
-  if (at === "#/settings") return "settings";
+  if (at === "#/settings" || at === INVITE_COOK) return "settings";
   if (at.startsWith(DISH)) return "dish";
   if (at.startsWith(PACK)) return "pack";
   if (at.startsWith(DISHES_WITH)) return "dishes";
@@ -97,6 +100,19 @@ export function openAddFood(): void {
 /** Whether the Fridge was opened to add food: read when the Fridge opens. */
 export function wantsAddFood(): boolean {
   return typeof location !== "undefined" && location.hash === ADD_FOOD;
+}
+
+/** To Settings with the cook's invite, in place of setup's last step. */
+export function openInviteCook(): void {
+  location.replace(INVITE_COOK);
+}
+
+/** Whether Settings was opened to invite the cook; Settings then stays. */
+export function wantsInviteCook(): boolean {
+  if (typeof location === "undefined" || location.hash !== INVITE_COOK)
+    return false;
+  history.replaceState(null, "", "#/settings");
+  return true;
 }
 
 /** To Settings, where the language is chosen after setup (#84). */

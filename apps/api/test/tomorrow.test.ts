@@ -43,11 +43,10 @@ describe("1. the 10 pm question", () => {
       "Change",
       "No cooking",
     ]);
-    // "Change" opens Tomorrow inside Telegram: a page, not a reply.
+    // "Change" asks in the chat now (specs/270); "Open the app" there opens
+    // Tomorrow inside Telegram.
     const change = ask?.buttons.find((b) => b.label === "Change");
-    expect(change && "app" in change ? change.app : "").toMatch(
-      /^https:\/\/cookto\.day\//,
-    );
+    expect(change && "value" in change).toBe(true);
     expect(e.to(COOK_CHAT)).toEqual([]);
 
     e.at("22:01");

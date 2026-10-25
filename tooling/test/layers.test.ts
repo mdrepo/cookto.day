@@ -218,6 +218,7 @@ describe("the new packages exist", () => {
           "./network",
           "./sync",
           "./household-settings",
+          "./photos",
         ],
       ],
       ["packages/messenger", "@cookto/messenger", [".", "./contract"]],

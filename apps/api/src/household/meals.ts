@@ -7,12 +7,18 @@ import {
   type PackLoader,
 } from "@cookto/data";
 import type { Households } from "@cookto/db";
-import { type MealDish, type MealSlot, servings, usedBy } from "@cookto/engine";
+import {
+  type MealDish,
+  type MealSlot,
+  servingsOn,
+  usedBy,
+} from "@cookto/engine";
 import { matchFood } from "@cookto/engine/names";
 import { type Catalogues, render } from "@cookto/templates";
 import { householdStore } from "./record-store.js";
 import {
   dishNames,
+  eatingOf,
   householdPacks,
   live,
   peopleOf,
@@ -96,14 +102,17 @@ export async function cookedMeal(
     (p) => p.dishes,
   );
   const people = await peopleOf(households, household);
+  // Who was out, and the guests, count too (specs/270).
+  const eating = await eatingOf(households, household);
   const hasChild = planned.some((p) => p.child);
   const meal: MealDish[] = planned.map((p) => {
     const dish = dishes.find((d) => d.id === p.dish);
     const addIn = dish?.addIns?.find(([id]) => id === p.addIn);
+    const own = p.child ? "child" : hasChild;
     return {
       ingredients: dish?.ingredients ?? [],
       ...(dish?.amounts ? { amounts: dish.amounts } : {}),
-      people: servings(slot, people, p.child ? "child" : hasChild),
+      people: servingsOn(slot, people, own, day, eating),
       ...(addIn ? { addIn } : {}),
     };
   });

@@ -23,7 +23,9 @@ export {
   childrenOnly,
   type DaysOff,
   defaultMeals,
+  type Eating,
   eatersOf,
+  eatersOn,
   MEAL_SLOTS,
   MEAL_TIMES,
   type MealSlot,
@@ -34,6 +36,7 @@ export {
   memberProblems,
   plannedSlots,
   servings,
+  servingsOn,
 } from "./household.js";
 export { COUNTRIES, type Country, openCountries } from "./places.js";
 export {

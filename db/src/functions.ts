@@ -176,6 +176,7 @@ export const FUNCTIONS = {
   auth_account_of: { ...SECRET, p_channel: "text", p_user_id: "text" },
   hh_people: { ...SECRET, p_household: "uuid" },
   hh_name_cook: { ...SECRET, p_member: "uuid", p_name: "text" },
+  hh_whose: { ...SECRET, p_member: "uuid" },
 } as const satisfies Record<string, Record<string, SqlType>>;
 
 export type FunctionName = keyof typeof FUNCTIONS;

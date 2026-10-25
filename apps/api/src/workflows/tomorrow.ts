@@ -7,7 +7,12 @@ import {
   kitchenOf,
   plannerHello,
 } from "../household/people.js";
-import { clockOf, schedule, whenLocal } from "../household/schedule.js";
+import {
+  clockOf,
+  type Schedule,
+  schedule,
+  whenLocal,
+} from "../household/schedule.js";
 import { dayOff, sortDay } from "../household/settings-write.js";
 import { CHANGE, tomorrowOf } from "../household/tomorrow-plan.js";
 import { iso, type MessengerDeps } from "../messenger/deps.js";
@@ -118,8 +123,9 @@ async function sortAndSend(d: MessengerDeps, run: RunRow) {
     plan: t.cookPlan,
     recipes: t.recipes,
     hello: cookHello(k, w.templates, t.day),
-    // What she has, to say later what changed (specs/270).
+    // What she has, to say later what changed, and when (specs/270).
     meals: t.meals,
+    sentAt: iso(d.now()),
   };
   const later = unseen !== null && Date.parse(unseen) > d.now();
   await startRun(
@@ -171,50 +177,70 @@ export const TOMORROW_ACTIONS: Record<string, Action> = {
   notSeen: ({ run, key, d }) => tellPlanners(d, run, key, "not_seen_plan"),
 };
 
+/**
+ * Tomorrow's question for one household, made at 10 pm (specs/241) or when
+ * a planner sends /tomorrow (specs/270), once a day; unanswered, it goes as
+ * planned at 11 pm. Null when there's nothing to ask.
+ */
+export async function askTomorrow(
+  d: MessengerDeps,
+  household: string,
+  s: Schedule,
+  clock: { day: string; time: string },
+): Promise<RunRow | null> {
+  const w = d.workflows;
+  if (!w) return null;
+  const now = d.now();
+  const day = addDays(clock.day, 1);
+  const runIdOf = tomorrowRun(household, day);
+  if (s.sorted === day || (await w.runs.get(runIdOf))) return null;
+  const t = await tomorrowOf(d.households, w.templates, household, day);
+  if (!t) return null;
+  const k = await kitchenOf(d.households, household);
+  const cooking = cooksOn(day, s);
+  // A day the planners don't cook: nothing to ask (specs/270).
+  if (!cooking && !k.hasCook) return null;
+  await d.households.reachPlanners(
+    household,
+    d.messenger.channel.name,
+    iso(now),
+  );
+  const left = minutes(SEND_AT) - minutes(clock.time);
+  const minute = now - (now % 60_000);
+  return w.runs.create({
+    id: runIdOf,
+    household,
+    audience: "planners",
+    workflow: !cooking
+      ? "tomorrow_off"
+      : k.hasCook
+        ? "tomorrow"
+        : "tomorrow_self",
+    about: {
+      date: day,
+      day: t.day,
+      hello: plannerHello(k, w.templates, t.day),
+      // The planners cook: tonight's prep is theirs.
+      plan: k.hasCook ? t.plan : [t.plan, ...t.tonight].join("\n"),
+      change: CHANGE,
+      recipes: t.recipes,
+      ...cookWords(k, w.templates),
+    },
+    dueAt: iso(now),
+    expiresAt: left > 0 ? iso(minute + left * 60_000) : null,
+    now: iso(now),
+  });
+}
+
 /** Between 10 and 11 pm household time, tomorrow's question, once. */
 export const startTomorrow: Starter = async (d) => {
   const w = d.workflows;
   if (!w || w.off) return;
-  const now = d.now();
   for (const { id, botOff } of await d.households.list()) {
     if (botOff) continue;
     const s = await schedule(d.households, id);
-    const clock = clockOf(s, iso(now));
+    const clock = clockOf(s, iso(d.now()));
     if (!clock || clock.time < ASK_FROM || clock.time >= SEND_AT) continue;
-    const day = addDays(clock.day, 1);
-    const runIdOf = tomorrowRun(id, day);
-    if (s.sorted === day || (await w.runs.get(runIdOf))) continue;
-    const t = await tomorrowOf(d.households, w.templates, id, day);
-    if (!t) continue;
-    const k = await kitchenOf(d.households, id);
-    const cooking = cooksOn(day, s);
-    // A day the planners don't cook: nothing to ask (specs/270).
-    if (!cooking && !k.hasCook) continue;
-    await d.households.reachPlanners(id, d.messenger.channel.name, iso(now));
-    const left = minutes(SEND_AT) - minutes(clock.time);
-    const minute = now - (now % 60_000);
-    await w.runs.create({
-      id: runIdOf,
-      household: id,
-      audience: "planners",
-      workflow: !cooking
-        ? "tomorrow_off"
-        : k.hasCook
-          ? "tomorrow"
-          : "tomorrow_self",
-      about: {
-        date: day,
-        day: t.day,
-        hello: plannerHello(k, w.templates, t.day),
-        // The planners cook: tonight's prep is theirs.
-        plan: k.hasCook ? t.plan : [t.plan, ...t.tonight].join("\n"),
-        change: CHANGE,
-        recipes: t.recipes,
-        ...cookWords(k, w.templates),
-      },
-      dueAt: iso(now),
-      expiresAt: iso(minute + left * 60_000),
-      now: iso(now),
-    });
+    await askTomorrow(d, id, s, clock);
   }
 };

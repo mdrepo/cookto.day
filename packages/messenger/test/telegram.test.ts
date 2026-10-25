@@ -244,3 +244,32 @@ describe("one sentence, one message (specs/270)", () => {
     expect(bodies[2]).not.toHaveProperty("disable_notification");
   });
 });
+
+describe("commands (specs/270)", () => {
+  test("a typed command is a command, with or without the bot's name", () => {
+    const channel = make(fakeNetwork().send);
+    const of = (id: number, text: string) =>
+      channel.parse(
+        ...(Object.values(update(id, message(text))) as [string, Headers]),
+      )?.event;
+    expect(of(20, "/today")).toEqual({ kind: "command", name: "today" });
+    expect(of(21, "/Tomorrow@cookto_day_bot")).toEqual({
+      kind: "command",
+      name: "tomorrow",
+    });
+    expect(of(22, "/stop")).toEqual({ kind: "stopped" });
+    expect(of(23, "no slash")).toEqual({ kind: "text", text: "no slash" });
+  });
+
+  test("a chat's menu is its own: setMyCommands for that chat", async () => {
+    const net = fakeNetwork({ ok: true, result: true });
+    await make(net.send).setCommands?.("123", [
+      { command: "today", description: "Today's plan" },
+    ]);
+    expect(net.calls[0]?.url.split("/").pop()).toBe("setMyCommands");
+    expect(JSON.parse(net.calls[0]?.body ?? "")).toEqual({
+      commands: [{ command: "today", description: "Today's plan" }],
+      scope: { type: "chat", chat_id: "123" },
+    });
+  });
+});

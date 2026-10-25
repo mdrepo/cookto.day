@@ -1,12 +1,12 @@
 import { type AppPack, createPacks, type PackLoader } from "@cookto/data";
 import type { Households } from "@cookto/db";
 import {
+  type Eating,
   MEAL_SLOTS,
   type MealSlot,
   type Member,
   memberProblems,
   type PantryItem,
-  servings,
 } from "@cookto/engine";
 import { dayWords } from "@cookto/engine/time";
 import { type Catalogues, render } from "@cookto/templates";
@@ -78,11 +78,19 @@ export const dishNames = (packs: readonly AppPack[]) =>
     ...packs.map((p) => p.words.en?.dishes ?? {}),
   ) as Record<string, string>;
 
-/** The meal's plan each phone shows: the newest, one per meal and who. */
-export function plannedOn(rows: Row[], day: string): Planned[] {
+/**
+ * The meal's plan each phone shows: the newest, one per meal and who; with
+ * `notMade`, the meals said not made too (specs/270: /today).
+ */
+export function plannedOn(
+  rows: Row[],
+  day: string,
+  notMade = false,
+): Planned[] {
   const newest = new Map<string, Row>();
   for (const r of rows) {
-    if (r.on !== day || typeof r.dish !== "string" || r.made === "no") continue;
+    if (r.on !== day || typeof r.dish !== "string") continue;
+    if (r.made === "no" && !notMade) continue;
     const key = `${String(r.slot)}:${r.for === "child" ? "child" : ""}`;
     const had = newest.get(key);
     if (!had || String(r.updatedAt) > String(had.updatedAt)) newest.set(key, r);
@@ -127,6 +135,41 @@ const beansOf = async (households: Households, household: string) => {
   return settings?.beans === "tinned" ? "tinned" : "dried";
 };
 
+/** What the plan's lines are made from, for `day`; null when none is planned. */
+export async function planInputOf(
+  households: Households,
+  templates: Catalogues,
+  household: string,
+  day: string,
+  notMade = false,
+): Promise<PlanInput | null> {
+  const planned = plannedOn(
+    (await households.records(household, "plans")).filter(live),
+    day,
+    notMade,
+  );
+  if (planned.length === 0) return null;
+  return {
+    day,
+    planned,
+    people: await peopleOf(households, household),
+    packs: await householdPacks(households, household),
+    pantry: (await households.records(household, "pantry"))
+      .filter(live)
+      .map((r) => r as unknown as PantryItem),
+    beans: await beansOf(households, household),
+    eating: await eatingOf(households, household),
+    word: (id, slots = {}) => render(templates, "en", id, slots).text,
+    dayName: (d) => dayWords(d, "en", { weekday: "long" }),
+  };
+}
+
+/** Who's out and the guests, set from the chat (specs/270). */
+export const eatingOf = async (households: Households, household: string) =>
+  (await households.records(household, "eating"))
+    .filter(live)
+    .map((r) => r as unknown as Eating);
+
 /** Tomorrow's plan for `day`, "YYYY-MM-DD"; null when nothing is planned. */
 export async function tomorrowOf(
   households: Households,
@@ -134,33 +177,11 @@ export async function tomorrowOf(
   household: string,
   day: string,
 ): Promise<Tomorrow | null> {
-  const planned = plannedOn(
-    (await households.records(household, "plans")).filter(live),
-    day,
-  );
-  const [first] = planned;
-  if (!first) return null;
-  const people = await peopleOf(households, household);
-  const input: PlanInput = {
-    day,
-    planned,
-    people,
-    packs: await householdPacks(households, household),
-    pantry: (await households.records(household, "pantry"))
-      .filter(live)
-      .map((r) => r as unknown as PantryItem),
-    beans: await beansOf(households, household),
-    word: (id, slots = {}) => render(templates, "en", id, slots).text,
-    dayName: (d) => dayWords(d, "en", { weekday: "long" }),
-  };
-  const hasChildDish = (slot: MealSlot) =>
-    planned.some((p) => p.slot === slot && p.child);
-  const dishes = planned.map(
-    (p) =>
-      `${p.slot}.${p.dish}.${String(
-        servings(p.slot, people, p.child ? "child" : hasChildDish(p.slot)),
-      )}`,
-  );
+  const input = await planInputOf(households, templates, household, day);
+  const first = input?.planned[0];
+  if (!input || !first) return null;
+  const meals = planMeals(input);
+  const dishes = meals.map((m) => `${m.slot}.${m.id}.${String(m.n)}`);
   return {
     day: dayWords(day, "en", { weekday: "long" }),
     plan: planLines(input, true).join("\n"),
@@ -168,6 +189,6 @@ export async function tomorrowOf(
     tonight: tonightLines(input),
     recipes: `${APP}/#/cook/${day}?d=${dishes.join(",")}&l=en`,
     first: first.slot,
-    meals: planMeals(input),
+    meals,
   };
 }

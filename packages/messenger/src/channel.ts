@@ -57,4 +57,12 @@ export interface Channel {
   parse(body: string, headers: Headers): Parsed | null;
   /** Tells the channel a button press was handled, if it wants to know. */
   acknowledge?(ack: string): Promise<void>;
+  /** The commands one chat's menu shows, when the channel has menus. */
+  setCommands?(chat: string, commands: readonly Command[]): Promise<void>;
+}
+
+/** A command in a chat's menu (specs/270): "today", "Today's plan". */
+export interface Command {
+  command: string;
+  description: string;
 }

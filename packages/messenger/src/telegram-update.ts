@@ -34,12 +34,16 @@ interface Update {
   callback_query?: CallbackQuery;
 }
 
-/** "/start CODE" and "/stop", as Telegram delivers a tapped link or command. */
+/**
+ * "/start CODE" and "/stop", as Telegram delivers a tapped link or command;
+ * any other "/word", from the menu or typed, as a command (specs/270).
+ */
 function command(text: string): Event | null {
-  const [word, ...rest] = text.trim().split(/\s+/);
+  const [word = "", ...rest] = text.trim().split(/\s+/);
   if (word === "/start") return { kind: "started", code: rest.join(" ") };
   if (word === "/stop") return { kind: "stopped" };
-  return null;
+  const name = /^\/([A-Za-z_]+)(?:@\w+)?$/.exec(word)?.[1];
+  return name ? { kind: "command", name: name.toLowerCase() } : null;
 }
 
 function ofMessage(m: IncomingMessage): Event {

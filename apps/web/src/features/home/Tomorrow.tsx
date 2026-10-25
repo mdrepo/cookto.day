@@ -47,6 +47,7 @@ export function Tomorrow() {
                 key={meal.slot}
                 label={meal.label}
                 dish={meal.dish}
+                {...(meal.note && { note: meal.note })}
                 onOpen={meal.onOpen}
               >
                 {meal.others.length > 0 &&

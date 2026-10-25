@@ -4,6 +4,7 @@
 export { createChanges, type Changes } from "./changes.js";
 export { createCooked, type Cooked } from "./cooked.js";
 export { createMyDishes } from "./my-dishes.js";
+export { createEating } from "./eating.js";
 export { createHousehold } from "./household.js";
 export { memoryKeyValue, type KeyValue } from "./kv.js";
 // The network adapter's code is "@cookto/data/network", its own entry, so

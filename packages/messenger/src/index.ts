@@ -4,6 +4,7 @@
 export {
   type Channel,
   ChannelError,
+  type Command,
   type Parsed,
   type Send,
   type Sender,

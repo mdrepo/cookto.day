@@ -1,5 +1,6 @@
 import { CHANGES } from "./en-changes.js";
 import { CHECKS } from "./en-checks.js";
+import { COMMANDS } from "./en-commands.js";
 import { START } from "./en-start.js";
 import { TOMORROW } from "./en-tomorrow.js";
 import type { Catalogue } from "./template.js";
@@ -39,4 +40,5 @@ export const EN: Catalogue = {
   ...CHECKS,
   ...START,
   ...CHANGES,
+  ...COMMANDS,
 };

@@ -2,6 +2,7 @@ import {
   type MealSlot,
   type MealSuggestions,
   prepEvents,
+  servingsOn,
   type Suggestion,
 } from "@cookto/engine";
 import {
@@ -13,7 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import { useStore } from "zustand";
 import { listOf, namer, SLOT_WORDS, useRole } from "../../food.js";
-import { fill } from "../../i18n/format.js";
+import { count, fill } from "../../i18n/format.js";
 import type { Messages } from "../../i18n/en.js";
 import { useWords } from "../../i18n/useWords.js";
 import { plans as planned, settings } from "../../platform.js";
@@ -33,8 +34,17 @@ const FIXED = "23:00";
 type Plans = NonNullable<ReturnType<typeof useMealPlans>>;
 type Namer = ReturnType<typeof namer>;
 
+/** For how many, once who's out and guests count (specs/270); none for 0. */
+function forHowMany(m: Plans, slot: MealSlot, t: Messages, locale: string) {
+  const own = m.plans.some(
+    (p) => p.on === m.next && p.slot === slot && p.for === "child",
+  );
+  const n = servingsOn(slot, m.members, own, m.next, m.eating);
+  return n > 0 ? count(locale, t.forPeople, n) : undefined;
+}
+
 /** Each of tomorrow's meals: its pick, and other ideas that swap in. */
-function mealsOf(m: Plans, name: Namer, t: Messages) {
+function mealsOf(m: Plans, name: Namer, t: Messages, locale: string) {
   const packOf = new Map(
     m.packs.flatMap((p) => p.dishes.map((d) => [d.id, p.id] as const)),
   );
@@ -46,6 +56,7 @@ function mealsOf(m: Plans, name: Namer, t: Messages) {
         {
           slot,
           label: t[SLOT_WORDS[slot]],
+          note: forHowMany(m, slot, t, locale),
           dish: name("dishes", best.dish.id),
           needs: best.needs,
           onOpen: () => {
@@ -142,7 +153,7 @@ export function useTomorrow() {
   }, [next, toKeep]);
   if (!m?.tomorrow || role !== "plan") return null;
   const name = namer(m.packs, locale);
-  const meals = mealsOf(m, name, t);
+  const meals = mealsOf(m, name, t, locale);
   const text = planText(m, meals, name, t, locale);
   return {
     title: t.tomorrow,

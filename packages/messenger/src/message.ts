@@ -42,6 +42,8 @@ export const KINDS: readonly Kind[] = ["text", "photo", "buttons", "edit"];
 export type Event =
   | { kind: "started"; code: string }
   | { kind: "stopped" }
+  /** A typed command other than those two: "/today" is "today" (specs/270). */
+  | { kind: "command"; name: string }
   | { kind: "text"; text: string }
   | {
       kind: "button";

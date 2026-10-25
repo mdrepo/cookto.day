@@ -47,8 +47,7 @@ test.describe("My dishes", () => {
     await k.press("Next");
     await k.press("Toddler");
     await k.press("Next");
-    await k.press("Next");
-    await k.press("Go to my kitchen");
+    await k.press("Skip for now");
     await k.loadNorthIndianWithStaples();
     await k.home();
     await k.press("Choose what you cook");

@@ -119,15 +119,20 @@ export function reflectCook(
   members: readonly MemberRow[],
   now: string,
 ): void {
-  const there = members.some((m) => m.role === "cook" && !m.stopped);
-  if (there && cook === null)
+  const theCook = members.find((m) => m.role === "cook" && !m.stopped);
+  // Her name, from Telegram, once the API knows it (specs/270).
+  const name = theCook?.name ?? null;
+  if (theCook && cook === null)
     settings.setCook({
       token: null,
       connectedAt: now,
       sent: null,
       scheduled: null,
+      ...(name !== null && { name }),
     });
-  else if (!there && cook?.token === null) settings.setCook(null);
+  else if (theCook && cook?.token === null && (cook.name ?? null) !== name)
+    settings.setCook({ ...cook, name });
+  else if (!theCook && cook?.token === null) settings.setCook(null);
 }
 
 /** What a failed call comes to, by the API's answer. */

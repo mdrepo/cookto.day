@@ -56,39 +56,62 @@ const foodName = (packs: readonly AppPack[], id: string) =>
     packs.map((p) => p.words.en?.ingredients[id]).find(Boolean) ?? id
   ).toLocaleLowerCase("en");
 
-export function planLines(p: PlanInput, reasons: boolean): string[] {
+/**
+ * One meal of the plan as the cook gets it (specs/270): its dish, by id
+ * and name, and for how many; the child's dish says for whom. What went to
+ * the cook is kept this way, so a change can say what changed.
+ */
+export interface PlanMeal {
+  slot: MealSlot;
+  child: boolean;
+  /** The dish's id, and its name in words. */
+  id: string;
+  dish: string;
+  n: number;
+  /** "Lunch", or the child's dish's "Aarav". */
+  label: string;
+}
+
+/** The plan's meals, in the day's order. */
+export function planMeals(p: PlanInput): PlanMeal[] {
   const { planned, people, packs, word } = p;
-  const dishes = packs.flatMap((pack) => pack.dishes);
   const names = Object.assign(
     {} as Record<string, string>,
     ...packs.map((pack) => pack.words.en?.dishes ?? {}),
   ) as Record<string, string>;
-  const name = (dish: string) => names[dish] ?? dish;
   return MEAL_SLOTS.flatMap((slot) =>
     planned
       .filter((m) => m.slot === slot)
       .map((m) => {
-        if (m.child)
-          return word("plan_child", {
-            child: childOf(slot, people, word),
-            dish: name(m.dish),
-          });
         const ownChild = planned.some((x) => x.slot === slot && x.child);
-        const line = word("plan_meal", {
-          Meal: word(`meal_${slot.replace("-", "_")}`),
-          n: servings(slot, people, ownChild),
-          dish: name(m.dish),
-        });
-        const uses = dishes.find((d) => d.id === m.dish)?.ingredients ?? [];
-        const off = reasons ? goesOffWith(uses, p.pantry, p.day) : null;
-        if (!off) return line;
-        const reason = word("plan_reason", {
-          food: foodName(packs, off.ingredient),
-          day: p.dayName(off.useBy),
-        });
-        return `${line} ${reason}`;
+        return {
+          slot,
+          child: m.child,
+          id: m.dish,
+          dish: names[m.dish] ?? m.dish,
+          n: servings(slot, people, m.child ? "child" : ownChild),
+          label: m.child
+            ? childOf(slot, people, word)
+            : word(`meal_${slot.replace("-", "_")}`),
+        };
       }),
   );
+}
+
+export function planLines(p: PlanInput, reasons: boolean): string[] {
+  const dishes = p.packs.flatMap((pack) => pack.dishes);
+  return planMeals(p).map((m) => {
+    if (m.child) return p.word("plan_child", { child: m.label, dish: m.dish });
+    const line = p.word("plan_meal", { Meal: m.label, n: m.n, dish: m.dish });
+    const uses = dishes.find((d) => d.id === m.id)?.ingredients ?? [];
+    const off = reasons ? goesOffWith(uses, p.pantry, p.day) : null;
+    if (!off) return line;
+    const reason = p.word("plan_reason", {
+      food: foodName(p.packs, off.ingredient),
+      day: p.dayName(off.useBy),
+    });
+    return `${line} ${reason}`;
+  });
 }
 
 /** "Tonight: soak the chickpeas.", for each dish whose prep starts tonight. */

@@ -222,6 +222,7 @@ export const hi: Messages = {
   sendToCook: "रसोइए को भेजें",
   sendAgain: "फिर भेजें",
   changedSinceSent: "भेजने के बाद बदला है",
+  cookGetsChange: "{cook} को बदलाव भेज दिया जाएगा।",
   couldntSend: "भेज नहीं पाए। फिर कोशिश करें।",
   cookDisconnected: "रसोइए ने हटा दिया। सेटिंग्स में फिर जोड़ें।",
   buy: "खरीदें: {items}",

@@ -216,6 +216,7 @@ export const mr: Messages = {
   sendToCook: "स्वयंपाक्याला पाठवा",
   sendAgain: "पुन्हा पाठवा",
   changedSinceSent: "पाठवल्यानंतर बदललं आहे",
+  cookGetsChange: "{cook} ला बदल कळवला जाईल.",
   couldntSend: "पाठवता आलं नाही. पुन्हा प्रयत्न करा.",
   cookDisconnected: "स्वयंपाक्यानं काढलं. सेटिंग्जमध्ये पुन्हा जोडा.",
   buy: "आणा: {items}",

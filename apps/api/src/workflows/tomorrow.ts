@@ -39,6 +39,36 @@ export const tomorrowRun = (household: string, day: string) =>
 const minutes = (hhmm: string) =>
   Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3, 5));
 
+/**
+ * What went to the cook for a day (specs/270): the plan, then each change,
+ * numbered from 0, so the latest says what she has.
+ */
+export const sentRun = (household: string, day: string, n: number) =>
+  runId(`${household}:${day}:sent:${String(n)}`);
+
+/** A run with this id made and started now, once. */
+export async function startRun(
+  d: MessengerDeps,
+  household: string,
+  id: string,
+  run: { workflow: string; audience: string; about: Record<string, unknown> },
+  /** When a run that waits for an answer stops waiting (specs/270). */
+  expiresAt: string | null = null,
+): Promise<void> {
+  const w = d.workflows;
+  if (!w || (await w.runs.get(id))) return;
+  const now = iso(d.now());
+  const made = await w.runs.create({
+    id,
+    household,
+    ...run,
+    dueAt: now,
+    expiresAt,
+    now,
+  });
+  await begin(d, made);
+}
+
 /** A run made and started now, once for its seed. */
 export async function say(
   d: MessengerDeps,
@@ -47,24 +77,16 @@ export async function say(
   workflow: string,
   audience: string,
   about: Record<string, unknown>,
-  /** When a run that waits for an answer stops waiting (specs/270). */
   expiresAt: string | null = null,
 ): Promise<void> {
-  const w = d.workflows;
   const id = runId(`${seed}:${workflow}`);
-  if (!w || (await w.runs.get(id))) return;
-  const now = iso(d.now());
-  const made = await w.runs.create({
+  await startRun(
+    d,
+    run.household,
     id,
-    household: run.household,
-    audience,
-    workflow,
-    about,
-    dueAt: now,
+    { workflow, audience, about },
     expiresAt,
-    now,
-  });
-  await begin(d, made);
+  );
 }
 
 const dayOf = (run: RunRow) => String(run.about.date);
@@ -80,7 +102,7 @@ const hourBefore = (hhmm: string) => {
  * Sorted, and the plan as it stands now goes to the cook, by name, with
  * "Got it"; unseen an hour before the day's first meal, the planners hear.
  */
-async function sortAndSend(d: MessengerDeps, run: RunRow, key: string) {
+async function sortAndSend(d: MessengerDeps, run: RunRow) {
   const w = d.workflows;
   if (!w) return;
   const day = dayOf(run);
@@ -96,13 +118,21 @@ async function sortAndSend(d: MessengerDeps, run: RunRow, key: string) {
     plan: t.cookPlan,
     recipes: t.recipes,
     hello: cookHello(k, w.templates, t.day),
+    // What she has, to say later what changed (specs/270).
+    meals: t.meals,
   };
   const later = unseen !== null && Date.parse(unseen) > d.now();
-  await say(d, run, key, "to_cook", "cooks", about, later ? unseen : null);
+  await startRun(
+    d,
+    run.household,
+    sentRun(run.household, day, 0),
+    { workflow: "to_cook", audience: "cooks", about },
+    later ? unseen : null,
+  );
 }
 
 /** The planners hear about the cook's plan: seen, or not yet. */
-async function tellPlanners(
+export async function tellPlanners(
   d: MessengerDeps,
   run: RunRow,
   key: string,
@@ -123,7 +153,7 @@ const sorted: Action = ({ run, d }) =>
   sortDay(d.households, run.household, dayOf(run), iso(d.now()));
 
 export const TOMORROW_ACTIONS: Record<string, Action> = {
-  sendToCook: ({ run, key, d }) => sortAndSend(d, run, key),
+  sendToCook: ({ run, d }) => sortAndSend(d, run),
   sorted,
   noCooking: async ({ run, key, d }) => {
     await dayOff(d.households, run.household, dayOf(run), iso(d.now()));
@@ -132,7 +162,7 @@ export const TOMORROW_ACTIONS: Record<string, Action> = {
   dayOff: ({ run, d }) =>
     dayOff(d.households, run.household, dayOf(run), iso(d.now())),
   sendAsPlanned: async ({ run, key, d }) => {
-    await sortAndSend(d, run, key);
+    await sortAndSend(d, run);
     await say(d, run, key, "sent_as_planned", "planners", {
       cook: run.about.cook,
     });

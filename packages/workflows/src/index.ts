@@ -20,6 +20,15 @@ export {
 } from "./tomorrow.js";
 export { SET_UP } from "./start.js";
 export {
+  CHANGE_CLOSE,
+  CHANGE_SENT,
+  CHANGE_WAIT,
+  NOT_SEEN_CHANGE,
+  PLAN_CHANGE,
+  PLAN_KEPT,
+  SEEN_CHANGE,
+} from "./changes.js";
+export {
   CHECK_ADDED,
   DAY_END,
   MEAL_AGAIN,

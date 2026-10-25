@@ -3,6 +3,7 @@ import { accountOf } from "../auth/session.js";
 import { json, problem } from "../http.js";
 import { iso, type MessengerDeps } from "../messenger/deps.js";
 import type { MessengerRoute } from "../messenger/routes.js";
+import { planChanged } from "../workflows/changes.js";
 
 // Sync (spec #217, ADR 0033): a phone pushes the records it changed, whole,
 // and the newer version wins; it pulls the changes after its cursor, a page
@@ -61,6 +62,9 @@ export async function push(
     iso(started),
   );
   if (!pushed.ok) return problem(403, pushed.reason);
+  // A day already sent to the cook may have changed (specs/270).
+  const home = d.workflows ? await d.households.get(who.account) : null;
+  if (home) await planChanged(d, home.id);
   d.log({
     route: "sync/push",
     status: 200,

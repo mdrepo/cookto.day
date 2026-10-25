@@ -1,6 +1,11 @@
 import { describe, expect, test } from "bun:test";
 import { nameIndex } from "../src/names.js";
-import { answerKey, lineAmount, receiptLines } from "../src/receipt.js";
+import {
+  answerKey,
+  lineAmount,
+  receiptLines,
+  rowsToAdd,
+} from "../src/receipt.js";
 
 // specs/129, criteria 10 and 12: a receipt's lines as "Found in your
 // receipt" shows them. Each line's food by its names (specs/148), its amount
@@ -171,5 +176,37 @@ describe("Found in your receipt", () => {
     expect(answerKey("Velvet Almond Milk Drink 1L")).toBe(
       answerKey("VELVET almond milk drink"),
     );
+  });
+});
+
+describe("what Add adds (11)", () => {
+  test("ticked rows, and the lines answered with a food or as it is; not skipped or unanswered ones", () => {
+    const rows = receiptLines(
+      [
+        line("Fresh Paneer 200G", 4),
+        line("Local Tomatoes"),
+        line("Velvet Almond Milk Drink"),
+        line("Coca-Cola Zero Sugar"),
+        line("Chilli 100G"),
+        line("Mystery Snack"),
+      ],
+      index,
+      {},
+    );
+    expect(
+      rowsToAdd(
+        rows,
+        new Set([1]),
+        new Map([
+          [2, { asIs: true as const }],
+          [3, { skip: true as const }],
+          [4, { food: "red-chilli" }],
+        ]),
+      ),
+    ).toEqual([
+      { name: "Fresh Paneer 200G", food: "paneer", amount: 800, unit: "g" },
+      { name: "Velvet Almond Milk Drink", amount: null, unit: null },
+      { name: "Chilli 100G", food: "red-chilli", amount: 100, unit: "g" },
+    ]);
   });
 });

@@ -12,6 +12,7 @@ import {
   type Sync,
   watchSaves,
 } from "@cookto/data";
+import { PHOTOS } from "@cookto/data/photos";
 import { browserKeyValue, browserRecordStore } from "@cookto/data-web";
 import { openCountries } from "@cookto/engine";
 import { queryOptions } from "@tanstack/react-query";
@@ -134,7 +135,7 @@ export const membersQuery = queryOptions({
 
 /** The pantry, and the cuisine packs a household loads (ADR 0027). */
 export const pantry = createPantry(records, { changes });
-export const packs = createPacks();
+export const packs = createPacks(PHOTOS);
 /** The shopping list (specs/103). */
 export const shopping = createShopping(records, { changes });
 

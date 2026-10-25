@@ -36,7 +36,15 @@ describe("10. the command menus", () => {
     const e = await evening({ cook: SUNITA });
     const menu = (chat: string) =>
       (e.h.channel.menus.get(chat) ?? []).map((c) => c.command);
-    expect(menu(PLANNER_CHAT)).toEqual(["tomorrow", "today", "off", "list"]);
+    // With /out and /guests, the table's whole list (specs/270).
+    expect(menu(PLANNER_CHAT)).toEqual([
+      "tomorrow",
+      "today",
+      "out",
+      "guests",
+      "off",
+      "list",
+    ]);
     expect(menu(COOK_CHAT)).toEqual(["tomorrow", "today", "ranout"]);
   });
 
@@ -44,7 +52,7 @@ describe("10. the command menus", () => {
     const e = await evening({ cook: false });
     expect(
       (e.h.channel.menus.get(PLANNER_CHAT) ?? []).map((c) => c.command),
-    ).toEqual(["tomorrow", "today", "off", "list", "ranout"]);
+    ).toEqual(["tomorrow", "today", "out", "guests", "off", "list", "ranout"]);
   });
 });
 

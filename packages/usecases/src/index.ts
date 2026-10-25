@@ -17,6 +17,7 @@ export {
   addStaples,
   bringBack,
   changeAmount,
+  chooseCuisine,
   clearSample,
   type Food,
   keepMovedDishes,

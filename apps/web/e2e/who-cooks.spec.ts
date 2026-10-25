@@ -87,10 +87,12 @@ test.describe("Who cooks", () => {
     const start = new Onboarding(page);
     await start.open();
     await start.next();
-    await expect(start.step()).toHaveText("Step 2 of 3");
+    await expect(start.step()).toHaveText("Step 2 of 4");
+    await start.next();
+    await start.tick("North Indian");
     await start.next();
     await expect(start.title()).toHaveText("Who cooks?");
-    await expect(start.step()).toHaveText("Step 3 of 3");
+    await expect(start.step()).toHaveText("Step 4 of 4");
     await expect(page.getByRole("radio", { name: "I cook" })).toBeChecked();
     await page.getByRole("radio", { name: "Someone else cooks" }).click();
     await start.next();

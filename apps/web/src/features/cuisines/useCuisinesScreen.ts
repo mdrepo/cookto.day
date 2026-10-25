@@ -4,7 +4,7 @@ import { useWords } from "../../i18n/useWords.js";
 import { namer, useKitchenSettings, useLoadedPacks } from "../../food.js";
 import { kitchen, packs } from "../../platform.js";
 import { goHome, open, openPack } from "../../routes.js";
-import { cuisineName } from "./names.js";
+import { cuisineName } from "../../cuisines.js";
 
 /** "Choose what you cook": the cuisines, and what the household doesn't make. */
 export function useCuisinesScreen() {

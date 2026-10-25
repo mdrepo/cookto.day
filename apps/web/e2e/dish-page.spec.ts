@@ -66,8 +66,7 @@ test.describe("A dish's page", () => {
     await k.press("Next");
     await k.press("Adult");
     await k.press("Next");
-    await k.press("Next");
-    await k.press("Go to my kitchen");
+    await k.press("Skip for now");
     await k.loadNorthIndianWithStaples();
     await k.openDish("Palak paneer");
     await expect(page.getByRole("main")).toContainText("For 2 people");

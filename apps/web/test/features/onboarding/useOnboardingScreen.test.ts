@@ -23,11 +23,12 @@ const settle = () =>
   });
 
 describe("useOnboardingScreen", () => {
-  test("where is step 1 of 3; who is step 2 of 3; who cooks is step 3 of 3", async () => {
+  test("where is step 1 of 4; who 2; what you cook 3 (specs/263); who cooks 4", async () => {
     for (const [step, label] of [
-      ["where", "Step 1 of 3"],
-      ["who", "Step 2 of 3"],
-      ["cooks", "Step 3 of 3"],
+      ["where", "Step 1 of 4"],
+      ["who", "Step 2 of 4"],
+      ["cuisines", "Step 3 of 4"],
+      ["cooks", "Step 4 of 4"],
     ] as const) {
       const screen = renderCount(() => useOnboardingScreen(step));
       try {
@@ -52,6 +53,25 @@ describe("useOnboardingScreen", () => {
       expect(screen.value().canGoOn).toBe(true);
     } finally {
       screen.unmount();
+    }
+  });
+
+  test("what you cook can go on only with a cuisine ticked (specs/263)", async () => {
+    const kitchen = settings.writer.kitchen();
+    settings.writer.setKitchen({ ...kitchen, cuisines: [] });
+    const screen = renderCount(() => useOnboardingScreen("cuisines"));
+    try {
+      await settle();
+      expect(screen.value().canGoOn).toBe(false);
+      act(() => {
+        settings.writer.setKitchen({ ...kitchen, cuisines: ["north-indian"] });
+      });
+      await settle();
+      expect(screen.value().canGoOn).toBe(true);
+      expect(screen.value().skip).not.toBeNull();
+    } finally {
+      screen.unmount();
+      settings.writer.setKitchen(kitchen);
     }
   });
 });

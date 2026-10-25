@@ -38,6 +38,8 @@ test.describe("Start in Telegram", () => {
     await start.next();
     await start.add("Adult");
     await start.next();
+    await start.tick("North Indian");
+    await start.next();
     await expect(page.getByRole("radio", { name: "I cook" })).toBeChecked();
     await start.next();
     await start.button("Go to my kitchen").click();
@@ -58,6 +60,8 @@ test.describe("Start in Telegram", () => {
       timeout: 10_000,
     });
     await start.next();
+    await start.next();
+    await start.tick("North Indian");
     await start.next();
     await page.getByRole("radio", { name: "Someone else cooks" }).click();
     await start.next();

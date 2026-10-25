@@ -6,16 +6,18 @@ import { expect, type Locator, type Page } from "@playwright/test";
 export class Cooking {
   constructor(private readonly page: Page) {}
 
-  /** A household that finished onboarding: one adult, lunch and dinner. */
+  /**
+   * A household that finished onboarding: one adult, lunch and dinner, and
+   * an empty kitchen ("Skip for now" on "What do you cook?", specs/263).
+   */
   async start(path = "/"): Promise<void> {
     await this.page.goto(path);
-    await this.button("Next").click();
     await this.button("Next").click();
     await this.button("Next").click();
     // Under load on an iPhone, the tap on the last step can land before the
     // step is ready, and the deploy failed on it: tap until Today shows.
     await expect(async () => {
-      const go = this.button("Go to my kitchen");
+      const go = this.button("Skip for now");
       if (await go.isVisible()) await go.click();
       await expect(this.title()).toHaveText("cookto.day", { timeout: 2_000 });
     }).toPass({ timeout: 15_000 });

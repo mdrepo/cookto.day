@@ -41,8 +41,7 @@ test.describe("Recipes", () => {
     await k.press("Adult");
     await k.press("Adult");
     await k.press("Next");
-    await k.press("Next");
-    await k.press("Go to my kitchen");
+    await k.press("Skip for now");
     await k.loadNorthIndianWithStaples();
     await k.openDish("Egg curry");
     await expect(page.getByRole("main")).toContainText("For 3 people");

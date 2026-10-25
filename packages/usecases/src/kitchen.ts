@@ -24,6 +24,23 @@ export async function loadCuisine(k: Kitchen, id: string): Promise<void> {
 }
 
 /**
+ * A cuisine ticked or unticked in setup (specs/263): ticked, it's loaded;
+ * unticked, it's no longer one of the household's.
+ */
+export async function chooseCuisine(
+  k: Kitchen,
+  id: string,
+  on: boolean,
+): Promise<void> {
+  if (on) return loadCuisine(k, id);
+  const kitchen = k.settings.kitchen();
+  k.settings.setKitchen({
+    ...kitchen,
+    cuisines: kitchen.cuisines.filter((c) => c !== id),
+  });
+}
+
+/**
  * Dishes that moved to another pack: poha and bhel puri, from North Indian
  * to Maharashtrian (specs/147). A household that had the old pack before a
  * move gets the new one too, once; a household from after it doesn't.

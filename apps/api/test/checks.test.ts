@@ -220,9 +220,8 @@ describe("7. days off and unsent plans", () => {
   };
 
   test("a day off: no check all day, where a working day has them", async () => {
-    expect(await allDay(await theDay())).toContain(
-      "Did you make lunch?\nDal tadka",
-    );
+    // One sentence a message (specs/270).
+    expect(await allDay(await theDay())).toContain("Did you make lunch?");
     const off = await theDay({
       settings: { daysOff: { weekdays: [], dates: [TODAY] } },
     });
@@ -230,9 +229,7 @@ describe("7. days off and unsent plans", () => {
   });
 
   test("today's plan never went to her: no check all day", async () => {
-    expect(await allDay(await theDay())).toContain(
-      "Did you make dinner?\nPalak paneer",
-    );
+    expect(await allDay(await theDay())).toContain("Did you make dinner?");
     expect(await allDay(await theDay({ sent: false }))).toEqual([]);
   });
 

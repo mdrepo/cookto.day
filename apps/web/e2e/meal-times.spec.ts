@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./support/test.js";
 import { at } from "./support/cook.js";
 import { household, householdServer } from "./support/household.js";
 import {

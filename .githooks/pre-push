@@ -6,6 +6,8 @@ set -eu
 zero=0000000000000000000000000000000000000000
 changed=""
 fresh=""
+since=""
+refs=0
 while read -r _local_ref local_sha _remote_ref remote_sha; do
   [ "$local_sha" = "$zero" ] && continue # deleting a branch
   # What this branch changes against main, whether or not it was pushed
@@ -22,13 +24,16 @@ while read -r _local_ref local_sha _remote_ref remote_sha; do
   # What's new since the last push, when this push only adds to it (#250):
   # the browser suite already passed on the rest. After a rebase, or on a
   # first push, everything the branch changes is new.
+  refs=$((refs + 1))
   if [ "$remote_sha" != "$zero" ] &&
     git merge-base --is-ancestor "$remote_sha" "$local_sha" 2>/dev/null; then
     fresh="$fresh$(git diff --name-only "$remote_sha" "$local_sha")
 "
+    since="$remote_sha"
   else
     fresh="$fresh$branch
 "
+    since="$base"
   fi
 done
 
@@ -55,8 +60,27 @@ fi
 if printf '%s' "$fresh" |
   grep -E '^(apps/web/|apps/kit/|packages/|package\.json$|bun\.lock$|unknown$)' |
   grep -Ev '^packages/(messenger|templates|workflows)/' | grep -q .; then
-  echo "pre-push: e2e (the page, a package it loads, its tests or its build changed)"
-  bun run e2e
+  # Only the specs that ran what changed, by the newest deploy's e2e map;
+  # everything when the map can't say, or with E2E=all.
+  specs="all"
+  if [ "$refs" = 1 ] && [ -n "$since" ]; then
+    specs=$(bun tooling/scripts/e2e-map.ts select "$since" || echo all)
+  fi
+  if [ "$specs" = "all" ]; then
+    echo "pre-push: e2e, every spec"
+    bun run e2e
+  else
+    if [ -n "$specs" ]; then
+      echo "pre-push: e2e, the specs that ran what changed:"
+      printf '  %s\n' $specs
+      # shellcheck disable=SC2086 # one spec per word
+      (cd apps/web && bunx playwright test $specs)
+    else
+      echo "pre-push: no spec ran what changed, the page's e2e skipped"
+    fi
+    bun run --cwd apps/kit e2e
+    bun run --cwd packages/data-web e2e
+  fi
 else
   echo "pre-push: nothing the page loads changed since the last push, e2e skipped"
 fi

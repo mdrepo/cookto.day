@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./support/test.js";
 import { Kitchen } from "./support/kitchen.js";
 
 // specs/65-onboarding.md, criterion 2.

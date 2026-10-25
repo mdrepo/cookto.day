@@ -1,4 +1,4 @@
-import { expect, type Locator, test } from "@playwright/test";
+import { expect, type Locator, test } from "./support/test.js";
 import { Onboarding } from "./support/onboarding.js";
 
 // specs/114-adding-people.md: one card open at a time, add buttons in reach.

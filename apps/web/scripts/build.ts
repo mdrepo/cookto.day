@@ -31,6 +31,12 @@ export interface BuildOptions {
    * off, because they run the page's script as one inline file.
    */
   split?: boolean;
+  /**
+   * Source maps beside the scripts, for the e2e map (E2E_COVERAGE=1): the
+   * deploy's browser run records which source each test runs. Never shipped:
+   * the deploy builds again without them.
+   */
+  maps?: boolean;
 }
 
 /**
@@ -52,7 +58,7 @@ function dropUnlinkedStyles(files: string[]): void {
 /** Builds every page into `outdir` and returns the files written. */
 export async function buildSite(
   outdir = join(APP_DIR, "dist"),
-  { split = true }: BuildOptions = {},
+  { split = true, maps = false }: BuildOptions = {},
 ): Promise<string[]> {
   rmSync(outdir, { recursive: true, force: true });
   const pages = [
@@ -65,6 +71,7 @@ export async function buildSite(
     target: "browser",
     minify: true,
     splitting: split,
+    ...(maps ? { sourcemap: "external" as const } : {}),
     define: { "process.env.NODE_ENV": JSON.stringify("production") },
     // React Compiler memoises the app, so nobody writes useMemo (ADR 0023).
     reactCompiler: true,
@@ -74,6 +81,7 @@ export async function buildSite(
   }
   const files: string[] = [];
   for (const o of result.outputs) {
+    if (o.kind === "sourcemap") continue;
     if (o.kind === "entry-point" && basename(o.path) === "react.js")
       rmSync(o.path);
     else files.push(o.path);

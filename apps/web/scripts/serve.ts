@@ -9,7 +9,7 @@ import { APP_DIR, buildSite } from "./build.js";
 const ROOT = join(APP_DIR, "dist");
 const port = Number(process.env.PORT ?? 3000);
 
-await buildSite(ROOT);
+await buildSite(ROOT, { maps: process.env.E2E_COVERAGE === "1" });
 
 function fileFor(pathname: string): string | null {
   const rel = normalize(decodeURIComponent(pathname)).replace(

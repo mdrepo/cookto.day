@@ -1,4 +1,4 @@
-import { expect, type Locator, test } from "@playwright/test";
+import { expect, type Locator, test } from "./support/test.js";
 import { Onboarding } from "./support/onboarding.js";
 
 // specs/80-look.md: taps answer with a little movement (micro animations,

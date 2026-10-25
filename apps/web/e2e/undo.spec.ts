@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page, test } from "@playwright/test";
+import { expect, type Locator, type Page, test } from "./support/test.js";
 import { Cooking } from "./support/cooking.js";
 
 // specs/116-undo.md: a one-tap change has a one-tap way back.

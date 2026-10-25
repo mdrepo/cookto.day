@@ -279,14 +279,7 @@ The bot, as templates (English only, by the owner's call; other languages follow
   - "{cook} says {food} ran out. It's on the list."
   - "I don't know that one. Type / to see what I can do."
   - "I'm switched off for now."
-- **The menu:**
-  - `/tomorrow` "Tomorrow's plan"
-  - `/today` "Today's plan"
-  - `/out` "Someone's eating out"
-  - `/guests` "Guests are coming"
-  - `/off` "The cook's day off"
-  - `/list` "The shopping list"
-  - `/ranout` "Something ran out"
+- **The menu:** `/tomorrow` "Tomorrow's plan", `/today` "Today's plan", `/out` "Someone's eating out", `/guests` "Guests are coming", `/off` "The cook's day off", `/list` "The shopping list", `/ranout` "Something ran out".
 
 These words replace #241's `tomorrow_ask`, `tomorrow_ask_off`, `tomorrow_sent`, `tomorrow_sent_silent` and `to_cook_plan`. Without a name, `{cook}` is "the cook" and the greeting drops the name.
 

@@ -3,7 +3,12 @@ import { addDays } from "@cookto/engine";
 import { render } from "@cookto/templates";
 import { type PlanMeal, planChanges, samePlan } from "@cookto/usecases";
 import { cookWords, kitchenOf } from "../household/people.js";
-import { clockOf, schedule, whenLocal } from "../household/schedule.js";
+import {
+  clockOf,
+  hourWords,
+  schedule,
+  whenLocal,
+} from "../household/schedule.js";
 import { APP, tomorrowOf } from "../household/tomorrow-plan.js";
 import { iso, type MessengerDeps } from "../messenger/deps.js";
 import type { Action, WorkflowDeps } from "./deps.js";
@@ -22,14 +27,6 @@ const KEPT = 30;
 
 const minutes = (hhmm: string) =>
   Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3, 5));
-
-/** "1 pm" from "13:00", "8:30 am" from "08:30". */
-function hourWords(hhmm: string): string {
-  const h = Number(hhmm.slice(0, 2));
-  const m = hhmm.slice(3, 5);
-  const twelve = h % 12 === 0 ? 12 : h % 12;
-  return `${String(twelve)}${m === "00" ? "" : `:${m}`} ${h < 12 ? "am" : "pm"}`;
-}
 
 /** The latest of what went to the cook for `day`, and its number. */
 async function lastSent(w: WorkflowDeps, household: string, day: string) {

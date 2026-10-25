@@ -140,6 +140,13 @@ export function telegram(o: TelegramOptions): Telegram {
         () => undefined,
       );
     },
+    // Each chat's menu is its own (specs/270): the planner's, or the cook's.
+    async setCommands(chat, commands) {
+      await post("setMyCommands", {
+        commands,
+        scope: { type: "chat", chat_id: chat },
+      });
+    },
     async installWebhook(url) {
       const info = (await post("getWebhookInfo", {})) as { url?: string };
       if (info.url === url) return "kept";

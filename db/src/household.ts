@@ -135,6 +135,8 @@ export interface Households {
   people(household: string): Promise<Person[]>;
   /** The cook's first name, as Telegram gives it; a planner's stays theirs. */
   nameCook(member: string, name: string): Promise<void>;
+  /** Whose household a member is in, and as what (specs/270); null: none. */
+  whose(member: string): Promise<{ household: string; role: Role } | null>;
 }
 
 export function functionHouseholds(call: Call, secret: string): Households {
@@ -218,7 +220,7 @@ function peopleCalls(
     fn: Parameters<Call>[0],
     args: Record<string, unknown>,
   ) => Promise<unknown>,
-): Pick<Households, "reachPlanners" | "people" | "nameCook"> {
+): Pick<Households, "reachPlanners" | "people" | "nameCook" | "whose"> {
   return {
     reachPlanners: async (household, channel, now) => {
       await c("hh_reach_planners", {
@@ -232,5 +234,10 @@ function peopleCalls(
     nameCook: async (member, name) => {
       await c("hh_name_cook", { p_member: member, p_name: name });
     },
+    whose: (member) =>
+      c("hh_whose", { p_member: member }) as Promise<{
+        household: string;
+        role: Role;
+      } | null>,
   };
 }

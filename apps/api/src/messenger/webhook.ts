@@ -2,7 +2,9 @@ import type { Conversation, Message, Received } from "@cookto/messenger";
 import { render } from "@cookto/templates";
 import { json, problem } from "../http.js";
 import { answered, pressed } from "../workflows/engine.js";
+import { commanded } from "./commands.js";
 import { iso, type MessengerDeps } from "./deps.js";
+import { setMenus, setPlannerMenu } from "./menus.js";
 import { withApp, WORDS } from "./words.js";
 
 // POST /api/messenger/telegram (spec #207): what the cook sends. The
@@ -29,20 +31,40 @@ async function reply(d: MessengerDeps, conversation: string, t: string) {
   d.after(d.messenger.drain());
 }
 
+/** A planner's household, from their Telegram account; null: none yet. */
+async function homeOf(d: MessengerDeps, got: Received) {
+  const account =
+    got.from === undefined
+      ? null
+      : await d.auth.accountOf(d.messenger.channel.name, got.from.id);
+  return account === null ? null : d.households.get(account);
+}
+
+/**
+ * A chat that connected gets its menu (specs/270): the household's chats
+ * all, once there's a household; a planner's alone before that.
+ */
+async function menus(d: MessengerDeps, got: Received, member?: string) {
+  const whose = member
+    ? await d.households.whose(member).catch(() => null)
+    : null;
+  const household = whose?.household ?? (await homeOf(d, got))?.id;
+  if (household) await setMenus(d, household);
+  else await setPlannerMenu(d, got.chat);
+}
+
 /**
  * Start with no code (specs/260): the app's setup, opened in the chat; the
  * app again for a planner with a household; the cook hears she's connected.
  */
 async function welcomed(d: MessengerDeps, got: Received): Promise<string> {
   const { chat, conversation } = got;
-  const account =
-    got.from === undefined
-      ? null
-      : await d.auth.accountOf(d.messenger.channel.name, got.from.id);
-  if (account !== null && (await d.households.get(account)) !== null) {
+  const home = await homeOf(d, got);
+  if (home !== null) {
     await d.messenger.channel
       .deliver(chat, withApp("welcome_back"))
       .catch(() => undefined);
+    await setMenus(d, home.id);
     return "welcome-back";
   }
   if (conversation?.owner.kind === "member") {
@@ -69,6 +91,7 @@ async function started(
     const signIn = await d.auth.start(code, name, got.from, now);
     if (signIn.ok) {
       await tell(d, chat, WORDS.signedIn);
+      await menus(d, got);
       return "signed-in";
     }
     if (signIn.reason === "bad") {
@@ -86,9 +109,12 @@ async function started(
   if (invited.ok) {
     if (invited.role === "cook") {
       await reply(d, invited.conversation.id, WORDS.connected);
+      const { owner } = invited.conversation;
+      await menus(d, got, owner.kind === "member" ? owner.id : undefined);
       return "joined-cook";
     }
     await tell(d, chat, WORDS.joined);
+    await menus(d, got);
     return "joined";
   }
   if (invited.reason === "bad") {
@@ -142,6 +168,7 @@ async function handle(d: MessengerDeps, got: Received): Promise<string> {
     else await d.messenger.store.remove(conversation.id);
     return "stopped";
   }
+  if (event.kind === "command") return commanded(d, got, event.name);
   if (conversation === null) {
     await tell(d, chat, WORDS.cantRead);
     return "stranger";

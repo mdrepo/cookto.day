@@ -85,6 +85,14 @@ export function whenLocal(
   return new Date(now - (now % 60_000) + minutes * 60_000).toISOString();
 }
 
+/** "1 pm" from "13:00", "10:04 pm" from "22:04", as the bot says it. */
+export function hourWords(hhmm: string): string {
+  const h = Number(hhmm.slice(0, 2));
+  const m = hhmm.slice(3, 5);
+  const twelve = h % 12 === 0 ? 12 : h % 12;
+  return `${String(twelve)}${m === "00" ? "" : `:${m}`} ${h < 12 ? "am" : "pm"}`;
+}
+
 /** The household's day and time at `iso`; null when it has no clock yet. */
 export function clockOf(
   s: Schedule,

@@ -1,6 +1,7 @@
 import {
   type Channel,
   ChannelError,
+  type Command,
   type Parsed,
   type Sender,
 } from "./channel.js";
@@ -30,6 +31,8 @@ export interface FakeUpdate {
 export interface FakeChannel extends Channel {
   readonly deliveries: Delivery[];
   readonly acknowledged: string[];
+  /** Each chat's menu, as last set (specs/270). */
+  readonly menus: Map<string, readonly Command[]>;
   /** The next deliveries fail with this, once each. */
   fail(...errors: ChannelError[]): void;
   /** A webhook body and headers for this event, the way the fake wants them. */
@@ -42,12 +45,18 @@ export function fakeChannel(
 ): FakeChannel {
   const deliveries: Delivery[] = [];
   const acknowledged: string[] = [];
+  const menus = new Map<string, readonly Command[]>();
   const failures: ChannelError[] = [];
   let next = 0;
   return {
     name: "fake",
     deliveries,
     acknowledged,
+    menus,
+    setCommands(chat, commands) {
+      menus.set(chat, commands);
+      return Promise.resolve();
+    },
     supports: (kind) => supported.includes(kind),
     deliver(chat, message, edits) {
       const failure = failures.shift();

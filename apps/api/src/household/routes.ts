@@ -7,6 +7,7 @@ import {
   type MessengerDeps,
   sha256,
 } from "../messenger/deps.js";
+import { setMenus } from "../messenger/menus.js";
 import type { MessengerRoute } from "../messenger/routes.js";
 import { WORDS } from "../messenger/words.js";
 import { addressKey } from "../usage/address.js";
@@ -40,6 +41,8 @@ export async function createHousehold(
       now,
     );
   await setUp(d, made.household);
+  // Its chats' menus (specs/270).
+  await setMenus(d, made.household);
   return json(201, { id: made.household });
 }
 

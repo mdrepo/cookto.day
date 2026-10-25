@@ -78,11 +78,19 @@ export const dishNames = (packs: readonly AppPack[]) =>
     ...packs.map((p) => p.words.en?.dishes ?? {}),
   ) as Record<string, string>;
 
-/** The meal's plan each phone shows: the newest, one per meal and who. */
-export function plannedOn(rows: Row[], day: string): Planned[] {
+/**
+ * The meal's plan each phone shows: the newest, one per meal and who; with
+ * `notMade`, the meals said not made too (specs/270: /today).
+ */
+export function plannedOn(
+  rows: Row[],
+  day: string,
+  notMade = false,
+): Planned[] {
   const newest = new Map<string, Row>();
   for (const r of rows) {
-    if (r.on !== day || typeof r.dish !== "string" || r.made === "no") continue;
+    if (r.on !== day || typeof r.dish !== "string") continue;
+    if (r.made === "no" && !notMade) continue;
     const key = `${String(r.slot)}:${r.for === "child" ? "child" : ""}`;
     const had = newest.get(key);
     if (!had || String(r.updatedAt) > String(had.updatedAt)) newest.set(key, r);
@@ -127,24 +135,24 @@ const beansOf = async (households: Households, household: string) => {
   return settings?.beans === "tinned" ? "tinned" : "dried";
 };
 
-/** Tomorrow's plan for `day`, "YYYY-MM-DD"; null when nothing is planned. */
-export async function tomorrowOf(
+/** What the plan's lines are made from, for `day`; null when none is planned. */
+export async function planInputOf(
   households: Households,
   templates: Catalogues,
   household: string,
   day: string,
-): Promise<Tomorrow | null> {
+  notMade = false,
+): Promise<PlanInput | null> {
   const planned = plannedOn(
     (await households.records(household, "plans")).filter(live),
     day,
+    notMade,
   );
-  const [first] = planned;
-  if (!first) return null;
-  const people = await peopleOf(households, household);
-  const input: PlanInput = {
+  if (planned.length === 0) return null;
+  return {
     day,
     planned,
-    people,
+    people: await peopleOf(households, household),
     packs: await householdPacks(households, household),
     pantry: (await households.records(household, "pantry"))
       .filter(live)
@@ -153,6 +161,19 @@ export async function tomorrowOf(
     word: (id, slots = {}) => render(templates, "en", id, slots).text,
     dayName: (d) => dayWords(d, "en", { weekday: "long" }),
   };
+}
+
+/** Tomorrow's plan for `day`, "YYYY-MM-DD"; null when nothing is planned. */
+export async function tomorrowOf(
+  households: Households,
+  templates: Catalogues,
+  household: string,
+  day: string,
+): Promise<Tomorrow | null> {
+  const input = await planInputOf(households, templates, household, day);
+  const first = input?.planned[0];
+  if (!input || !first) return null;
+  const { planned, people } = input;
   const hasChildDish = (slot: MealSlot) =>
     planned.some((p) => p.slot === slot && p.child);
   const dishes = planned.map(

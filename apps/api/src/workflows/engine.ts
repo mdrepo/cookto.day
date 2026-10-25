@@ -25,9 +25,13 @@ function build(
   m: Advanced["messages"][number],
 ): Message[] {
   const r = render(w.templates, "en", m.template, run.about);
+  // Only the buttons an action named, when it did (specs/270).
+  const only = Array.isArray(run.about.buttons) ? run.about.buttons : null;
+  const shown = (key: string) =>
+    (!m.keys || m.keys.includes(key)) && (!only || only.includes(key));
   // A page opens in the chat and comes back as nothing: it's always shown.
   const buttons: Button[] = r.buttons
-    .filter((b) => b.page !== undefined || !m.keys || m.keys.includes(b.key))
+    .filter((b) => b.page !== undefined || shown(b.key))
     .map((b) =>
       b.page !== undefined
         ? { label: b.label, app: b.page }
@@ -63,15 +67,18 @@ async function transition(
   );
   if (!claimed) return "lost";
   const key = `${run.id}:${run.step ?? "start"}`;
+  const words: Record<string, unknown> = {};
   for (const a of outcome.actions) {
     const act = w.actions[a.name];
     if (!act) throw new Error(`no-action:${a.name}`);
-    await act({ run: claimed, key, input: a.input, d });
+    const said = await act({ run: claimed, key, input: a.input, d });
+    if (typeof said === "object" && said !== null) Object.assign(words, said);
   }
   const to =
     outcome.messages.length > 0 ? await w.runs.conversations(run.id) : [];
+  const said = { ...claimed, about: { ...claimed.about, ...words } };
   const outgoing: Outgoing[] = outcome.messages.flatMap((m) => {
-    const messages = build(w, claimed, outcome.step, m);
+    const messages = build(w, said, outcome.step, m);
     return to.flatMap((conversation) =>
       messages.map((message) => ({
         conversation,

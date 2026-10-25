@@ -10,13 +10,16 @@ import type { MessengerDeps } from "../messenger/deps.js";
 /**
  * An action a step names. It changes the household; `key` is the run and
  * the step it ran at, so running it again with the same key changes nothing.
+ * An object it returns fills the step's messages, beside the run's own
+ * words (specs/270: the meals to change, the ideas); `buttons` keeps only
+ * those.
  */
 export type Action = (a: {
   run: RunRow;
   key: string;
   input: Event;
   d: MessengerDeps;
-}) => Promise<void>;
+}) => Promise<unknown>;
 
 /** Makes the runs that are due now, each once: tomorrow's at 10 pm. */
 export type Starter = (d: MessengerDeps) => Promise<void>;

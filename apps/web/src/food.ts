@@ -9,7 +9,11 @@ import {
   type PantryItem,
   shownAmount,
 } from "@cookto/engine";
+import { packStaples } from "@cookto/usecases";
 import { useQueries, useQuery } from "@tanstack/react-query";
+
+// Every staple the loaded packs know: the use cases' rule (specs/270).
+export { packStaples };
 import { useStore } from "zustand";
 import { count } from "./i18n/format.js";
 import type { Messages } from "./i18n/en.js";
@@ -76,11 +80,6 @@ export function namer(packs: readonly AppPack[], locale: string) {
       }
     return id;
   };
-}
-
-/** Every staple the loaded packs know, as a set of ids. */
-export function packStaples(packs: readonly AppPack[]): Set<string> {
-  return new Set(packs.flatMap((p) => Object.values(p.staples).flat()));
 }
 
 /** The staples to assume are in the kitchen (the engine's rule, ADR 0027). */

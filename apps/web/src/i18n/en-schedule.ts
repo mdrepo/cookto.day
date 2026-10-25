@@ -19,4 +19,6 @@ export const enSchedule = {
   saturdays: "Saturdays",
   recipe: "Recipe",
   openFromApp: "Open this from the app.",
+  // Before the cook's invite link, in Telegram's picker (specs/260).
+  getMealsHere: "Get the day's meals from me here:",
 };

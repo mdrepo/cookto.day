@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { useWords } from "../../i18n/useWords.js";
 import { api, householdSync, now, settings } from "../../platform.js";
+import { enterTelegram } from "../../telegram.js";
 
 // Tomorrow, opened by "Change" in the bot (specs/241): Telegram's window
 // shares nothing with the phone's app, so the page signs in with the proof
 // Telegram put after its #, joins the household, pulls it, and shows Today
-// with Tomorrow. A proof the API refuses shows only "Open this from the app."
+// with Tomorrow. Opened by "Set up your kitchen" (specs/260) for someone
+// with no household, it shows the app's setup, which starts one. A proof
+// the API refuses shows only "Open this from the app."
 
 /** The init data Telegram hands a page it opens, from after the #. */
 const proof = () =>
@@ -29,9 +32,18 @@ export function useTelegramOpen() {
         setRefused(true);
         return;
       }
-      await household.joinOrStart(await householdSync());
-      // Today, with the proof gone from the address.
-      history.replaceState(null, "", "/#/");
+      enterTelegram();
+      const opened = await household.openInTelegram(await householdSync(), {
+        onboarded: settings.store.getState().onboarded,
+        settings: settings.writer,
+      });
+      // Today, or setup when there's no household yet (specs/260), with
+      // the proof gone from the address.
+      history.replaceState(
+        null,
+        "",
+        opened === "setup" ? "/#/start/where" : "/#/",
+      );
       dispatchEvent(new HashChangeEvent("hashchange"));
     });
   }, []);

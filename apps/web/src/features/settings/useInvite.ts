@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useWords } from "../../i18n/useWords.js";
 import { api } from "../../platform.js";
+import { wantsInviteCook } from "../../routes.js";
 import { send as share } from "../../share.js";
+import { insideTelegram, shareInTelegram } from "../../telegram.js";
 import { BOT, spaced } from "./useCookLink.js";
 
 // An invite (specs/217): "Who?", then a code and the bot's link to share.
@@ -21,6 +23,17 @@ export function useInvite(members: number) {
   const [busy, setBusy] = useState(false);
   // They pressed Start: the code has done its work.
   const done = invite.kind === "code" && members > invite.members;
+  // Setup's last step, when someone else cooks (specs/260): her invite is
+  // made once the household's members are known.
+  useEffect(() => {
+    if (members === 0 || !wantsInviteCook()) return;
+    void api()
+      .then((a) => a.invite("cook"))
+      .then(({ code }) => {
+        setInvite({ kind: "code", code, members });
+      })
+      .catch(() => undefined);
+  }, [members]);
   return {
     invite: done ? ({ kind: "idle" } as Invite) : invite,
     busy,
@@ -50,8 +63,11 @@ export function useInvite(members: number) {
     sendLink: {
       label: t.sendTheLink,
       run: () => {
-        if (invite.kind === "code")
-          void share(`https://t.me/${BOT}?start=${invite.code}`);
+        if (invite.kind !== "code") return;
+        const link = `https://t.me/${BOT}?start=${invite.code}`;
+        // Inside Telegram, its own picker of chats (specs/260).
+        if (insideTelegram()) shareInTelegram(link, t.getMealsHere);
+        else void share(link);
       },
     },
     waiting: t.waitingForThem,

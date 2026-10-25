@@ -170,8 +170,10 @@ export const FUNCTIONS = {
     ...SECRET,
     p_channel: "text",
     p_user_id: "text",
+    p_name: "text",
     p_now: "timestamptz",
   },
+  auth_account_of: { ...SECRET, p_channel: "text", p_user_id: "text" },
 } as const satisfies Record<string, Record<string, SqlType>>;
 
 export type FunctionName = keyof typeof FUNCTIONS;

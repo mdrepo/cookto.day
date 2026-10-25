@@ -130,4 +130,5 @@ export const arSettings = {
   saturdays: "أيام السبت",
   recipe: "الوصفة",
   openFromApp: "افتح هذا من التطبيق.",
+  getMealsHere: "احصل على وجبات اليوم مني هنا:",
 } satisfies Partial<Messages>;

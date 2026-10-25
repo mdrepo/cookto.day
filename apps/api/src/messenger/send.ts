@@ -1,7 +1,8 @@
 import { accountOf } from "../auth/session.js";
 import { json, problem } from "../http.js";
 import { finish } from "../workflows/engine.js";
-import { tomorrowRun } from "../workflows/tomorrow.js";
+import { tomorrowOf } from "../household/tomorrow-plan.js";
+import { sentRun, startRun, tomorrowRun } from "../workflows/tomorrow.js";
 import {
   bearer,
   iso,
@@ -116,7 +117,17 @@ async function answeredInTheApp(
   const day = /^plan:(\d{4}-\d{2}-\d{2})$/.exec(String(context))?.[1];
   const who = day ? await accountOf(request, d) : null;
   const home = who ? await d.households.get(who.account) : null;
-  if (day && home) await finish(d, tomorrowRun(home.id, day));
+  if (!day || !home) return;
+  await finish(d, tomorrowRun(home.id, day));
+  // What she has now, so a change later says what changed (specs/270).
+  const w = d.workflows;
+  const t = w && (await tomorrowOf(d.households, w.templates, home.id, day));
+  if (t)
+    await startRun(d, home.id, sentRun(home.id, day, 0), {
+      workflow: "plan_kept",
+      audience: "cooks",
+      about: { date: day, meals: t.meals },
+    });
 }
 
 /** DELETE /api/messenger/send/{id}: a message still waiting is cancelled. */

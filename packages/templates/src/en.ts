@@ -1,3 +1,4 @@
+import { CHANGES } from "./en-changes.js";
 import { CHECKS } from "./en-checks.js";
 import { START } from "./en-start.js";
 import { TOMORROW } from "./en-tomorrow.js";
@@ -37,4 +38,5 @@ export const EN: Catalogue = {
   ...TOMORROW,
   ...CHECKS,
   ...START,
+  ...CHANGES,
 };

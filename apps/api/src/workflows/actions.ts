@@ -1,3 +1,4 @@
+import { CHANGE_ACTIONS } from "./changes.js";
 import { CHECK_ACTIONS } from "./checks.js";
 import type { Action } from "./deps.js";
 import { TOMORROW_ACTIONS } from "./tomorrow.js";
@@ -13,4 +14,5 @@ export const ACTIONS: Record<string, Action> = {
   passOn: () => Promise.resolve(),
   ...TOMORROW_ACTIONS,
   ...CHECK_ACTIONS,
+  ...CHANGE_ACTIONS,
 };

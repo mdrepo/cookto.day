@@ -84,8 +84,12 @@ export function useSendToCook(p: SendProps): SendState {
   };
   if (last === "failed")
     return { line: { text: t.couldntSend, tone: "warm" }, button: again };
+  // The household's cook gets a change by herself, from the bot (specs/270).
+  const gets = fill(t.cookGetsChange, { cook: cook.name ?? t.theCook });
   if (sentToday !== null && sentToday.text !== text)
-    return { line: { text: t.changedSinceSent, tone: "warm" }, button: again };
+    return cook.token === null
+      ? { line: { text: gets, tone: "good" }, button: null }
+      : { line: { text: t.changedSinceSent, tone: "warm" }, button: again };
   if (sentToday !== null)
     return {
       line: {

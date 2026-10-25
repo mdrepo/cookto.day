@@ -1,5 +1,12 @@
 import {
+  CHANGE_CLOSE,
+  CHANGE_SENT,
+  CHANGE_WAIT,
   CHECK_ADDED,
+  NOT_SEEN_CHANGE,
+  PLAN_CHANGE,
+  PLAN_KEPT,
+  SEEN_CHANGE,
   DAY_END,
   MEAL_AGAIN,
   MEAL_CHECK,
@@ -40,6 +47,13 @@ export const WORKFLOWS: Record<string, Workflow> = Object.fromEntries(
     NOT_MADE,
     CHECK_ADDED,
     SET_UP,
+    CHANGE_WAIT,
+    PLAN_CHANGE,
+    CHANGE_CLOSE,
+    PLAN_KEPT,
+    CHANGE_SENT,
+    SEEN_CHANGE,
+    NOT_SEEN_CHANGE,
   ].map((w) => [w.name, w]),
 );
 

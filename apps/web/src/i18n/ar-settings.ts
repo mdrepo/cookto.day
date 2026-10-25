@@ -66,6 +66,7 @@ export const arSettings = {
   sendToCook: "أرسل إلى الطاهية",
   sendAgain: "أرسل مرة أخرى",
   changedSinceSent: "تغيّرت بعد إرسالها",
+  cookGetsChange: "سيصل التغيير إلى {cook}.",
   couldntSend: "تعذّر الإرسال. حاول مرة أخرى.",
   cookDisconnected: "فصلت الطاهية الاتصال. اربط مرة أخرى من الإعدادات.",
   buy: "اشترِ: {items}",

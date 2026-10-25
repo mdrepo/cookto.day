@@ -29,4 +29,6 @@ export const enSchedule = {
   whatDoYouCook: "What do you cook?",
   whatDoYouCookBody: "Tick what your family cooks. You can change it later.",
   chooseAtLeastOne: "Choose at least one.",
+  // Tomorrow, after a change: the bot tells the cook (specs/270).
+  cookGetsChange: "{cook} will get the change.",
 };

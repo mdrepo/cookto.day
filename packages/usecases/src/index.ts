@@ -51,8 +51,11 @@ export {
   type Planned,
   type PlanInput,
   planLines,
+  type PlanMeal,
+  planMeals,
   tonightLines,
 } from "./plan-lines.js";
+export { type PlanChange, planChanges, samePlan } from "./plan-changes.js";
 // The schedule (specs/240) is "@cookto/usecases/schedule", its own entry:
 // only Settings' meal times and days off load it.
 // The cook's Telegram (specs/207) is "@cookto/usecases/cook", its own entry:

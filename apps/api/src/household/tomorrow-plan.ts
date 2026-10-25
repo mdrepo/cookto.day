@@ -14,6 +14,8 @@ import {
   type Planned,
   type PlanInput,
   planLines,
+  type PlanMeal,
+  planMeals,
   tonightLines,
 } from "@cookto/usecases";
 
@@ -114,6 +116,8 @@ export interface Tomorrow {
   recipes: string;
   /** The day's first planned meal. */
   first: MealSlot;
+  /** The cook's plan as data, kept to say what changes (specs/270). */
+  meals: PlanMeal[];
 }
 
 const beansOf = async (households: Households, household: string) => {
@@ -164,5 +168,6 @@ export async function tomorrowOf(
     tonight: tonightLines(input),
     recipes: `${APP}/#/cook/${day}?d=${dishes.join(",")}&l=en`,
     first: first.slot,
+    meals: planMeals(input),
   };
 }

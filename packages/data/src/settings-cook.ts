@@ -24,6 +24,8 @@ export interface Cook {
   sent: PlanSent | null;
   /** The plan waiting to go at 9 pm. */
   scheduled: PlanSent | null;
+  /** The household's cook's first name, from Telegram (specs/270). */
+  name?: string | null;
 }
 
 /** Who this phone is signed in as (specs/216): a name, never a token. */

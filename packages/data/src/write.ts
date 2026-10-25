@@ -5,9 +5,11 @@ export type { MyDishesWriter } from "./my-dishes.js";
 export type { PantryWriter } from "./pantry.js";
 export type { PlansWriter } from "./plans.js";
 export type { ShoppingWriter } from "./shopping.js";
+export type { ReceiptAnswersWriter } from "./receipt-answers.js";
 export type {
   BeansWriter,
   KitchenSettingsWriter,
+  ReceiptsAgreedWriter,
   SettingsWriter,
   ThemeWriter,
   WhoCooksWriter,

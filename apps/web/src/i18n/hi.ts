@@ -1,6 +1,8 @@
 import type { Messages } from "./en.js";
+import { hiReceipt } from "./hi-receipt.js";
 
 export const hi: Messages = {
+  ...hiReceipt,
   languageLabel: "भाषा",
   languageSoon: "जल्द आ रही है",
   emptyTitle: "आपकी रसोई खाली है",
@@ -15,7 +17,7 @@ export const hi: Messages = {
   noFreshYet: "अभी कोई ताज़ा सामान नहीं",
   noFreshBody: "जो खरीदा वह जोड़ें, हम उससे बनने वाले व्यंजन चुनेंगे।",
   privacy:
-    "आपका सामान और परिवार की जानकारी इसी ब्राउज़र में रहती है। कुछ भी अपलोड नहीं होता।",
+    "आपका सामान और परिवार की जानकारी इसी ब्राउज़र में रहती है। रसीद की फ़ोटो सिर्फ़ तब पढ़ने भेजी जाती है जब आप चाहें, और रखी नहीं जाती।",
   whereTitle: "आप कहाँ रहते हैं?",
   whereBody:
     "हम आपकी मुद्रा इस्तेमाल करते हैं, और आपकी दुकानों के भेजे बिल पढ़ते हैं।",

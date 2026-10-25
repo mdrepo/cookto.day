@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { Suspense } from "react";
 import { HomeScreen } from "./features/home/HomeScreen.js";
 import { OnboardingScreen } from "./features/onboarding/OnboardingScreen.js";
 import { LanguagePicker } from "./features/settings/LanguagePicker.js";
@@ -7,6 +7,21 @@ import { useDocumentTheme } from "./features/settings/useDocumentTheme.js";
 import { Tabs } from "./features/tabs/Tabs.js";
 import { useMovedDishes } from "./moves.js";
 import { stepOf, useRoute } from "./routes.js";
+import {
+  CookScreen,
+  CuisinesScreen,
+  DishesScreen,
+  DishScreen,
+  ItemSheet,
+  MoreScreen,
+  PackScreen,
+  PantryScreen,
+  ReceiptScreen,
+  SettingsScreen,
+  ShoppingScreen,
+  StaplesScreen,
+  TelegramScreen,
+} from "./screens.js";
 import { useSync } from "./sync.js";
 import { SaveProblem } from "./features/saving/SaveProblem.js";
 
@@ -15,71 +30,6 @@ import { SaveProblem } from "./features/saving/SaveProblem.js";
 // language is chosen on setup's first step and in Settings, not on every
 // page (#84). Every page after setup has the tab bar, so on a wide screen
 // each one sits beside the rail, at the same place.
-
-// Pages a first visit doesn't show load when someone opens them, so the
-// first page stays within its budget as the app grows (ADR 0013; #95, #97).
-// Setup and Today come with the first page; Settings is under More now
-// (specs/175), so it loads when opened too.
-const DishScreen = lazy(() =>
-  import("./features/dish/DishScreen.js").then((m) => ({
-    default: m.DishScreen,
-  })),
-);
-const DishesScreen = lazy(() =>
-  import("./features/dishes/DishesScreen.js").then((m) => ({
-    default: m.DishesScreen,
-  })),
-);
-const CuisinesScreen = lazy(() =>
-  import("./features/cuisines/CuisinesScreen.js").then((m) => ({
-    default: m.CuisinesScreen,
-  })),
-);
-const PantryScreen = lazy(() =>
-  import("./features/pantry/PantryScreen.js").then((m) => ({
-    default: m.PantryScreen,
-  })),
-);
-const ItemSheet = lazy(() =>
-  import("./features/pantry/ItemSheet.js").then((m) => ({
-    default: m.ItemSheet,
-  })),
-);
-const ShoppingScreen = lazy(() =>
-  import("./features/shopping/ShoppingScreen.js").then((m) => ({
-    default: m.ShoppingScreen,
-  })),
-);
-const MoreScreen = lazy(() =>
-  import("./features/more/MoreScreen.js").then((m) => ({
-    default: m.MoreScreen,
-  })),
-);
-const SettingsScreen = lazy(() =>
-  import("./features/settings/SettingsScreen.js").then((m) => ({
-    default: m.SettingsScreen,
-  })),
-);
-const PackScreen = lazy(() =>
-  import("./features/cuisines/PackScreen.js").then((m) => ({
-    default: m.PackScreen,
-  })),
-);
-const CookScreen = lazy(() =>
-  import("./features/cook/CookScreen.js").then((m) => ({
-    default: m.CookScreen,
-  })),
-);
-const TelegramScreen = lazy(() =>
-  import("./features/telegram/TelegramScreen.js").then((m) => ({
-    default: m.TelegramScreen,
-  })),
-);
-const StaplesScreen = lazy(() =>
-  import("./features/staples/StaplesScreen.js").then((m) => ({
-    default: m.StaplesScreen,
-  })),
-);
 
 export function App() {
   useDocumentLanguage();
@@ -139,6 +89,8 @@ function Page() {
       return <CookScreen />;
     case "telegram":
       return <TelegramScreen />;
+    case "receipt":
+      return <ReceiptScreen bar={<Bar current="pantry" />} />;
     default:
       return (
         <OnboardingScreen

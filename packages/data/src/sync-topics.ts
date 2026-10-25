@@ -8,5 +8,6 @@ export const SYNC_TOPICS: Record<string, string> = {
   "my-dishes-out": "my-dishes",
   pantry: "pantry",
   plans: "plans",
+  "receipt-answers": "receipt-answers",
   shopping: "shopping",
 };

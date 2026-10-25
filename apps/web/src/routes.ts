@@ -22,6 +22,7 @@ export type Route =
   | "pack"
   | "cook"
   | "telegram"
+  | "receipt"
   | SetupRoute
   | Page;
 type SetupRoute = Exclude<Step, "cuisines"> | "what-you-cook";
@@ -63,6 +64,9 @@ const ADD_FOOD = "#/kitchen/pantry/add";
 /** Settings, with the cook's invite made: setup's last step (specs/260). */
 const INVITE_COOK = "#/settings/invite-cook";
 
+/** A receipt photo just chosen, being read (specs/129). */
+const RECEIPT = "#/kitchen/receipt";
+
 const PAGES: Partial<Record<string, Page>> = {
   "#/kitchen/cuisines": "cuisines",
   "#/kitchen/staples": "staples",
@@ -93,6 +97,7 @@ export function useRoute(): Route {
   if (step) return step === "cuisines" ? "what-you-cook" : step;
   if (!onboarded) return "where";
   if (at === "#/settings" || at === INVITE_COOK) return "settings";
+  if (at === RECEIPT) return "receipt";
   if (at.startsWith(DISH)) return "dish";
   if (at.startsWith(PACK)) return "pack";
   if (at.startsWith(DISHES_WITH)) return "dishes";
@@ -117,6 +122,11 @@ export function openAddFood(): void {
 /** Whether the Fridge was opened to add food: read when the Fridge opens. */
 export function wantsAddFood(): boolean {
   return typeof location !== "undefined" && location.hash === ADD_FOOD;
+}
+
+/** To the receipt just chosen, as a new entry in the browser's history. */
+export function openReceipt(): void {
+  location.hash = RECEIPT;
 }
 
 /** To Settings with the cook's invite, in place of setup's last step. */

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { count, fill } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
 import { membersQuery, now, queries } from "../../platform.js";
+import { chooseReceiptPhoto } from "../../receipt.js";
 import { go } from "../../routes.js";
 import { useUsedUpNote } from "../../usedUp.js";
 
@@ -44,5 +45,7 @@ export function useHomeScreen() {
             },
           }
         : null,
+    /** A receipt photo, from Today (specs/129). */
+    receipt: { label: t.addReceipt, run: chooseReceiptPhoto },
   };
 }

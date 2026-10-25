@@ -17,7 +17,8 @@ export const en = {
   noDishesBody: "Choose what you cook, and its dishes show here.",
   noFreshYet: "No fresh food yet",
   noFreshBody: "Add what you bought, and we'll pick dishes that use it.",
-  privacy: "Your fridge and family stay in this browser. Nothing is uploaded.",
+  privacy:
+    "Your fridge and family stay in this browser. A receipt photo is sent to be read only when you choose, and isn't kept.",
   whereTitle: "Where do you live?",
   whereBody: "We use your currency, and read the bills your shops send.",
   comingSoon: "Coming soon",

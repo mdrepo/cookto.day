@@ -6,6 +6,7 @@ import type { Messages } from "../../i18n/en.js";
 import { useWords } from "../../i18n/useWords.js";
 import { namer, packStaples, useLoadedPacks } from "../../food.js";
 import { kitchen, today } from "../../platform.js";
+import { chooseReceiptPhoto } from "../../receipt.js";
 import { toGramsOrMl, UNIT_CHOICES } from "./units.js";
 
 /** The day `daysAgo` days before today, "YYYY-MM-DD". */
@@ -62,6 +63,8 @@ export function useAddFood(onDone: () => void) {
   const adding = picked.size + (typed.trim() ? 1 : 0);
   return {
     title: t.addFood,
+    /** A receipt photo, beside tapping and typing (specs/129). */
+    receipt: { label: t.photoOfReceipt, run: chooseReceiptPhoto },
     tapLabel: t.tapWhatYouBought,
     fresh: fresh.map((f) => ({
       ...f,

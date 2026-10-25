@@ -7,6 +7,7 @@ import {
   createPacks,
   createPantry,
   createPlans,
+  createReceiptAnswers,
   createSettings,
   createShopping,
   type Sync,
@@ -141,6 +142,12 @@ export const shopping = createShopping(records, { changes });
 
 /** What the kitchen's use cases need. */
 export const kitchen = { pantry, settings: settings.writer, packs, shopping };
+
+/** What receipt photos' use cases need, with the household's answers (specs/129). */
+export const receipts = {
+  ...kitchen,
+  answers: createReceiptAnswers(records, { changes }),
+};
 
 /** What's on the shopping list. Hooks narrow it with `select`. */
 export const shoppingQuery = queryOptions({

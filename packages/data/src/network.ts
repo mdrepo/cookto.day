@@ -1,3 +1,5 @@
+import { type ReceiptsApi, receiptsApi } from "./network-receipts.js";
+
 // The app's network adapter (ADR 0024, 0025): our own API, nothing else.
 // The one file in the app that may call `fetch` (eslint.config.js). Every
 // call has a 15-second limit, and an error is a status and a short code,
@@ -34,6 +36,8 @@ export class ApiError extends Error {
   constructor(
     readonly status: number,
     readonly code: string,
+    /** Which limit, when a limit was reached (specs/129). */
+    readonly detail?: string,
   ) {
     super(`${String(status)} ${code}`);
     this.name = "ApiError";
@@ -125,8 +129,8 @@ export interface HouseholdApi {
   deleteAccount(): Promise<void>;
 }
 
-/** One call of the API: the method, the path, a bearer, a JSON body. */
-type Call = (
+/** One call of the API: the method, the path, a bearer, a JSON body or a photo. */
+export type Call = (
   method: string,
   path: string,
   token?: string,
@@ -145,13 +149,18 @@ function callerOf(options: ApiOptions): Call {
   ): Promise<unknown> => {
     const headers: Record<string, string> = { accept: "application/json" };
     if (token !== undefined) headers.authorization = `Bearer ${token}`;
-    if (body !== undefined) headers["content-type"] = "application/json";
+    // A photo goes as itself (specs/129); anything else as JSON.
+    const photo = body instanceof Blob;
+    if (body !== undefined)
+      headers["content-type"] = photo ? body.type : "application/json";
     let response: Response;
     try {
       response = await send(`${base}${path}`, {
         method,
         headers,
-        ...(body !== undefined && { body: JSON.stringify(body) }),
+        ...(body !== undefined && {
+          body: photo ? body : JSON.stringify(body),
+        }),
         signal: AbortSignal.timeout(timeout),
       });
     } catch {
@@ -160,11 +169,13 @@ function callerOf(options: ApiOptions): Call {
     const text = await response.text();
     const parsed: unknown = text === "" ? null : JSON.parse(text);
     if (!response.ok) {
-      const code =
-        typeof parsed === "object" && parsed !== null && "error" in parsed
-          ? String(parsed.error)
-          : "error";
-      throw new ApiError(response.status, code);
+      const said = (typeof parsed === "object" ? parsed : null) as {
+        error?: unknown;
+        limit?: unknown;
+      } | null;
+      const code = typeof said?.error === "string" ? said.error : "error";
+      const limit = typeof said?.limit === "string" ? said.limit : undefined;
+      throw new ApiError(response.status, code, limit);
     }
     return parsed;
   };
@@ -263,10 +274,12 @@ export function createApi(
   SyncApi &
   HouseholdApi &
   HouseholdSendApi &
-  TelegramAppApi {
+  TelegramAppApi &
+  ReceiptsApi {
   const call = callerOf(options);
   return {
     ...cookApi(call),
+    ...receiptsApi(call),
     ...householdSendApi(call),
     ...signInApi(call),
     ...syncApi(call),

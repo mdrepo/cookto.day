@@ -5,6 +5,11 @@ export interface CheckItem {
   label: string;
   /** Ticked: what happens next is the screen's (it may leave the list). */
   onCheck: () => void;
+  /**
+   * Ticked or not, when the screen keeps it, like "Found in your receipt"
+   * (specs/129); left out, every row starts unticked.
+   */
+  checked?: boolean;
 }
 
 /**
@@ -28,6 +33,7 @@ export function CheckList({
               type="checkbox"
               className={styles.box}
               onChange={item.onCheck}
+              {...(item.checked !== undefined && { checked: item.checked })}
             />
             <span>{item.label}</span>
           </label>

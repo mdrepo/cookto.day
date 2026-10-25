@@ -48,6 +48,17 @@ The owner, on the 25 Oct 2026 plan for Monday: it reads like a system notice, it
   > Tap Got it once you've seen it. **[Got it] [Recipes]**
 - **"Got it"** answers the cook with "Thanks." and tells the planner "Sunita saw tomorrow's plan ✓". With no "Got it" by an hour before the day's first meal, the planner gets "Sunita hasn't seen tomorrow's plan yet." once.
 
+### When the planner cooks
+
+- **No cook on Telegram means the planners cook.** Nothing to set: when a cook connects, the messages above apply; when the cook leaves, these do. A Telegram account that is both planner and cook gets each message once, as here.
+- **Nothing is handed over.** The 10 pm plan ends "Does this look right?" with **[Looks good] [Change] [No cooking]**, and "Looks good" answers "Tomorrow's sorted." So there's no "Got it", no "seen", and no change messages: a change is just made. "No cooking" makes tomorrow a day off and answers "Got it. No cooking tomorrow."
+- **The cook's side comes to the planners:**
+  - the plan carries "Recipes";
+  - tonight's prep comes as its own message ("Tonight: soak the chickpeas.");
+  - [#242](242-meal-checks.md)'s "Did you make lunch?" goes to them;
+  - `/ranout` is in their menu;
+  - `/off` asks "Which day aren't you cooking?".
+
 ### Change, in the chat
 
 - **"Change" asks which meal,** with a button for each of the day's meals and "Open the app" (opens Tomorrow inside Telegram, as #241's "Change" does now).
@@ -91,7 +102,7 @@ The owner, on the 25 Oct 2026 plan for Monday: it reads like a system notice, it
 
 ## Acceptance criteria
 
-Criteria 1 to 15 are unit tests in `apps/api/test`, with the fake messenger, the runs in memory and a fixed clock (ADR 0034). Criterion 16 is a unit test in `packages/engine/test`. Criteria 17 and 18 are e2e tests on an Android phone, an iPhone and a desktop, with the API faked in the browser.
+Criteria 1 to 15 are unit tests in `apps/api/test`, with the fake messenger, the runs in memory and a fixed clock (ADR 0034). Criterion 16 is a unit test in `packages/engine/test`. Criteria 17 and 18 are e2e tests on an Android phone, an iPhone and a desktop, with the API faked in the browser. Criterion 19 is a unit test in `apps/api/test`.
 
 ### 1. one sentence, one message, one sound
 
@@ -235,50 +246,29 @@ Criteria 1 to 15 are unit tests in `apps/api/test`, with the fake messenger, the
 - **When** the planner swaps dinner on Tomorrow
 - **Then** the line under the plan says "Sunita will get the change.", and there's no "Send again"
 
+### 19. the planner cooks
+
+- **Given** a household with no cook on Telegram, and tomorrow's lunch is chole, whose chickpeas soak tonight
+- **When** the cron runs at 22:00
+- **Then**:
+  - Mayur's messages include "Tonight: soak the chickpeas.".
+  - The last message is "Does this look right?" with "Looks good", "Change", "No cooking", and "Recipes".
+  - Nothing mentions a cook.
+- **When** he taps "Looks good"
+- **Then**:
+  - He gets "Tomorrow's sorted."
+  - Nothing else is sent.
+  - At 14:00 the next day, he gets "Did you make lunch?".
+
 ## Words
 
 The bot, as templates (English only, by the owner's call; other languages follow [ADR 0034](../docs/adr/0034-workflows-and-templates.md) when a native speaker reviews them):
 
-- **The plan:**
-  - "Hi {name}, here's tomorrow, {day}."
-  - "{Meal} for {n}: {dish}."
-  - "It uses the {food}, which goes off {day}."
-  - "For {child}: {dish}." and "For the children: {dish}."
-  - "Shall I send it to {cook}?" with "Send it", "Change", "No cooking"
-  - "{cook} is off tomorrow, {day}." and "Does this look right?" with "Looks good", "Change"
-- **The cook's plan:**
-  - "Hi {cook}, here's tomorrow, {day}, from {name}."
-  - "Tap Got it once you've seen it." with "Got it", "Recipes"
-  - "Thanks."
-- **Seen or not:**
-  - "{cook} saw tomorrow's plan ✓"
-  - "{cook} hasn't seen tomorrow's plan yet."
-- **Change in the chat:**
-  - "Which meal?" with "Open the app"
-  - "Instead of {dish}:" with "More in the app"
-  - "{Meal} is {dish} now."
-- **Changes after sending:**
-  - "A change for tomorrow, {day}." (or "for today")
-  - "{Meal} is {dish}, not {was}."
-  - "{Meal} is for {n} now."
-  - "No {meal} tomorrow." and "{Meal} is back: {dish}."
-  - "Sent the change to {cook}."
-  - "{cook} saw the change ✓"
-  - "{cook} hasn't seen the change yet."
-  - "{Meal} is at {time}. {cook} may have started. Send the change anyway?" with "Send it", "Don't send"
-- **The commands' replies and buttons,** as the table says them:
-  - "Tomorrow isn't planned yet."
-  - "Here's today, {day}."
-  - "Made ✓", "Not yet", "Not made"
-  - "Who's out?", "When?", "Which meals?", "Which meal?", "All day"
-  - "How many guests?", "How many?"
-  - "Which day is {cook} off?", "Tomorrow", "Day after"
-  - "Got it. …"
-  - "To buy: {items}." and "Nothing to buy." with "Open the list"
-  - "Tomorrow's plan comes at 10 pm."
-  - "{cook} says {food} ran out. It's on the list."
-  - "I don't know that one. Type / to see what I can do."
-  - "I'm switched off for now."
+- **The plan:** "Hi {name}, here's tomorrow, {day}."; "{Meal} for {n}: {dish}."; "It uses the {food}, which goes off {day}."; "For {child}: {dish}."; "For the children: {dish}."; "Tonight: {prep}."; "Shall I send it to {cook}?" with "Send it", "Change", "No cooking"; "{cook} is off tomorrow, {day}."; "Does this look right?" with "Looks good", "Change", and "No cooking" when the planner cooks; "Tomorrow's sorted."
+- **The cook's plan:** "Hi {cook}, here's tomorrow, {day}, from {name}."; "Tap Got it once you've seen it." with "Got it", "Recipes"; "Thanks."; "{cook} saw tomorrow's plan ✓"; "{cook} hasn't seen tomorrow's plan yet."
+- **Change in the chat:** "Which meal?" with "Open the app"; "Instead of {dish}:" with "More in the app"; "{Meal} is {dish} now."
+- **Changes after sending:** "A change for tomorrow, {day}." (or "for today"); "{Meal} is {dish}, not {was}."; "{Meal} is for {n} now."; "No {meal} tomorrow."; "{Meal} is back: {dish}."; "Sent the change to {cook}."; "{cook} saw the change ✓"; "{cook} hasn't seen the change yet."; "{Meal} is at {time}. {cook} may have started. Send the change anyway?" with "Send it", "Don't send"
+- **The commands, as the table says them:** "Tomorrow isn't planned yet."; "Here's today, {day}."; "Made ✓", "Not yet", "Not made"; "Who's out?", "When?", "Which meals?", "Which meal?", "All day"; "How many guests?", "How many?"; "Which day is {cook} off?", "Which day aren't you cooking?", "Tomorrow", "Day after"; "Got it. …"; "To buy: {items}." and "Nothing to buy." with "Open the list"; "Tomorrow's plan comes at 10 pm."; "{cook} says {food} ran out. It's on the list."; "I don't know that one. Type / to see what I can do."; "I'm switched off for now."
 - **The menu:** `/tomorrow` "Tomorrow's plan", `/today` "Today's plan", `/out` "Someone's eating out", `/guests` "Guests are coming", `/off` "The cook's day off", `/list` "The shopping list", `/ranout` "Something ran out".
 
 These words replace #241's `tomorrow_ask`, `tomorrow_ask_off`, `tomorrow_sent`, `tomorrow_sent_silent` and `to_cook_plan`. Without a name, `{cook}` is "the cook" and the greeting drops the name.

@@ -127,9 +127,11 @@ describe("the drain is safe", () => {
     const c = await open();
     const a = await m.send(c.id, { kind: "text", text: "a" });
     const b = await m.send(c.id, { kind: "text", text: "b" });
+    // One sentence a message (specs/270): a reply's messages all go in one
+    // drain, one after another, so they arrive together.
     const [one, two] = await Promise.all([m.drain(), m.drain()]);
-    expect([...one, ...two].map((d) => d.message)).toEqual([a]);
-    expect(await m.drain()).toEqual([{ message: b, outcome: "sent" }]);
+    expect([...one, ...two].map((d) => d.message)).toEqual([a, b]);
+    expect(await m.drain()).toEqual([]);
     expect(channel.deliveries.map((d) => d.message)).toEqual([
       { kind: "text", text: "a" },
       { kind: "text", text: "b" },

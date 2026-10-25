@@ -108,6 +108,7 @@ export function fakeHouseholds(
           chat,
           conversation: c.id,
           role: "cook",
+          name: from?.name ?? null,
         });
         const started: InviteStarted = {
           ok: true,
@@ -228,6 +229,22 @@ export function fakeHouseholds(
       ),
     put: (household, pushed, now) =>
       Promise.resolve(s.take(household, pushed, now)),
+    people: (household) =>
+      Promise.resolve(
+        s.members
+          .filter((m) => m.household === household)
+          .map((m) => ({
+            id: m.id,
+            role: m.role,
+            name: m.name ?? s.nameOf(m.account),
+            conversation: m.conversation,
+          })),
+      ),
+    nameCook: (member, name) => {
+      const m = s.members.find((x) => x.id === member && x.role === "cook");
+      if (m) m.name = name;
+      return Promise.resolve();
+    },
     reachPlanners: async (household, channel, now) => {
       for (const m of s.members) {
         if (m.household !== household || m.role !== "plan") continue;

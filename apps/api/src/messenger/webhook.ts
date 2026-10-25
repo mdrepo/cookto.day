@@ -146,6 +146,12 @@ async function handle(d: MessengerDeps, got: Received): Promise<string> {
     await tell(d, chat, WORDS.cantRead);
     return "stranger";
   }
+  // The cook's name, from her tap or her words (specs/270); a planner's
+  // comes from their sign-in, and before migration 0011 there's nowhere.
+  if (conversation.owner.kind === "member" && got.from)
+    await d.households
+      .nameCook(conversation.owner.id, got.from.name)
+      .catch(() => undefined);
   const run = await toRuns(d, conversation, event);
   if (run !== null) return run;
   await reply(d, conversation.id, WORDS.cantRead);

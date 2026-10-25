@@ -20,7 +20,7 @@ export const CHECKS: Catalogue = {
       ran: "Ran out of something",
     },
   },
-  check_ran_out: { kind: "text", body: "What ran out? Send its name." },
+  check_ran_out: { kind: "text", body: "What ran out?\nSend its name." },
   check_added: { kind: "text", body: "Added {foods} to the shopping list." },
   check_not_made: { kind: "text", body: "{Meal} wasn't made: {reason}." },
   day_end_ask: {

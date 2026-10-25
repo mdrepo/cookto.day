@@ -14,12 +14,16 @@ import type { WorkflowDeps } from "./deps.js";
 
 type Result = "moved" | "stale" | "lost" | "not-accepted" | "off";
 
+/**
+ * One template's messages (specs/270): each line of its words a message of
+ * its own, only the first with a sound, the buttons on the last.
+ */
 function build(
   w: WorkflowDeps,
   run: RunRow,
   step: string,
   m: Advanced["messages"][number],
-): Message {
+): Message[] {
   const r = render(w.templates, "en", m.template, run.about);
   // A page opens in the chat and comes back as nothing: it's always shown.
   const buttons: Button[] = r.buttons
@@ -29,9 +33,14 @@ function build(
         ? { label: b.label, app: b.page }
         : { label: b.label, value: buttonValue(run.id, step, b.key) },
     );
-  if (buttons.length === 0) return { kind: "text", text: r.text };
+  const lines = r.text.split("\n").filter((line) => line.trim() !== "");
   const rows = r.kind === "choices" ? buttons.map((b) => [b]) : [buttons];
-  return { kind: "buttons", text: r.text, buttons: rows };
+  return lines.map((text, i): Message => {
+    const quiet = i > 0 ? { silent: true } : {};
+    return i === lines.length - 1 && buttons.length > 0
+      ? { kind: "buttons", text, buttons: rows, ...quiet }
+      : { kind: "text", text, ...quiet };
+  });
 }
 
 async function transition(
@@ -62,12 +71,14 @@ async function transition(
   const to =
     outcome.messages.length > 0 ? await w.runs.conversations(run.id) : [];
   const outgoing: Outgoing[] = outcome.messages.flatMap((m) => {
-    const message = build(w, claimed, outcome.step, m);
-    return to.map((conversation) => ({
-      conversation,
-      message,
-      context: { run: run.id },
-    }));
+    const messages = build(w, claimed, outcome.step, m);
+    return to.flatMap((conversation) =>
+      messages.map((message) => ({
+        conversation,
+        message,
+        context: { run: run.id },
+      })),
+    );
   });
   const next = {
     step: outcome.step,

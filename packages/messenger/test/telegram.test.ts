@@ -219,3 +219,28 @@ describe("Telegram's own shapes", () => {
     expect(present.calls).toHaveLength(1);
   });
 });
+
+describe("one sentence, one message (specs/270)", () => {
+  test("a silent message arrives without a sound; the others still ring", async () => {
+    const net = fakeNetwork();
+    const channel = make(net.send);
+    await channel.deliver("123", { kind: "text", text: "Hi", silent: true });
+    await channel.deliver("123", {
+      kind: "buttons",
+      text: "Shall I send it?",
+      buttons: [[{ label: "Send it", value: "s" }]],
+      silent: true,
+    });
+    await channel.deliver("123", { kind: "text", text: "Loud" });
+    const bodies = net.calls.map(
+      (c) => JSON.parse(c.body) as Record<string, unknown>,
+    );
+    expect(bodies[0]).toEqual({
+      chat_id: "123",
+      text: "Hi",
+      disable_notification: true,
+    });
+    expect(bodies[1]).toMatchObject({ disable_notification: true });
+    expect(bodies[2]).not.toHaveProperty("disable_notification");
+  });
+});

@@ -7,6 +7,7 @@ import {
   mealsOn,
   ranOut,
 } from "../household/meals.js";
+import { kitchenOf } from "../household/people.js";
 import { clockOf, schedule } from "../household/schedule.js";
 import { iso, type MessengerDeps } from "../messenger/deps.js";
 import type { Action, Starter } from "./deps.js";
@@ -46,6 +47,8 @@ async function notMade(
   reason: string,
   meal: Meal = run.about as unknown as Meal,
 ) {
+  // The planners cooked it themselves (specs/270): nobody to tell.
+  if (run.audience === "planners") return;
   await d.households.reachPlanners(
     run.household,
     d.messenger.channel.name,
@@ -74,7 +77,7 @@ const mealsOf = (run: RunRow) =>
 async function nextMeal(d: MessengerDeps, run: RunRow, key: string) {
   const [first, ...rest] = mealsOf(run);
   if (!first) return;
-  await say(d, run, key, "meal_again", "cooks", {
+  await say(d, run, key, "meal_again", run.audience, {
     ...first,
     date: run.about.date,
     checks: rest,
@@ -97,7 +100,7 @@ export const CHECK_ACTIONS: Record<string, Action> = {
     const now = () => iso(d.now());
     const foods = await ranOut(d.households, run.household, text, now, d.packs);
     if (foods.length > 0)
-      await say(d, run, key, "check_added", "cooks", {
+      await say(d, run, key, "check_added", run.audience, {
         foods: foods.join(", "),
       });
     await notMade(d, run, key, `ran out of ${text}`);
@@ -144,7 +147,8 @@ async function endDay(
   await w.runs.create({
     id: dayEndRun(household, day),
     household,
-    audience: "cooks",
+    // Whoever the day's checks went to: the cook, or the planners who cook.
+    audience: open[0]?.run?.audience ?? "cooks",
     workflow: "day_end",
     about: {
       date: day,
@@ -195,12 +199,17 @@ export const startChecks: Starter = async (d) => {
       s.sorted === clock.day ||
       (s.sorted !== null && s.sorted > clock.day && checks.some((c) => c.run));
     if (!sent) continue;
+    let audience: string | null = null;
     for (const { at, run, ...meal } of checks) {
       if (clock.time < at || run) continue;
+      // No cook on Telegram: the planners cook, and are asked (specs/270).
+      audience ??= (await kitchenOf(d.households, id)).hasCook
+        ? "cooks"
+        : "planners";
       await w.runs.create({
         id: checkRun(id, clock.day, meal.slot),
         household: id,
-        audience: "cooks",
+        audience,
         workflow: "meal_check",
         about: { date: clock.day, ...meal },
         dueAt: iso(now),

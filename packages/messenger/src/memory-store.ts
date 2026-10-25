@@ -23,6 +23,11 @@ interface OutboxRow {
 const same = (a: unknown, b: unknown) =>
   JSON.stringify(a) === JSON.stringify(b);
 
+/** Insertion order, for rows that share a time, as Postgres's `seq` keeps it. */
+const seqOf = (id: string) => Number(id.slice(id.indexOf("-") + 1));
+const byTime = (a: { at: string; id: string }, b: { at: string; id: string }) =>
+  a.at.localeCompare(b.at) || seqOf(a.id) - seqOf(b.id);
+
 class MemoryStore implements Store {
   private readonly conversations = new Map<string, Conversation>();
   private readonly rows = new Map<string, Row>();
@@ -96,7 +101,7 @@ class MemoryStore implements Store {
     return Promise.resolve(
       [...this.rows.values()]
         .filter((r) => r.conversation === conversation)
-        .sort((a, b) => a.at.localeCompare(b.at) || a.id.localeCompare(b.id)),
+        .sort(byTime),
     );
   }
 
@@ -169,8 +174,8 @@ class MemoryStore implements Store {
         .map((o) => o.conversation),
     );
     const due: Due[] = [];
-    rows.sort(
-      (a, b) => a.at.localeCompare(b.at) || a.message.localeCompare(b.message),
+    rows.sort((a, b) =>
+      byTime({ at: a.at, id: a.message }, { at: b.at, id: b.message }),
     );
     for (const o of rows) {
       if (o.nextTry > now || taken.has(o.conversation)) continue;

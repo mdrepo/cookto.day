@@ -5,16 +5,25 @@ import {
   type MealSlot,
   type Member,
   memberProblems,
+  type PantryItem,
   servings,
 } from "@cookto/engine";
 import { dayWords } from "@cookto/engine/time";
 import { type Catalogues, render } from "@cookto/templates";
-import { tomorrowText } from "@cookto/usecases";
+import {
+  type Planned,
+  type PlanInput,
+  planLines,
+  tonightLines,
+} from "@cookto/usecases";
 
-// Tomorrow's plan as the bot sends it (specs/241), from the household's
-// records: each meal's dish by its name in the packs the household loaded,
-// the child's dishes, the day's name, and the cook's "Recipes" page, whose
-// address holds the dishes and how many eat each, and nothing else.
+export type { Planned };
+
+// Tomorrow's plan as the bot sends it (specs/241, specs/270), from the
+// household's records: each meal's dish by its name in the packs the
+// household loaded, for how many, the child's dishes, the day's name, and
+// the cook's "Recipes" page, whose address holds the dishes and how many
+// eat each, and nothing else.
 
 export const APP = "https://cookto.day";
 /** Where "Change" opens: Tomorrow, inside Telegram, signing in there. */
@@ -67,14 +76,6 @@ export const dishNames = (packs: readonly AppPack[]) =>
     ...packs.map((p) => p.words.en?.dishes ?? {}),
   ) as Record<string, string>;
 
-export interface Planned {
-  slot: MealSlot;
-  dish: string;
-  child: boolean;
-  /** The child's extra, by Wikidata id. */
-  addIn?: string;
-}
-
 /** The meal's plan each phone shows: the newest, one per meal and who. */
 export function plannedOn(rows: Row[], day: string): Planned[] {
   const newest = new Map<string, Row>();
@@ -103,10 +104,24 @@ export const peopleOf = async (households: Households, household: string) =>
 export interface Tomorrow {
   /** "Thursday". */
   day: string;
+  /** The planners' lines, one a message: each meal, with its reason. */
   plan: string;
+  /** The cook's: the same, without reasons. */
+  cookPlan: string;
+  /** "Tonight: soak the chickpeas.", when a dish's prep starts tonight. */
+  tonight: string[];
   /** The cook's recipes page for these dishes. */
   recipes: string;
+  /** The day's first planned meal. */
+  first: MealSlot;
 }
+
+const beansOf = async (households: Households, household: string) => {
+  const [settings] = (
+    await households.records(household, "household-settings")
+  ).filter(live);
+  return settings?.beans === "tinned" ? "tinned" : "dried";
+};
 
 /** Tomorrow's plan for `day`, "YYYY-MM-DD"; null when nothing is planned. */
 export async function tomorrowOf(
@@ -119,26 +134,21 @@ export async function tomorrowOf(
     (await households.records(household, "plans")).filter(live),
     day,
   );
-  if (planned.length === 0) return null;
-  const names = dishNames(await householdPacks(households, household));
+  const [first] = planned;
+  if (!first) return null;
   const people = await peopleOf(households, household);
-  const word = (id: string, slots = {}) =>
-    render(templates, "en", id, slots).text;
-  const name = (dish: string) => names[dish] ?? dish;
-  const plan = tomorrowText(
-    {
-      meals: planned
-        .filter((p) => !p.child)
-        .map((p) => ({
-          label: word(`meal_${p.slot.replace("-", "_")}`),
-          dish: name(p.dish),
-        })),
-      child: planned.filter((p) => p.child).map((p) => name(p.dish)),
-      tonight: [],
-      buy: [],
-    },
-    { childDish: (dish) => word("plan_child", { dish }), buy: () => "" },
-  );
+  const input: PlanInput = {
+    day,
+    planned,
+    people,
+    packs: await householdPacks(households, household),
+    pantry: (await households.records(household, "pantry"))
+      .filter(live)
+      .map((r) => r as unknown as PantryItem),
+    beans: await beansOf(households, household),
+    word: (id, slots = {}) => render(templates, "en", id, slots).text,
+    dayName: (d) => dayWords(d, "en", { weekday: "long" }),
+  };
   const hasChildDish = (slot: MealSlot) =>
     planned.some((p) => p.slot === slot && p.child);
   const dishes = planned.map(
@@ -149,7 +159,10 @@ export async function tomorrowOf(
   );
   return {
     day: dayWords(day, "en", { weekday: "long" }),
-    plan,
+    plan: planLines(input, true).join("\n"),
+    cookPlan: planLines(input, false).join("\n"),
+    tonight: tonightLines(input),
     recipes: `${APP}/#/cook/${day}?d=${dishes.join(",")}&l=en`,
+    first: first.slot,
   };
 }

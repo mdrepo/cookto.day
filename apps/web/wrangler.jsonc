@@ -18,11 +18,12 @@
     "bindings": [{ "name": "USAGE", "class_name": "UsageCounter" }],
   },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["UsageCounter"] }],
-  // Receipt photos stay off until sign-in ships, then a PR turns them on.
-  // Keys and tokens are Worker secrets, saved by the owner with
-  // apps/api/scripts/secret.sh, never here (ADR 0030).
+  // Receipt photos are on (docs/runbooks/receipt-photos.md, step 4); "off"
+  // here, or deleting the Gemini key, stops them. Keys and tokens are Worker
+  // secrets, saved by the owner with apps/api/scripts/secret.sh, never here
+  // (ADR 0030).
   "vars": {
-    "RECEIPT_PHOTOS": "off",
+    "RECEIPT_PHOTOS": "on",
     "RECEIPT_MODEL": "gemini-2.5-flash-lite",
   },
   // The messenger's outbox is drained every minute, and its housekeeping

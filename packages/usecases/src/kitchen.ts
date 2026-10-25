@@ -24,20 +24,25 @@ export async function loadCuisine(k: Kitchen, id: string): Promise<void> {
 }
 
 /**
- * A cuisine ticked or unticked in setup (specs/263): ticked, it's loaded;
- * unticked, it's no longer one of the household's.
+ * A cuisine ticked or unticked in setup (specs/263): ticked, it's one of the
+ * household's at once, and its pack loads; unticked, it's no longer one.
+ * Each tick starts from the cuisines as they are now, so ticks faster than
+ * packs load keep what was ticked.
  */
 export async function chooseCuisine(
   k: Kitchen,
   id: string,
   on: boolean,
 ): Promise<void> {
-  if (on) return loadCuisine(k, id);
+  const cuisine = k.packs.cuisines().find((c) => c.id === id);
+  if (!cuisine || cuisine.soon) return;
   const kitchen = k.settings.kitchen();
+  const others = kitchen.cuisines.filter((c) => c !== id);
   k.settings.setKitchen({
     ...kitchen,
-    cuisines: kitchen.cuisines.filter((c) => c !== id),
+    cuisines: on ? [...others, id] : others,
   });
+  if (on) await k.packs.load(id);
 }
 
 /**

@@ -120,13 +120,18 @@ describe.skipIf(sql === null)("reaching the household, on Postgres", () => {
     expect(await runs.conversations(run.id)).toHaveLength(1);
   });
 
-  test("a session for a Telegram account a web app proves; none for a stranger", async () => {
+  // A stranger's proof makes an account since specs/260: see
+  // start-in-telegram.test.ts.
+  test("a session for a Telegram account a web app proves", async () => {
     await account({ id: "42", name: "Mayur" });
-    const got = await auth.sessionFor("telegram", "42", T0);
-    expect(got?.name).toBe("Mayur");
-    expect(
-      await auth.session(await sha256(got?.session ?? ""), T0),
-    ).toMatchObject({ name: "Mayur" });
-    expect(await auth.sessionFor("telegram", "77", T0)).toBeNull();
+    const got = await auth.sessionFor(
+      "telegram",
+      { id: "42", name: "Mayur" },
+      T0,
+    );
+    expect(got.name).toBe("Mayur");
+    expect(await auth.session(await sha256(got.session), T0)).toMatchObject({
+      name: "Mayur",
+    });
   });
 });

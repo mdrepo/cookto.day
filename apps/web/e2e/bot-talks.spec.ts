@@ -65,6 +65,8 @@ test.describe("The bot talks like a person", () => {
       out: ["m-priya"],
       guests: 0,
     });
+    // The phone pulls when it opens, as it does in household-sync.spec.ts.
+    await page.reload();
     await expect(dinner).toContainText("For 1 person", { timeout: 10_000 });
   });
 });

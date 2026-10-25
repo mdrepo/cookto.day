@@ -1,4 +1,4 @@
-import { expect, type Page, test } from "@playwright/test";
+import { expect, type Page, test } from "./support/test.js";
 import { Cooking } from "./support/cooking.js";
 
 // specs/104-cooked-it.md: "We cooked this", and Today doesn't repeat it.

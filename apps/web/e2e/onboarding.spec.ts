@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./support/test.js";
 import { Onboarding } from "./support/onboarding.js";
 
 // specs/65-onboarding.md, criteria 1 and 3 to 8 (2 is in languages.spec.ts,

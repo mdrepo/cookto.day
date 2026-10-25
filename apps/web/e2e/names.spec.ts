@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./support/test.js";
 import { Cooking } from "./support/cooking.js";
 
 // specs/148-food-names.md: food by the names people use.

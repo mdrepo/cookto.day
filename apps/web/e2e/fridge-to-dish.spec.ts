@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./support/test.js";
 import { Cooking } from "./support/cooking.js";
 
 // specs/105-fridge-to-dish.md: from a food to the dishes that use it.

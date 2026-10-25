@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./support/test.js";
 import { Kitchen } from "./support/kitchen.js";
 
 // specs/1-first-visit.md. A first visit now starts with onboarding

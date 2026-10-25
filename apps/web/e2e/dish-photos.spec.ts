@@ -1,4 +1,4 @@
-import { expect, type Locator, test } from "@playwright/test";
+import { expect, type Locator, test } from "./support/test.js";
 import { Cooking } from "./support/cooking.js";
 
 // specs/118-dish-photos.md: dish photos, free licence, loaded lazily.

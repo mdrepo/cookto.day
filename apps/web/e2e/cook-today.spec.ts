@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./support/test.js";
 import { Cooking } from "./support/cooking.js";
 
 // specs/72-kitchen.md, criteria 6 and 7: what to cook today, food that needs

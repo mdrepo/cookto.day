@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./support/test.js";
 import { Kitchen } from "./support/kitchen.js";
 
 // specs/35-iphone.md, criterion 2. It runs on every project, the iPhone

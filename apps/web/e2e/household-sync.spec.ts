@@ -1,4 +1,4 @@
-import { expect, type Page, test } from "@playwright/test";
+import { expect, type Page, test } from "./support/test.js";
 import { evening, swapDinner, planner } from "./support/cook.js";
 import {
   fakeHouseholdApi,

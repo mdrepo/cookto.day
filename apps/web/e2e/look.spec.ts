@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./support/test.js";
 import { Cooking } from "./support/cooking.js";
 
 // specs/80-look.md, criteria 1 to 5: Today and the pantry, as the prototype

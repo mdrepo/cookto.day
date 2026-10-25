@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./support/test.js";
 import { Cooking } from "./support/cooking.js";
 
 // #80, the look: lunch and dinner side by side on a wide screen, Dishes is a

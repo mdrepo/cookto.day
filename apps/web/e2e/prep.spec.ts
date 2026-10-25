@@ -1,4 +1,4 @@
-import { expect, type Page, test } from "@playwright/test";
+import { expect, type Page, test } from "./support/test.js";
 import { Cooking } from "./support/cooking.js";
 
 // specs/144-prep.md: a dish that needs soaking isn't tonight's pick; the

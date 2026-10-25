@@ -1,4 +1,4 @@
-import { expect, type Page, test } from "@playwright/test";
+import { expect, type Page, test } from "./support/test.js";
 import { Cooking } from "./support/cooking.js";
 
 // specs/175-more.md, criteria 2 and 3: Packs is a library; My dishes is what

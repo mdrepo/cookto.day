@@ -79,6 +79,16 @@ export class Onboarding {
     await this.nameBox(person).fill(name);
   }
 
+  /** A cuisine on "What do you cook?", ticked or not (specs/263). */
+  cuisine(name: string): Locator {
+    return this.page.getByRole("button", { name: new RegExp(`^${name} ·`) });
+  }
+
+  /** Ticks or unticks a cuisine on "What do you cook?". */
+  async tick(name: string): Promise<void> {
+    await this.cuisine(name).click();
+  }
+
   /** "All set": who a meal is planned for, as the row for that meal says. */
   plannedFor(meal: string): Locator {
     return this.page.getByRole("listitem").filter({ hasText: meal });

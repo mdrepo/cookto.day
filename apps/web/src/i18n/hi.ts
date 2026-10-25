@@ -285,4 +285,8 @@ export const hi: Messages = {
   recipe: "विधि",
   openFromApp: "इसे ऐप से खोलें।",
   getMealsHere: "दिन का खाना यहाँ मुझसे पाएँ:",
+  whatDoYouCook: "आप क्या पकाते हैं?",
+  whatDoYouCookBody:
+    "आपका परिवार जो पकाता है, उस पर टिक करें। बाद में बदल सकते हैं।",
+  chooseAtLeastOne: "कम से कम एक चुनें।",
 };

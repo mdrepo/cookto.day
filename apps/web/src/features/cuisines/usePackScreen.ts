@@ -6,6 +6,7 @@ import {
 } from "@cookto/usecases";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { cuisineName } from "../../cuisines.js";
 import { listOf, namer, SLOT_WORDS } from "../../food.js";
 import { fill } from "../../i18n/format.js";
 import { useWords } from "../../i18n/useWords.js";
@@ -17,7 +18,6 @@ import {
   takenOutQuery,
 } from "../../platform.js";
 import { goBack, openDish, usePackId } from "../../routes.js";
-import { cuisineName } from "./names.js";
 
 /**
  * A pack's dishes (specs/175): a library to pick from. Opening it the first

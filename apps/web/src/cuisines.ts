@@ -1,6 +1,7 @@
-import type { Messages } from "../../i18n/en.js";
+import type { Messages } from "./i18n/en.js";
 
-// A cuisine's name in the page's language, by its pack's id.
+// A cuisine's name in the page's language, by its pack's id: for the
+// Cuisines page and setup's "What do you cook?" (specs/263).
 
 const NAMES: Partial<
   Record<

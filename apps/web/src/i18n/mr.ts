@@ -279,4 +279,7 @@ export const mr: Messages = {
   recipe: "कृती",
   openFromApp: "हे ॲपमधून उघडा.",
   getMealsHere: "दिवसाचं जेवण इथे माझ्याकडून मिळवा:",
+  whatDoYouCook: "तुम्ही काय बनवता?",
+  whatDoYouCookBody: "तुमचं कुटुंब जे बनवतं त्यावर टिक करा. नंतर बदलता येईल.",
+  chooseAtLeastOne: "किमान एक निवडा.",
 };

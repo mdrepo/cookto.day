@@ -131,4 +131,7 @@ export const arSettings = {
   recipe: "الوصفة",
   openFromApp: "افتح هذا من التطبيق.",
   getMealsHere: "احصل على وجبات اليوم مني هنا:",
+  whatDoYouCook: "ماذا تطبخون؟",
+  whatDoYouCookBody: "اختر ما تطبخه عائلتك. يمكنك تغييره لاحقًا.",
+  chooseAtLeastOne: "اختر واحدًا على الأقل.",
 } satisfies Partial<Messages>;

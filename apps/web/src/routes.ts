@@ -7,12 +7,28 @@ import { settings } from "./platform.js";
 // goes to the step before (specs/65-onboarding.md). Until onboarding is done,
 // home is its first step.
 
-export type Step = "where" | "who" | "cooks" | "done";
+export type Step = "where" | "who" | "cuisines" | "cooks" | "done";
 /** The kitchen's pages (specs/72-kitchen.md). */
 export type Page =
   "cuisines" | "staples" | "pantry" | "dishes" | "list" | "more";
+/**
+ * Where the app is. Setup's "What do you cook?" (specs/263) is the step
+ * "cuisines", routed as "what-you-cook", apart from the Cuisines page.
+ */
 export type Route =
-  "home" | "settings" | "dish" | "pack" | "cook" | "telegram" | Step | Page;
+  | "home"
+  | "settings"
+  | "dish"
+  | "pack"
+  | "cook"
+  | "telegram"
+  | SetupRoute
+  | Page;
+type SetupRoute = Exclude<Step, "cuisines"> | "what-you-cook";
+
+/** The setup step a route shows. */
+export const stepOf = (route: SetupRoute): Step =>
+  route === "what-you-cook" ? "cuisines" : route;
 
 /** The cook's recipes (specs/241): `#/cook/<day>?d=…`, no kitchen needed. */
 const COOK = "#/cook/";
@@ -24,6 +40,7 @@ const fromTelegram = () =>
 const STEPS: Partial<Record<string, Step>> = {
   "#/start/where": "where",
   "#/start/who": "who",
+  "#/start/cuisines": "cuisines",
   "#/start/cooks": "cooks",
   "#/start/done": "done",
 };
@@ -73,7 +90,7 @@ export function useRoute(): Route {
   if (at.startsWith(COOK)) return "cook";
   if (fromTelegram()) return "telegram";
   const step = STEPS[at];
-  if (step) return step;
+  if (step) return step === "cuisines" ? "what-you-cook" : step;
   if (!onboarded) return "where";
   if (at === "#/settings" || at === INVITE_COOK) return "settings";
   if (at.startsWith(DISH)) return "dish";

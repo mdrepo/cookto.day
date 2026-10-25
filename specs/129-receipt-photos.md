@@ -3,6 +3,7 @@
 - **Issue:** #129
 - **Approval:** a code owner merging the PR that adds this file. Write no tests or code until it's merged.
 - **Decision:** [ADR 0028](../docs/adr/0028-receipt-photos-ai.md)
+- **Where the app lives (25 Oct):** `packages/engine`: `receiptLines()` (each line's food or question, and its amount, from the packs' names and a household's answers); `packages/data`: the receipts client on the network adapter, and the household's answers, one synced record (`receipt-answers`); `packages/usecases`: `readReceiptPhoto()`, `addFromReceipt()` (with Undo), `answerLine()`; `apps/web`: `features/receipt/` (the screen: asking first, reading, "Found in your receipt", what stopped it), "Add a receipt" on Today and "Photo of a receipt" in the Fridge's "Add food", the photo made small in `apps/web/src/photo.ts`.
 
 ## Why
 
@@ -65,23 +66,54 @@ Built first, with the API's own tests ([ADR 0025](../docs/adr/0025-server.md)); 
 - **And** a bare long number in a name is no such sign either: Indian and Gulf receipts print a 12 or 13-digit barcode or item code on the item's line. A number counts as a phone only when it starts with `+` or follows a word like call, tel, phone, WhatsApp, SMS or hotline. It counts as a card number when it has 15 or 16 digits, alone or in groups of four
 - **And** links count in any country: `.in` and `.ae` as well as `.com`, `.net`, `.org`, `.io` and `.sg`
 
+## The app (decided 25 Oct)
+
+The API half shipped on 16 Oct. The owner asked for the app half on 25 Oct, with adding a receipt from the home page. "Found in your receipt" was to come from the PDF spec ([#127](127-receipt-pdf.md)), which isn't built, so it's decided here and #127 later only adds reading PDFs into it.
+
+- **"Add a receipt" is on Today,** for the planner and the cook, below the household line; and "Photo of a receipt" is in the Fridge's "Add food", beside typing and tapping. Both open the phone's camera or photos.
+- **The photo is made small on the phone** before it's sent: its longest side at most 1,600 pixels, as JPEG, under 1.5 MB. It's never saved on the phone or the server.
+- **Asked once per phone** (criterion 9), remembered on that phone.
+- **"Found in your receipt" lists every line the API sent back**, in two groups:
+  - **Found:** lines that name one of the loaded cuisines' foods (specs/148's names), ticked, each with the food's name and an amount worked out from the line: a size in the name times the quantity ("Paneer 200G", 4 bought: 800 g), a quantity sold by weight (0.912 kg: 912 g), or a count (15 eggs: 15). With no amount it says "have it". A line the API marked "check" says "Check this line".
+  - **Not sure:** lines that name no food, or a word that could be two foods. A word that could be two offers those foods; every line offers "Add as it is" and "Skip". A line with no answer is left out.
+- **Answers are remembered for the household:** a line added as it is, or skipped, or matched to a food, is answered the same way on the next receipt and isn't asked again (#127, criterion 4). The answers are one synced record, so every phone in the household knows them.
+- **"Add {n}"** adds what's ticked and answered: fresh food bought on the receipt's date (today when it has none, or when it's in the future), staples as in the kitchen, and anything on the shopping list that was bought comes off it. "Undo" puts the Fridge back as it was (as specs/116).
+- **Reading stays off until the owner turns it on** (`RECEIPT_PHOTOS`, the runbook's step 4, after its step 3 check with real receipts). Until then the button is there and says "Receipt photos aren't working right now".
+- **The privacy line changes now,** whether photos are on or not: it's true either way, since a photo is only ever sent when someone chooses to.
+
 ## Acceptance criteria (the app)
 
-Built after sign-in ships. Each becomes one e2e test, on an Android phone, an iPhone and a desktop (ADR 0002, 0003, 0021), with the API faked in the browser.
+Each becomes one e2e test, on an Android phone, an iPhone and a desktop (ADR 0002, 0003, 0021), with the API faked in the browser, and a made-up receipt (never a real one).
 
 ### 9. ask before the first photo
 
 - **Given** they're signed in, and have never sent a receipt photo
-- **When** they press "Add food", then "Photo of a receipt"
+- **When** they press "Add a receipt" on Today (or "Add food", then "Photo of a receipt", on the Fridge) and choose a photo
 - **Then** they read that the photo goes to Google's Gemini to be read, that Google keeps it for a short time only to check for abuse and never trains on it, and that cookto.day keeps only the items
-- **And** nothing is sent until they press "Read it"
+- **And** nothing is sent until they press "Read it"; the next photo isn't asked about
 
 ### 10. found in your photo
 
-- **When** they take a photo of a receipt
-- **Then** they see "Found in your receipt", as for a PDF (specs/127, criteria 1 to 5), and lines marked "check" say "Check this line"
+- **Given** North Indian loaded, and a receipt whose lines are "Fresh Paneer 200G" (4), "Red Onions 700G", "15 Eggs", "Local Tomatoes", "Loose Ginger" (0.15 kg, marked "check") and "Velvet Almond Milk Drink"
+- **When** it's read
+- **Then** "Found in your receipt" shows, ticked: paneer 800 g, onion 700 g, egg 15, tomato "have it", and ginger 150 g with "Check this line"
+- **And** "Not sure" shows the almond milk with "Add as it is" and "Skip"
 
-### 11. what stops a read, in plain words
+### 11. add what was bought
+
+- **Given** that receipt, dated yesterday, with paneer on the shopping list
+- **When** they add the almond milk as it is and press "Add 6"
+- **Then** the Fridge has the five foods bought yesterday, and the almond milk under its own name; paneer is off the shopping list
+- **When** they press "Undo"
+- **Then** the Fridge and the list are as they were
+
+### 12. ask only once
+
+- **Given** they added "Velvet Almond Milk Drink" as it is, and skipped "Coca-Cola Zero Sugar", on an earlier receipt
+- **When** a receipt with the same two lines is read
+- **Then** the almond milk is ticked under its own name, the Coke isn't shown, and nothing is under "Not sure"
+
+### 13. what stops a read, in plain words
 
 - **When** they're signed out: "Sign in to read receipt photos"
 - **When** they've reached a limit: "You've read 3 receipts today. Try again tomorrow."
@@ -90,20 +122,18 @@ Built after sign-in ships. Each becomes one e2e test, on an Android phone, an iP
 - **When** reading is off, offline, or failed: "Receipt photos aren't working right now"
 - **Then** each offers "Tap what you bought" instead
 
-### 12. the privacy line stays true
+### 14. the privacy line stays true
 
-- **Given** receipt photos are on
 - **When** they open Today
 - **Then** its privacy line no longer says "Nothing is uploaded". It says: "Your fridge and family stay in this browser. A receipt photo is sent to be read only when you choose, and isn't kept."
-- **And** while photos are off, the line stays as it is today
 
 ## Words
 
-English; Hindi, Marathi and Arabic stay preview-only until a native speaker reviews them (ADR 0012).
+In English, Hindi, Marathi and Arabic (ADR 0012):
 
-- Photo of a receipt · Read it · Check this line · Sign in to read receipt photos · You've read {n} receipts today. Try again tomorrow. · You've read {n} receipts this month. · This doesn't look like a receipt · We couldn't read this photo. Try again tomorrow. · Receipt photos aren't working right now
+- Add a receipt · Photo of a receipt · Read it · Found in your receipt · Not sure · Add as it is · Skip · have it · Check this line · Add {n} · Sign in to read receipt photos · You've read {n} receipts today. Try again tomorrow. · You've read {n} receipts this month. · This doesn't look like a receipt · We couldn't read this photo. Try again tomorrow. · Receipt photos aren't working right now · Tap what you bought
 - The consent text in criterion 9
-- The privacy line in criterion 12
+- The privacy line in criterion 14
 
 ## Out of scope
 

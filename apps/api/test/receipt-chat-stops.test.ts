@@ -1,5 +1,4 @@
 import { describe, expect, test } from "bun:test";
-import type { Event } from "@cookto/messenger";
 import { workflow } from "@cookto/workflows";
 import { runId, startRun } from "../src/workflows/tomorrow.js";
 import {
@@ -150,10 +149,7 @@ describe("9. a question waiting for a photo comes first; files are refused", () 
 
   test("a PDF or any other file: photos only, for now", async () => {
     const r = await receiptChat();
-    await r.e.say(PLANNER_CHAT, {
-      kind: "file",
-      name: "invoice.pdf",
-    } as Event);
+    await r.e.say(PLANNER_CHAT, { kind: "file", name: "invoice.pdf" });
     expect(texts(r.e.to(PLANNER_CHAT))).toEqual([
       "I can read photos of bills for now. Send it as a photo.",
     ]);

@@ -16,7 +16,7 @@ const parse = (inner: object) =>
   telegram({
     token: TOKEN,
     secret: SECRET,
-    send: () => Promise.reject(),
+    send: () => Promise.reject(new Error("no network")),
   }).parse(
     JSON.stringify({ update_id: 30, ...inner }),
     new Headers({ [SECRET_HEADER]: SECRET }),
@@ -102,23 +102,15 @@ describe("fetching a photo (8)", () => {
 
   test("over the cap: nothing is fetched past getFile", async () => {
     const net = files("photos/big.jpg", MAX + 1);
-    const file = telegram({
-      token: TOKEN,
-      secret: SECRET,
-      send: net.send,
-    }).file;
-    expect(await file?.("ref-1", MAX)).toBeNull();
+    const channel = telegram({ token: TOKEN, secret: SECRET, send: net.send });
+    expect(await channel.file?.("ref-1", MAX)).toBeNull();
     expect(net.calls).toHaveLength(1);
   });
 
   test("a file bigger than Telegram said is still refused", async () => {
     const net = files("photos/lie.jpg", 1_000, new Uint8Array(MAX + 1));
-    const file = telegram({
-      token: TOKEN,
-      secret: SECRET,
-      send: net.send,
-    }).file;
-    expect(await file?.("ref-1", MAX)).toBeNull();
+    const channel = telegram({ token: TOKEN, secret: SECRET, send: net.send });
+    expect(await channel.file?.("ref-1", MAX)).toBeNull();
   });
 
   test("the fake channel hands back the files a test gave it", async () => {

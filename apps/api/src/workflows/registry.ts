@@ -5,6 +5,15 @@ import {
   OUT_MEALS,
   OUT_WHEN,
   OUT_WHO,
+  RECEIPT_ADDED,
+  RECEIPT_ASK,
+  RECEIPT_FOUND,
+  RECEIPT_LINE,
+  RECEIPT_LINE_ADDED,
+  RECEIPT_LINE_FOODS,
+  RECEIPT_LINE_SKIPPED,
+  RECEIPT_UNSURE,
+  RECEIPTS_AGREED,
   CMD_LIST,
   CMD_LIST_EMPTY,
   CMD_NOT_PLANNED,
@@ -44,8 +53,8 @@ import { startTomorrow } from "./tomorrow.js";
 
 // The workflows the bot runs (ADR 0034), by name, and the starters the cron
 // runs each minute: tomorrow's plan (specs/241) and the cook's meal checks
-// (specs/242), and the planners' "set up" (specs/260). Receipts come with
-// their own spec.
+// (specs/242), and the planners' "set up" (specs/260). Receipt photos in the
+// chat (specs/277) start from a photo, not the cron.
 
 export const WORKFLOWS: Record<string, Workflow> = Object.fromEntries(
   [
@@ -86,6 +95,15 @@ export const WORKFLOWS: Record<string, Workflow> = Object.fromEntries(
     GUESTS_COUNT,
     GUESTS_WHEN,
     GUESTS_MEAL,
+    RECEIPT_ASK,
+    RECEIPTS_AGREED,
+    RECEIPT_FOUND,
+    RECEIPT_ADDED,
+    RECEIPT_UNSURE,
+    RECEIPT_LINE,
+    RECEIPT_LINE_FOODS,
+    RECEIPT_LINE_ADDED,
+    RECEIPT_LINE_SKIPPED,
   ].map((w) => [w.name, w]),
 );
 

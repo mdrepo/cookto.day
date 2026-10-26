@@ -59,6 +59,11 @@ export interface Channel {
   acknowledge?(ack: string): Promise<void>;
   /** The commands one chat's menu shows, when the channel has menus. */
   setCommands?(chat: string, commands: readonly Command[]): Promise<void>;
+  /**
+   * A file someone sent, by its reference, held in memory only (specs/277):
+   * null when it's gone or weighs more than `max` bytes.
+   */
+  file?(ref: string, max: number): Promise<Uint8Array | null>;
 }
 
 /** A command in a chat's menu (specs/270): "today", "Today's plan". */

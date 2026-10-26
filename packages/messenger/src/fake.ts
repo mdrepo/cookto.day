@@ -33,6 +33,8 @@ export interface FakeChannel extends Channel {
   readonly acknowledged: string[];
   /** Each chat's menu, as last set (specs/270). */
   readonly menus: Map<string, readonly Command[]>;
+  /** The files people sent, by reference, as a test puts them (specs/277). */
+  readonly files: Map<string, Uint8Array>;
   /** The next deliveries fail with this, once each. */
   fail(...errors: ChannelError[]): void;
   /** A webhook body and headers for this event, the way the fake wants them. */
@@ -46,6 +48,7 @@ export function fakeChannel(
   const deliveries: Delivery[] = [];
   const acknowledged: string[] = [];
   const menus = new Map<string, readonly Command[]>();
+  const files = new Map<string, Uint8Array>();
   const failures: ChannelError[] = [];
   let next = 0;
   return {
@@ -53,6 +56,11 @@ export function fakeChannel(
     deliveries,
     acknowledged,
     menus,
+    files,
+    file(ref, max) {
+      const bytes = files.get(ref);
+      return Promise.resolve(bytes && bytes.byteLength <= max ? bytes : null);
+    },
     setCommands(chat, commands) {
       menus.set(chat, commands);
       return Promise.resolve();

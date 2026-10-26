@@ -19,8 +19,12 @@ interface IncomingMessage {
   from?: From;
   text?: string;
   caption?: string;
-  photo?: { file_id: string }[];
+  photo?: { file_id: string; file_size?: number }[];
+  document?: { file_id: string; file_name?: string };
 }
+
+/** The most a photo may weigh to be read (specs/129, rule 3). */
+const MAX_PHOTO = 1_500_000;
 
 interface CallbackQuery {
   id: string;
@@ -48,10 +52,13 @@ function command(text: string): Event | null {
 
 function ofMessage(m: IncomingMessage): Event {
   if (m.photo && m.photo.length > 0) {
-    // Telegram lists sizes small to large; the last is the full photo.
-    const ref = m.photo[m.photo.length - 1]?.file_id ?? "";
+    // Telegram lists sizes small to large: the largest that can be read
+    // (specs/277), or the smallest, which the fetch then refuses.
+    const fits = m.photo.filter((p) => (p.file_size ?? 0) <= MAX_PHOTO);
+    const ref = (fits.at(-1) ?? m.photo[0])?.file_id ?? "";
     return { kind: "photo", ref, caption: m.caption ?? null };
   }
+  if (m.document) return { kind: "file", name: m.document.file_name ?? null };
   const text = m.text ?? "";
   return command(text) ?? { kind: "text", text };
 }

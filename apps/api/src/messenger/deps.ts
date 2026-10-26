@@ -2,6 +2,8 @@ import type { PackLoader } from "@cookto/data";
 import type { AuthStore, Households, Links } from "@cookto/db";
 import type { Messenger } from "@cookto/messenger";
 import type { LogEntry } from "../log.js";
+import type { Reader } from "../receipts/reader.js";
+import type { Strikes, Usage } from "../usage/usage.js";
 import type { WorkflowDeps } from "../workflows/deps.js";
 
 // What the messenger's routes need (spec #207): the messenger itself, the
@@ -28,6 +30,11 @@ export interface MessengerDeps {
   telegramToken?: string;
   /** The cuisine packs; the bundled ones when left out (specs/242). */
   packs?: PackLoader;
+  /**
+   * Receipt photos in the chat (specs/277), within the app's limits; the
+   * reader is null while they're off.
+   */
+  receipts?: { reader: Reader | null; usage: Usage; strikes: Strikes };
 }
 
 /** The link's token from the Authorization header, or null. */

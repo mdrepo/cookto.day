@@ -79,6 +79,37 @@ function call(
   }
 }
 
+/** What getFile answers: where the file is, and how big. */
+interface Found {
+  file_path?: string;
+  file_size?: number;
+}
+
+/**
+ * A photo to read (specs/277): Telegram says how big it is first, so
+ * nothing over the cap is fetched; the bytes are counted again anyway.
+ */
+async function fetched(
+  o: TelegramOptions,
+  files: string,
+  timeout: number,
+  found: Found | null,
+  max: number,
+): Promise<Uint8Array | null> {
+  if (!found?.file_path || (found.file_size ?? 0) > max) return null;
+  try {
+    const response = await o.send(`${files}/${found.file_path}`, {
+      method: "GET",
+      signal: AbortSignal.timeout(timeout),
+    });
+    if (!response.ok) return null;
+    const bytes = new Uint8Array(await response.arrayBuffer());
+    return bytes.byteLength > max ? null : bytes;
+  } catch {
+    return null;
+  }
+}
+
 export interface Telegram extends Channel {
   /** Tells Telegram where to send updates, if it isn't already (spec #207). */
   installWebhook(url: string): Promise<"set" | "kept">;
@@ -146,6 +177,12 @@ export function telegram(o: TelegramOptions): Telegram {
         commands,
         scope: { type: "chat", chat_id: chat },
       });
+    },
+    file: async (ref, max) => {
+      const found = (await post("getFile", { file_id: ref }).catch(
+        () => null,
+      )) as Found | null;
+      return fetched(o, `${api}/file/bot${o.token}`, timeout, found, max);
     },
     async installWebhook(url) {
       const info = (await post("getWebhookInfo", {})) as { url?: string };

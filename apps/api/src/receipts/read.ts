@@ -2,9 +2,9 @@ import type { Auth } from "../auth.js";
 import { json, problem } from "../http.js";
 import type { LogEntry } from "../log.js";
 import type { Strikes, Usage } from "../usage/usage.js";
+import { readCounted } from "./counted.js";
 import { readPhoto } from "./photo.js";
 import type { Reader } from "./reader.js";
-import { checkReceipt, signOfAbuse } from "./receipt.js";
 
 // POST /api/receipts/read (ADR 0028, specs/129-receipt-photos.md). Five
 // layers, cheapest first: nothing costs money until the last, and nothing is
@@ -44,42 +44,37 @@ async function attempt(request: Request, deps: ReadDeps): Promise<Done> {
   const sent = await readPhoto(request);
   if (!sent.ok) return refuse(sent.status, sent.error);
 
-  const verdict = await deps.usage.take({
-    household: session.household,
-    // Cloudflare sets it on every request; a missing one shares one count.
-    address: request.headers.get("cf-connecting-ip") ?? "unknown",
-  });
-  if (!verdict.ok) {
-    const wait = Math.ceil((Date.parse(verdict.resetsAt) - deps.now()) / 1000);
+  const read = await readCounted(
+    { reader, usage: deps.usage, strikes: deps.strikes },
+    {
+      household: session.household,
+      // Cloudflare sets it on every request; a missing one shares one count.
+      address: request.headers.get("cf-connecting-ip") ?? "unknown",
+    },
+    sent.photo,
+  );
+  if (read.ok)
+    return {
+      response: json(200, read.receipt),
+      lines: read.lines,
+      tokensIn: read.tokensIn,
+      tokensOut: read.tokensOut,
+    };
+  if (read.status === 429) {
+    const wait = Math.ceil((Date.parse(read.resetsAt) - deps.now()) / 1000);
     return refuse(
       429,
       "limit",
-      { limit: verdict.limit, resetsAt: verdict.resetsAt },
+      { limit: read.limit, resetsAt: read.resetsAt },
       { "retry-after": String(Math.max(0, wait)) },
     );
   }
-
-  const read = await reader.read(sent.photo);
-  if (!read.ok && read.reason === "unavailable") {
-    await deps.usage.giveBack(verdict.ticket);
-    return refuse(502, "reader");
-  }
-  const tokens = { tokensIn: read.tokensIn, tokensOut: read.tokensOut };
-  // Rule 8: a sign of abuse refuses the answer whole, and ends the day.
-  const reject = async (sign: string): Promise<Done> => {
-    await deps.strikes.strike(verdict.ticket);
-    return { ...refuse(422, "rejected"), sign, ...tokens };
-  };
-  if (!read.ok) return reject(read.reason);
-  const sign = signOfAbuse(read.output);
-  if (sign !== undefined) return reject(sign);
-  const receipt = checkReceipt(read.output);
-  if (receipt.lines.length === 0)
-    return { ...refuse(422, "not-a-receipt"), ...tokens };
+  if (read.status === 502) return refuse(502, "reader");
   return {
-    response: json(200, receipt),
-    lines: receipt.lines.length,
-    ...tokens,
+    ...refuse(422, read.error),
+    ...(read.sign !== undefined && { sign: read.sign }),
+    tokensIn: read.tokensIn,
+    tokensOut: read.tokensOut,
   };
 }
 

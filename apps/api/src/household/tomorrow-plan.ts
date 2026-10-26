@@ -55,18 +55,24 @@ export function packOf(id: string, packs: PackLoader = bundled) {
 }
 
 /** The packs of the cuisines the household loaded. */
+/** The cuisines the household loaded, from its settings record. */
+export async function cuisinesOf(
+  households: Households,
+  household: string,
+): Promise<string[]> {
+  const [settings] = (
+    await households.records(household, "household-settings")
+  ).filter(live);
+  const kitchen = (settings?.kitchen ?? {}) as { cuisines?: unknown };
+  return Array.isArray(kitchen.cuisines) ? kitchen.cuisines.map(String) : [];
+}
+
 export async function householdPacks(
   households: Households,
   household: string,
   packs?: PackLoader,
 ): Promise<AppPack[]> {
-  const [settings] = (
-    await households.records(household, "household-settings")
-  ).filter(live);
-  const kitchen = (settings?.kitchen ?? {}) as { cuisines?: unknown };
-  const cuisines = Array.isArray(kitchen.cuisines)
-    ? kitchen.cuisines.map(String)
-    : [];
+  const cuisines = await cuisinesOf(households, household);
   const all = await Promise.all(cuisines.map((id) => packOf(id, packs)));
   return all.filter((p) => p !== null);
 }

@@ -140,6 +140,8 @@ describe("9. a question waiting for a photo comes first; files are refused", () 
       audience: mayur?.id ?? "",
       about: {},
     });
+    // Its question goes out after the start, as every run's does.
+    await r.e.h.settle();
     r.e.to(PLANNER_CHAT);
     await r.photo(PLANNER_CHAT);
     expect(texts(r.e.to(PLANNER_CHAT))).toEqual([]);

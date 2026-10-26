@@ -56,4 +56,6 @@ export type Event =
       /** The channel's reference to the file, never the file. */
       ref: string;
       caption: string | null;
-    };
+    }
+  /** Any other file, a PDF say (specs/277): its name, never read. */
+  | { kind: "file"; name: string | null };

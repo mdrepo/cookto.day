@@ -4,17 +4,19 @@ import { iso, type MessengerDeps } from "./deps.js";
 
 // Each chat's command menu (specs/270): typing "/" shows its role's
 // commands. Set when a chat connects, and again for the whole household
-// when its cook comes or goes: planners who cook have /ranout too.
+// when its cook comes or goes: planners who cook have /ranout too. Everyone
+// can add a receipt (specs/277).
 
 const PLANNER = ["tomorrow", "today", "out", "guests", "off", "list"];
 const COOK = ["tomorrow", "today", "ranout"];
 
 function menuOf(cook: boolean, planners: "cook" | "plan"): Command[] {
-  const names = cook
+  const role = cook
     ? COOK
     : planners === "cook"
       ? [...PLANNER, "ranout"]
       : PLANNER;
+  const names = [...role, "receipt"];
   return names.map((command) => ({
     command,
     description: render({ en: EN }, "en", `menu_${command}`).text,

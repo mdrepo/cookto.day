@@ -93,6 +93,7 @@ function messengerOf(
         off: env.BOT_OFF === "1",
         leaseMs: 30_000,
       },
+      receipts: receiptsOf(env),
     },
     install: () => channel.installWebhook(WEBHOOK_URL),
   };
@@ -124,16 +125,23 @@ function usage(env: Env): Usage & Strikes {
   };
 }
 
+/** The reader, off without the switch or the key, and the one counter. */
+function receiptsOf(env: Env) {
+  const key = env.GEMINI_API_KEY ?? "";
+  const on = env.RECEIPT_PHOTOS === "on" && key !== "";
+  const counter = usage(env);
+  return {
+    reader: on ? gemini({ key, model: env.RECEIPT_MODEL }) : null,
+    usage: counter,
+    strikes: counter,
+  };
+}
+
 export default {
   fetch(request, env, ctx) {
-    const key = env.GEMINI_API_KEY ?? "";
-    const on = env.RECEIPT_PHOTOS === "on" && key !== "";
-    const counter = usage(env);
     return route(request, {
-      reader: on ? gemini({ key, model: env.RECEIPT_MODEL }) : null,
+      ...receiptsOf(env),
       auth: noSignInYet,
-      usage: counter,
-      strikes: counter,
       log,
       now,
       keys: keysOf(env, ctx),

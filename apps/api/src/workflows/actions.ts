@@ -1,6 +1,7 @@
 import { CHANGE_MEAL_ACTIONS } from "./change-meal.js";
 import { COMMAND_ACTIONS } from "./command-actions.js";
 import { OUT_GUESTS_ACTIONS } from "./out-guests.js";
+import { RECEIPT_ACTIONS } from "./receipts.js";
 import { CHANGE_ACTIONS } from "./changes.js";
 import { CHECK_ACTIONS } from "./checks.js";
 import type { Action } from "./deps.js";
@@ -21,4 +22,5 @@ export const ACTIONS: Record<string, Action> = {
   ...CHANGE_MEAL_ACTIONS,
   ...COMMAND_ACTIONS,
   ...OUT_GUESTS_ACTIONS,
+  ...RECEIPT_ACTIONS,
 };

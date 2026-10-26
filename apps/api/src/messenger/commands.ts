@@ -64,6 +64,13 @@ const asks =
     return workflow;
   };
 
+/** /receipt: asks for the photo, which the next message brings (specs/277). */
+const receipt: Handler = async (a) => {
+  const lines = render(a.w.templates, "en", "receipt_send").text;
+  await a.answer("cmd_said", { lines });
+  return "receipt";
+};
+
 const PLANNER: Record<string, Handler> = {
   tomorrow: plannersTomorrow,
   today: (a) => today(a, false),
@@ -71,6 +78,7 @@ const PLANNER: Record<string, Handler> = {
   guests: asks("guests_count"),
   off,
   list,
+  receipt,
 };
 /** The planners cook: what was the cook's is theirs too. */
 const SELF: Record<string, Handler> = { ...PLANNER, ranout: ranout(false) };
@@ -78,6 +86,7 @@ const COOK: Record<string, Handler> = {
   tomorrow: cooksTomorrow,
   today: (a) => today(a, true),
   ranout: ranout(true),
+  receipt,
 };
 
 /** A reply within a conversation, sent at once; nothing to run. */

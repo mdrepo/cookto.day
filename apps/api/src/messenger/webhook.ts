@@ -5,6 +5,7 @@ import { answered, pressed } from "../workflows/engine.js";
 import { commanded } from "./commands.js";
 import { iso, type MessengerDeps } from "./deps.js";
 import { setMenus, setPlannerMenu } from "./menus.js";
+import { receiptFile, receiptPhoto } from "./receipt-photo.js";
 import { withApp, WORDS } from "./words.js";
 
 // POST /api/messenger/telegram (spec #207): what the cook sends. The
@@ -181,6 +182,12 @@ async function handle(d: MessengerDeps, got: Received): Promise<string> {
       .catch(() => undefined);
   const run = await toRuns(d, conversation, event);
   if (run !== null) return run;
+  // A member's photo no question took is a receipt, and files aren't read
+  // (specs/277); a phone's own link, or no reader at all, keeps it as before.
+  const receipts = conversation.owner.kind === "member" && d.receipts;
+  if (receipts && event.kind === "photo")
+    return receiptPhoto(d, got, event.ref);
+  if (receipts && event.kind === "file") return receiptFile(d, got);
   await reply(d, conversation.id, WORDS.cantRead);
   return "kept";
 }
